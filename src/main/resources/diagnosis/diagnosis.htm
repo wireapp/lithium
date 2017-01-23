@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Bot Diagnosis</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <link href="css/style.css" rel="stylesheet">
+
+</head>
+<body onload="diagnosis()">
+
+
+<div class="container" id="diagnosisContainer">
+    <div class="jumbotron">
+        <p>
+            This diagnosis will try to find the service which is served by this server...
+        </p>
+    </div>
+</div>
+
+<div class="container" id="successContainer" style="display: none;">
+    <div class="jumbotron">
+        <p>
+            Everything is set up correctly!
+        </p>
+    </div>
+</div>
+
+<div class="container" id="failedContainer" style="display: none;">
+    <p class="warning">
+        Could not find corresponding service!
+    </p>
+    <table class="table table-hover" id="differencesTable">
+        <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Matching Base URL
+            </th>
+            <th>
+                Matching Public Key
+            </th>
+            <th>
+                Matching Auth Token
+            </th>
+            <th>
+
+            </th>
+        </tr>
+        </thead>
+        <tbody id="differencesTableBody">
+        </tbody>
+    </table>
+</div>
+
+<div class="container" id="inspectContainer" style="display: none;">
+    <h3 id="serviceName">
+
+    </h3>
+    <form role="form">
+        <div class="form-group">
+            <label for="serviceId">
+                Service ID
+            </label>
+            <p id="serviceId"></p>
+        </div>
+        <div class="form-group">
+            <label for="serviceBaseUrl">
+                Base Url
+            </label>
+            <p id="serviceBaseUrl"></p>
+        </div>
+        <div class="form-group">
+            <label for="servicePublicKey">
+                Public Key
+            </label>
+            <textarea rows="12" class="form-control" id="servicePublicKey" /></textarea>
+        </div>
+        <div class="form-group">
+            <label for="serviceAuthTokens">
+                Auth Tokens
+            </label>
+            <p id="serviceAuthTokens"></p>
+        </div>
+    </form>
+</div>
+
+
+<script src="js/scripts.js"></script>
+</body>
+</html>
