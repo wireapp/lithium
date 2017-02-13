@@ -23,8 +23,10 @@ import com.wire.bots.sdk.assets.IAsset;
 import com.wire.bots.sdk.models.AssetKey;
 import com.wire.bots.sdk.models.otr.Devices;
 import com.wire.bots.sdk.models.otr.OtrMessage;
+import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.models.otr.PreKeys;
 import com.wire.bots.sdk.server.model.Conversation;
+import com.wire.bots.sdk.server.model.NewBotResponseModel;
 import com.wire.bots.sdk.server.model.User;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.JerseyClientBuilder;
@@ -82,8 +84,12 @@ class JerseyClient {
             return response.readEntity(Devices.class);
         }
 
-        if (statusCode >= 300)
-            throw new IOException("sendMessage: " + response.readEntity(String.class) + ". code: " + statusCode);
+        if (statusCode >= 300) {
+            String log = String.format("sendMessage: %s code: %d",
+                    response.readEntity(String.class),
+                    statusCode);
+            throw new IOException(log);
+        }
 
         return response.readEntity(Devices.class);
     }
@@ -102,7 +108,7 @@ class JerseyClient {
                 });
     }
 
-    Conversation getConversation() throws IOException {
+    Conversation getConversation() {
         return client.target(httpUrl).
                 path("bot/conversation").
                 request().
@@ -111,16 +117,45 @@ class JerseyClient {
                 get(Conversation.class);
     }
 
-    PreKeys getPreKeys(HashMap<String, ArrayList<String>> devices) throws IOException {
-        if (devices.isEmpty())
-            return new PreKeys();
-
+    PreKeys getPreKeys(HashMap<String, ArrayList<String>> devices) {
         return client.target(httpUrl).
                 path("bot/users/prekeys").
                 request(MediaType.APPLICATION_JSON).
                 header("Authorization", "Bearer " + token).
                 accept(MediaType.APPLICATION_JSON).
                 post(Entity.entity(devices, MediaType.APPLICATION_JSON), PreKeys.class);
+    }
+
+    ArrayList<Integer> getAvailablePrekeys() {
+        return client.target(httpUrl).
+                path("/bot/client/prekeys").
+                request().
+                header("Authorization", "Bearer " + token).
+                accept(MediaType.APPLICATION_JSON).
+                get(new GenericType<ArrayList<Integer>>() {
+                });
+    }
+
+    public boolean uploadPreKeys(ArrayList<PreKey> preKeys) throws IOException {
+        NewBotResponseModel model = new NewBotResponseModel();
+        model.preKeys = preKeys;
+
+        Response res = client.target(httpUrl).
+                path("bot/client/prekeys").
+                request(MediaType.APPLICATION_JSON).
+                header("Authorization", "Bearer " + token).
+                accept(MediaType.APPLICATION_JSON).
+                post(Entity.entity(model, MediaType.APPLICATION_JSON));
+
+        int statusCode = res.getStatus();
+        if (statusCode >= 300) {
+            String log = String.format("uploadPreKeys: %s code: %d",
+                    res.readEntity(String.class),
+                    statusCode);
+            throw new IOException(log);
+        }
+
+        return statusCode == 200;
     }
 
     public AssetKey uploadAsset(IAsset asset) throws Exception {

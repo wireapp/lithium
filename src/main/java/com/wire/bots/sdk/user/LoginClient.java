@@ -21,9 +21,10 @@ package com.wire.bots.sdk.user;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.wire.bots.sdk.Logger;
+import com.wire.bots.sdk.server.model.Member;
+import com.wire.bots.sdk.user.model.NewClient;
 import com.wire.bots.sdk.user.model.User;
 import com.wire.cryptobox.PreKey;
-import com.wire.bots.sdk.user.model.NewClient;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 
@@ -112,5 +113,41 @@ public class LoginClient {
             Logger.warning(msg);
         }
         return response.getStatus() == 200;
+    }
+
+    public String newConversation(String token, String name) throws IOException {
+        Response response = client.target(httpUrl)
+                .path("conversations")
+                .request(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + token)
+                .post(Entity.entity(String.format("{ \"name\":\"%s\", \"users\":[] }", name), MediaType.APPLICATION_JSON));
+
+        if (response.getStatus() > 300) {
+            String msg = String.format("newConversation: %s, code: %s", response.readEntity(String.class)
+                    , response.getStatus());
+            Logger.warning(msg);
+            throw new IOException(msg);
+        }
+        return response.readEntity(Member.class).id;   //todo fix me, ffs!
+    }
+
+    public boolean addService(String token, String convId, String provider, String service) throws IOException {
+        String json = String.format("{ \"provider\":\"%s\", \"service\":\"%s\" }", provider, service);
+
+        Response response = client.target(httpUrl)
+                .path("conversations")
+                .path(convId)
+                .path("bots")
+                .request(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + token)
+                .post(Entity.entity(json, MediaType.APPLICATION_JSON));
+
+        if (response.getStatus() > 300) {
+            String msg = String.format("addService: %s, code: %s", response.readEntity(String.class)
+                    , response.getStatus());
+            Logger.warning(msg);
+            throw new IOException(msg);
+        }
+        return response.getStatus() == 201;
     }
 }

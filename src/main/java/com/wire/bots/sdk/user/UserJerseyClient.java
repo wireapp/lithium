@@ -20,6 +20,7 @@ package com.wire.bots.sdk.user;
 
 import com.wire.bots.sdk.assets.IAsset;
 import com.wire.bots.sdk.models.otr.OtrMessage;
+import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.Logger;
 import com.wire.bots.sdk.Util;
@@ -207,6 +208,29 @@ public class UserJerseyClient extends LoginClient {
                 request(MediaType.APPLICATION_JSON).
                 header("Authorization", "Bearer " + token).
                 get(new GenericType<ArrayList<com.wire.bots.sdk.server.model.User>>() {
+                });
+    }
+
+    public boolean uploadPreKeys(ArrayList<PreKey> preKeys) {
+        Response res = client.target(httpUrl).
+                path("users/prekeys").
+                request(MediaType.APPLICATION_JSON).
+                header("Authorization", "Bearer " + token).
+                accept(MediaType.APPLICATION_JSON).
+                post(Entity.entity(preKeys, MediaType.APPLICATION_JSON));
+
+        return res.getStatus() == 200;
+    }
+
+    ArrayList<Integer> getAvailablePrekeys(String clientId) {
+        return client.target(httpUrl).
+                path("clients").
+                path(clientId).
+                path("prekeys").
+                request().
+                header("Authorization", "Bearer " + token).
+                accept(MediaType.APPLICATION_JSON).
+                get(new GenericType<ArrayList<Integer>>() {
                 });
     }
 }

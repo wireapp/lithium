@@ -18,11 +18,12 @@
 
 package com.wire.bots.sdk;
 
-import com.wire.bots.sdk.models.otr.*;
 import com.wire.cryptobox.*;
 import com.wire.cryptobox.PreKey;
+
 import com.wire.bots.sdk.models.otr.Devices;
 import com.wire.bots.sdk.models.otr.OtrMessage;
+import com.wire.bots.sdk.models.otr.PreKeys;
 
 import java.io.Closeable;
 import java.util.Base64;
@@ -79,24 +80,23 @@ public class OtrManager implements Closeable {
      *
      * @param preKeys Prekeys
      * @param msg     Final object containing ciphers for all clients. This will be sent to BE
-     * @return Final object that can be now sent to BE. This is NOT a new object!
      * @throws CryptoException
      */
-    public OtrMessage encrypt(PreKeys preKeys, OtrMessage msg) throws CryptoException {
+    public void encrypt(PreKeys preKeys, OtrMessage msg) throws CryptoException {
+        byte[] content = msg.getContent();
         for (String userId : preKeys.keySet()) {
             HashMap<String, com.wire.bots.sdk.models.otr.PreKey> clients = preKeys.get(userId);
             for (String clientId : clients.keySet()) {
                 com.wire.bots.sdk.models.otr.PreKey pk = clients.get(clientId);
                 if (pk != null && pk.key != null) {
-                    PreKey preKey = new PreKey(pk.id, Base64.getDecoder().decode(pk.key));
+                    byte[] decodedKey = Base64.getDecoder().decode(pk.key);
+                    PreKey preKey = new PreKey(pk.id, decodedKey);
                     String id = createId(userId, clientId);
-
-                    byte[] cipher = encryptFromPreKeys(id, preKey, msg.getContent());
+                    byte[] cipher = encryptFromPreKeys(id, preKey, content);
                     msg.add(userId, clientId, cipher);
                 }
             }
         }
-        return msg;
     }
 
     /**
@@ -106,27 +106,24 @@ public class OtrManager implements Closeable {
      *
      * @param devices List of device ids
      * @param msg     Message containing the plain text content
-     * @return The same object {@param #msg} with be returned but with ciphers appended for each device
      */
-    public OtrMessage encrypt(Devices devices, OtrMessage msg) throws CryptoException {
+    public void encrypt(Devices devices, OtrMessage msg) throws CryptoException {
         byte[] content = msg.getContent();
         for (String userId : devices.getUserIds()) {
             for (String clientId : devices.getClients(userId)) {
                 String id = createId(userId, clientId);
-
                 byte[] cipher = encryptFromSession(id, content);
                 if (cipher != null)
                     msg.add(userId, clientId, cipher);
             }
         }
-        return msg;
     }
 
     /**
-     * Tries to decrypt the cipher either using existing session or it inits new session (and decrypts) using this cipher
+     * Decrypt cipher either using existing session or it creates new session from this cipher and decrypts
      *
-     * @param userId   User id
-     * @param clientId Device id
+     * @param userId   Sender's User id
+     * @param clientId Sender's Client id
      * @param cypher   Encrypted, Base64 encoded string
      * @return Decrypted blob
      * @throws CryptoException
@@ -142,7 +139,6 @@ public class OtrManager implements Closeable {
                 if (cryptoSession != null) {
                     return cryptoSession.decrypt(decode);
                 }
-
                 SessionMessage sessionMessage = box.initSessionFromMessage(id, decode);
                 cryptoSession = sessionMessage.getSession();
                 return sessionMessage.getMessage();
@@ -221,5 +217,9 @@ public class OtrManager implements Closeable {
 
     private static String createId(String userId, String clientId) {
         return String.format("%s_%s", userId, clientId);
+    }
+
+    public boolean isClosed() {
+        return box.isClosed();
     }
 }
