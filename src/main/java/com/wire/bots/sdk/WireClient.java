@@ -18,9 +18,12 @@
 
 package com.wire.bots.sdk;
 
+import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.User;
+import com.wire.cryptobox.CryptoException;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,7 +32,7 @@ import java.util.Collection;
 /**
  * Thread safe class for postings into this conversation
  */
-public interface WireClient {
+public interface WireClient extends Closeable {
     /**
      * Post text in the conversation
      *
@@ -138,12 +141,67 @@ public interface WireClient {
     Conversation getConversation() throws IOException;
 
     /**
-     * Bots cannot send/receive/accept connect requests. This method can be used when running the sdk as a regular user and you need to
+     * Bots cannot send/receive/accept connect requests. This method can be used when
+     * running the sdk as a regular user and you need to
      * accept/reject a connect request.
      *
-     * @param user
+     * @param user User ID as UUID
      * @throws IOException
      */
-    @Deprecated
     void acceptConnection(String user) throws IOException;
+
+    /**
+     * Decrypt cipher either using existing session or it creates new session from this cipher and decrypts
+     *
+     * @param userId   Sender's User id
+     * @param clientId Sender's Client id
+     * @param cypher   Encrypted, Base64 encoded string
+     * @return Decrypted blob
+     * @throws com.wire.cryptobox.CryptoException
+     */
+    byte[] decrypt(String userId, String clientId, String cypher) throws CryptoException;
+
+    /**
+     * Invoked by the sdk. Called once when the conversation is created
+     *
+     * @return Last prekey
+     * @throws CryptoException
+     */
+    PreKey newLastPreKey() throws CryptoException;
+
+    /**
+     * Invoked by the sdk. Called once when the conversation is created and then occasionally when number of available
+     * keys drops too low
+     *
+     * @param from  Starting offset
+     * @param count Number of keys to generate
+     * @return List of prekeys
+     * @throws CryptoException
+     */
+    ArrayList<PreKey> newPreKeys(int from, int count) throws CryptoException;
+
+    /**
+     * Uploads previously generated prekeys to BE
+     *
+     * @param preKeys Pre keys to be uploaded
+     * @throws IOException
+     */
+    void uploadPreKeys(ArrayList<PreKey> preKeys) throws IOException;
+
+    /**
+     * Returns the list of available prekeys.
+     * If the number is too low (less than 8) you should generate new prekeys and upload them to BE
+     *
+     * @return List of available prekeys' ids
+     */
+    ArrayList<Integer> getAvailablePrekeys();
+
+    /**
+     * Checks if CryptoBox is closed
+     *
+     * @return True if crypto box is closed
+     */
+    boolean isClosed();
+
+    byte[] downloadProfilePicture(String assetKey) throws IOException;
 }

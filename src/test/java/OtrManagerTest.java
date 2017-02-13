@@ -40,12 +40,10 @@ public class OtrManagerTest {
     private static PreKeys bobKeys;
     private static PreKeys aliceKeys;
 
-    private final static String bobId = "bob_id";
-    private final static String bobClientId = "bob_cid";
-    private final static String aliceId = "alice_id";
-    private final static String aliceClientId = "alice_cid";
-    private static File aliceDir;
-    private static File bobDir;
+    private final static String bobId = "bob";
+    private final static String bobClientId = "bob_device";
+    private final static String aliceId = "alice";
+    private final static String aliceClientId = "alice_device";
 
     @Test
     public void testAliceToBob() throws CryptoException, IOException {
@@ -55,7 +53,7 @@ public class OtrManagerTest {
         OtrMessage msg = new OtrMessage(aliceClientId, textBytes);
 
         // Encrypt using prekeys
-        msg = alice.encrypt(bobKeys, msg);
+        alice.encrypt(bobKeys, msg);
 
         HashMap<String, byte[]> ciphers = msg.getRecipients().get(bobId);
         byte[] cipher = ciphers.get(bobClientId);
@@ -79,7 +77,7 @@ public class OtrManagerTest {
 
         OtrMessage msg = new OtrMessage(bobClientId, textBytes);
 
-        msg = bob.encrypt(aliceKeys, msg);
+        bob.encrypt(aliceKeys, msg);
 
         HashMap<String, byte[]> ciphers = msg.getRecipients().get(aliceId);
         byte[] cipher = ciphers.get(aliceClientId);
@@ -106,7 +104,7 @@ public class OtrManagerTest {
 
         Devices devices = new Devices();
         devices.add(aliceId, aliceClientId);
-        msg = bob.encrypt(devices, msg);
+        bob.encrypt(devices, msg);
 
         HashMap<String, byte[]> ciphers = msg.getRecipients().get(aliceId);
         byte[] cipher = ciphers.get(aliceClientId);
@@ -133,10 +131,10 @@ public class OtrManagerTest {
 
     @BeforeClass
     public static void setUp() throws CryptoException, IOException {
-        aliceDir = mkTmpDir("cryptobox-alice");
+        File aliceDir = mkTmpDir("cryptobox-alice");
         alice = new OtrManager(aliceDir.getAbsolutePath());
 
-        bobDir = mkTmpDir("cryptobox-bob");
+        File bobDir = mkTmpDir("cryptobox-bob");
         bob = new OtrManager(bobDir.getAbsolutePath());
 
         PreKey[] preKeys = bob.newPreKeys(0, 1);

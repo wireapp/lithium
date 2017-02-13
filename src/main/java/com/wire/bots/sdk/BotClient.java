@@ -25,12 +25,15 @@ import com.wire.bots.sdk.models.otr.OtrMessage;
 import com.wire.bots.sdk.models.otr.PreKeys;
 import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.User;
+import com.wire.cryptobox.CryptoException;
+import com.wire.cryptobox.PreKey;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 
 /**
@@ -42,7 +45,7 @@ class BotClient implements WireClient {
     private final String clientId;
     private final JerseyClient jerseyClient;
     private final OtrManager otrManager;
-    private final Devices devices;
+    private Devices devices = null;
 
     public BotClient(OtrManager otrManager, String botId, String convId, String clientId, String token) {
         this.botId = botId;
@@ -50,7 +53,6 @@ class BotClient implements WireClient {
         this.clientId = clientId;
         this.jerseyClient = new JerseyClient(token);
         this.otrManager = otrManager;
-        this.devices = getDevices();
     }
 
     @Override
@@ -112,7 +114,8 @@ class BotClient implements WireClient {
     }
 
     @Override
-    public byte[] downloadAsset(String assetKey, String assetToken, byte[] sha256Challenge, byte[] otrKey) throws Exception {
+    public byte[] downloadAsset(String assetKey, String assetToken, byte[] sha256Challenge, byte[] otrKey)
+            throws Exception {
         byte[] cipher = jerseyClient.downloadAsset(assetKey, assetToken);
         byte[] sha256 = MessageDigest.getInstance("SHA-256").digest(cipher);
         if (!Arrays.equals(sha256, sha256Challenge))
@@ -152,16 +155,77 @@ class BotClient implements WireClient {
     }
 
     @Override
-    @Deprecated
     public void acceptConnection(String user) throws IOException {
 
     }
 
+    @Override
+    public byte[] decrypt(String userId, String clientId, String cypher) throws CryptoException {
+        return otrManager.decrypt(userId, clientId, cypher);
+    }
+
+    @Override
+    public com.wire.bots.sdk.models.otr.PreKey newLastPreKey() throws CryptoException {
+        PreKey preKey = otrManager.newLastPreKey();
+
+        com.wire.bots.sdk.models.otr.PreKey key = new com.wire.bots.sdk.models.otr.PreKey();
+        key.id = preKey.id;
+        key.key = Base64.getEncoder().encodeToString(preKey.data);
+
+        return key;
+    }
+
+    @Override
+    public ArrayList<com.wire.bots.sdk.models.otr.PreKey> newPreKeys(int from, int count) throws CryptoException {
+        ArrayList<com.wire.bots.sdk.models.otr.PreKey> ret = new ArrayList<>(count);
+
+        com.wire.cryptobox.PreKey[] preKeys = otrManager.newPreKeys(from, count);
+        for (com.wire.cryptobox.PreKey k : preKeys) {
+            com.wire.bots.sdk.models.otr.PreKey prekey = new com.wire.bots.sdk.models.otr.PreKey();
+            prekey.id = k.id;
+            prekey.key = Base64.getEncoder().encodeToString(k.data);
+            ret.add(prekey);
+        }
+        return ret;
+    }
+
+    @Override
+    public void uploadPreKeys(ArrayList<com.wire.bots.sdk.models.otr.PreKey> preKeys) throws IOException {
+        jerseyClient.uploadPreKeys((preKeys));
+    }
+
+    @Override
+    public ArrayList<Integer> getAvailablePrekeys() {
+        return jerseyClient.getAvailablePrekeys();
+    }
+
+    @Override
+    public boolean isClosed() {
+        return otrManager.isClosed();
+    }
+
+    @Override
+    public byte[] downloadProfilePicture(String assetKey) throws IOException {
+        return jerseyClient.downloadAsset(assetKey, null);
+    }
+
+    @Override
+    public void close() throws IOException {
+        otrManager.close();
+    }
+
+    /**
+     * Encrypt whole message for participants in the conversation. Implements the fallback for the 412 error code and missing
+     * devices.
+     *
+     * @param generic generic message to be sent
+     * @throws Exception
+     */
     private void postGenericMessage(IGeneric generic) throws Exception {
         OtrMessage msg = new OtrMessage(clientId, generic.createGenericMsg().toByteArray());
 
         // Try to encrypt the msg for those devices that we have the session already
-        otrManager.encrypt(devices, msg);
+        otrManager.encrypt(getDevices(), msg);
 
         Devices res = jerseyClient.sendMessage(msg);
         if (!res.hasMissing()) {
@@ -171,7 +235,8 @@ class BotClient implements WireClient {
             // Encrypt msg for those devices that were missing. This time using preKeys
             otrManager.encrypt(preKeys, msg);
 
-            // todo: update this.devices here
+            // reset devices so they could be pulled next time
+            devices = null;
 
             res = jerseyClient.sendMessage(msg, true);
             if (!res.hasMissing()) {
@@ -189,8 +254,12 @@ class BotClient implements WireClient {
      * @return List of all participants in this conversation and their clientIds
      */
     private Devices getDevices() {
+        if (devices != null)
+            return devices;
+
         try {
-            return jerseyClient.sendMessage(new OtrMessage(clientId));
+            devices = jerseyClient.sendMessage(new OtrMessage(clientId));
+            return devices;
         } catch (IOException e) {
             Logger.error(e.getMessage());
             return new Devices();

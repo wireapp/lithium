@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <bot.version>0.3.2</bot.version>
+        <bot.version>0.3.3</bot.version>
         <cryptobox.version>0.8.2</cryptobox.version>
-        <dropwizard.version>1.0.3</dropwizard.version>
+        <dropwizard.version>1.0.6</dropwizard.version>
     </properties>
 
     <groupId>com.wire.bots</groupId>
@@ -77,7 +77,6 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.7</version>
                 <configuration>
-                    <!-- specify UTF-8, ISO-8859-1 or any other file encoding -->
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>

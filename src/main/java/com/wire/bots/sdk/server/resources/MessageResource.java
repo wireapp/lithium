@@ -20,30 +20,28 @@ package com.wire.bots.sdk.server.resources;
 
 import com.waz.model.Messages;
 import com.wire.bots.sdk.*;
+import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.GenericMessageProcessor;
 import com.wire.bots.sdk.server.model.InboundMessage;
-import com.wire.cryptobox.CryptoException;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.File;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.Collections;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/bots/{bot}/messages")
 public class MessageResource {
     private final MessageHandlerBase handler;
-    private final WireClientFactory factory;
     private final Configuration conf;
-    private final ConcurrentHashMap<String, OtrManager> otr = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, WireClient> clients = new ConcurrentHashMap<>();
+    private final ClientRepo repo;
 
-    public MessageResource(MessageHandlerBase handler, WireClientFactory factory, Configuration conf) {
+    public MessageResource(MessageHandlerBase handler, Configuration conf, ClientRepo repo) {
         this.handler = handler;
-        this.factory = factory;
         this.conf = conf;
+        this.repo = repo;
     }
 
     @POST
@@ -51,38 +49,27 @@ public class MessageResource {
                                @PathParam("bot") String botId,
                                InboundMessage inbound) throws Exception {
 
-        //ObjectMapper mapper = new ObjectMapper();
-        //Logger.info(mapper.writeValueAsString(inbound));
-
         if (!conf.getAuth().equals(auth))
             return Response.
                     ok().
                     status(403).
                     build();
 
-        String path = String.format("%s/%s", conf.getCryptoDir(), botId);
-
-        String clientId = Util.readLine(new File(path + "/client.id"));
-        String token = Util.readLine(new File(path + "/token.id"));
+        WireClient client = repo.getWireClient(botId, inbound.conversation);
 
         InboundMessage.Data data = inbound.data;
-
-        OtrManager otrManager = getOtrManager(path);
-
-        WireClient client = getWireClient(botId, inbound, clientId, token, otrManager);
-
         switch (inbound.type) {
             case "conversation.otr-message-add": {
                 GenericMessageProcessor processor = new GenericMessageProcessor(client, handler);
 
-                byte[] bytes = otrManager.decrypt(inbound.from, data.sender, data.text);
+                byte[] bytes = client.decrypt(inbound.from, data.sender, data.text);
                 Messages.GenericMessage genericMessage = Messages.GenericMessage.parseFrom(bytes);
 
                 sendDeliveryReceipt(client, genericMessage.getMessageId());
 
                 handler.onEvent(client, inbound.from, genericMessage);
 
-                boolean b = processor.process(inbound.from, genericMessage);
+                processor.process(inbound.from, genericMessage);
             }
             break;
             case "conversation.member-join": {
@@ -93,7 +80,16 @@ public class MessageResource {
                     handler.onNewConversation(client);
                 }
 
-                if (!data.userIds.isEmpty()) {
+                int minAvailable = 8 * data.userIds.size();
+                if (minAvailable > 0) {
+                    ArrayList<Integer> availablePrekeys = client.getAvailablePrekeys();
+                    availablePrekeys.remove(new Integer(65535));  //remove last prekey
+                    if (availablePrekeys.size() < minAvailable) {
+                        Integer lastKeyOffset = Collections.max(availablePrekeys);
+                        ArrayList<PreKey> keys = client.newPreKeys(lastKeyOffset + 1, minAvailable);
+                        client.uploadPreKeys(keys);
+                        Logger.info("Uploaded " + keys.size() + " prekeys");
+                    }
                     handler.onMemberJoin(client, data.userIds);
                 }
             }
@@ -103,10 +99,7 @@ public class MessageResource {
 
                 // Check if this bot got removed from the conversation
                 if (data.userIds.remove(botId)) {
-                    otrManager.close();
-                    otr.remove(path);
-                    //FileUtils.deleteDirectory(new File(path));
-
+                    repo.removeClient(botId);
                     handler.onBotRemoved(botId);
                 }
 
@@ -119,12 +112,12 @@ public class MessageResource {
             case "conversation.otr-asset-add": {
                 GenericMessageProcessor processor = new GenericMessageProcessor(client, handler);
 
-                byte[] bytes = otrManager.decrypt(inbound.from, data.sender, data.key);
+                byte[] bytes = client.decrypt(inbound.from, data.sender, data.key);
                 Messages.GenericMessage genericMessage = Messages.GenericMessage.parseFrom(bytes);
 
                 handler.onEvent(client, inbound.from, genericMessage);
 
-                boolean b = processor.process(inbound.from, inbound.data.id, genericMessage);
+                processor.process(inbound.from, inbound.data.id, genericMessage);
             }
             break;
             case "user.connection": {
@@ -152,23 +145,5 @@ public class MessageResource {
         } catch (Exception e) {
             Logger.warning("sendDeliveryReceipt: " + e.getMessage());
         }
-    }
-
-    private WireClient getWireClient(String botId, InboundMessage inbound, String clientId, String token, OtrManager otrManager) {
-        WireClient wireClient = clients.get(botId);
-        if (wireClient == null) {
-            wireClient = factory.createClient(otrManager, botId, inbound.conversation, clientId, token);
-            clients.put(botId, wireClient);
-        }
-        return wireClient;
-    }
-
-    private OtrManager getOtrManager(String path) throws CryptoException {
-        OtrManager otrManager = otr.get(path);
-        if (otrManager == null) {
-            otrManager = new OtrManager(path);
-            otr.put(path, otrManager);
-        }
-        return otrManager;
     }
 }

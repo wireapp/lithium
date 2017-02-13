@@ -18,11 +18,7 @@
 
 package com.wire.bots.sdk.server.resources;
 
-import com.wire.bots.sdk.Configuration;
-import com.wire.bots.sdk.MessageHandlerBase;
-import com.wire.bots.sdk.OtrManager;
-import com.wire.bots.sdk.Util;
-import com.wire.bots.sdk.models.otr.PreKey;
+import com.wire.bots.sdk.*;
 import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.server.model.NewBotResponseModel;
 
@@ -30,26 +26,25 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
-import java.util.Base64;
+import java.util.ArrayList;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/bots")
 public class BotsResource {
-    private MessageHandlerBase handler;
-    private Configuration conf;
+    private final MessageHandlerBase handler;
+    private final Configuration conf;
+    private final ClientRepo repo;
 
-    public BotsResource(MessageHandlerBase handler, Configuration conf) {
+    public BotsResource(MessageHandlerBase handler, Configuration conf, ClientRepo repo) {
         this.handler = handler;
         this.conf = conf;
+        this.repo = repo;
     }
 
     @POST
     public Response newBot(@HeaderParam("Authorization") String auth, NewBot newBot) throws Exception {
-        //ObjectMapper mapper = new ObjectMapper();
-        //Logger.info(mapper.writeValueAsString(newBot));
-
-        if (!conf.getAuth().equalsIgnoreCase(auth))
+        if (!conf.getAuth().equals(auth))
             return Response.
                     ok().
                     status(403).
@@ -65,51 +60,41 @@ public class BotsResource {
 
         Util.writeLine(newBot.client, new File(path + "/client.id"));
         Util.writeLine(newBot.token, new File(path + "/token.id"));
+        Util.writeLine(newBot.conversation.id, new File(path + "/conversation.id"));
 
-        try (OtrManager otrManager = new OtrManager(path)) {
-            NewBotResponseModel ret = new NewBotResponseModel();
-            ret.name = handler.getName();
-            ret.accentId = handler.getAccentColour();
-            String profilePreview = handler.getSmallProfilePicture();
-            if (profilePreview != null) {
-                NewBotResponseModel.Asset asset = new NewBotResponseModel.Asset();
-                asset.key = profilePreview;
-                asset.type = "image";
-                asset.size = "preview";
-                ret.assets.add(asset);
-            }
+        NewBotResponseModel ret = new NewBotResponseModel();
+        ret.name = handler.getName();
+        ret.accentId = handler.getAccentColour();
+        String profilePreview = handler.getSmallProfilePicture();
+        if (profilePreview != null) {
+            NewBotResponseModel.Asset asset = new NewBotResponseModel.Asset();
+            asset.key = profilePreview;
+            asset.type = "image";
+            asset.size = "preview";
 
-            String profileBig = handler.getBigProfilePicture();
-            if (profileBig != null) {
-                NewBotResponseModel.Asset asset = new NewBotResponseModel.Asset();
-                asset.key = profileBig;
-                asset.type = "image";
-                asset.size = "complete";
-                ret.assets.add(asset);
-            }
-
-            com.wire.cryptobox.PreKey pk = otrManager.newLastPreKey();
-            ret.lastPreKey = new PreKey();
-            ret.lastPreKey.id = pk.id;
-            ret.lastPreKey.key = Base64.getEncoder().encodeToString(pk.data);
-            for (int i = 0; i < newBot.conversation.members.size(); i++) {
-                com.wire.cryptobox.PreKey[] preKeys = otrManager.newPreKeys(i * 8, 8);
-                for (com.wire.cryptobox.PreKey k : preKeys) {
-                    PreKey prekey = new PreKey();
-                    prekey.id = k.id;
-                    prekey.key = Base64.getEncoder().encodeToString(k.data);
-                    ret.preKeys.add(prekey);
-                }
-            }
-
-            Response build = Response.
-                    ok(ret).
-                    status(201).
-                    build();
-
-            //Logger.info(mapper.writeValueAsString(ret));
-
-            return build;
+            if (ret.assets == null)
+                ret.assets = new ArrayList<>();
+            ret.assets.add(asset);
         }
+
+        String profileBig = handler.getBigProfilePicture();
+        if (profileBig != null) {
+            NewBotResponseModel.Asset asset = new NewBotResponseModel.Asset();
+            asset.key = profileBig;
+            asset.type = "image";
+            asset.size = "complete";
+            if (ret.assets == null)
+                ret.assets = new ArrayList<>();
+            ret.assets.add(asset);
+        }
+
+        WireClient client = repo.getWireClient(newBot.id, newBot.conversation.id);
+        ret.lastPreKey = client.newLastPreKey();
+        ret.preKeys = client.newPreKeys(0, newBot.conversation.members.size() * 8);
+
+        return Response.
+                ok(ret).
+                status(201).
+                build();
     }
 }

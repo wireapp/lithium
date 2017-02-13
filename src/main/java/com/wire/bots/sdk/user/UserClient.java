@@ -30,12 +30,15 @@ import com.wire.bots.sdk.models.otr.OtrMessage;
 import com.wire.bots.sdk.models.otr.PreKeys;
 import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.User;
+import com.wire.cryptobox.CryptoException;
+import com.wire.cryptobox.PreKey;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 
 public class UserClient implements WireClient {
@@ -198,5 +201,60 @@ public class UserClient implements WireClient {
             Logger.error(e.getMessage());
             return new Devices();
         }
+    }
+
+    @Override
+    public void close() throws IOException {
+        otrManager.close();
+    }
+
+    @Override
+    public byte[] decrypt(String userId, String clientId, String cypher) throws CryptoException {
+        return otrManager.decrypt(userId, clientId, cypher);
+    }
+
+    @Override
+    public com.wire.bots.sdk.models.otr.PreKey newLastPreKey() throws CryptoException {
+        PreKey preKey = otrManager.newLastPreKey();
+
+        com.wire.bots.sdk.models.otr.PreKey key = new com.wire.bots.sdk.models.otr.PreKey();
+        key.id = preKey.id;
+        key.key = Base64.getEncoder().encodeToString(preKey.data);
+
+        return key;
+    }
+
+    @Override
+    public ArrayList<com.wire.bots.sdk.models.otr.PreKey> newPreKeys(int from, int count) throws CryptoException {
+        ArrayList<com.wire.bots.sdk.models.otr.PreKey> ret = new ArrayList<>(count);
+
+        com.wire.cryptobox.PreKey[] preKeys = otrManager.newPreKeys(from, count);
+        for (com.wire.cryptobox.PreKey k : preKeys) {
+            com.wire.bots.sdk.models.otr.PreKey prekey = new com.wire.bots.sdk.models.otr.PreKey();
+            prekey.id = k.id;
+            prekey.key = Base64.getEncoder().encodeToString(k.data);
+            ret.add(prekey);
+        }
+        return ret;
+    }
+
+    @Override
+    public void uploadPreKeys(ArrayList<com.wire.bots.sdk.models.otr.PreKey> preKeys) throws IOException {
+        jerseyClient.uploadPreKeys(preKeys);
+    }
+
+    @Override
+    public ArrayList<Integer> getAvailablePrekeys() {
+        return jerseyClient.getAvailablePrekeys(clientId);
+    }
+
+    @Override
+    public boolean isClosed() {
+        return otrManager.isClosed();
+    }
+
+    @Override
+    public byte[] downloadProfilePicture(String assetKey) throws IOException {
+        return jerseyClient.downloadAsset(assetKey, null);
     }
 }

@@ -18,6 +18,7 @@
 
 package com.wire.bots.sdk;
 
+import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.health.HealthCheck;
@@ -25,9 +26,13 @@ import com.wire.bots.sdk.server.resources.BotsResource;
 import com.wire.bots.sdk.server.resources.MessageResource;
 import com.wire.bots.sdk.server.resources.ProviderResource;
 import com.wire.bots.sdk.server.resources.StatusResource;
-import com.wire.bots.sdk.server.tasks.BroadCastTask;
+import com.wire.bots.sdk.server.tasks.AvailablePrekeysTask;
+import com.wire.bots.sdk.server.tasks.BroadcastAllTask;
+import com.wire.bots.sdk.server.tasks.BroadcastTask;
+import com.wire.bots.sdk.server.tasks.ConversationTask;
 import com.wire.bots.sdk.user.Endpoint;
 import com.wire.bots.sdk.user.UserClient;
+import com.wire.cryptobox.CryptoException;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.servlets.tasks.Task;
@@ -40,16 +45,22 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Entry point for your Application
+ *
  * @param <Config>
  */
 public abstract class Server<Config extends Configuration> extends Application<Config> {
+    protected ClientRepo repo;
+    protected Config config;
+    protected Environment environment;
 
     /**
      * This method is called once by the sdk in order to create the main message handler
+     *
      * @param config Configuration object (yaml)
+     * @param env    Environment object
      * @return Instance of your class that implements {@see @MessageHandlerBase}
      */
-    protected abstract MessageHandlerBase createHandler(Config config);
+    protected abstract MessageHandlerBase createHandler(Config config, Environment env);
 
     /**
      * Override this method in case you need to add custom Resource and/or Task {@link #addResource(Object, io.dropwizard.setup.Environment)}
@@ -67,29 +78,37 @@ public abstract class Server<Config extends Configuration> extends Application<C
     }
 
     @Override
-    public void run(Config config, Environment env) throws Exception {
-        MessageHandlerBase handler = createHandler(config);
+    public void run(final Config config, Environment env) throws Exception {
+        this.config = config;
+        this.environment = env;
+
+        MessageHandlerBase handler = createHandler(config, env);
 
         initTelemetry(config, env);
 
         checkCrypto(config, env);
-        checkJCEPolicy(config, env);
+        checkJCEPolicy(env);
 
         WireClientFactory factory = new WireClientFactory() {
             @Override
-            public WireClient createClient(OtrManager otrManager, String botId, String convId, String clientId, String token) {
+            public WireClient createClient(String botId, String convId, String clientId, String token) throws CryptoException {
+                String path = String.format("%s/%s", config.getCryptoDir(), botId);
+                OtrManager otrManager = new OtrManager(path);
                 return new BotClient(otrManager, botId, convId, clientId, token);
             }
         };
 
-        MessageResource messageResource = new MessageResource(handler, factory, config);
+        repo = new ClientRepo(factory, config);
 
         addResource(new StatusResource(), env);
-        addResource(new BotsResource(handler, config), env);
-        addResource(messageResource, env);
+        addResource(new BotsResource(handler, config, repo), env);
+        addResource(new MessageResource(handler, config, repo), env);
         addResource(new ProviderResource(config), env);
 
-        addTask(new BroadCastTask(config, factory), env);
+        addTask(new BroadcastTask(config, repo), env);
+        addTask(new BroadcastAllTask(config, repo), env);
+        addTask(new ConversationTask(repo), env);
+        addTask(new AvailablePrekeysTask(repo), env);
 
         onRun(config, env);
 
@@ -97,12 +116,16 @@ public abstract class Server<Config extends Configuration> extends Application<C
         String password = System.getProperty("password");
 
         if (email != null && password != null) {
-            MessageResource msgRes = new MessageResource(handler, new WireClientFactory() {
+            WireClientFactory userClientFactory = new WireClientFactory() {
                 @Override
-                public WireClient createClient(OtrManager otrManager, String botId, String convId, String clientId, String token) {
+                public WireClient createClient(String botId, String convId, String clientId, String token) throws CryptoException {
+                    String path = String.format("%s/%s", config.getCryptoDir(), botId);
+                    OtrManager otrManager = new OtrManager(path);
                     return new UserClient(otrManager, botId, convId, clientId, token);
                 }
-            }, config);
+            };
+            ClientRepo userRepo = new ClientRepo(userClientFactory, config);
+            MessageResource msgRes = new MessageResource(handler, config, userRepo);
 
             Endpoint ep = new Endpoint(config, msgRes);
             ep.signIn(email, password);
@@ -155,6 +178,12 @@ public abstract class Server<Config extends Configuration> extends Application<C
                 .convertDurationsTo(TimeUnit.MILLISECONDS)
                 .build();
         jmxReporter.start();
+
+        ConsoleReporter consoleReporter = ConsoleReporter.forRegistry(env.metrics())
+                .convertRatesTo(TimeUnit.SECONDS)
+                .convertDurationsTo(TimeUnit.MILLISECONDS)
+                .build();
+        consoleReporter.start(60, TimeUnit.MINUTES);
     }
 
     private void checkCrypto(final Config config, Environment env) {
@@ -168,7 +197,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
         });
     }
 
-    private void checkJCEPolicy(final Config config, Environment env) {
+    private void checkJCEPolicy(Environment env) {
         env.healthChecks().register("JCEPolicy", new HealthCheck() {
             @Override
             protected Result check() throws Exception {
@@ -180,7 +209,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
                 random.nextBytes(otrKey);
                 random.nextBytes(iv);
                 random.nextBytes(data);
-                byte[] encBytes = Util.encrypt(otrKey, data, iv);
+                Util.encrypt(otrKey, data, iv);
                 return Result.healthy();
             }
         });

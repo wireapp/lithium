@@ -18,6 +18,18 @@
 
 package com.wire.bots.sdk;
 
+import com.wire.cryptobox.CryptoException;
+
 public interface WireClientFactory {
-    WireClient createClient(OtrManager otrManager, String botId, String conversationId, String clientId, String token);
+    /**
+     * Create one thread safe client object that can be used to post messages into conversation
+     *
+     * @param botId          Bot ID. Unique UUID per conversation
+     * @param conversationId Conversation ID
+     * @param clientId       Unique client ID for this bot
+     * @param token          Life time token
+     * @return New instance of Wire Client class
+     * @throws CryptoException
+     */
+    WireClient createClient(String botId, String conversationId, String clientId, String token) throws CryptoException;
 }

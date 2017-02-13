@@ -18,96 +18,53 @@
 
 package com.wire.bots.sdk.server.tasks;
 
-import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMultimap;
+import com.wire.bots.sdk.ClientRepo;
 import com.wire.bots.sdk.Configuration;
 import com.wire.bots.sdk.Logger;
-import com.wire.bots.sdk.OtrManager;
-import com.wire.bots.sdk.Util;
 import com.wire.bots.sdk.WireClient;
-import com.wire.bots.sdk.WireClientFactory;
-import io.dropwizard.servlets.tasks.Task;
 
-import java.io.File;
 import java.io.PrintWriter;
 
-public class BroadCastTask extends Task {
+/**
+ * Task class that will send text for one particular botId (one conversation)
+ * Usage:
+ * curl -X POST http://localhost:8051/tasks/broadcast --data  "bot=$BOTID&text=Hello"
+ * You need to exec this task against your `admin port`
+ * For more on dropwizard tasks check out: http://www.dropwizard.io/1.0.5/docs/manual/core.html#tasks
+ */
+public class BroadcastTask extends TaskBase {
     protected final Configuration conf;
-    protected final WireClientFactory factory;
-    protected PrintWriter output;
+    protected final ClientRepo repo;
 
-    public BroadCastTask(Configuration conf, WireClientFactory factory) {
+    public BroadcastTask(Configuration conf, ClientRepo repo) {
         super("broadcast");
         this.conf = conf;
-        this.factory = factory;
-    }
-
-    protected void send(WireClient client, ImmutableMultimap<String, String> parameters) {
-        try {
-            String text = extractString(parameters, "text");
-            if (!text.isEmpty()) {
-                client.sendText(text);
-
-                output.printf("Bot %s sent some text\n", client.getId());
-            } else {
-                output.println("Are you missing `text` param?");
-            }
-        } catch (Exception e) {
-            output.print(e.getMessage());
-            Logger.error(e.getMessage());
-        }
+        this.repo = repo;
     }
 
     @Override
-    public void execute(ImmutableMultimap<String, String> parameters, PrintWriter printWriter) throws Exception {
-        this.output = new PrintWriter(printWriter, true);
-        String bot = extractString(parameters, "bot");
-        if (bot.isEmpty()) {
+    public void execute(ImmutableMultimap<String, String> parameters, PrintWriter output) throws Exception {
+        String botId = extractString(parameters, "bot");
+        if (botId.isEmpty()) {
             output.println("Missing bot parameter");
             return;
         }
 
-        String path = String.format("%s/%s", conf.getCryptoDir(), bot);
+        String text = extractString(parameters, "text");
 
-        try (OtrManager otrManager = new OtrManager(path)) {
+        if (text.isEmpty()) {
+            output.println("Are you missing `text` param?");
+            return;
+        }
 
-            String clientId = Util.readLine(new File(path + "/client.id"));
-            String token = Util.readLine(new File(path + "/token.id"));
-
-            WireClient client = factory.createClient(otrManager, bot, bot, clientId, token);
-
-            send(client, parameters);
+        try {
+            WireClient client = repo.getWireClient(botId);
+            client.sendText(text);
+            output.printf("Bot %s sent some text\n", client.getId());
         } catch (Exception e) {
             Logger.error(e.getMessage());
             output.println(e.getMessage());
         }
-    }
-
-    protected static int extract(ImmutableMultimap<String, String> parameters, String name) {
-        return extract(parameters, name, 0);
-    }
-
-    protected static int extract(ImmutableMultimap<String, String> parameters, String name, int def) {
-        int val = def;
-        ImmutableCollection<String> usr = parameters.get(name);
-        if (!usr.isEmpty()) {
-            String id = usr.asList().get(0);
-            val = Integer.parseInt(id);
-        }
-
-        return val;
-    }
-
-    protected static String extractString(ImmutableMultimap<String, String> parameters, String name, String def) {
-        ImmutableCollection<String> usr = parameters.get(name);
-        if (!usr.isEmpty()) {
-            return usr.asList().get(0);
-        }
-
-        return def;
-    }
-
-    protected static String extractString(ImmutableMultimap<String, String> parameters, String name) {
-        return extractString(parameters, name, "");
     }
 }
