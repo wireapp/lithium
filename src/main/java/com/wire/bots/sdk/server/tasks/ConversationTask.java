@@ -10,12 +10,6 @@ import com.wire.bots.sdk.server.model.Conversation;
 
 import java.io.PrintWriter;
 
-/**
- * Created with IntelliJ IDEA.
- * User: dejankovacevic
- * Date: 03/02/17
- * Time: 15:24
- */
 public class ConversationTask extends TaskBase {
     private final ClientRepo repo;
 

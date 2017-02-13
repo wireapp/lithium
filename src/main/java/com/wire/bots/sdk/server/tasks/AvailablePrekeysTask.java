@@ -10,12 +10,6 @@ import com.wire.bots.sdk.WireClient;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-/**
- * Created with IntelliJ IDEA.
- * User: dejankovacevic
- * Date: 03/02/17
- * Time: 15:24
- */
 public class AvailablePrekeysTask extends TaskBase {
     private final ClientRepo repo;
 
