@@ -26,6 +26,9 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.UUID;
@@ -44,16 +47,34 @@ public class Picture implements IGeneric, IAsset {
     private byte[] sha256Bytes;
     private String assetKey;
     private String assetToken;
+    private boolean isPublic;
+    private String retention = "volatile";
 
     public Picture(byte[] bytes, String mime) throws IOException {
         imageData = bytes;
         mimeType = mime;
-        BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageData));
-        width = bufferedImage.getWidth();
-        height = bufferedImage.getHeight();
-        size = imageData.length;
+        try (InputStream input = new ByteArrayInputStream(imageData)) {
+            BufferedImage bufferedImage = ImageIO.read(input);
+            width = bufferedImage.getWidth();
+            height = bufferedImage.getHeight();
+            size = imageData.length;
+        }
     }
 
+    public Picture(String url) throws IOException {
+        try (InputStream input = new URL(url).openStream()) {
+            imageData = Util.toByteArray(input);
+            size = imageData.length;
+        }
+        try (ByteArrayInputStream input = new ByteArrayInputStream(imageData)) {
+            BufferedImage bufferedImage = ImageIO.read(input);
+            width = bufferedImage.getWidth();
+            height = bufferedImage.getHeight();
+        }
+        try (ByteArrayInputStream input = new ByteArrayInputStream(imageData)) {
+            mimeType = URLConnection.guessContentTypeFromStream(input);
+        }
+    }
 
     @Override
     public String getMimeType() {
@@ -62,7 +83,7 @@ public class Picture implements IGeneric, IAsset {
 
     @Override
     public String getRetention() {
-        return "volatile";
+        return retention;
     }
 
     @Override
@@ -79,7 +100,7 @@ public class Picture implements IGeneric, IAsset {
         Messages.Asset.Original.Builder original = Messages.Asset.Original.newBuilder()
                 .setSize(size)
                 .setMimeType(mimeType)
-                .setImage(metaData.build());
+                .setImage(metaData);
 
         Messages.Asset.RemoteData.Builder remoteData = Messages.Asset.RemoteData.newBuilder()
                 .setAssetId(assetKey)
@@ -90,12 +111,12 @@ public class Picture implements IGeneric, IAsset {
             remoteData.setAssetToken(assetToken);
 
         Messages.Asset.Builder asset = Messages.Asset.newBuilder()
-                .setUploaded(remoteData.build())
-                .setOriginal(original.build());
+                .setUploaded(remoteData)
+                .setOriginal(original);
 
         return Messages.GenericMessage.newBuilder()
                 .setMessageId(UUID.randomUUID().toString())
-                .setAsset(asset.build())
+                .setAsset(asset)
                 .build();
     }
 
@@ -118,7 +139,7 @@ public class Picture implements IGeneric, IAsset {
 
     @Override
     public boolean isPublic() {
-        return false;
+        return isPublic;
     }
 
     public int getWidth() {
@@ -141,4 +162,11 @@ public class Picture implements IGeneric, IAsset {
         this.assetToken = assetToken;
     }
 
+    public void setPublic(boolean isPublic) {
+        this.isPublic = isPublic;
+    }
+
+    public void setRetention(String retention) {
+        this.retention = retention;
+    }
 }

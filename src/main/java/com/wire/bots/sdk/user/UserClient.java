@@ -68,20 +68,29 @@ public class UserClient implements WireClient {
         postGenericMessage(new Text(txt, expires));
     }
 
-
     @Override
-    public void sendLinkPreview(String url, String title) throws Exception {
-        postGenericMessage(new LinkPreview(url, title));
+    public void sendLinkPreview(String url, String title, IGeneric image) throws Exception {
+        postGenericMessage(new LinkPreview(url, title, image.createGenericMsg().getAsset()));
     }
 
     @Override
     public void sendPicture(byte[] bytes, String mimeType) throws Exception {
         Picture image = new Picture(bytes, mimeType);
 
-        AssetKey assetKey = jerseyClient.uploadAsset(image);
+        AssetKey assetKey = uploadAsset(image);
         image.setAssetKey(assetKey.key);
         image.setAssetToken(assetKey.token);
 
+        postGenericMessage(image);
+    }
+
+    @Override
+    public AssetKey uploadAsset(IAsset asset) throws Exception {
+        return jerseyClient.uploadAsset(asset);
+    }
+
+    @Override
+    public void sendPicture(IGeneric image) throws Exception {
         postGenericMessage(image);
     }
 

@@ -28,7 +28,6 @@ import com.wire.bots.sdk.server.resources.ProviderResource;
 import com.wire.bots.sdk.server.resources.StatusResource;
 import com.wire.bots.sdk.server.tasks.AvailablePrekeysTask;
 import com.wire.bots.sdk.server.tasks.BroadcastAllTask;
-import com.wire.bots.sdk.server.tasks.BroadcastTask;
 import com.wire.bots.sdk.server.tasks.ConversationTask;
 import com.wire.bots.sdk.user.Endpoint;
 import com.wire.bots.sdk.user.UserClient;
@@ -75,6 +74,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
     @Override
     public void initialize(Bootstrap<Config> configBootstrap) {
         configBootstrap.addBundle(new AssetsBundle("/diagnosis/", "/diagnosis/"));
+        configBootstrap.addBundle(new AssetsBundle());
     }
 
     @Override
@@ -105,7 +105,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
         addResource(new MessageResource(handler, config, repo), env);
         addResource(new ProviderResource(config), env);
 
-        addTask(new BroadcastTask(config, repo), env);
         addTask(new BroadcastAllTask(config, repo), env);
         addTask(new ConversationTask(repo), env);
         addTask(new AvailablePrekeysTask(repo), env);

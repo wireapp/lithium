@@ -65,11 +65,12 @@ public class MessageResource {
                 byte[] bytes = client.decrypt(inbound.from, data.sender, data.text);
                 Messages.GenericMessage genericMessage = Messages.GenericMessage.parseFrom(bytes);
 
-                sendDeliveryReceipt(client, genericMessage.getMessageId());
-
                 handler.onEvent(client, inbound.from, genericMessage);
 
-                processor.process(inbound.from, genericMessage);
+                boolean processed = processor.process(inbound.from, genericMessage);
+                if (processed) {
+                    sendDeliveryReceipt(client, genericMessage.getMessageId());
+                }
             }
             break;
             case "conversation.member-join": {
