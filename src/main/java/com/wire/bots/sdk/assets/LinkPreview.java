@@ -18,32 +18,39 @@
 
 package com.wire.bots.sdk.assets;
 
-import java.util.UUID;
-
 import com.waz.model.Messages;
+
+import java.util.UUID;
 
 public class LinkPreview implements IGeneric {
 
     private final String url;
     private final String title;
+    private final Messages.Asset img;
 
-    public LinkPreview(String url, String title) {
+    public LinkPreview(String url, String title, Messages.Asset img) {
         this.url = url;
         this.title = title;
+        this.img = img;
     }
 
     @Override
     public Messages.GenericMessage createGenericMsg() throws Exception {
+        // Legacy todo: remove it!
         Messages.Article article = Messages.Article.newBuilder()
                 .setTitle(title)
                 .setPermanentUrl(url)
+                .setImage(img)
                 .build();
+        // Legacy
 
-        Messages.LinkPreview linkPreview = Messages.LinkPreview.newBuilder()
+        Messages.LinkPreview.Builder linkPreview = Messages.LinkPreview.newBuilder()
                 .setUrl(url)
                 .setUrlOffset(0)
-                .setArticle(article)
-                .build();
+                .setImage(img)
+                .setPermanentUrl(url)
+                .setTitle(title)
+                .setArticle(article);
 
         Messages.Text.Builder text = Messages.Text.newBuilder()
                 .setContent(url)

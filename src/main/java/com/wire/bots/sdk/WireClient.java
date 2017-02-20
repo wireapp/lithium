@@ -18,6 +18,9 @@
 
 package com.wire.bots.sdk;
 
+import com.wire.bots.sdk.assets.IAsset;
+import com.wire.bots.sdk.assets.IGeneric;
+import com.wire.bots.sdk.models.AssetKey;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.User;
@@ -53,11 +56,12 @@ public interface WireClient extends Closeable {
     /**
      * Post url with preview into the conversation
      *
-     * @param url   Url
-     * @param title Title of this page
+     * @param url   Original url
+     * @param title Page title (see og:title)
+     * @param image Page preview image (og:image). Image must be previously uploaded
      * @throws Exception
      */
-    void sendLinkPreview(String url, String title) throws Exception;
+    void sendLinkPreview(String url, String title, IGeneric image) throws Exception;
 
     /**
      * Post picture
@@ -67,6 +71,14 @@ public interface WireClient extends Closeable {
      * @throws Exception
      */
     void sendPicture(byte[] bytes, String mimeType) throws Exception;
+
+    /**
+     * Post previously uploaded picture
+     *
+     * @param image Image that has been previously uploaded (@see uploadAsset)
+     * @throws Exception
+     */
+    void sendPicture(IGeneric image) throws Exception;
 
     /**
      * Post audio file
@@ -203,5 +215,22 @@ public interface WireClient extends Closeable {
      */
     boolean isClosed();
 
+    /**
+     * Download publicly available profile picture for the given asset key. This asset is not encrypted
+     *
+     * @param assetKey Asset key
+     * @return Profile picture binary data
+     * @throws IOException
+     */
     byte[] downloadProfilePicture(String assetKey) throws IOException;
+
+    /**
+     * Uploads assert to backend. This method is used in conjunction with sendPicture(IGeneric)
+     *
+     * @param asset Asset to be uploaded
+     * @return Assert Key and Asset token in case of private assets
+     * @throws Exception
+     */
+    AssetKey uploadAsset(IAsset asset) throws Exception;
+
 }

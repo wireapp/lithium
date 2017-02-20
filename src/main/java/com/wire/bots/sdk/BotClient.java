@@ -66,18 +66,23 @@ class BotClient implements WireClient {
     }
 
     @Override
-    public void sendLinkPreview(String url, String title) throws Exception {
-        postGenericMessage(new LinkPreview(url, title));
+    public void sendLinkPreview(String url, String title, IGeneric image) throws Exception {
+        postGenericMessage(new LinkPreview(url, title, image.createGenericMsg().getAsset()));
     }
 
     @Override
     public void sendPicture(byte[] bytes, String mimeType) throws Exception {
         Picture image = new Picture(bytes, mimeType);
 
-        AssetKey assetKey = jerseyClient.uploadAsset(image);
+        AssetKey assetKey = uploadAsset(image);
         image.setAssetKey(assetKey.key);
         image.setAssetToken(assetKey.token);
 
+        postGenericMessage(image);
+    }
+
+    @Override
+    public void sendPicture(IGeneric image) throws Exception {
         postGenericMessage(image);
     }
 
@@ -88,7 +93,7 @@ class BotClient implements WireClient {
 
         postGenericMessage(preview);
 
-        AssetKey assetKey = jerseyClient.uploadAsset(audioAsset);
+        AssetKey assetKey = uploadAsset(audioAsset);
         audioAsset.setAssetKey(assetKey.key);
         audioAsset.setAssetToken(assetKey.token);
 
@@ -105,7 +110,7 @@ class BotClient implements WireClient {
         postGenericMessage(preview);
 
         // upload asset to backend
-        AssetKey assetKey = jerseyClient.uploadAsset(asset);
+        AssetKey assetKey = uploadAsset(asset);
         asset.setAssetKey(assetKey.key);
         asset.setAssetToken(assetKey.token);
 
@@ -212,6 +217,11 @@ class BotClient implements WireClient {
     @Override
     public void close() throws IOException {
         otrManager.close();
+    }
+
+    @Override
+    public AssetKey uploadAsset(IAsset asset) throws Exception {
+        return jerseyClient.uploadAsset(asset);
     }
 
     /**
