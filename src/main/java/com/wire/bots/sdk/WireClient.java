@@ -108,6 +108,8 @@ public interface WireClient extends Closeable {
      */
     void sendDelivery(String msgId) throws Exception;
 
+    void sendReaction(String msgId, String emoji) throws Exception;
+
     /**
      * This method downloads asset from the Backend.
      *

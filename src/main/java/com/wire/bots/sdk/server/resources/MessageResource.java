@@ -74,7 +74,7 @@ public class MessageResource {
             }
             break;
             case "conversation.member-join": {
-                Logger.info("conversation.member-join: " + String.join(",", data.userIds));
+                Logger.info("conversation.member-join: bot: " + botId + " users: " + String.join(",", data.userIds));
 
                 // Check if this bot got added to the conversation
                 if (data.userIds.remove(botId)) {
@@ -96,7 +96,7 @@ public class MessageResource {
             }
             break;
             case "conversation.member-leave": {
-                Logger.info("conversation.member-leave: " + String.join(",", data.userIds));
+                Logger.info("conversation.member-leave: bot: " + botId + " users: " + String.join(",", data.userIds));
 
                 // Check if this bot got removed from the conversation
                 if (data.userIds.remove(botId)) {

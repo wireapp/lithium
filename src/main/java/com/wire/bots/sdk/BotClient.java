@@ -130,6 +130,11 @@ class BotClient implements WireClient {
     }
 
     @Override
+    public void sendReaction(String msgId, String emoji) throws Exception {
+        postGenericMessage(new Reaction(msgId, emoji));
+    }
+
+    @Override
     public String getId() {
         return botId;
     }
@@ -263,16 +268,10 @@ class BotClient implements WireClient {
      *
      * @return List of all participants in this conversation and their clientIds
      */
-    private Devices getDevices() {
+    private Devices getDevices() throws IOException {
         if (devices != null)
             return devices;
 
-        try {
-            devices = jerseyClient.sendMessage(new OtrMessage(clientId));
-            return devices;
-        } catch (IOException e) {
-            Logger.error(e.getMessage());
-            return new Devices();
-        }
+        return jerseyClient.sendMessage(new OtrMessage(clientId));
     }
 }
