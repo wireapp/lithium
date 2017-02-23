@@ -82,8 +82,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
         this.config = config;
         this.environment = env;
 
-        MessageHandlerBase handler = createHandler(config, env);
-
         initTelemetry(config, env);
 
         checkCrypto(config, env);
@@ -99,6 +97,8 @@ public abstract class Server<Config extends Configuration> extends Application<C
         };
 
         repo = new ClientRepo(factory, config);
+
+        MessageHandlerBase handler = createHandler(config, env);
 
         addResource(new StatusResource(), env);
         addResource(new BotsResource(handler, config, repo), env);

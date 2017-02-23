@@ -30,21 +30,21 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.UUID;
 
 public class Picture implements IGeneric, IAsset {
     static private final SecureRandom random = new SecureRandom();
 
-    private final byte[] imageData;
-    private final String mimeType;
-    private final int width;
-    private final int height;
-    private final int size;
-
+    private byte[] imageData;
+    private String mimeType;
+    private int width;
+    private int height;
+    private int size;
     private byte[] otrKey;
     private byte[] encBytes = null;
-    private byte[] sha256Bytes;
+    private byte[] sha256;
     private String assetKey;
     private String assetToken;
     private boolean isPublic;
@@ -53,27 +53,24 @@ public class Picture implements IGeneric, IAsset {
     public Picture(byte[] bytes, String mime) throws IOException {
         imageData = bytes;
         mimeType = mime;
-        try (InputStream input = new ByteArrayInputStream(imageData)) {
-            BufferedImage bufferedImage = ImageIO.read(input);
-            width = bufferedImage.getWidth();
-            height = bufferedImage.getHeight();
-            size = imageData.length;
-        }
+        loadBufferImage();
+    }
+
+    public Picture(byte[] bytes) throws IOException {
+        imageData = bytes;
+        extractMimeType();
+        loadBufferImage();
     }
 
     public Picture(String url) throws IOException {
         try (InputStream input = new URL(url).openStream()) {
             imageData = Util.toByteArray(input);
-            size = imageData.length;
         }
-        try (ByteArrayInputStream input = new ByteArrayInputStream(imageData)) {
-            BufferedImage bufferedImage = ImageIO.read(input);
-            width = bufferedImage.getWidth();
-            height = bufferedImage.getHeight();
-        }
-        try (ByteArrayInputStream input = new ByteArrayInputStream(imageData)) {
-            mimeType = URLConnection.guessContentTypeFromStream(input);
-        }
+        loadBufferImage();
+        extractMimeType();
+    }
+
+    public Picture() {
     }
 
     @Override
@@ -88,10 +85,6 @@ public class Picture implements IGeneric, IAsset {
 
     @Override
     public Messages.GenericMessage createGenericMsg() throws Exception {
-        getEncryptedData();
-
-        ByteString sha256 = ByteString.copyFrom(sha256Bytes);
-
         Messages.Asset.ImageMetaData.Builder metaData = Messages.Asset.ImageMetaData.newBuilder()
                 .setHeight(height)
                 .setWidth(width)
@@ -104,8 +97,8 @@ public class Picture implements IGeneric, IAsset {
 
         Messages.Asset.RemoteData.Builder remoteData = Messages.Asset.RemoteData.newBuilder()
                 .setAssetId(assetKey)
-                .setOtrKey(ByteString.copyFrom(otrKey))
-                .setSha256(sha256);
+                .setOtrKey(ByteString.copyFrom(getOtrKey()))
+                .setSha256(ByteString.copyFrom(getSha256()));
 
         if (assetToken != null)
             remoteData.setAssetToken(assetToken);
@@ -123,13 +116,10 @@ public class Picture implements IGeneric, IAsset {
     @Override
     public byte[] getEncryptedData() {
         if (encBytes == null) {
-            otrKey = new byte[32];
-            byte[] iv = new byte[16];
-            random.nextBytes(otrKey);
-            random.nextBytes(iv);
             try {
-                encBytes = Util.encrypt(otrKey, imageData, iv);
-                sha256Bytes = MessageDigest.getInstance("SHA-256").digest(encBytes);
+                byte[] iv = new byte[16];
+                random.nextBytes(iv);
+                encBytes = Util.encrypt(getOtrKey(), imageData, iv);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -168,5 +158,71 @@ public class Picture implements IGeneric, IAsset {
 
     public void setRetention(String retention) {
         this.retention = retention;
+    }
+
+    public byte[] getOtrKey() {
+        if (otrKey == null) {
+            otrKey = new byte[32];
+            random.nextBytes(otrKey);
+        }
+        return otrKey;
+    }
+
+    public byte[] getSha256() throws NoSuchAlgorithmException {
+        if (sha256 == null) {
+            sha256 = MessageDigest.getInstance("SHA-256").digest(encBytes);
+        }
+        return sha256;
+    }
+
+    public String getAssetKey() {
+        return assetKey;
+    }
+
+    public String getAssetToken() {
+        return assetToken;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setOtrKey(byte[] otrKey) {
+        this.otrKey = otrKey;
+    }
+
+    public void setSha256(byte[] sha256) {
+        this.sha256 = sha256;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    private void loadBufferImage() throws IOException {
+        try (InputStream input = new ByteArrayInputStream(imageData)) {
+            BufferedImage bufferedImage = ImageIO.read(input);
+            width = bufferedImage.getWidth();
+            height = bufferedImage.getHeight();
+            size = imageData.length;
+        }
+    }
+
+    private void extractMimeType() throws IOException {
+        try (ByteArrayInputStream input = new ByteArrayInputStream(imageData)) {
+            mimeType = URLConnection.guessContentTypeFromStream(input);
+        }
     }
 }

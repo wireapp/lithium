@@ -133,6 +133,11 @@ public class UserClient implements WireClient {
     }
 
     @Override
+    public void sendReaction(String msgId, String emoji) throws Exception {
+        postGenericMessage(new Reaction(msgId, emoji));
+    }
+
+    @Override
     public byte[] downloadAsset(String assetKey, String assetToken, byte[] sha256Challenge, byte[] otrKey) throws Exception {
         byte[] cipher = jerseyClient.downloadAsset(assetKey, assetToken);
         byte[] sha256 = MessageDigest.getInstance("SHA-256").digest(cipher);
