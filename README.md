@@ -17,7 +17,8 @@ For clarity, if you compile the open source software that we make available from
 No license is granted to the Wire trademark and its associated logos, all of which will continue to be owned exclusively by Wire Swiss GmbH. Any use of the Wire trademark and/or its associated logos is expressly prohibited without the express prior written consent of Wire Swiss GmbH.
 
 # Wire Bot SDK
-This is Java implementation of [Wire Bot API](https://github.com/wireapp/bot-sdk/wiki).
+- [Java implementation](https://github.com/wireapp/bot-sdk/wiki).
+- [Node.js implementation](https://github.com/wireapp/bot-sdk-node)
 
 # How to build the project
 Execute
