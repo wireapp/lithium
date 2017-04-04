@@ -18,7 +18,6 @@
 
 package com.wire.bots.sdk;
 
-import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.health.HealthCheck;
@@ -177,12 +176,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
                 .convertDurationsTo(TimeUnit.MILLISECONDS)
                 .build();
         jmxReporter.start();
-
-        ConsoleReporter consoleReporter = ConsoleReporter.forRegistry(env.metrics())
-                .convertRatesTo(TimeUnit.SECONDS)
-                .convertDurationsTo(TimeUnit.MILLISECONDS)
-                .build();
-        consoleReporter.start(60, TimeUnit.MINUTES);
     }
 
     private void checkCrypto(final Config config, Environment env) {

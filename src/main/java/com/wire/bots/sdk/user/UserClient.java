@@ -42,7 +42,6 @@ import java.util.Base64;
 import java.util.Collection;
 
 public class UserClient implements WireClient {
-
     private final String botId;
     private final String convId;
     private final String clientId;
@@ -71,6 +70,13 @@ public class UserClient implements WireClient {
     @Override
     public void sendLinkPreview(String url, String title, IGeneric image) throws Exception {
         postGenericMessage(new LinkPreview(url, title, image.createGenericMsg().getAsset()));
+    }
+
+    @Override
+    public void sendText(String txt, long expires, String messageId) throws Exception {
+        Text text = new Text(txt, expires);
+        text.setMessageId(messageId);
+        postGenericMessage(text);
     }
 
     @Override
@@ -135,6 +141,11 @@ public class UserClient implements WireClient {
     @Override
     public void sendReaction(String msgId, String emoji) throws Exception {
         postGenericMessage(new Reaction(msgId, emoji));
+    }
+
+    @Override
+    public void deleteMessage(String msgId) throws Exception {
+        postGenericMessage(new Delete(msgId));
     }
 
     @Override

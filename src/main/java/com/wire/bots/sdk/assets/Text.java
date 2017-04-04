@@ -25,7 +25,7 @@ import java.util.UUID;
 public class Text implements IGeneric {
     private final String text;
     private final long expires;
-    private final String id = UUID.randomUUID().toString();
+    private String messageId = UUID.randomUUID().toString();
 
     public Text(String text) {
         this.text = text;
@@ -40,7 +40,7 @@ public class Text implements IGeneric {
     @Override
     public Messages.GenericMessage createGenericMsg() throws Exception {
         Messages.GenericMessage.Builder ret = Messages.GenericMessage.newBuilder()
-                .setMessageId(id);
+                .setMessageId(messageId);
 
         Messages.Text.Builder text = Messages.Text.newBuilder()
                 .setContent(this.text);
@@ -58,5 +58,9 @@ public class Text implements IGeneric {
         return ret
                 .setText(text)
                 .build();
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
     }
 }

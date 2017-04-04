@@ -54,6 +54,16 @@ public interface WireClient extends Closeable {
     void sendText(String txt, long expires) throws Exception;
 
     /**
+     * Post text into the conversation
+     *
+     * @param txt       Plain text to be posted into this conversation
+     * @param expires   Time in milliseconds for this message to expire
+     * @param messageId Message ID
+     * @throws Exception
+     */
+    void sendText(String txt, long expires, String messageId) throws Exception;
+
+    /**
      * Post url with preview into the conversation
      *
      * @param url   Original url
@@ -108,7 +118,22 @@ public interface WireClient extends Closeable {
      */
     void sendDelivery(String msgId) throws Exception;
 
+    /**
+     * Post Like for a message
+     *
+     * @param msgId Message ID
+     * @param emoji Emoji - Should be '❤' for Like
+     * @throws Exception
+     */
     void sendReaction(String msgId, String emoji) throws Exception;
+
+    /**
+     * Deletes previously posted message
+     *
+     * @param msgId Message ID
+     * @throws Exception
+     */
+    void deleteMessage(String msgId) throws Exception;
 
     /**
      * This method downloads asset from the Backend.
