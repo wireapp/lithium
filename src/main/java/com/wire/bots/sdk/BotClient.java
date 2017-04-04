@@ -66,6 +66,13 @@ class BotClient implements WireClient {
     }
 
     @Override
+    public void sendText(String txt, long expires, String messageId) throws Exception {
+        Text text = new Text(txt, expires);
+        text.setMessageId(messageId);
+        postGenericMessage(text);
+    }
+
+    @Override
     public void sendLinkPreview(String url, String title, IGeneric image) throws Exception {
         postGenericMessage(new LinkPreview(url, title, image.createGenericMsg().getAsset()));
     }
@@ -132,6 +139,11 @@ class BotClient implements WireClient {
     @Override
     public void sendReaction(String msgId, String emoji) throws Exception {
         postGenericMessage(new Reaction(msgId, emoji));
+    }
+
+    @Override
+    public void deleteMessage(String msgId) throws Exception {
+        postGenericMessage(new Delete(msgId));
     }
 
     @Override

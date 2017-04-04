@@ -49,6 +49,7 @@ public class Picture implements IGeneric, IAsset {
     private String assetToken;
     private boolean isPublic;
     private String retention = "volatile";
+    private String messageId = UUID.randomUUID().toString();
 
     public Picture(byte[] bytes, String mime) throws IOException {
         imageData = bytes;
@@ -108,7 +109,7 @@ public class Picture implements IGeneric, IAsset {
                 .setOriginal(original);
 
         return Messages.GenericMessage.newBuilder()
-                .setMessageId(UUID.randomUUID().toString())
+                .setMessageId(messageId)
                 .setAsset(asset)
                 .build();
     }
@@ -187,6 +188,10 @@ public class Picture implements IGeneric, IAsset {
         return size;
     }
 
+    public String getMessageId() {
+        return messageId;
+    }
+
     public void setOtrKey(byte[] otrKey) {
         this.otrKey = otrKey;
     }
@@ -209,6 +214,10 @@ public class Picture implements IGeneric, IAsset {
 
     public void setSize(int size) {
         this.size = size;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
     }
 
     private void loadBufferImage() throws IOException {

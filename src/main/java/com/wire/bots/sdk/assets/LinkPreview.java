@@ -23,10 +23,10 @@ import com.waz.model.Messages;
 import java.util.UUID;
 
 public class LinkPreview implements IGeneric {
-
     private final String url;
     private final String title;
     private final Messages.Asset img;
+    private String messageId = UUID.randomUUID().toString();
 
     public LinkPreview(String url, String title, Messages.Asset img) {
         this.url = url;
@@ -57,8 +57,12 @@ public class LinkPreview implements IGeneric {
                 .addLinkPreview(linkPreview);
 
         return Messages.GenericMessage.newBuilder()
-                .setMessageId(UUID.randomUUID().toString())
+                .setMessageId(messageId)
                 .setText(text.build())
                 .build();
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
     }
 }

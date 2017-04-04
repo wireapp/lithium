@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <bot.version>0.3.5</bot.version>
+        <bot.version>0.3.6</bot.version>
         <cryptobox.version>0.8.2</cryptobox.version>
         <dropwizard.version>1.0.6</dropwizard.version>
     </properties>
