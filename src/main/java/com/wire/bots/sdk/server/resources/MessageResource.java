@@ -49,11 +49,16 @@ public class MessageResource {
                                @PathParam("bot") String botId,
                                InboundMessage inbound) throws Exception {
 
-        if (!conf.getAuth().equals(auth))
+        if (!Util.compareTokens(conf.auth, auth)) {
+            Logger.warning(String.format("Invalid auth. Got: '%s' expected: '%s'",
+                    auth,
+                    conf.auth
+            ));
             return Response.
                     ok().
                     status(403).
                     build();
+        }
 
         WireClient client = repo.getWireClient(botId, inbound.conversation);
 

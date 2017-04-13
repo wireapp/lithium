@@ -94,4 +94,10 @@ public class Util {
         }
         return output.toByteArray();
     }
+
+    public static boolean compareTokens(String token1, String token2) {
+        String t1 = token1.replace("Bearer", "").trim();
+        String t2 = token2.replace("Bearer", "").trim();
+        return t1.equals(t2);
+    }
 }
