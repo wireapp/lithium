@@ -50,6 +50,7 @@ public class Picture implements IGeneric, IAsset {
     private boolean isPublic;
     private String retention = "volatile";
     private String messageId = UUID.randomUUID().toString();
+    private long expires;
 
     public Picture(byte[] bytes, String mime) throws IOException {
         imageData = bytes;
@@ -86,6 +87,9 @@ public class Picture implements IGeneric, IAsset {
 
     @Override
     public Messages.GenericMessage createGenericMsg() throws Exception {
+        Messages.GenericMessage.Builder ret = Messages.GenericMessage.newBuilder()
+                .setMessageId(messageId);
+
         Messages.Asset.ImageMetaData.Builder metaData = Messages.Asset.ImageMetaData.newBuilder()
                 .setHeight(height)
                 .setWidth(width)
@@ -108,8 +112,16 @@ public class Picture implements IGeneric, IAsset {
                 .setUploaded(remoteData)
                 .setOriginal(original);
 
-        return Messages.GenericMessage.newBuilder()
-                .setMessageId(messageId)
+        if (expires > 0) {
+            Messages.Ephemeral.Builder ephemeral = Messages.Ephemeral.newBuilder()
+                    .setAsset(asset)
+                    .setExpireAfterMillis(expires);
+
+            return ret
+                    .setEphemeral(ephemeral)
+                    .build();
+        }
+        return ret
                 .setAsset(asset)
                 .build();
     }
@@ -218,6 +230,14 @@ public class Picture implements IGeneric, IAsset {
 
     public void setMessageId(String messageId) {
         this.messageId = messageId;
+    }
+
+    public void setExpires(long expires) {
+        this.expires = expires;
+    }
+
+    public long getExpires() {
+        return expires;
     }
 
     private void loadBufferImage() throws IOException {

@@ -96,6 +96,8 @@ public class Util {
     }
 
     public static boolean compareTokens(String token1, String token2) {
+        if (token1 == null || token2 == null)
+            return false;
         String t1 = token1.replace("Bearer", "").trim();
         String t2 = token2.replace("Bearer", "").trim();
         return t1.equals(t2);

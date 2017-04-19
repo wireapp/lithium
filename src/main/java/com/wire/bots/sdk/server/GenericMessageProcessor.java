@@ -44,21 +44,40 @@ public class GenericMessageProcessor {
         String convId = client.getConversationId();
         String clientId = client.getDeviceId();
 
+        Messages.Text text = null;
+        Messages.Asset asset = null;
+
         // Text
         if (generic.hasText()) {
-            Messages.Text text = generic.getText();
-            if (text.hasContent() && text.getLinkPreviewList().isEmpty()) {
-                TextMessage msg = new TextMessage(messageId, convId, clientId, userId);
-                msg.setText(text.getContent());
-
-                handler.onText(client, msg);
-                return true;
-            }
+            text = generic.getText();
         }
 
         // Assets
         if (generic.hasAsset()) {
-            Messages.Asset asset = generic.getAsset();
+            asset = generic.getAsset();
+        }
+
+        if (generic.hasEphemeral()) {
+            if (generic.getEphemeral().hasText()) {
+                text = generic.getEphemeral().getText();
+            }
+
+            if (generic.getEphemeral().hasAsset()) {
+                asset = generic.getEphemeral().getAsset();
+            }
+        }
+
+        // Text
+        if (text != null && text.hasContent() && text.getLinkPreviewList().isEmpty()) {
+            TextMessage msg = new TextMessage(messageId, convId, clientId, userId);
+            msg.setText(text.getContent());
+
+            handler.onText(client, msg);
+            return true;
+        }
+
+        // Assets
+        if (asset != null) {
             if (asset.hasOriginal()) {
                 Messages.Asset.Original original = asset.getOriginal();
                 if (original.hasImage()) {
