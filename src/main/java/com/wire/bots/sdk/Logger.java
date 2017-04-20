@@ -59,9 +59,18 @@ public class Logger {
         LOGGER.info(msg);
     }
 
+    public static void info(String format, Object... args) {
+        LOGGER.info(String.format(format, args));
+    }
+
     public static void error(String msg) {
         errorCount.incrementAndGet();
         LOGGER.severe(msg);
+    }
+
+    public static void error(String format, Object... args) {
+        errorCount.incrementAndGet();
+        LOGGER.severe(String.format(format, args));
     }
 
     public static void warning(String msg) {
