@@ -6,7 +6,7 @@
 
     <properties>
         <bot.version>0.3.7</bot.version>
-        <cryptobox.version>0.8.2</cryptobox.version>
+        <cryptobox.version>1.0.0</cryptobox.version>
         <dropwizard.version>1.0.6</dropwizard.version>
     </properties>
 
@@ -36,12 +36,6 @@
             <artifactId>cryptobox-jni</artifactId>
             <version>${cryptobox.version}</version>
             <classifier>darwin-x86_64</classifier>
-        </dependency>
-        <dependency>
-            <groupId>com.wire.cryptobox</groupId>
-            <artifactId>cryptobox-jni</artifactId>
-            <version>${cryptobox.version}</version>
-            <classifier>win-x86_64</classifier>
         </dependency>
         <dependency>
             <groupId>io.dropwizard</groupId>
