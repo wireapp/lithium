@@ -19,12 +19,16 @@
 package com.wire.bots.sdk;
 
 import javax.crypto.Cipher;
+import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
+import java.math.BigInteger;
+import java.nio.charset.Charset;
+import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -32,6 +36,9 @@ import java.security.spec.KeySpec;
 import java.util.Base64;
 
 public class Util {
+
+    private static final String HMAC_SHA_1 = "HmacSHA1";
+
     public static byte[] encrypt(byte[] key, byte[] dataToSend, byte[] iv) throws Exception {
         Cipher c = Cipher.getInstance("AES/CBC/PKCS5Padding");
         SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
@@ -83,6 +90,13 @@ public class Util {
         byte[] hash = md.digest();
         byte[] byteArray = Base64.getEncoder().encode(hash);
         return new String(byteArray);
+    }
+
+    public static String getHmacSHA1(String payload, String secret) throws NoSuchAlgorithmException, InvalidKeyException {
+        Mac hmac = Mac.getInstance(HMAC_SHA_1);
+        hmac.init(new SecretKeySpec(secret.getBytes(Charset.forName("UTF-8")), HMAC_SHA_1));
+        byte[] bytes = hmac.doFinal(payload.getBytes(Charset.forName("UTF-8")));
+        return String.format("%040x", new BigInteger(1, bytes));
     }
 
     public static byte[] toByteArray(InputStream input) throws IOException {

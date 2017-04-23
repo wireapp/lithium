@@ -77,6 +77,10 @@ public class Logger {
         LOGGER.warning(msg);
     }
 
+    public static void warning(String format, Object... args) {
+        LOGGER.warning(String.format(format, args));
+    }
+
     public static int getErrorCount() {
         return errorCount.get();
     }
