@@ -68,8 +68,8 @@ public class Picture implements IGeneric, IAsset {
         try (InputStream input = new URL(url).openStream()) {
             imageData = Util.toByteArray(input);
         }
-        loadBufferImage();
         extractMimeType();
+        loadBufferImage();
     }
 
     public Picture() {
@@ -251,7 +251,8 @@ public class Picture implements IGeneric, IAsset {
 
     private void extractMimeType() throws IOException {
         try (ByteArrayInputStream input = new ByteArrayInputStream(imageData)) {
-            mimeType = URLConnection.guessContentTypeFromStream(input);
+            String contentType = URLConnection.guessContentTypeFromStream(input);
+            mimeType = contentType != null ? contentType : "image/xyz";
         }
     }
 }
