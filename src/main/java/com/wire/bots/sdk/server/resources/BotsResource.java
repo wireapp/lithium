@@ -56,12 +56,15 @@ public class BotsResource {
         }
 
         if (!handler.onNewBot(newBot))
-            return Response.status(409).build();
+            return Response.
+                    status(409).
+                    build();
 
         String path = String.format("%s/%s", conf.getCryptoDir(), newBot.id);
 
         File dir = new File(path);
-        dir.mkdirs();
+        if (!dir.mkdirs())
+            Logger.warning("Failed to create dir: %s", dir.getAbsolutePath());
 
         Util.writeLine(newBot.client, new File(path + "/client.id"));
         Util.writeLine(newBot.token, new File(path + "/token.id"));
@@ -93,7 +96,7 @@ public class BotsResource {
             ret.assets.add(asset);
         }
 
-        WireClient client = repo.getWireClient(newBot.id, newBot.conversation.id);
+        WireClient client = repo.getWireClient(newBot.id);
         ret.lastPreKey = client.newLastPreKey();
         ret.preKeys = client.newPreKeys(0, newBot.conversation.members.size() * 8);
 

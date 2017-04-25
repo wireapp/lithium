@@ -107,6 +107,7 @@ public class MessageResource {
                 if (data.userIds.remove(botId)) {
                     repo.removeClient(botId);
                     handler.onBotRemoved(botId);
+                    repo.purgeBot(botId);
                 }
 
                 if (!data.userIds.isEmpty()) {

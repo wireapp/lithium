@@ -17,24 +17,32 @@ public class ClientRepo {
     }
 
     public WireClient getWireClient(String botId) throws CryptoException, IOException {
-        return getWireClient(botId, null);
-    }
-
-    public WireClient getWireClient(String botId, String convId) throws CryptoException, IOException {
         synchronized (clients) {
             WireClient wireClient = clients.get(botId);
             if (wireClient == null || wireClient.isClosed()) {
-                String path = String.format("%s/%s", conf.getCryptoDir(), botId);
-                String clientId = Util.readLine(new File(path + "/client.id"));
-                String token = Util.readLine(new File(path + "/token.id"));
+                File dir = new File(String.format("%s/%s", conf.getCryptoDir(), botId));
+                File clientFile = new File(dir.getAbsolutePath() + "/client.id");
+                File tokenFile = new File(dir.getAbsolutePath() + "/token.id");
+                File convFile = new File(dir.getAbsolutePath() + "/conversation.id");
 
-                wireClient = factory.createClient(botId, convId, clientId, token);
+                if (!clientFile.exists() || !tokenFile.exists()) return null;
+
+                String clientId = Util.readLine(clientFile);
+                String token = Util.readLine(tokenFile);
+                String conv = convFile.exists() ? Util.readLine(convFile) : null;
+
+                wireClient = factory.createClient(botId, conv, clientId, token);
                 WireClient old = clients.put(botId, wireClient);
                 if (old != null)
                     old.close();
             }
             return wireClient;
         }
+    }
+
+    @Deprecated
+    public WireClient getWireClient(String botId, String ignored) throws CryptoException, IOException {
+        return getWireClient(botId);
     }
 
     public void removeClient(String botId) {
@@ -48,5 +56,16 @@ public class ClientRepo {
                 }
             }
         }
+    }
+
+    public void purgeBot(String botId) {
+        File dir = new File(String.format("%s/%s", conf.getCryptoDir(), botId));
+        File clientFile = new File(dir.getAbsolutePath() + "/client.id");
+        File tokenFile = new File(dir.getAbsolutePath() + "/token.id");
+        File convFile = new File(dir.getAbsolutePath() + "/conversation.id");
+
+        clientFile.delete();
+        tokenFile.delete();
+        convFile.delete();
     }
 }
