@@ -87,12 +87,14 @@ public class BroadcastAllTask extends TaskBase {
     private void send(PrintWriter output, String text, String botId) {
         try {
             WireClient client = repo.getWireClient(botId);
-            client.sendText(text);
+            if (client != null) {
+                client.sendText(text);
 
-            int curr = succeeded.incrementAndGet();
-            if (curr % 100 == 0) {
-                output.println(curr);
-                output.flush();
+                int curr = succeeded.incrementAndGet();
+                if (curr % 100 == 0) {
+                    output.println(curr);
+                    output.flush();
+                }
             }
         } catch (Exception e) {
             String msg = String.format("Bot: %s. Error: %s", botId, e.getMessage());
