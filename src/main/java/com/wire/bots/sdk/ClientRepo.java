@@ -16,25 +16,29 @@ public class ClientRepo {
         this.conf = conf;
     }
 
-    public WireClient getWireClient(String botId) throws CryptoException, IOException {
+    public WireClient getWireClient(String botId) {
         synchronized (clients) {
             WireClient wireClient = clients.get(botId);
             if (wireClient == null || wireClient.isClosed()) {
-                File dir = new File(String.format("%s/%s", conf.getCryptoDir(), botId));
-                File clientFile = new File(dir.getAbsolutePath() + "/client.id");
-                File tokenFile = new File(dir.getAbsolutePath() + "/token.id");
-                File convFile = new File(dir.getAbsolutePath() + "/conversation.id");
+                File clientFile = new File(String.format("%s/%s/client.id", conf.getCryptoDir(), botId));
+                File tokenFile = new File(String.format("%s/%s/token.id", conf.getCryptoDir(), botId));
+                File convFile = new File(String.format("%s/%s/conversation.id", conf.getCryptoDir(), botId));
 
-                if (!clientFile.exists() || !tokenFile.exists()) return null;
+                if (!clientFile.exists() || !tokenFile.exists())
+                    return null;
 
-                String clientId = Util.readLine(clientFile);
-                String token = Util.readLine(tokenFile);
-                String conv = convFile.exists() ? Util.readLine(convFile) : null;
+                try {
+                    String clientId = Util.readLine(clientFile);
+                    String token = Util.readLine(tokenFile);
+                    String conv = convFile.exists() ? Util.readLine(convFile) : null;
 
-                wireClient = factory.createClient(botId, conv, clientId, token);
-                WireClient old = clients.put(botId, wireClient);
-                if (old != null)
-                    old.close();
+                    wireClient = factory.createClient(botId, conv, clientId, token);
+                    WireClient old = clients.put(botId, wireClient);
+                    if (old != null)
+                        old.close();
+                } catch (Exception e) {
+                    Logger.error("GetWireClient. BotId: %s, status: %s", botId, e.getLocalizedMessage());
+                }
             }
             return wireClient;
         }
@@ -59,10 +63,9 @@ public class ClientRepo {
     }
 
     public void purgeBot(String botId) {
-        File dir = new File(String.format("%s/%s", conf.getCryptoDir(), botId));
-        File clientFile = new File(dir.getAbsolutePath() + "/client.id");
-        File tokenFile = new File(dir.getAbsolutePath() + "/token.id");
-        File convFile = new File(dir.getAbsolutePath() + "/conversation.id");
+        File clientFile = new File(String.format("%s/%s/client.id", conf.getCryptoDir(), botId));
+        File tokenFile = new File(String.format("%s/%s/token.id", conf.getCryptoDir(), botId));
+        File convFile = new File(String.format("%s/%s/conversation.id", conf.getCryptoDir(), botId));
 
         clientFile.delete();
         tokenFile.delete();
