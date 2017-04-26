@@ -29,7 +29,7 @@ public class BroadcastAllTask extends TaskBase {
     AtomicInteger failed = new AtomicInteger(0);
 
     public BroadcastAllTask(Configuration conf, ClientRepo repo) {
-        super("massive_broadcast");
+        super("broadcast");
         this.conf = conf;
         this.repo = repo;
     }
@@ -39,27 +39,14 @@ public class BroadcastAllTask extends TaskBase {
         int threads = extract(parameters, "th", 20);
         ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(threads);
 
-        File dir = new File(conf.cryptoDir);
-        if (!dir.exists()) {
-            output.println("Dir: " + dir.getAbsolutePath() + " does not exist");
-            return;
-        }
-
         final String text = extractString(parameters, "text");
         if (text.isEmpty()) {
             output.println("Are you missing `text` param?");
             return;
         }
 
-        File[] botDirs = dir.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                return file.getName().split("-").length == 5 && file.isDirectory();
-            }
-        });
-
         Date start = new Date();
-        for (File botDir : botDirs) {
+        for (File botDir : getCryptoDirs()) {
             final String botId = botDir.getName();
 
             executor.execute(new Runnable() {
@@ -97,12 +84,22 @@ public class BroadcastAllTask extends TaskBase {
                 }
             }
         } catch (Exception e) {
-            String msg = String.format("Bot: %s. Error: %s", botId, e.getMessage());
-            Logger.error(msg);
+            Logger.error("Bot: %s. Error: %s", botId, e.getMessage());
 
             output.println("Failed for botId: " + botId);
             output.flush();
             failed.incrementAndGet();
         }
+    }
+
+    private File[] getCryptoDirs() {
+        File dir = new File(conf.getCryptoDir());
+        return dir.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                String botId = file.getName();
+                return repo.getWireClient(botId) != null;
+            }
+        });
     }
 }

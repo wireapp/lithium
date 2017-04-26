@@ -27,20 +27,16 @@ public class Configuration extends io.dropwizard.Configuration {
     /**
      * Path to the directory that will hold the cryptoBox data. This directory must exist
      */
-    public String cryptoDir = "crypto";
+    private String cryptoDir;
 
     /**
-     * Authentication token. Must start with: 'Bearer'
+     * Authentication token
      */
     @NotNull
-    public String auth;
+    private String auth;
 
     public String getCryptoDir() {
         return cryptoDir;
-    }
-
-    public String[] getDirs() {
-        return new String[0];
     }
 
     public String getAuth() {
@@ -51,14 +47,6 @@ public class Configuration extends io.dropwizard.Configuration {
         public ConfigValueNotFoundException(String message) {
             super(message);
         }
-    }
-
-    public void setCryptoDir(String cryptoDir) {
-        this.cryptoDir = cryptoDir;
-    }
-
-    public void setAuth(String auth) {
-        this.auth = auth;
     }
 
     public static String propOrEnv(String prop, boolean strict) {

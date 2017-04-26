@@ -44,10 +44,10 @@ public class BotsResource {
 
     @POST
     public Response newBot(@HeaderParam("Authorization") String auth, NewBot newBot) throws Exception {
-        if (!Util.compareTokens(conf.auth, auth)) {
+        if (!Util.compareTokens(conf.getAuth(), auth)) {
             Logger.warning(String.format("Invalid auth. Got: '%s' expected: '%s'",
                     auth,
-                    conf.auth
+                    conf.getAuth()
             ));
             return Response.
                     ok().

@@ -83,9 +83,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
         initTelemetry(config, env);
 
-        checkCrypto(config, env);
-        checkJCEPolicy(env);
-
         WireClientFactory factory = new WireClientFactory() {
             @Override
             public WireClient createClient(String botId, String convId, String clientId, String token) throws CryptoException {
@@ -147,38 +144,19 @@ public abstract class Server<Config extends Configuration> extends Application<C
             }
         });
 
-        for (final String vol : conf.getDirs()) {
-            env.healthChecks().register("volumes." + vol, new HealthCheck() {
-                final File f = new File(vol);
-
-                @Override
-                protected Result check() throws Exception {
-                    if (f.exists()) {
-                        return Result.healthy();
-                    } else {
-                        String log = String.format("Failed reading volume %s", f.getCanonicalPath());
-                        Logger.error(log);
-                        return Result.unhealthy(log);
-                    }
-                }
-            });
-        }
-
-        env.metrics().register("logger.errors", new Gauge<Integer>() {
+        env.healthChecks().register("data volume", new HealthCheck() {
             @Override
-            public Integer getValue() {
-                return Logger.getErrorCount();
+            protected Result check() throws Exception {
+                File f = new File(conf.getCryptoDir());
+                if (f.exists()) {
+                    return Result.healthy();
+                }
+                String log = String.format("Failed reading volume %s", f.getCanonicalPath());
+                Logger.error(log);
+                return Result.unhealthy(log);
             }
         });
 
-        JmxReporter jmxReporter = JmxReporter.forRegistry(env.metrics())
-                .convertRatesTo(TimeUnit.SECONDS)
-                .convertDurationsTo(TimeUnit.MILLISECONDS)
-                .build();
-        jmxReporter.start();
-    }
-
-    private void checkCrypto(final Config config, Environment env) {
         env.healthChecks().register("CryptoBox", new HealthCheck() {
             @Override
             protected Result check() throws Exception {
@@ -187,9 +165,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
                 }
             }
         });
-    }
 
-    private void checkJCEPolicy(Environment env) {
         env.healthChecks().register("JCEPolicy", new HealthCheck() {
             @Override
             protected Result check() throws Exception {
@@ -205,5 +181,18 @@ public abstract class Server<Config extends Configuration> extends Application<C
                 return Result.healthy();
             }
         });
+
+        env.metrics().register("logger.errors", new Gauge<Integer>() {
+            @Override
+            public Integer getValue() {
+                return Logger.getErrorCount();
+            }
+        });
+
+        JmxReporter jmxReporter = JmxReporter.forRegistry(env.metrics())
+                .convertRatesTo(TimeUnit.SECONDS)
+                .convertDurationsTo(TimeUnit.MILLISECONDS)
+                .build();
+        jmxReporter.start();
     }
 }

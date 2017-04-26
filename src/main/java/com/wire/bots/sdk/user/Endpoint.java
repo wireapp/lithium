@@ -116,7 +116,7 @@ public class Endpoint {
     }
 
     private String initDevice(String password, String token) throws CryptoException, IOException {
-        File base = new File(config.cryptoDir + "/" + botId);
+        File base = new File(config.getCryptoDir() + "/" + botId);
         base.mkdirs();
 
         File clientIdFile = new File(base.getAbsolutePath() + "/client.id");
@@ -147,7 +147,7 @@ public class Endpoint {
             public void run() {
                 try {
                     token = UserJerseyClient.renewAccessToken(cookie, token);
-                    File tokenFile = new File(config.cryptoDir + "/" + botId + "/token.id");
+                    File tokenFile = new File(config.getCryptoDir() + "/" + botId + "/token.id");
                     Util.writeLine(token, tokenFile);
                 } catch (Exception e) {
                     Logger.warning("Failed periodic access_token renewal: " + e.getMessage());

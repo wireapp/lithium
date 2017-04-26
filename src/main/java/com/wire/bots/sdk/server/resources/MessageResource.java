@@ -49,10 +49,10 @@ public class MessageResource {
                                @PathParam("bot") String botId,
                                InboundMessage inbound) throws Exception {
 
-        if (!Util.compareTokens(conf.auth, auth)) {
+        if (!Util.compareTokens(conf.getAuth(), auth)) {
             Logger.warning(String.format("Invalid auth. Got: '%s' expected: '%s'",
                     auth,
-                    conf.auth
+                    conf.getAuth()
             ));
             return Response.
                     ok().
