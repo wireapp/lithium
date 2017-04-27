@@ -75,7 +75,6 @@ public abstract class MessageHandlerBase {
      * @param botId Id of the Bot that got removed
      */
     public void onBotRemoved(String botId) {
-
     }
 
     /**
@@ -123,7 +122,6 @@ public abstract class MessageHandlerBase {
      * @param msg    Message containing image metadata
      */
     public void onImage(WireClient client, ImageMessage msg) {
-
     }
 
     /**
@@ -133,7 +131,6 @@ public abstract class MessageHandlerBase {
      * @param msg    Message containing audio metadata
      */
     public void onAudio(WireClient client, AudioMessage msg) {
-
     }
 
     /**
@@ -143,7 +140,6 @@ public abstract class MessageHandlerBase {
      * @param msg    Message containing video metadata
      */
     public void onVideo(WireClient client, VideoMessage msg) {
-
     }
 
     /**
@@ -153,7 +149,6 @@ public abstract class MessageHandlerBase {
      * @param msg    Message containing file metadata
      */
     public void onAttachment(WireClient client, AttachmentMessage msg) {
-
     }
 
     /**
@@ -164,6 +159,5 @@ public abstract class MessageHandlerBase {
      * @param genericMessage Generic message as it comes from the BE
      */
     public void onEvent(WireClient client, String userId, Messages.GenericMessage genericMessage) {
-
     }
 }

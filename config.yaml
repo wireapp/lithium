@@ -1,0 +1,2 @@
+cryptoDir: 'path/to/data/dir'
+auth: 'your auth token from DevBot'

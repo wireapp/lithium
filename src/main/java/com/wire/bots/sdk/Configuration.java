@@ -27,6 +27,7 @@ public class Configuration extends io.dropwizard.Configuration {
     /**
      * Path to the directory that will hold the cryptoBox data. This directory must exist
      */
+    @NotNull
     private String cryptoDir;
 
     /**

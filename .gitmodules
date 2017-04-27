@@ -1,0 +1,3 @@
+[submodule "vendor/jmx_exporter"]
+	path = vendor/jmx_exporter
+	url = https://github.com/prometheus/jmx_exporter
