@@ -92,14 +92,15 @@ public abstract class Server<Config extends Configuration> extends Application<C
             }
         };
 
-        repo = new ClientRepo(factory, config);
+        repo = new ClientRepo(factory, config.getCryptoDir());
 
         MessageHandlerBase handler = createHandler(config, env);
 
         addResource(new StatusResource(), env);
-        addResource(new BotsResource(handler, config, repo), env);
-        addResource(new MessageResource(handler, config, repo), env);
         addResource(new ProviderResource(config), env);
+
+        botResource(config, env, handler);
+        messageResource(config, env, handler);
 
         addTask(new BroadcastAllTask(config, repo), env);
         addTask(new ConversationTask(repo), env);
@@ -119,13 +120,21 @@ public abstract class Server<Config extends Configuration> extends Application<C
                     return new UserClient(otrManager, botId, convId, clientId, token);
                 }
             };
-            ClientRepo userRepo = new ClientRepo(userClientFactory, config);
+            ClientRepo userRepo = new ClientRepo(userClientFactory, config.getCryptoDir());
             MessageResource msgRes = new MessageResource(handler, config, userRepo);
 
             Endpoint ep = new Endpoint(config, msgRes);
             ep.signIn(email, password);
             ep.connectWebSocket();
         }
+    }
+
+    protected void messageResource(Config config, Environment env, MessageHandlerBase handler) {
+        addResource(new MessageResource(handler, config, repo), env);
+    }
+
+    protected void botResource(Config config, Environment env, MessageHandlerBase handler) {
+        addResource(new BotsResource(handler, config, repo), env);
     }
 
     protected void addTask(Task task, Environment env) {

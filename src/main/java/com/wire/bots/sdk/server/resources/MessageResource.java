@@ -18,35 +18,23 @@
 
 package com.wire.bots.sdk.server.resources;
 
-import com.waz.model.Messages;
 import com.wire.bots.sdk.*;
-import com.wire.bots.sdk.models.otr.PreKey;
-import com.wire.bots.sdk.server.GenericMessageProcessor;
 import com.wire.bots.sdk.server.model.InboundMessage;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.Collections;
 
 @Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
 @Path("/bots/{bot}/messages")
-public class MessageResource {
-    private final MessageHandlerBase handler;
-    private final Configuration conf;
-    private final ClientRepo repo;
-
+public class MessageResource extends MessageResourceBase {
     public MessageResource(MessageHandlerBase handler, Configuration conf, ClientRepo repo) {
-        this.handler = handler;
-        this.conf = conf;
-        this.repo = repo;
+        super(handler, conf, repo);
     }
 
     @POST
     public Response newMessage(@HeaderParam("Authorization") String auth,
-                               @PathParam("bot") String botId,
+                               @PathParam("bot") String bot,
                                InboundMessage inbound) throws Exception {
 
         if (!Util.compareTokens(conf.getAuth(), auth)) {
@@ -60,97 +48,13 @@ public class MessageResource {
                     build();
         }
 
-        WireClient client = repo.getWireClient(botId, inbound.conversation);
+        WireClient client = repo.getWireClient(bot);
 
-        InboundMessage.Data data = inbound.data;
-        switch (inbound.type) {
-            case "conversation.otr-message-add": {
-                GenericMessageProcessor processor = new GenericMessageProcessor(client, handler);
-
-                byte[] bytes = client.decrypt(inbound.from, data.sender, data.text);
-                Messages.GenericMessage genericMessage = Messages.GenericMessage.parseFrom(bytes);
-
-                handler.onEvent(client, inbound.from, genericMessage);
-
-                boolean processed = processor.process(inbound.from, genericMessage);
-                if (processed) {
-                    sendDeliveryReceipt(client, genericMessage.getMessageId());
-                }
-            }
-            break;
-            case "conversation.member-join": {
-                //Logger.info("conversation.member-join: bot: " + botId + " users: " + String.join(",", data.userIds));
-
-                // Check if this bot got added to the conversation
-                if (data.userIds.remove(botId)) {
-                    handler.onNewConversation(client);
-                }
-
-                int minAvailable = 8 * data.userIds.size();
-                if (minAvailable > 0) {
-                    ArrayList<Integer> availablePrekeys = client.getAvailablePrekeys();
-                    availablePrekeys.remove(new Integer(65535));  //remove last prekey
-                    if (availablePrekeys.size() < minAvailable) {
-                        Integer lastKeyOffset = Collections.max(availablePrekeys);
-                        ArrayList<PreKey> keys = client.newPreKeys(lastKeyOffset + 1, minAvailable);
-                        client.uploadPreKeys(keys);
-                        Logger.info("Uploaded " + keys.size() + " prekeys");
-                    }
-                    handler.onMemberJoin(client, data.userIds);
-                }
-            }
-            break;
-            case "conversation.member-leave": {
-                //Logger.info("conversation.member-leave: bot: " + botId + " users: " + String.join(",", data.userIds));
-
-                // Check if this bot got removed from the conversation
-                if (data.userIds.remove(botId)) {
-                    repo.removeClient(botId);
-                    handler.onBotRemoved(botId);
-                    repo.purgeBot(botId);
-                }
-
-                if (!data.userIds.isEmpty()) {
-                    handler.onMemberLeave(client, data.userIds);
-                }
-            }
-            break;
-            // Legacy code starts here
-            case "conversation.otr-asset-add": {
-                GenericMessageProcessor processor = new GenericMessageProcessor(client, handler);
-
-                byte[] bytes = client.decrypt(inbound.from, data.sender, data.key);
-                Messages.GenericMessage genericMessage = Messages.GenericMessage.parseFrom(bytes);
-
-                handler.onEvent(client, inbound.from, genericMessage);
-
-                processor.process(inbound.from, inbound.data.id, genericMessage);
-            }
-            break;
-            case "user.connection": {
-                if (inbound.connection.status.equals("pending")) {
-                    client.acceptConnection(inbound.connection.to);
-                }
-            }
-            break;
-            case "conversation.create": {
-                handler.onNewConversation(client);
-            }
-            break;
-            // Legacy code ends here
-        }
+        handleMessage(inbound, client);
 
         return Response.
                 ok().
                 status(200).
                 build();
-    }
-
-    private void sendDeliveryReceipt(WireClient client, String messageId) {
-        try {
-            client.sendDelivery(messageId);
-        } catch (Exception e) {
-            Logger.warning("sendDeliveryReceipt: " + e.getMessage());
-        }
     }
 }

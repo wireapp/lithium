@@ -34,4 +34,10 @@ public class User {
 
     @JsonProperty("accent_id")
     public int accent;
+
+    @JsonProperty
+    public String handle;
+
+    @JsonProperty
+    public Service service;
 }

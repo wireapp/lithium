@@ -8,21 +8,21 @@ import java.util.HashMap;
 
 public class ClientRepo {
     private final WireClientFactory factory;
-    private final Configuration conf;
+    private final String path;
     private final HashMap<String, WireClient> clients = new HashMap<>();
 
-    public ClientRepo(WireClientFactory factory, Configuration conf) {
+    public ClientRepo(WireClientFactory factory, String path) {
         this.factory = factory;
-        this.conf = conf;
+        this.path = path;
     }
 
     public WireClient getWireClient(String botId) {
         synchronized (clients) {
             WireClient wireClient = clients.get(botId);
             if (wireClient == null || wireClient.isClosed()) {
-                File clientFile = new File(String.format("%s/%s/client.id", conf.getCryptoDir(), botId));
-                File tokenFile = new File(String.format("%s/%s/token.id", conf.getCryptoDir(), botId));
-                File convFile = new File(String.format("%s/%s/conversation.id", conf.getCryptoDir(), botId));
+                File clientFile = new File(String.format("%s/%s/client.id", path, botId));
+                File tokenFile = new File(String.format("%s/%s/token.id", path, botId));
+                File convFile = new File(String.format("%s/%s/conversation.id", path, botId));
 
                 if (!clientFile.exists() || !tokenFile.exists())
                     return null;
@@ -63,12 +63,20 @@ public class ClientRepo {
     }
 
     public void purgeBot(String botId) {
-        File clientFile = new File(String.format("%s/%s/client.id", conf.getCryptoDir(), botId));
-        File tokenFile = new File(String.format("%s/%s/token.id", conf.getCryptoDir(), botId));
-        File convFile = new File(String.format("%s/%s/conversation.id", conf.getCryptoDir(), botId));
+        File clientFile = new File(String.format("%s/%s/client.id", path, botId));
+        File tokenFile = new File(String.format("%s/%s/token.id", path, botId));
+        File convFile = new File(String.format("%s/%s/conversation.id", path, botId));
 
         clientFile.delete();
         tokenFile.delete();
         convFile.delete();
+    }
+
+    public WireClientFactory getFactory() {
+        return factory;
+    }
+
+    public String getPath() {
+        return path;
     }
 }

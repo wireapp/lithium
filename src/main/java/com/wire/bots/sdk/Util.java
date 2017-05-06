@@ -77,6 +77,14 @@ public class Util {
         }
     }
 
+    public static String readFile(File f) throws IOException {
+        try (FileInputStream fis = new FileInputStream(f)) {
+            byte[] data = new byte[(int) f.length()];
+            fis.read(data);
+            return new String(data, "UTF-8");
+        }
+    }
+
     public static void writeLine(String line, File file) throws IOException {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
             bw.write(line);
