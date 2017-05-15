@@ -42,7 +42,7 @@ public abstract class MessageResourceBase {
             break;
             case "conversation.member-join": {
                 String botId = client.getId();
-                Logger.info("conversation.member-join: bot: %s users: %s", botId, String.join(",", data.userIds));
+                //Logger.info("conversation.member-join: bot: %s", botId);
 
                 // Check if this bot got added to the conversation
                 if (data.userIds.remove(botId)) {
@@ -65,7 +65,7 @@ public abstract class MessageResourceBase {
             break;
             case "conversation.member-leave": {
                 String botId = client.getId();
-                Logger.info("conversation.member-leave: bot: %s users: %s", botId, String.join(",", data.userIds));
+                //Logger.info("conversation.member-leave: bot: %s", botId);
 
                 // Check if this bot got removed from the conversation
                 if (data.userIds.remove(botId)) {

@@ -38,9 +38,8 @@ public class MessageResource extends MessageResourceBase {
                                InboundMessage inbound) throws Exception {
 
         if (!Util.compareTokens(conf.getAuth(), auth)) {
-            Logger.warning(String.format("Invalid auth. Got: '%s' expected: '%s'",
-                    auth,
-                    conf.getAuth()
+            Logger.warning(String.format("Invalid auth. Got: '%s'",
+                    auth
             ));
             return Response.
                     ok().

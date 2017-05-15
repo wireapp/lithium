@@ -5,11 +5,13 @@ import com.wire.bots.sdk.ClientRepo;
 import com.wire.bots.sdk.Configuration;
 import com.wire.bots.sdk.Logger;
 import com.wire.bots.sdk.WireClient;
+import com.wire.bots.sdk.server.model.Member;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.PrintWriter;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -48,7 +50,6 @@ public class BroadcastAllTask extends TaskBase {
         Date start = new Date();
         for (File botDir : getCryptoDirs()) {
             final String botId = botDir.getName();
-
             executor.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -75,17 +76,18 @@ public class BroadcastAllTask extends TaskBase {
         try {
             WireClient client = repo.getWireClient(botId);
             if (client != null) {
-                client.sendText(text);
-
-                int curr = succeeded.incrementAndGet();
-                if (curr % 100 == 0) {
-                    output.println(curr);
-                    output.flush();
+                List<Member> members = client.getConversation().members;
+                if (!members.isEmpty()) {
+                    client.sendText(text);
+                    int curr = succeeded.incrementAndGet();
+                    if (curr % 100 == 0) {
+                        output.println(curr);
+                        output.flush();
+                    }
                 }
             }
         } catch (Exception e) {
             Logger.error("Bot: %s. Error: %s", botId, e.getMessage());
-
             output.println("Failed for botId: " + botId);
             output.flush();
             failed.incrementAndGet();
