@@ -160,4 +160,13 @@ public abstract class MessageHandlerBase {
      */
     public void onEvent(WireClient client, String userId, Messages.GenericMessage genericMessage) {
     }
+
+    /**
+     * Called when user edits previously sent message
+     * @param client Thread safe wire client that can be used to post back to this conversation
+     * @param msg New Message containing replacing messageId
+     */
+    public void onEditText(WireClient client, TextMessage msg) {
+
+    }
 }

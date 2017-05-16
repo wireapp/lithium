@@ -57,6 +57,7 @@ public class GenericMessageProcessor {
             asset = generic.getAsset();
         }
 
+        // Ephemeral messages
         if (generic.hasEphemeral()) {
             if (generic.getEphemeral().hasText()) {
                 text = generic.getEphemeral().getText();
@@ -65,6 +66,16 @@ public class GenericMessageProcessor {
             if (generic.getEphemeral().hasAsset()) {
                 asset = generic.getEphemeral().getAsset();
             }
+        }
+
+        // Edit message
+        if(generic.hasEdited() && generic.getEdited().hasText()){
+            Messages.MessageEdit edited = generic.getEdited();
+            TextMessage msg = new TextMessage(edited.getReplacingMessageId(), convId, clientId, userId);
+            msg.setText(edited.getText().getContent());
+
+            handler.onEditText(client, msg);
+            return true;
         }
 
         // Text
