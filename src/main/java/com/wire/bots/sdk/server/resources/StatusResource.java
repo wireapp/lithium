@@ -26,6 +26,6 @@ import javax.ws.rs.core.Response;
 public class StatusResource {
     @GET
     public Response status() {
-        return Response.ok().build();
+        return Response.ok("**All good!**").build();
     }
 }
