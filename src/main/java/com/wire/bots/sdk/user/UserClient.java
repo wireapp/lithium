@@ -116,6 +116,11 @@ public class UserClient implements WireClient {
     }
 
     @Override
+    public void sendVideo(byte[] bytes, String name, String mimeType, long duration) throws Exception {
+
+    }
+
+    @Override
     public void sendFile(File f, String mime) throws Exception {
         // post original asset message (preview)
         FileAssetPreview assetPreview = new FileAssetPreview(f, mime);

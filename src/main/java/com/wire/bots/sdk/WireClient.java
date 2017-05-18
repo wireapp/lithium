@@ -102,6 +102,17 @@ public interface WireClient extends Closeable {
     void sendAudio(byte[] bytes, String name, String mimeType, long duration) throws Exception;
 
     /**
+     * Post video file
+     *
+     * @param bytes    Raw video file
+     * @param name     Name of this content - this will be showed as title
+     * @param mimeType Mime Type of this content
+     * @param duration Duration in milliseconds
+     * @throws Exception
+     */
+    void sendVideo(byte[] bytes, String name, String mimeType, long duration) throws Exception;
+
+    /**
      * Post generic file up to 25MB as an attachment into this conversation.
      *
      * @param file File to be sent as attachment

@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
+import java.util.UUID;
 
 /**
  *
@@ -106,6 +107,18 @@ class BotClient implements WireClient {
 
         // post original + remote asset message
         postGenericMessage(audioAsset);
+    }
+
+    @Override
+    public void sendVideo(byte[] bytes, String name, String mimeType, long duration) throws Exception {
+        VideoAsset asset = new VideoAsset(bytes, mimeType, UUID.randomUUID().toString());
+
+        AssetKey assetKey = uploadAsset(asset);
+        asset.setAssetKey(assetKey.key);
+        asset.setAssetToken(assetKey.token);
+
+        // post original + remote asset message
+        postGenericMessage(asset);
     }
 
     @Override

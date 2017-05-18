@@ -50,7 +50,7 @@ public class BotsResource {
                     conf.getAuth()
             ));
             return Response.
-                    ok().
+                    ok("Invalid Authorization: " + auth).
                     status(403).
                     build();
         }

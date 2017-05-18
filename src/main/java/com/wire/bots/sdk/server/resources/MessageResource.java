@@ -42,7 +42,7 @@ public class MessageResource extends MessageResourceBase {
                     auth
             ));
             return Response.
-                    ok().
+                    ok("Invalid Authorization: " + auth).
                     status(403).
                     build();
         }

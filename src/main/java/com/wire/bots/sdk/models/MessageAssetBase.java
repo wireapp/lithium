@@ -28,6 +28,7 @@ public abstract class MessageAssetBase extends MessageBase {
     private long size;
     private String name;
     private byte[] sha256;
+    private byte[] data;  //decrypted
 
     public MessageAssetBase(String msgId, String convId, String clientId, String userId) {
         super(msgId, convId, clientId, userId);
@@ -87,5 +88,13 @@ public abstract class MessageAssetBase extends MessageBase {
 
     public byte[] getSha256() {
         return sha256;
+    }
+
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
     }
 }
