@@ -139,6 +139,11 @@ class BotClient implements WireClient {
     }
 
     @Override
+    public void ping() throws Exception {
+        postGenericMessage(new Ping());
+    }
+
+    @Override
     public byte[] downloadAsset(String assetKey, String assetToken, byte[] sha256Challenge, byte[] otrKey)
             throws Exception {
         byte[] cipher = jerseyClient.downloadAsset(assetKey, assetToken);

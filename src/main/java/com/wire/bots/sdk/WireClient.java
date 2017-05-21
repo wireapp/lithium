@@ -122,6 +122,12 @@ public interface WireClient extends Closeable {
     void sendFile(File file, String mime) throws Exception;
 
     /**
+     * Sends ping into conversation
+     * @throws Exception
+     */
+    void ping() throws Exception;
+
+    /**
      * This method is invoked by the sdk. It sends delivery receipt when the message is received
      *
      * @param msgId Message ID as received from the Backend

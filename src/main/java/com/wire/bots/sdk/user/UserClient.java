@@ -139,6 +139,11 @@ public class UserClient implements WireClient {
     }
 
     @Override
+    public void ping() throws Exception {
+        postGenericMessage(new Ping());
+    }
+    
+    @Override
     public void sendDelivery(String msgId) throws Exception {
         postGenericMessage(new Confirmation(msgId));
     }
