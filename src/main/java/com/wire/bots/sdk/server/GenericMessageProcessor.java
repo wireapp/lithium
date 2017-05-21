@@ -21,12 +21,7 @@ package com.wire.bots.sdk.server;
 import com.waz.model.Messages;
 import com.wire.bots.sdk.MessageHandlerBase;
 import com.wire.bots.sdk.WireClient;
-import com.wire.bots.sdk.models.AttachmentMessage;
-import com.wire.bots.sdk.models.AudioMessage;
-import com.wire.bots.sdk.models.ImageMessage;
-import com.wire.bots.sdk.models.MessageAssetBase;
-import com.wire.bots.sdk.models.TextMessage;
-import com.wire.bots.sdk.models.VideoMessage;
+import com.wire.bots.sdk.models.*;
 
 /**
  */
@@ -69,7 +64,7 @@ public class GenericMessageProcessor {
         }
 
         // Edit message
-        if(generic.hasEdited() && generic.getEdited().hasText()){
+        if (generic.hasEdited() && generic.getEdited().hasText()) {
             Messages.MessageEdit edited = generic.getEdited();
             TextMessage msg = new TextMessage(edited.getReplacingMessageId(), convId, clientId, userId);
             msg.setText(edited.getText().getContent());
@@ -87,10 +82,16 @@ public class GenericMessageProcessor {
             return true;
         }
 
+        //Logger.info("Generic: hasAsset: %s, hasImage: %s", generic.hasAsset(), generic.hasImage());
+
         // Assets
         if (asset != null) {
+            //Logger.info("Generic: hasOriginal: %s, hasUploaded: %s", asset.hasOriginal(), asset.hasUploaded());
+
             if (asset.hasOriginal()) {
                 Messages.Asset.Original original = asset.getOriginal();
+                //Logger.info("Generic: hasAudio: %s, hasVideo: %s", original.hasAudio(), original.hasVideo());
+
                 if (original.hasImage()) {
                     ImageMessage msg = new ImageMessage(messageId, convId, clientId, userId);
 
@@ -141,82 +142,6 @@ public class GenericMessageProcessor {
                         handler.onAttachment(client, msg);
                     return true;
                 }
-            }
-        }
-
-        return false;
-    }
-
-    @Deprecated
-    public boolean process(String userId, String assetId, Messages.GenericMessage generic) {
-        String messageId = generic.getMessageId();
-        String convId = client.getConversationId();
-        String clientId = client.getDeviceId();
-
-        Messages.ImageAsset image = generic.hasImage() ? generic.getImage() : null;
-        if (image != null && image.getTag().startsWith("medium")) {
-            ImageMessage msg = new ImageMessage(messageId, convId, clientId, userId);
-
-            msg.setAssetKey(assetId);
-            msg.setOtrKey(image.getOtrKey().toByteArray());
-            msg.setMimeType(image.getMimeType());
-            msg.setSize(image.getSize());
-            msg.setSha256(image.getSha256().toByteArray());
-            msg.setHeight(image.getHeight());
-            msg.setWidth(image.getWidth());
-            msg.setTag(image.hasTag() ? image.getTag() : null);
-
-            handler.onImage(client, msg);
-            return true;
-        }
-
-        Messages.Asset asset = generic.hasAsset() ? generic.getAsset() : null;
-        if (asset != null) {
-            if (asset.hasOriginal()) {
-                Messages.Asset.Original original = asset.getOriginal();
-                if (original.hasAudio()) {
-                    AudioMessage msg = new AudioMessage(messageId, convId, clientId, userId);
-
-                    initAsset(asset, original, msg);
-
-                    msg.setAssetKey(assetId);
-
-                    Messages.Asset.AudioMetaData audio = original.getAudio();
-                    msg.setDuration(audio.getDurationInMillis());
-
-                    handler.onAudio(client, msg);
-                    return true;
-                }
-                if (original.hasVideo()) {
-                    VideoMessage msg = new VideoMessage(messageId, convId, clientId, userId);
-
-                    initAsset(asset, original, msg);
-
-                    msg.setAssetKey(assetId);
-
-                    Messages.Asset.VideoMetaData video = original.getVideo();
-                    msg.setDuration(video.getDurationInMillis());
-                    msg.setHeight(video.getHeight());
-                    msg.setWidth(video.getWidth());
-
-                    handler.onVideo(client, msg);
-                    return true;
-                }
-            }
-
-            if (asset.hasUploaded()) {
-                Messages.Asset.RemoteData uploaded = asset.getUploaded();
-                // this must be a generic file attachment then
-                AttachmentMessage msg = new AttachmentMessage(messageId, convId, clientId, userId);
-
-                msg.setAssetKey(uploaded.getAssetId());
-                msg.setAssetToken(uploaded.hasAssetToken() ? uploaded.getAssetToken() : null);
-                msg.setOtrKey(uploaded.getOtrKey().toByteArray());
-                msg.setSha256(uploaded.getSha256().toByteArray());
-                msg.setAssetKey(assetId);
-
-                handler.onAttachment(client, msg);
-                return true;
             }
         }
 

@@ -80,17 +80,6 @@ public abstract class MessageResourceBase {
             }
             break;
             // Legacy code starts here
-            case "conversation.otr-asset-add": {
-                GenericMessageProcessor processor = new GenericMessageProcessor(client, handler);
-
-                byte[] bytes = client.decrypt(inbound.from, data.sender, data.key);
-                Messages.GenericMessage genericMessage = Messages.GenericMessage.parseFrom(bytes);
-
-                handler.onEvent(client, inbound.from, genericMessage);
-
-                processor.process(inbound.from, inbound.data.id, genericMessage);
-            }
-            break;
             case "user.connection": {
                 if (inbound.connection.status.equals("pending")) {
                     client.acceptConnection(inbound.connection.to);

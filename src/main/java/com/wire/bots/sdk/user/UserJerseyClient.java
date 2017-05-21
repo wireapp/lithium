@@ -18,15 +18,15 @@
 
 package com.wire.bots.sdk.user;
 
-import com.wire.bots.sdk.assets.IAsset;
-import com.wire.bots.sdk.models.otr.OtrMessage;
-import com.wire.bots.sdk.models.otr.PreKey;
-import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.Logger;
 import com.wire.bots.sdk.Util;
+import com.wire.bots.sdk.assets.IAsset;
 import com.wire.bots.sdk.models.AssetKey;
 import com.wire.bots.sdk.models.otr.Devices;
+import com.wire.bots.sdk.models.otr.OtrMessage;
+import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.models.otr.PreKeys;
+import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.user.model.Connection;
 
 import javax.ws.rs.client.Entity;
@@ -90,9 +90,7 @@ public class UserJerseyClient extends LoginClient {
 
     byte[] downloadAsset(String assetKey, String assetToken) throws IOException {
         Invocation.Builder req = client.target(httpUrl)
-                .path("conversations")
-                .path(conversation)
-                .path("otr/assets")
+                .path("assets/v3")
                 .path(assetKey)
                 .request()
                 .header("Authorization", "Bearer " + token);
