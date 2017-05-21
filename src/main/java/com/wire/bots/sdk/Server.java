@@ -30,7 +30,6 @@ import com.wire.bots.sdk.server.tasks.BroadcastAllTask;
 import com.wire.bots.sdk.server.tasks.ConversationTask;
 import com.wire.bots.sdk.user.Endpoint;
 import com.wire.bots.sdk.user.UserClient;
-import com.wire.cryptobox.CryptoException;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.servlets.tasks.Task;
@@ -83,13 +82,10 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
         initTelemetry(config, env);
 
-        WireClientFactory factory = new WireClientFactory() {
-            @Override
-            public WireClient createClient(String botId, String convId, String clientId, String token) throws CryptoException {
-                String path = String.format("%s/%s", config.getCryptoDir(), botId);
-                OtrManager otrManager = new OtrManager(path);
-                return new BotClient(otrManager, botId, convId, clientId, token);
-            }
+        WireClientFactory factory = (botId, convId, clientId, token) -> {
+            String path = String.format("%s/%s", config.getCryptoDir(), botId);
+            OtrManager otrManager = new OtrManager(path);
+            return new BotClient(otrManager, botId, convId, clientId, token);
         };
 
         repo = new ClientRepo(factory, config.getCryptoDir());
@@ -112,13 +108,10 @@ public abstract class Server<Config extends Configuration> extends Application<C
         String password = System.getProperty("password");
 
         if (email != null && password != null) {
-            WireClientFactory userClientFactory = new WireClientFactory() {
-                @Override
-                public WireClient createClient(String botId, String convId, String clientId, String token) throws CryptoException {
-                    String path = String.format("%s/%s", config.getCryptoDir(), botId);
-                    OtrManager otrManager = new OtrManager(path);
-                    return new UserClient(otrManager, botId, convId, clientId, token);
-                }
+            WireClientFactory userClientFactory = (botId, convId, clientId, token) -> {
+                String path = String.format("%s/%s", config.getCryptoDir(), botId);
+                OtrManager otrManager = new OtrManager(path);
+                return new UserClient(otrManager, botId, convId, clientId, token);
             };
             ClientRepo userRepo = new ClientRepo(userClientFactory, config.getCryptoDir());
             MessageResource msgRes = new MessageResource(handler, config, userRepo);

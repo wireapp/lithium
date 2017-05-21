@@ -45,8 +45,30 @@ public class ClientRepo {
     }
 
     @Deprecated
-    public WireClient getWireClient(String botId, String ignored) throws CryptoException, IOException {
-        return getWireClient(botId);
+    public WireClient getWireClient(String botId, String conv) throws CryptoException, IOException {
+        synchronized (clients) {
+            WireClient wireClient = clients.get(botId);
+            if (wireClient == null || wireClient.isClosed()) {
+                File clientFile = new File(String.format("%s/%s/client.id", path, botId));
+                File tokenFile = new File(String.format("%s/%s/token.id", path, botId));
+
+                if (!clientFile.exists() || !tokenFile.exists())
+                    return null;
+
+                try {
+                    String clientId = Util.readLine(clientFile);
+                    String token = Util.readLine(tokenFile);
+
+                    wireClient = factory.createClient(botId, conv, clientId, token);
+                    WireClient old = clients.put(botId, wireClient);
+                    if (old != null)
+                        old.close();
+                } catch (Exception e) {
+                    Logger.error("GetWireClient. BotId: %s, status: %s", botId, e.getLocalizedMessage());
+                }
+            }
+            return wireClient;
+        }
     }
 
     public void removeClient(String botId) {

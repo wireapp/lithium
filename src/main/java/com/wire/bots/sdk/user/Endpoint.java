@@ -46,7 +46,7 @@ import java.util.concurrent.TimeUnit;
  */
 @ClientEndpoint
 public class Endpoint {
-    private final MessageResource handler;
+    private final MessageResource messageResource;
     private final Configuration config;
     private Session session;
     private final ClientManager client;
@@ -57,7 +57,7 @@ public class Endpoint {
 
     public Endpoint(Configuration config, MessageResource handler) throws CryptoException {
         this.config = config;
-        this.handler = handler;
+        this.messageResource = handler;
         client = ClientManager.createClient();
     }
 
@@ -92,8 +92,7 @@ public class Endpoint {
 
         for (InboundMessage payload : message.payload) {
             //Logger.info(payload.type);
-
-            handler.newMessage(config.getAuth(), botId, payload);
+            messageResource.onNewMessage(botId, payload.conversation, payload);
         }
     }
 

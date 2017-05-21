@@ -62,4 +62,12 @@ public class MessageResource extends MessageResourceBase {
                 status(200).
                 build();
     }
+
+    @Deprecated
+    public void onNewMessage(String bot, String convId, InboundMessage inbound) throws Exception {
+        WireClient client = repo.getWireClient(bot, convId);
+        if (client != null) {
+            handleMessage(inbound, client);
+        }
+    }
 }
