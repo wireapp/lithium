@@ -27,6 +27,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.math.BigInteger;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -123,5 +124,12 @@ public class Util {
         String t1 = token1.replace("Bearer", "").trim();
         String t2 = token2.replace("Bearer", "").trim();
         return t1.equals(t2);
+    }
+
+    public static String extractMimeType(byte[] imageData) throws IOException {
+        try (ByteArrayInputStream input = new ByteArrayInputStream(imageData)) {
+            String contentType = URLConnection.guessContentTypeFromStream(input);
+            return contentType != null ? contentType : "image/xyz";
+        }
     }
 }

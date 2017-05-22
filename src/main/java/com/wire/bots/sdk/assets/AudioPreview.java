@@ -121,7 +121,7 @@ public class AudioPreview implements IGeneric {
 
             return ret;
         } catch (Exception e) {
-            Logger.error(e.getMessage());
+            Logger.warning(e.getMessage());
             return new byte[0];
         }
     }

@@ -110,7 +110,7 @@ public interface WireClient extends Closeable {
      * @param duration Duration in milliseconds
      * @throws Exception
      */
-    void sendVideo(byte[] bytes, String name, String mimeType, long duration) throws Exception;
+    void sendVideo(byte[] bytes, String name, String mimeType, long duration, int h, int w) throws Exception;
 
     /**
      * Post generic file up to 25MB as an attachment into this conversation.

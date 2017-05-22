@@ -128,7 +128,8 @@ public class GenericMessageProcessor {
                     msg.setHeight(video.getHeight());
                     msg.setWidth(video.getWidth());
 
-                    handler.onVideo(client, msg);
+                    if (msg.getAssetKey() != null && !msg.getAssetKey().isEmpty())
+                        handler.onVideo(client, msg);
                     return true;
                 }
 

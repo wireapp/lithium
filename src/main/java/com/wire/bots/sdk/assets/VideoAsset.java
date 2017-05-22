@@ -36,8 +36,8 @@ public class VideoAsset implements IGeneric, IAsset {
     private String assetToken;
 
     public VideoAsset(byte[] bytes, String mime, String messageId) throws Exception {
-        this.messageId = mime;
-        this.mimeType = messageId;
+        this.messageId = messageId;
+        this.mimeType = mime;
 
         random.nextBytes(otrKey);
 

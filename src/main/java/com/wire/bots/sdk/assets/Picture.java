@@ -28,7 +28,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -60,7 +59,7 @@ public class Picture implements IGeneric, IAsset {
 
     public Picture(byte[] bytes) throws IOException {
         imageData = bytes;
-        extractMimeType();
+        this.mimeType = Util.extractMimeType(imageData);
         loadBufferImage();
     }
 
@@ -68,7 +67,7 @@ public class Picture implements IGeneric, IAsset {
         try (InputStream input = new URL(url).openStream()) {
             imageData = Util.toByteArray(input);
         }
-        extractMimeType();
+        this.mimeType = Util.extractMimeType(imageData);
         loadBufferImage();
     }
 
@@ -246,13 +245,6 @@ public class Picture implements IGeneric, IAsset {
             width = bufferedImage.getWidth();
             height = bufferedImage.getHeight();
             size = imageData.length;
-        }
-    }
-
-    private void extractMimeType() throws IOException {
-        try (ByteArrayInputStream input = new ByteArrayInputStream(imageData)) {
-            String contentType = URLConnection.guessContentTypeFromStream(input);
-            mimeType = contentType != null ? contentType : "image/xyz";
         }
     }
 }

@@ -36,10 +36,7 @@ import com.wire.cryptobox.PreKey;
 import java.io.File;
 import java.io.IOException;
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collection;
+import java.util.*;
 
 public class UserClient implements WireClient {
     private final String botId;
@@ -116,8 +113,19 @@ public class UserClient implements WireClient {
     }
 
     @Override
-    public void sendVideo(byte[] bytes, String name, String mimeType, long duration) throws Exception {
+    public void sendVideo(byte[] bytes, String name, String mimeType, long duration, int h, int w) throws Exception {
+        String messageId = UUID.randomUUID().toString();
+        VideoPreview preview = new VideoPreview(name, mimeType, duration, h, w, bytes.length, messageId);
+        VideoAsset asset = new VideoAsset(bytes, mimeType, messageId);
 
+        postGenericMessage(preview);
+
+        AssetKey assetKey = uploadAsset(asset);
+        asset.setAssetKey(assetKey.key);
+        asset.setAssetToken(assetKey.token);
+
+        // post original + remote asset message
+        postGenericMessage(asset);
     }
 
     @Override
