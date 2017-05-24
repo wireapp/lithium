@@ -47,7 +47,8 @@ public class ClientRepo {
     @Deprecated
     public WireClient getWireClient(String botId, String conv) throws CryptoException, IOException {
         synchronized (clients) {
-            WireClient wireClient = clients.get(botId);
+            String key = String.format("%s-%s", botId, conv);
+            WireClient wireClient = clients.get(key);
             if (wireClient == null || wireClient.isClosed()) {
                 File clientFile = new File(String.format("%s/%s/client.id", path, botId));
                 File tokenFile = new File(String.format("%s/%s/token.id", path, botId));
@@ -60,7 +61,7 @@ public class ClientRepo {
                     String token = Util.readLine(tokenFile);
 
                     wireClient = factory.createClient(botId, conv, clientId, token);
-                    WireClient old = clients.put(botId, wireClient);
+                    WireClient old = clients.put(key, wireClient);
                     if (old != null)
                         old.close();
                 } catch (Exception e) {
