@@ -22,13 +22,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wire.bots.sdk.Configuration;
 import com.wire.bots.sdk.Logger;
 import com.wire.bots.sdk.OtrManager;
+import com.wire.bots.sdk.Util;
 import com.wire.bots.sdk.server.model.InboundMessage;
 import com.wire.bots.sdk.server.resources.MessageResource;
+import com.wire.bots.sdk.user.model.Message;
 import com.wire.bots.sdk.user.model.User;
 import com.wire.cryptobox.CryptoException;
 import com.wire.cryptobox.PreKey;
-import com.wire.bots.sdk.Util;
-import com.wire.bots.sdk.user.model.Message;
 import org.glassfish.tyrus.client.ClientManager;
 
 import javax.websocket.*;
@@ -145,7 +145,7 @@ public class Endpoint {
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 try {
-                    token = UserJerseyClient.renewAccessToken(cookie, token);
+                    token = API.renewAccessToken(cookie, token);
                     File tokenFile = new File(config.getCryptoDir() + "/" + botId + "/token.id");
                     Util.writeLine(token, tokenFile);
                 } catch (Exception e) {

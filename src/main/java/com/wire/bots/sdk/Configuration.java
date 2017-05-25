@@ -45,12 +45,12 @@ public class Configuration extends io.dropwizard.Configuration {
     }
 
     public final static class ConfigValueNotFoundException extends RuntimeException {
-        public ConfigValueNotFoundException(String message) {
+        ConfigValueNotFoundException(String message) {
             super(message);
         }
     }
 
-    public static String propOrEnv(String prop, boolean strict) {
+    private static String propOrEnv(String prop, boolean strict) {
         final String env = prop.replace('.', '_').toUpperCase();
         final String val = System.getProperty(prop, System.getenv(env));
         if (val == null && strict) {

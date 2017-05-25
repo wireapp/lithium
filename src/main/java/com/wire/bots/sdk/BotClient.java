@@ -40,15 +40,15 @@ class BotClient implements WireClient {
     private final String botId;
     private final String conversationId;
     private final String clientId;
-    private final JerseyClient jerseyClient;
+    private final API api;
     private final OtrManager otrManager;
     private Devices devices = null;
 
-    public BotClient(OtrManager otrManager, String botId, String convId, String clientId, String token) {
+    BotClient(OtrManager otrManager, String botId, String convId, String clientId, String token) {
         this.botId = botId;
         this.conversationId = convId;
         this.clientId = clientId;
-        this.jerseyClient = new JerseyClient(token);
+        this.api = new API(token);
         this.otrManager = otrManager;
     }
 
@@ -146,7 +146,7 @@ class BotClient implements WireClient {
     @Override
     public byte[] downloadAsset(String assetKey, String assetToken, byte[] sha256Challenge, byte[] otrKey)
             throws Exception {
-        byte[] cipher = jerseyClient.downloadAsset(assetKey, assetToken);
+        byte[] cipher = api.downloadAsset(assetKey, assetToken);
         byte[] sha256 = MessageDigest.getInstance("SHA-256").digest(cipher);
         if (!Arrays.equals(sha256, sha256Challenge))
             throw new Exception("Failed sha256 check");
@@ -181,12 +181,12 @@ class BotClient implements WireClient {
 
     @Override
     public Collection<User> getUsers(ArrayList<String> userIds) throws IOException {
-        return jerseyClient.getUsers(userIds);
+        return api.getUsers(userIds);
     }
 
     @Override
     public Conversation getConversation() throws IOException {
-        return jerseyClient.getConversation();
+        return api.getConversation();
     }
 
     @Override
@@ -196,7 +196,7 @@ class BotClient implements WireClient {
 
     @Override
     public void acceptConnection(String user) throws IOException {
-
+        // bots cannot accept connections
     }
 
     @Override
@@ -231,12 +231,12 @@ class BotClient implements WireClient {
 
     @Override
     public void uploadPreKeys(ArrayList<com.wire.bots.sdk.models.otr.PreKey> preKeys) throws IOException {
-        jerseyClient.uploadPreKeys((preKeys));
+        api.uploadPreKeys((preKeys));
     }
 
     @Override
     public ArrayList<Integer> getAvailablePrekeys() {
-        return jerseyClient.getAvailablePrekeys();
+        return api.getAvailablePrekeys();
     }
 
     @Override
@@ -246,7 +246,7 @@ class BotClient implements WireClient {
 
     @Override
     public byte[] downloadProfilePicture(String assetKey) throws IOException {
-        return jerseyClient.downloadAsset(assetKey, null);
+        return api.downloadAsset(assetKey, null);
     }
 
     @Override
@@ -256,7 +256,7 @@ class BotClient implements WireClient {
 
     @Override
     public AssetKey uploadAsset(IAsset asset) throws Exception {
-        return jerseyClient.uploadAsset(asset);
+        return api.uploadAsset(asset);
     }
 
     /**
@@ -264,7 +264,7 @@ class BotClient implements WireClient {
      * devices.
      *
      * @param generic generic message to be sent
-     * @throws Exception
+     * @throws Exception CryptoBox exception
      */
     private void postGenericMessage(IGeneric generic) throws Exception {
         OtrMessage msg = new OtrMessage(clientId, generic.createGenericMsg().toByteArray());
@@ -272,10 +272,10 @@ class BotClient implements WireClient {
         // Try to encrypt the msg for those devices that we have the session already
         otrManager.encrypt(getDevices(), msg);
 
-        Devices res = jerseyClient.sendMessage(msg);
+        Devices res = api.sendMessage(msg);
         if (!res.hasMissing()) {
             // Fetch preKeys for the missing devices from the Backend
-            PreKeys preKeys = jerseyClient.getPreKeys(res.missing);
+            PreKeys preKeys = api.getPreKeys(res.missing);
 
             // Encrypt msg for those devices that were missing. This time using preKeys
             otrManager.encrypt(preKeys, msg);
@@ -283,7 +283,7 @@ class BotClient implements WireClient {
             // reset devices so they could be pulled next time
             devices = null;
 
-            res = jerseyClient.sendMessage(msg, true);
+            res = api.sendMessage(msg, true);
             if (!res.hasMissing()) {
                 Logger.error(String.format("Failed to send otr message to %d devices. Bot: %s",
                         res.size(),
@@ -302,6 +302,6 @@ class BotClient implements WireClient {
         if (devices != null)
             return devices;
 
-        return jerseyClient.sendMessage(new OtrMessage(clientId));
+        return api.sendMessage(new OtrMessage(clientId));
     }
 }

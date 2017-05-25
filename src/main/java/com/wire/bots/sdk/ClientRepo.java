@@ -11,7 +11,7 @@ public class ClientRepo {
     private final String path;
     private final HashMap<String, WireClient> clients = new HashMap<>();
 
-    public ClientRepo(WireClientFactory factory, String path) {
+    ClientRepo(WireClientFactory factory, String path) {
         this.factory = factory;
         this.path = path;
     }

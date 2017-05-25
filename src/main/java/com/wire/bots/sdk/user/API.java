@@ -40,12 +40,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-public class UserJerseyClient extends LoginClient {
+class API extends LoginClient {
 
     private final String conversation;
     private final String token;
 
-    public UserJerseyClient(String conversation, String token) {
+    API(String conversation, String token) {
         this.conversation = conversation;
         this.token = token;
     }
@@ -108,9 +108,9 @@ public class UserJerseyClient extends LoginClient {
         return response.readEntity(byte[].class);
     }
 
-    void setConnectionStatus(String user, String status) throws IOException {
+    void acceptConnection(String user) throws IOException {
         Connection connection = new Connection();
-        connection.setStatus(status);
+        connection.setStatus("accepted");
 
         Response response = client.target(httpUrl).
                 path("connections").
@@ -142,7 +142,7 @@ public class UserJerseyClient extends LoginClient {
         return response.readEntity(com.wire.bots.sdk.user.model.User.class).getToken();
     }
 
-    public AssetKey uploadAsset(IAsset asset) throws Exception {
+    AssetKey uploadAsset(IAsset asset) throws Exception {
         StringBuilder sb = new StringBuilder();
 
         // Part 1
@@ -209,15 +209,13 @@ public class UserJerseyClient extends LoginClient {
                 });
     }
 
-    public boolean uploadPreKeys(ArrayList<PreKey> preKeys) {
-        Response res = client.target(httpUrl).
+    void uploadPreKeys(ArrayList<PreKey> preKeys) {
+        client.target(httpUrl).
                 path("users/prekeys").
                 request(MediaType.APPLICATION_JSON).
                 header("Authorization", "Bearer " + token).
                 accept(MediaType.APPLICATION_JSON).
                 post(Entity.entity(preKeys, MediaType.APPLICATION_JSON));
-
-        return res.getStatus() == 200;
     }
 
     ArrayList<Integer> getAvailablePrekeys(String clientId) {

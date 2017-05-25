@@ -37,7 +37,7 @@ import java.util.Base64;
 
 public class LoginClient {
     protected final static Client client;
-    protected final static String httpUrl;
+    final static String httpUrl;
 
     static {
         String env = System.getProperty("env", "prod");
@@ -48,7 +48,7 @@ public class LoginClient {
         client = JerseyClientBuilder.createClient(cfg);
     }
 
-    public User login(String email, String password) throws IOException {
+    User login(String email, String password) throws IOException {
         User login = new User();
         login.setEmail(email);
         login.setPassword(password);
@@ -69,7 +69,7 @@ public class LoginClient {
         return user;
     }
 
-    public String registerClient(PreKey key, String token, String password) throws IOException {
+    String registerClient(PreKey key, String token, String password) throws IOException {
         NewClient newClient = new NewClient();
         newClient.lastPreKey = new com.wire.bots.sdk.models.otr.PreKey();
         newClient.lastPreKey.id = key.id;
@@ -98,21 +98,6 @@ public class LoginClient {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class _Client {
         public String id;
-    }
-
-    public boolean setHandle(String token, String handle) {
-        Response response = client.target(httpUrl)
-                .path("self/handle")
-                .request(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + token)
-                .put(Entity.entity(String.format("{ \"handle\":\"%s\"}", handle), MediaType.APPLICATION_JSON));
-
-        if (response.getStatus() > 300) {
-            String msg = String.format("setHandle: %s, code: %s", response.readEntity(String.class)
-                    , response.getStatus());
-            Logger.warning(msg);
-        }
-        return response.getStatus() == 200;
     }
 
     public String newConversation(String token, String name) throws IOException {

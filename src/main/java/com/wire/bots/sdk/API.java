@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-class JerseyClient {
+class API {
 
     private final static Client client;
     private final static String httpUrl;
@@ -58,7 +58,7 @@ class JerseyClient {
         client = JerseyClientBuilder.createClient(cfg);
     }
 
-    public JerseyClient(String token) {
+    API(String token) {
         this.token = token;
     }
 
@@ -68,7 +68,7 @@ class JerseyClient {
      * @param msg           OtrMessage object containing ciphers for all clients
      * @param ignoreMissing If TRUE ignore missing clients and deliver the message to available clients
      * @return List of missing devices in case of fail or an empty list.
-     * @throws IOException
+     * @throws IOException CryptoBox exception
      */
     Devices sendMessage(OtrMessage msg, boolean ignoreMissing) throws IOException {
         Response response = client.target(httpUrl).
@@ -136,7 +136,7 @@ class JerseyClient {
                 });
     }
 
-    public boolean uploadPreKeys(ArrayList<PreKey> preKeys) throws IOException {
+    void uploadPreKeys(ArrayList<PreKey> preKeys) throws IOException {
         NewBotResponseModel model = new NewBotResponseModel();
         model.preKeys = preKeys;
 
@@ -154,11 +154,9 @@ class JerseyClient {
                     statusCode);
             throw new IOException(log);
         }
-
-        return statusCode == 200;
     }
 
-    public AssetKey uploadAsset(IAsset asset) throws Exception {
+    AssetKey uploadAsset(IAsset asset) throws Exception {
         StringBuilder sb = new StringBuilder();
 
         // Part 1

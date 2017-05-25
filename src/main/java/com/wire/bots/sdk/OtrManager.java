@@ -18,12 +18,10 @@
 
 package com.wire.bots.sdk;
 
-import com.wire.cryptobox.*;
-import com.wire.cryptobox.PreKey;
-
 import com.wire.bots.sdk.models.otr.Devices;
 import com.wire.bots.sdk.models.otr.OtrMessage;
 import com.wire.bots.sdk.models.otr.PreKeys;
+import com.wire.cryptobox.*;
 
 import java.io.Closeable;
 import java.util.Base64;
@@ -80,7 +78,7 @@ public class OtrManager implements Closeable {
      *
      * @param preKeys Prekeys
      * @param msg     Final object containing ciphers for all clients. This will be sent to BE
-     * @throws CryptoException
+     * @throws CryptoException throws CryptoException
      */
     public void encrypt(PreKeys preKeys, OtrMessage msg) throws CryptoException {
         byte[] content = msg.getContent();
@@ -126,7 +124,7 @@ public class OtrManager implements Closeable {
      * @param clientId Sender's Client id
      * @param cypher   Encrypted, Base64 encoded string
      * @return Decrypted blob
-     * @throws CryptoException
+     * @throws CryptoException  throws CryptoException
      */
     public byte[] decrypt(String userId, String clientId, String cypher) throws CryptoException {
         byte[] decode = Base64.getDecoder().decode(cypher);
@@ -159,21 +157,12 @@ public class OtrManager implements Closeable {
     }
 
     /**
-     * Closes all previously opened sessions
-     */
-    public void closeAllSessions() {
-        synchronized (lock) {
-            box.closeAllSessions();
-        }
-    }
-
-    /**
      * Inits the session from the prekey and encrypts the given content
      *
      * @param id      Identifier in our case: userId_clientId @see {@link #createId}
      * @param content Unencrypted binary content to be encrypted
      * @return Cipher
-     * @throws CryptoException
+     * @throws CryptoException  throws CryptoException
      */
     private byte[] encryptFromPreKeys(String id, PreKey preKey, byte[] content) throws CryptoException {
         synchronized (lock) {
@@ -192,7 +181,7 @@ public class OtrManager implements Closeable {
      * @param id      Identifier in our case: userId_clientId @see {@link #createId}
      * @param content Unencrypted binary content to be encrypted
      * @return Cipher or NULL in case there is no session for the given {@param #id}
-     * @throws CryptoException
+     * @throws CryptoException  throws CryptoException
      */
     private byte[] encryptFromSession(String id, byte[] content) throws CryptoException {
         synchronized (lock) {

@@ -42,7 +42,7 @@ public class UserClient implements WireClient {
     private final String botId;
     private final String convId;
     private final String clientId;
-    private final UserJerseyClient jerseyClient;
+    private final API api;
     private final OtrManager otrManager;
     private final Devices devices;
 
@@ -50,7 +50,7 @@ public class UserClient implements WireClient {
         this.botId = botId;
         this.convId = convId;
         this.clientId = clientId;
-        this.jerseyClient = new UserJerseyClient(this.convId, token);
+        this.api = new API(this.convId, token);
         this.otrManager = otrManager;
         this.devices = getDevices();
     }
@@ -89,7 +89,7 @@ public class UserClient implements WireClient {
 
     @Override
     public AssetKey uploadAsset(IAsset asset) throws Exception {
-        return jerseyClient.uploadAsset(asset);
+        return api.uploadAsset(asset);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class UserClient implements WireClient {
 
         postGenericMessage(preview);
 
-        AssetKey assetKey = jerseyClient.uploadAsset(audioAsset);
+        AssetKey assetKey = api.uploadAsset(audioAsset);
         audioAsset.setAssetKey(assetKey.key);
         audioAsset.setAssetToken(assetKey.token);
 
@@ -138,7 +138,7 @@ public class UserClient implements WireClient {
         FileAsset asset = new FileAsset(assetPreview);
 
         // upload asset to backend
-        AssetKey assetKey = jerseyClient.uploadAsset(asset);
+        AssetKey assetKey = api.uploadAsset(asset);
         asset.setAssetKey(assetKey.key);
         asset.setAssetToken(assetKey.token);
 
@@ -168,7 +168,7 @@ public class UserClient implements WireClient {
 
     @Override
     public byte[] downloadAsset(String assetKey, String assetToken, byte[] sha256Challenge, byte[] otrKey) throws Exception {
-        byte[] cipher = jerseyClient.downloadAsset(assetKey, assetToken);
+        byte[] cipher = api.downloadAsset(assetKey, assetToken);
         byte[] sha256 = MessageDigest.getInstance("SHA-256").digest(cipher);
         if (!Arrays.equals(sha256, sha256Challenge))
             throw new Exception("Failed sha256 check");
@@ -193,17 +193,17 @@ public class UserClient implements WireClient {
 
     @Override
     public Collection<User> getUsers(ArrayList<String> userIds) throws IOException {
-        return jerseyClient.getUsers(userIds);
+        return api.getUsers(userIds);
     }
 
     @Override
     public Conversation getConversation() throws IOException {
-        return jerseyClient.getConversation();
+        return api.getConversation();
     }
 
     @Override
     public void acceptConnection(String user) throws IOException {
-        jerseyClient.setConnectionStatus(user, "accepted");
+        api.acceptConnection(user);
     }
 
     private void postGenericMessage(IGeneric generic) throws Exception {
@@ -214,19 +214,19 @@ public class UserClient implements WireClient {
 
         otrManager.encrypt(devices, msg);
 
-        Devices missing = jerseyClient.sendMessage(msg);
+        Devices missing = api.sendMessage(msg);
         if (!missing.hasMissing()) {
-            PreKeys preKeys = jerseyClient.getPreKeys(missing.missing);
+            PreKeys preKeys = api.getPreKeys(missing.missing);
 
             otrManager.encrypt(preKeys, msg);
 
-            missing = jerseyClient.sendMessage(msg);
+            missing = api.sendMessage(msg);
 
             if (!missing.hasMissing()) {
                 Logger.warning(String.format("Sending otr message with missing %d devices. Conv: %s",
                         missing.size(),
                         convId));
-                missing = jerseyClient.sendMessage(msg, true);
+                missing = api.sendMessage(msg, true);
             }
 
             if (!missing.hasMissing()) {
@@ -239,7 +239,7 @@ public class UserClient implements WireClient {
 
     private Devices getDevices() {
         try {
-            return jerseyClient.sendMessage(new OtrMessage(clientId));
+            return api.sendMessage(new OtrMessage(clientId));
         } catch (IOException e) {
             Logger.error(e.getMessage());
             return new Devices();
@@ -283,12 +283,12 @@ public class UserClient implements WireClient {
 
     @Override
     public void uploadPreKeys(ArrayList<com.wire.bots.sdk.models.otr.PreKey> preKeys) throws IOException {
-        jerseyClient.uploadPreKeys(preKeys);
+        api.uploadPreKeys(preKeys);
     }
 
     @Override
     public ArrayList<Integer> getAvailablePrekeys() {
-        return jerseyClient.getAvailablePrekeys(clientId);
+        return api.getAvailablePrekeys(clientId);
     }
 
     @Override
@@ -298,6 +298,6 @@ public class UserClient implements WireClient {
 
     @Override
     public byte[] downloadProfilePicture(String assetKey) throws IOException {
-        return jerseyClient.downloadAsset(assetKey, null);
+        return api.downloadAsset(assetKey, null);
     }
 }
