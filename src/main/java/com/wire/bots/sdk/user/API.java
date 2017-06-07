@@ -199,7 +199,7 @@ class API extends LoginClient {
                 get(Conversation.class);
     }
 
-    Collection<com.wire.bots.sdk.server.model.User> getUsers(ArrayList<String> ids) throws IOException {
+    Collection<com.wire.bots.sdk.server.model.User> getUsers(Collection<String> ids) throws IOException {
         return client.target(httpUrl).
                 path("users").
                 queryParam("ids", String.join(",", ids)).

@@ -98,7 +98,7 @@ class API {
         return sendMessage(msg, false);
     }
 
-    Collection<User> getUsers(ArrayList<String> ids) throws IOException {
+    Collection<User> getUsers(Collection<String> ids) throws IOException {
         return client.target(httpUrl).
                 path("bot/users").
                 queryParam("ids", String.join(",", ids)).

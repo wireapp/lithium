@@ -186,7 +186,7 @@ public interface WireClient extends Closeable {
      * @return Collection of user profiles (name, accent colour,...)
      * @throws IOException
      */
-    Collection<User> getUsers(ArrayList<String> userIds) throws IOException;
+    Collection<User> getUsers(Collection<String> userIds) throws IOException;
 
     /**
      * Fetch conversation details from the Backend

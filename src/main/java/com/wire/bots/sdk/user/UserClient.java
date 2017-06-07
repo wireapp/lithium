@@ -192,7 +192,7 @@ public class UserClient implements WireClient {
     }
 
     @Override
-    public Collection<User> getUsers(ArrayList<String> userIds) throws IOException {
+    public Collection<User> getUsers(Collection<String> userIds) throws IOException {
         return api.getUsers(userIds);
     }
 
