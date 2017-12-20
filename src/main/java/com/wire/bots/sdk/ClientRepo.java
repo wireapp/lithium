@@ -11,7 +11,7 @@ public class ClientRepo {
     private final String path;
     private final HashMap<String, WireClient> clients = new HashMap<>();
 
-    ClientRepo(WireClientFactory factory, String path) {
+    public ClientRepo(WireClientFactory factory, String path) {
         this.factory = factory;
         this.path = path;
     }
@@ -52,7 +52,7 @@ public class ClientRepo {
             if (wireClient == null || wireClient.isClosed()) {
                 File clientFile = new File(String.format("%s/%s/client.id", path, botId));
                 File tokenFile = new File(String.format("%s/%s/token.id", path, botId));
-
+                
                 if (!clientFile.exists() || !tokenFile.exists())
                     return null;
 
@@ -65,7 +65,11 @@ public class ClientRepo {
                     if (old != null)
                         old.close();
                 } catch (Exception e) {
-                    Logger.error("GetWireClient. BotId: %s, status: %s", botId, e.getLocalizedMessage());
+                    e.printStackTrace();
+                    Logger.error("GetWireClient. BotId: %s, conv: %s, status: %s",
+                            botId,
+                            conv,
+                            e.getLocalizedMessage());
                 }
             }
             return wireClient;

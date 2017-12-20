@@ -72,7 +72,7 @@ public class Endpoint {
      * @param password Plain text password
      * @throws Exception
      */
-    public void signIn(String email, String password) throws Exception {
+    public String signIn(String email, String password) throws Exception {
         LoginClient wireClient = new LoginClient();
         User login = wireClient.login(email, password);
         token = login.getToken();
@@ -82,6 +82,8 @@ public class Endpoint {
         clientId = initDevice(password, token);
 
         initRenewal();
+
+        return botId;
     }
 
     @OnMessage

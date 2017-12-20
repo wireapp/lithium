@@ -19,11 +19,7 @@
 package com.wire.bots.sdk;
 
 import com.waz.model.Messages;
-import com.wire.bots.sdk.models.AttachmentMessage;
-import com.wire.bots.sdk.models.AudioMessage;
-import com.wire.bots.sdk.models.ImageMessage;
-import com.wire.bots.sdk.models.TextMessage;
-import com.wire.bots.sdk.models.VideoMessage;
+import com.wire.bots.sdk.models.*;
 import com.wire.bots.sdk.server.model.NewBot;
 
 import java.util.ArrayList;
@@ -163,10 +159,15 @@ public abstract class MessageHandlerBase {
 
     /**
      * Called when user edits previously sent message
+     *
      * @param client Thread safe wire client that can be used to post back to this conversation
-     * @param msg New Message containing replacing messageId
+     * @param msg    New Message containing replacing messageId
      */
     public void onEditText(WireClient client, TextMessage msg) {
+
+    }
+
+    public void onOT(WireClient client, OTMessage otMessage) {
 
     }
 }

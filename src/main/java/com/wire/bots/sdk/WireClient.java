@@ -20,6 +20,7 @@ package com.wire.bots.sdk;
 
 import com.wire.bots.sdk.assets.IAsset;
 import com.wire.bots.sdk.assets.IGeneric;
+import com.wire.bots.sdk.assets.OT;
 import com.wire.bots.sdk.models.AssetKey;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.Conversation;
@@ -126,6 +127,8 @@ public interface WireClient extends Closeable {
      * @throws Exception
      */
     void ping() throws Exception;
+
+    void sendOT(OT ot) throws Exception;
 
     /**
      * This method is invoked by the sdk. It sends delivery receipt when the message is received

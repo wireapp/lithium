@@ -20,6 +20,7 @@ message GenericMessage {
     Confirmation confirmation = 16;
     Reaction reaction = 17;
     Ephemeral ephemeral = 18;
+    OT ot = 19;
   }
 }
 
@@ -114,6 +115,18 @@ message Confirmation {
 
   required string message_id = 1;
   required Type type = 2;
+}
+
+message OT {
+  enum Type {
+    RETAIN = 0;
+    INSERT = 1;
+    DEL = 2;
+  }
+  required Type type = 1;
+  required int32 offset = 2;
+  optional string text = 3;
+  optional int32 length = 4;
 }
 
 message Location {

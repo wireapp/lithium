@@ -144,6 +144,11 @@ class BotClient implements WireClient {
     }
 
     @Override
+    public void sendOT(OT ot) throws Exception {
+        postGenericMessage(ot);
+    }
+
+    @Override
     public byte[] downloadAsset(String assetKey, String assetToken, byte[] sha256Challenge, byte[] otrKey)
             throws Exception {
         byte[] cipher = api.downloadAsset(assetKey, assetToken);

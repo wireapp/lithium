@@ -82,6 +82,14 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
         initTelemetry(config, env);
 
+        if (!runInUserMode(config, env)) {
+            runInBotMode(config, env);
+        }
+
+        onRun(config, env);
+    }
+
+    private void runInBotMode(Config config, Environment env) {
         WireClientFactory factory = (botId, convId, clientId, token) -> {
             String path = String.format("%s/%s", config.getCryptoDir(), botId);
             OtrManager otrManager = new OtrManager(path);
@@ -101,9 +109,9 @@ public abstract class Server<Config extends Configuration> extends Application<C
         addTask(new BroadcastAllTask(config, repo), env);
         addTask(new ConversationTask(repo), env);
         addTask(new AvailablePrekeysTask(repo), env);
+    }
 
-        onRun(config, env);
-
+    private boolean runInUserMode(Config config, Environment env) throws Exception {
         String email = System.getProperty("email");
         String password = System.getProperty("password");
 
@@ -113,13 +121,18 @@ public abstract class Server<Config extends Configuration> extends Application<C
                 OtrManager otrManager = new OtrManager(path);
                 return new UserClient(otrManager, botId, convId, clientId, token);
             };
-            ClientRepo userRepo = new ClientRepo(userClientFactory, config.getCryptoDir());
-            MessageResource msgRes = new MessageResource(handler, config, userRepo);
+            repo = new ClientRepo(userClientFactory, config.getCryptoDir());
+
+            MessageHandlerBase handler = createHandler(config, env);
+
+            MessageResource msgRes = new MessageResource(handler, config, repo);
 
             Endpoint ep = new Endpoint(config, msgRes);
             ep.signIn(email, password);
             ep.connectWebSocket();
+            return true;
         }
+        return false;
     }
 
     protected void messageResource(Config config, Environment env, MessageHandlerBase handler) {

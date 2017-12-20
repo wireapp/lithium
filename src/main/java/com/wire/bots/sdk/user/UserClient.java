@@ -44,7 +44,7 @@ public class UserClient implements WireClient {
     private final String clientId;
     private final API api;
     private final OtrManager otrManager;
-    private final Devices devices;
+    private Devices devices;
 
     public UserClient(OtrManager otrManager, String botId, String convId, String clientId, String token) {
         this.botId = botId;
@@ -52,7 +52,11 @@ public class UserClient implements WireClient {
         this.clientId = clientId;
         this.api = new API(this.convId, token);
         this.otrManager = otrManager;
-        this.devices = getDevices();
+    }
+
+    @Override
+    public void sendOT(OT ot) throws Exception {
+        postGenericMessage(ot);
     }
 
     public void sendText(String txt) throws Exception {
@@ -150,7 +154,7 @@ public class UserClient implements WireClient {
     public void ping() throws Exception {
         postGenericMessage(new Ping());
     }
-    
+
     @Override
     public void sendDelivery(String msgId) throws Exception {
         postGenericMessage(new Confirmation(msgId));
@@ -167,7 +171,8 @@ public class UserClient implements WireClient {
     }
 
     @Override
-    public byte[] downloadAsset(String assetKey, String assetToken, byte[] sha256Challenge, byte[] otrKey) throws Exception {
+    public byte[] downloadAsset(String assetKey, String assetToken, byte[] sha256Challenge, byte[] otrKey)
+            throws Exception {
         byte[] cipher = api.downloadAsset(assetKey, assetToken);
         byte[] sha256 = MessageDigest.getInstance("SHA-256").digest(cipher);
         if (!Arrays.equals(sha256, sha256Challenge))
@@ -212,9 +217,9 @@ public class UserClient implements WireClient {
         Messages.GenericMessage genMsg = generic.createGenericMsg();
         msg.setContent(genMsg.toByteArray());
 
-        otrManager.encrypt(devices, msg);
+        otrManager.encrypt(getDevices(), msg);
 
-        Devices missing = api.sendMessage(msg);
+        Devices missing = getDevices();
         if (!missing.hasMissing()) {
             PreKeys preKeys = api.getPreKeys(missing.missing);
 
@@ -239,11 +244,14 @@ public class UserClient implements WireClient {
 
     private Devices getDevices() {
         try {
-            return api.sendMessage(new OtrMessage(clientId));
+            if (devices == null || devices.hasMissing()) {
+                devices = api.sendMessage(new OtrMessage(clientId));
+            }
         } catch (IOException e) {
             Logger.error(e.getMessage());
-            return new Devices();
+            devices = new Devices();
         }
+        return devices;
     }
 
     @Override
