@@ -128,7 +128,9 @@ public abstract class Server<Config extends Configuration> extends Application<C
             MessageResource msgRes = new MessageResource(handler, config, repo);
 
             Endpoint ep = new Endpoint(config, msgRes);
-            ep.signIn(email, password);
+            String userId = ep.signIn(email, password);
+            Logger.info(String.format("Logged in as User: %s userId: %s", email, userId));
+
             ep.connectWebSocket();
             return true;
         }

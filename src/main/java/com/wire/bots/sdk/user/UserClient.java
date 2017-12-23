@@ -50,7 +50,7 @@ public class UserClient implements WireClient {
         this.botId = botId;
         this.convId = convId;
         this.clientId = clientId;
-        this.api = new API(this.convId, token);
+        this.api = new API(convId, token);
         this.otrManager = otrManager;
     }
 

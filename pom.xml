@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <bot.version>1.0.5</bot.version>
+        <bot.version>1.0.6</bot.version>
         <cryptobox.version>1.0.0</cryptobox.version>
         <dropwizard.version>1.0.6</dropwizard.version>
     </properties>
 
     <groupId>com.wire.bots</groupId>
-    <artifactId>bot-sdk</artifactId>
+    <artifactId>lithium</artifactId>
     <version>${bot.version}</version>
     <packaging>jar</packaging>
 

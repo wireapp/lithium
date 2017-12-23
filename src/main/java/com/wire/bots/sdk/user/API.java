@@ -18,6 +18,8 @@
 
 package com.wire.bots.sdk.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wire.bots.sdk.Logger;
 import com.wire.bots.sdk.Util;
 import com.wire.bots.sdk.assets.IAsset;
@@ -27,6 +29,7 @@ import com.wire.bots.sdk.models.otr.OtrMessage;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.models.otr.PreKeys;
 import com.wire.bots.sdk.server.model.Conversation;
+import com.wire.bots.sdk.server.model.Member;
 import com.wire.bots.sdk.user.model.Connection;
 
 import javax.ws.rs.client.Entity;
@@ -39,6 +42,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 class API extends LoginClient {
 
@@ -189,14 +193,45 @@ class API extends LoginClient {
         return response.readEntity(AssetKey.class);
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class _Cov {
+        @JsonProperty
+        public String id;
+
+        @JsonProperty
+        public String name;
+
+        @JsonProperty
+        public _Members members;
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class _Members {
+        @JsonProperty
+        public List<Member> others;
+    }
+
     Conversation getConversation() throws IOException {
-        return client.target(httpUrl).
+        Response response = client.target(httpUrl).
                 path("conversations").
                 path(conversation).
                 request().
                 header("Authorization", "Bearer " + token).
                 accept(MediaType.APPLICATION_JSON).
-                get(Conversation.class);
+                get();
+
+        if (response.getStatus() >= 300) {
+            Logger.warning(response.readEntity(String.class));
+            throw new IOException(response.getStatusInfo().getReasonPhrase());
+        }
+
+        _Cov conv = response.readEntity(_Cov.class);
+
+        Conversation ret = new Conversation();
+        ret.name = conv.name;
+        ret.id = conv.id;
+        ret.members = conv.members.others;
+        return ret;
     }
 
     Collection<com.wire.bots.sdk.server.model.User> getUsers(Collection<String> ids) throws IOException {

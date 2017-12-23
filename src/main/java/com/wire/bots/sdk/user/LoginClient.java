@@ -79,7 +79,7 @@ public class LoginClient {
         newClient.sigkeys.mackey = Base64.getEncoder().encodeToString(new byte[32]);
 
         newClient.password = password;
-        newClient.deviceType = "desktop";
+        newClient.deviceType = "tablet";
         newClient.label = "wbotz";
         newClient.type = "permanent";
 
@@ -90,7 +90,9 @@ public class LoginClient {
                 post(Entity.entity(newClient, MediaType.APPLICATION_JSON));
 
         if (response.getStatus() >= 300)
-            throw new IOException("registerClient: " + response.readEntity(String.class) + ". code: " + response.getStatus());
+            throw new IOException(String.format("registerClient: %s. code: %d",
+                    response.readEntity(String.class),
+                    response.getStatus()));
 
         return response.readEntity(_Client.class).id;
     }

@@ -46,9 +46,15 @@ import java.util.concurrent.TimeUnit;
  */
 @ClientEndpoint
 public class Endpoint {
+    private static final String WSS = "wss://%s-nginz-ssl.%s/await?access_token=%s&client=%s";
+    private static final String PROD = "prod";
+    private static final String WIRE_COM = "wire.com";
+    private static final String ZINFRA_IO = "zinfra.io";
+    private static final String CLIENT_ID = "client.id";
+    private static final String TOKEN_ID = "token.id";
+    private static final String ENV = "env";
     private final MessageResource messageResource;
     private final Configuration config;
-    private Session session;
     private final ClientManager client;
     private String token;
     private String cookie;
@@ -57,12 +63,12 @@ public class Endpoint {
 
     public Endpoint(Configuration config, MessageResource handler) throws CryptoException {
         this.config = config;
-        this.messageResource = handler;
+        messageResource = handler;
         client = ClientManager.createClient();
     }
 
     public void connectWebSocket() throws Exception {
-        session = client.connectToServer(this, getPath());
+        client.connectToServer(this, getPath());
     }
 
     /**
@@ -79,7 +85,8 @@ public class Endpoint {
         cookie = login.getCookie();
         botId = login.extractUserId();
 
-        clientId = initDevice(password, token);
+        String dataDir = String.format("%s/%s", config.getCryptoDir(), botId);
+        clientId = initDevice(dataDir, password, token);
 
         initRenewal();
 
@@ -94,21 +101,25 @@ public class Endpoint {
 
         for (InboundMessage payload : message.payload) {
             //Logger.info(payload.type);
-            messageResource.onNewMessage(botId, payload.conversation, payload);
+            try {
+                messageResource.onNewMessage(botId, payload.conversation, payload);
+            } catch (Exception e) {
+                Logger.warning(e.getMessage());
+            }
         }
     }
 
     @OnClose
     public void onClose(Session session, CloseReason reason) throws Exception {
-        //Logger.info("onClose websocket. Reason: " + reason.getReasonPhrase());
-        this.session = client.connectToServer(this, getPath());
+        Logger.info(String.format("Session closed: %s, %s", session.getId(), reason));
+        client.connectToServer(this, getPath());
     }
 
     private URI getPath() throws URISyntaxException {
-        String env = System.getProperty("env", "prod");
-        String domain = env.equals("prod") ? "wire.com" : "zinfra.io"; //fixme: remove zinfra
+        String env = System.getProperty(ENV, PROD);
+        String domain = env.equals(PROD) ? WIRE_COM : ZINFRA_IO;
 
-        String url = String.format("wss://%s-nginz-ssl.%s/await?access_token=%s&client=%s",
+        String url = String.format(WSS,
                 env,
                 domain,
                 token,
@@ -116,18 +127,20 @@ public class Endpoint {
         return new URI(url);
     }
 
-    private String initDevice(String password, String token) throws CryptoException, IOException {
-        File base = new File(config.getCryptoDir() + "/" + botId);
-        base.mkdirs();
+    private static String initDevice(String dataDir, String password, String token)
+            throws CryptoException, IOException {
+        File base = new File(dataDir);
+        if (base.mkdirs())
+            Logger.info("Created: " + dataDir);
 
-        File clientIdFile = new File(base.getAbsolutePath() + "/client.id");
+        File clientIdFile = new File(String.format("%s/%s", base.getAbsolutePath(), CLIENT_ID));
 
-        File tokenFile = new File(base.getAbsolutePath() + "/token.id");
+        File tokenFile = new File(String.format("%s/%s", base.getAbsolutePath(), TOKEN_ID));
         Util.writeLine(token, tokenFile);
 
         if (clientIdFile.exists()) {
             String clientId = Util.readLine(clientIdFile);
-            Logger.info("Init Device: ClientID: " + clientId);
+            Logger.info("init Device: ClientID: " + clientId);
             return clientId;
         }
 
@@ -135,9 +148,9 @@ public class Endpoint {
         try (OtrManager otrManager = new OtrManager(base.getAbsolutePath())) {
             PreKey key = otrManager.newLastPreKey();
             LoginClient login = new LoginClient();
-            String clientId = login.registerClient(key, this.token, password);
+            String clientId = login.registerClient(key, token, password);
             Util.writeLine(clientId, clientIdFile);
-            Logger.info("Init Device: New ClientID: " + clientId);
+            Logger.info("init Device: New ClientID: " + clientId);
             return clientId;
         }
     }
@@ -148,7 +161,7 @@ public class Endpoint {
             public void run() {
                 try {
                     token = API.renewAccessToken(cookie, token);
-                    File tokenFile = new File(config.getCryptoDir() + "/" + botId + "/token.id");
+                    File tokenFile = new File(String.format("%s/%s/%s", config.getCryptoDir(), botId, TOKEN_ID));
                     Util.writeLine(token, tokenFile);
                 } catch (Exception e) {
                     Logger.warning("Failed periodic access_token renewal: " + e.getMessage());
