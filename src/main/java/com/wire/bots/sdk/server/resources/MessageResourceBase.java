@@ -79,6 +79,16 @@ public abstract class MessageResourceBase {
                 }
             }
             break;
+            case "conversation.delete": {
+                String botId = client.getId();
+                Logger.info("conversation.delete: bot: %s", botId);
+
+                // Cleanup
+                repo.removeClient(botId);
+                handler.onBotRemoved(botId);
+                repo.purgeBot(botId);
+            }
+            break;
             // Legacy code starts here
             case "user.connection": {
                 if (inbound.connection.status.equals("pending")) {
@@ -91,6 +101,9 @@ public abstract class MessageResourceBase {
             }
             break;
             // Legacy code ends here
+            default:
+                Logger.warning("Unknown event: %s, bot: %s", inbound.type, client.getId());
+                break;
         }
     }
 
