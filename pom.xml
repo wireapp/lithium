@@ -11,7 +11,7 @@
     </properties>
 
     <groupId>com.wire.bots</groupId>
-    <artifactId>lithium</artifactId>
+    <artifactId>bot-sdk</artifactId>
     <version>${bot.version}</version>
     <packaging>jar</packaging>
 

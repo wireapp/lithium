@@ -70,6 +70,7 @@ public class BotsResource {
         Util.writeLine(newBot.token, new File(path + "/token.id"));
         Util.writeLine(newBot.conversation.id, new File(path + "/conversation.id"));
         Util.writeLine(newBot.origin.id, new File(path + "/origin.id"));
+        Util.writeLine(newBot.locale, new File(path + "/locale"));
 
         NewBotResponseModel ret = new NewBotResponseModel();
         ret.name = handler.getName();
