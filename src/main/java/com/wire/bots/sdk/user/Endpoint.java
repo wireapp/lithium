@@ -53,22 +53,25 @@ public class Endpoint {
     private static final String CLIENT_ID = "client.id";
     private static final String TOKEN_ID = "token.id";
     private static final String ENV = "env";
-    private final MessageResource messageResource;
+    private MessageResource messageResource;
     private final Configuration config;
-    private final ClientManager client;
+    private ClientManager client = null;
     private String token;
     private String cookie;
     private String clientId;
     private String botId;
 
-    public Endpoint(Configuration config, MessageResource handler) throws CryptoException {
+    public Endpoint(Configuration config) throws CryptoException {
         this.config = config;
-        messageResource = handler;
-        client = ClientManager.createClient();
     }
 
-    public void connectWebSocket() throws Exception {
-        client.connectToServer(this, getPath());
+    public Session connectWebSocket(MessageResource messageResource) throws Exception {
+        if (client == null) {
+            client = ClientManager.createClient();
+        }
+        this.messageResource = messageResource;
+
+        return client.connectToServer(this, getPath());
     }
 
     /**
@@ -88,7 +91,7 @@ public class Endpoint {
         String dataDir = String.format("%s/%s", config.getCryptoDir(), botId);
         clientId = initDevice(dataDir, password, token);
 
-        initRenewal();
+        //initRenewal();
 
         return botId;
     }
@@ -112,7 +115,7 @@ public class Endpoint {
     @OnClose
     public void onClose(Session session, CloseReason reason) throws Exception {
         Logger.info(String.format("Session closed: %s, %s", session.getId(), reason));
-        client.connectToServer(this, getPath());
+        //   client.connectToServer(this, getPath());
     }
 
     private URI getPath() throws URISyntaxException {
@@ -171,4 +174,17 @@ public class Endpoint {
             }
         }, TimeUnit.MINUTES.toMillis(14), TimeUnit.MINUTES.toMillis(14));
     }
+
+    public String getToken() {
+        return token;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public String getBotId() {
+        return botId;
+    }
+
 }

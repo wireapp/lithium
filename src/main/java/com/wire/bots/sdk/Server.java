@@ -123,15 +123,13 @@ public abstract class Server<Config extends Configuration> extends Application<C
             };
             repo = new ClientRepo(userClientFactory, config.getCryptoDir());
 
-            MessageHandlerBase handler = createHandler(config, env);
 
-            MessageResource msgRes = new MessageResource(handler, config, repo);
-
-            Endpoint ep = new Endpoint(config, msgRes);
+            Endpoint ep = new Endpoint(config);
             String userId = ep.signIn(email, password);
             Logger.info(String.format("Logged in as User: %s userId: %s", email, userId));
 
-            ep.connectWebSocket();
+            MessageHandlerBase handler = createHandler(config, env);
+            ep.connectWebSocket(new MessageResource(handler, config, repo));
             return true;
         }
         return false;

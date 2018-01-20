@@ -30,6 +30,8 @@ import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.models.otr.PreKeys;
 import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.Member;
+import com.wire.bots.sdk.server.model.Service;
+import com.wire.bots.sdk.server.model.User;
 import com.wire.bots.sdk.user.model.Connection;
 
 import javax.ws.rs.client.Entity;
@@ -44,13 +46,17 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-class API extends LoginClient {
+public class API extends LoginClient {
 
-    private final String conversation;
+    private String convId;
     private final String token;
 
-    API(String conversation, String token) {
-        this.conversation = conversation;
+    public API(String convId, String token) {
+        this.convId = convId;
+        this.token = token;
+    }
+
+    public API(String token) throws IOException {
         this.token = token;
     }
 
@@ -61,7 +67,7 @@ class API extends LoginClient {
     Devices sendMessage(OtrMessage msg, boolean ignoreMissing) throws IOException {
         Response response = client.target(httpUrl).
                 path("conversations").
-                path(conversation).
+                path(convId).
                 path("otr/messages").
                 queryParam("ignore_missing", ignoreMissing).
                 request(MediaType.APPLICATION_JSON).
@@ -214,7 +220,7 @@ class API extends LoginClient {
     Conversation getConversation() throws IOException {
         Response response = client.target(httpUrl).
                 path("conversations").
-                path(conversation).
+                path(convId).
                 request().
                 header("Authorization", "Bearer " + token).
                 accept(MediaType.APPLICATION_JSON).
@@ -232,6 +238,60 @@ class API extends LoginClient {
         ret.id = conv.id;
         ret.members = conv.members.others;
         return ret;
+    }
+
+    public Conversation createConversation(String name) throws IOException {
+        Response response = client.target(httpUrl).
+                path("conversations").
+                request().
+                header("Authorization", "Bearer " + token).
+                accept(MediaType.APPLICATION_JSON).
+                post(Entity.entity("{\"users\":[], \"name\":\"" + name + "\"}", MediaType.APPLICATION_JSON));
+
+        if (response.getStatus() >= 300) {
+            Logger.warning(response.readEntity(String.class));
+            throw new IOException(response.getStatusInfo().getReasonPhrase());
+        }
+
+        _Cov conv = response.readEntity(_Cov.class);
+
+        convId = conv.id;
+        Conversation ret = new Conversation();
+        ret.name = conv.name;
+        ret.id = conv.id;
+        ret.members = conv.members.others;
+        return ret;
+    }
+
+    class _Service {
+        public String service;
+        public String provider;
+    }
+
+    public User addService(String serviceId, String providerId) throws IOException {
+        _Service service = new _Service();
+        service.service = serviceId;
+        service.provider = providerId;
+
+        Response response = client.target(httpUrl).
+                path("conversations").
+                path(convId).
+                path("bots").
+                request().
+                header("Authorization", "Bearer " + token).
+                accept(MediaType.APPLICATION_JSON).
+                post(Entity.entity(service, MediaType.APPLICATION_JSON));
+
+        if (response.getStatus() >= 300) {
+            Logger.warning(response.readEntity(String.class));
+            throw new IOException(response.getStatusInfo().getReasonPhrase());
+        }
+
+        User user = response.readEntity(User.class);
+        user.service = new Service();
+        user.service.id = serviceId;
+        user.service.provider = providerId;
+        return user;
     }
 
     Collection<com.wire.bots.sdk.server.model.User> getUsers(Collection<String> ids) throws IOException {
