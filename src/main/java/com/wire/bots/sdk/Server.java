@@ -31,7 +31,6 @@ import com.wire.bots.sdk.server.tasks.ConversationTask;
 import com.wire.bots.sdk.user.Endpoint;
 import com.wire.bots.sdk.user.UserClient;
 import io.dropwizard.Application;
-import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.servlets.tasks.Task;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -71,8 +70,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
     @Override
     public void initialize(Bootstrap<Config> configBootstrap) {
-        configBootstrap.addBundle(new AssetsBundle("/diagnosis/", "/diagnosis/"));
-        configBootstrap.addBundle(new AssetsBundle());
     }
 
     @Override
@@ -125,7 +122,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
 
             Endpoint ep = new Endpoint(config);
-            String userId = ep.signIn(email, password);
+            String userId = ep.signIn(email, password, true);
             Logger.info(String.format("Logged in as User: %s userId: %s", email, userId));
 
             MessageHandlerBase handler = createHandler(config, env);

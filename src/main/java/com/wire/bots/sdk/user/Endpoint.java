@@ -79,9 +79,10 @@ public class Endpoint {
      *
      * @param email    Email address
      * @param password Plain text password
+     * @param persisted True if you want to renew token every 15 mins
      * @throws Exception
      */
-    public String signIn(String email, String password) throws Exception {
+    public String signIn(String email, String password, boolean persisted) throws Exception {
         LoginClient wireClient = new LoginClient();
         User login = wireClient.login(email, password);
         token = login.getToken();
@@ -91,7 +92,8 @@ public class Endpoint {
         String dataDir = String.format("%s/%s", config.getCryptoDir(), botId);
         clientId = initDevice(dataDir, password, token);
 
-        //initRenewal();
+        if (persisted)
+            initRenewal(15);
 
         return botId;
     }
@@ -158,7 +160,7 @@ public class Endpoint {
         }
     }
 
-    private void initRenewal() {
+    private void initRenewal(int periodMinutes) {
         Timer timer = new Timer("RenewToken");
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
@@ -172,7 +174,7 @@ public class Endpoint {
 
                 }
             }
-        }, TimeUnit.MINUTES.toMillis(14), TimeUnit.MINUTES.toMillis(14));
+        }, TimeUnit.MINUTES.toMillis(periodMinutes), TimeUnit.MINUTES.toMillis(periodMinutes));
     }
 
     public String getToken() {

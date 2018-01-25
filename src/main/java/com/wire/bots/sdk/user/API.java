@@ -263,6 +263,23 @@ public class API extends LoginClient {
         return ret;
     }
 
+    public void deleteConversation(String teamId) throws IOException {
+        Response response = client.target(httpUrl).
+                path("teams").
+                path(teamId).
+                path("conversations").
+                path(convId).
+                request().
+                header("Authorization", "Bearer " + token).
+                accept(MediaType.APPLICATION_JSON).
+                delete();
+
+        if (response.getStatus() >= 300) {
+            Logger.warning(response.readEntity(String.class));
+            throw new IOException(response.getStatusInfo().getReasonPhrase());
+        }
+    }
+
     class _Service {
         public String service;
         public String provider;
