@@ -21,6 +21,7 @@ package com.wire.bots.sdk.user;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.wire.bots.sdk.Logger;
+import com.wire.bots.sdk.Util;
 import com.wire.bots.sdk.server.model.Member;
 import com.wire.bots.sdk.user.model.NewClient;
 import com.wire.bots.sdk.user.model.User;
@@ -41,8 +42,7 @@ public class LoginClient {
 
     static {
         String env = System.getProperty("env", "prod");
-        String domain = env.equals("prod") ? "wire.com" : "zinfra.io"; //fixme: remove zinfra
-        httpUrl = String.format("https://%s-nginz-https.%s", env, domain);
+        httpUrl = String.format("https://%s-nginz-https.%s", env, Util.getDomain());
 
         ClientConfig cfg = new ClientConfig(JacksonJsonProvider.class);
         client = JerseyClientBuilder.createClient(cfg);

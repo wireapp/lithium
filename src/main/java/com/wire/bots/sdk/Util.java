@@ -132,4 +132,9 @@ public class Util {
             return contentType != null ? contentType : "image/xyz";
         }
     }
+
+    public static String getDomain(){
+        String env = System.getProperty("env", "prod");
+        return env.equals("prod") ? "wire.com" : "zinfra.io";
+    }
 }

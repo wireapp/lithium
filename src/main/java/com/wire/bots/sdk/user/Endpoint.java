@@ -48,8 +48,6 @@ import java.util.concurrent.TimeUnit;
 public class Endpoint {
     private static final String WSS = "wss://%s-nginz-ssl.%s/await?access_token=%s&client=%s";
     private static final String PROD = "prod";
-    private static final String WIRE_COM = "wire.com";
-    private static final String ZINFRA_IO = "zinfra.io";
     private static final String CLIENT_ID = "client.id";
     private static final String TOKEN_ID = "token.id";
     private static final String ENV = "env";
@@ -122,7 +120,7 @@ public class Endpoint {
 
     private URI getPath() throws URISyntaxException {
         String env = System.getProperty(ENV, PROD);
-        String domain = env.equals(PROD) ? WIRE_COM : ZINFRA_IO;
+        String domain = Util.getDomain();
 
         String url = String.format(WSS,
                 env,
