@@ -5,24 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <bot.version>1.1.0</bot.version>
         <cryptobox.version>1.0.0</cryptobox.version>
         <dropwizard.version>1.0.6</dropwizard.version>
     </properties>
 
     <groupId>com.wire.bots</groupId>
-    <artifactId>bot-sdk</artifactId>
-    <version>${bot.version}</version>
+    <artifactId>lithium</artifactId>
+    <version>1.1.1</version>
     <packaging>jar</packaging>
-
-    <repositories>
-        <repository>
-            <id>bintray</id>
-            <name>Bintray</name>
-            <url>https://dl.bintray.com/wire-android/snapshots/</url>
-            <layout>default</layout>
-        </repository>
-    </repositories>
 
     <profiles>
         <profile>
