@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <bot.version>1.0.7</bot.version>
+        <bot.version>1.1.0</bot.version>
         <cryptobox.version>1.0.0</cryptobox.version>
         <dropwizard.version>1.0.6</dropwizard.version>
     </properties>
@@ -83,6 +83,13 @@
         </dependency>
     </dependencies>
     <build>
+        <extensions>
+            <extension>
+                <groupId>io.packagecloud.maven.wagon</groupId>
+                <artifactId>maven-packagecloud-wagon</artifactId>
+                <version>0.0.4</version>
+            </extension>
+        </extensions>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -137,6 +144,20 @@
             </plugin>
         </plugins>
     </build>
+    <distributionManagement>
+        <repository>
+            <id>packagecloud-travis</id>
+            <url>
+                packagecloud+https://packagecloud.io/dkovacevic/lithium
+            </url>
+        </repository>
+        <snapshotRepository>
+            <id>packagecloud-travis</id>
+            <url>
+                packagecloud+https://packagecloud.io/dkovacevic/lithium
+            </url>
+        </snapshotRepository>
+    </distributionManagement>
     <reporting>
         <plugins>
             <plugin>
