@@ -11,8 +11,17 @@
 
     <groupId>com.wire.bots</groupId>
     <artifactId>lithium</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <packaging>jar</packaging>
+
+    <repositories>
+        <repository>
+            <id>bintray</id>
+            <name>Bintray</name>
+            <url>https://dl.bintray.com/wire-android/snapshots/</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
 
     <profiles>
         <profile>
