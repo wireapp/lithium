@@ -21,20 +21,22 @@ package com.wire.bots.sdk.models.otr;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.HashMap;
+import javax.validation.constraints.NotNull;
 
 public class OtrMessage {
     @JsonProperty
+    @NotNull
     private final String sender; //clientId of the sender
 
     @JsonProperty
-    private final HashMap<String, HashMap<String, byte[]>> recipients = new HashMap<>(); //<UserId, <ClientId, Cipher>>
+    private final Recipients recipients = new Recipients();
 
     @JsonIgnore
-    private byte[] content;    // GenericMessage proto
+    private final byte[] content;    // GenericMessage proto
 
     public OtrMessage(String sender) {
         this.sender = sender;
+        this.content = null;
     }
 
     public OtrMessage(String sender, byte[] content) {
@@ -42,41 +44,23 @@ public class OtrMessage {
         this.content = content;
     }
 
-    HashMap<String, byte[]> getClients(String userId) {
-        HashMap<String, byte[]> clients = recipients.get(userId);
-        if (clients == null) {
-            clients = new HashMap<>();
-            recipients.put(userId, clients);
-        }
-        return clients;
-    }
-
-    public void add(String userId, String clientId, byte[] cipher) {
-        HashMap<String, byte[]> clients = getClients(userId);
-        clients.put(clientId, cipher);
-    }
-
-    public void setContent(byte[] content) {
-        this.content = content;
-    }
-
     public byte[] getContent() {
         return content;
     }
 
+    public void add(Recipients rec) {
+        recipients.add(rec);
+    }
+
+    public String get(String userId, String clientId) {
+        return recipients.get(userId, clientId);
+    }
+
     public int size() {
         int count = 0;
-        for (HashMap<String, byte[]> devs : recipients.values()) {
+        for (ClientCipher devs : recipients.values()) {
             count += devs.size();
         }
         return count;
-    }
-
-    public String getSender() {
-        return sender;
-    }
-
-    public HashMap<String, HashMap<String, byte[]>> getRecipients() {
-        return recipients;
     }
 }

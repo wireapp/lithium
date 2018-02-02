@@ -23,17 +23,16 @@ import com.wire.bots.sdk.Configuration;
 import com.wire.bots.sdk.Logger;
 import com.wire.bots.sdk.OtrManager;
 import com.wire.bots.sdk.Util;
+import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.InboundMessage;
 import com.wire.bots.sdk.server.resources.MessageResource;
 import com.wire.bots.sdk.user.model.Message;
 import com.wire.bots.sdk.user.model.User;
 import com.wire.cryptobox.CryptoException;
-import com.wire.cryptobox.PreKey;
 import org.glassfish.tyrus.client.ClientManager;
 
 import javax.websocket.*;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -75,8 +74,8 @@ public class Endpoint {
     /**
      * Signin as a regular Wire user
      *
-     * @param email    Email address
-     * @param password Plain text password
+     * @param email     Email address
+     * @param password  Plain text password
      * @param persisted True if you want to renew token every 15 mins
      * @throws Exception
      */
@@ -131,7 +130,7 @@ public class Endpoint {
     }
 
     private static String initDevice(String dataDir, String password, String token)
-            throws CryptoException, IOException {
+            throws Exception {
         File base = new File(dataDir);
         if (base.mkdirs())
             Logger.info("Created: " + dataDir);
@@ -143,7 +142,7 @@ public class Endpoint {
 
         if (clientIdFile.exists()) {
             String clientId = Util.readLine(clientIdFile);
-            Logger.info("init Device: ClientID: " + clientId);
+            Logger.info("initDevice: Existing ClientID: %s", clientId);
             return clientId;
         }
 
@@ -153,7 +152,7 @@ public class Endpoint {
             LoginClient login = new LoginClient();
             String clientId = login.registerClient(key, token, password);
             Util.writeLine(clientId, clientIdFile);
-            Logger.info("init Device: New ClientID: " + clientId);
+            Logger.info("initDevice: New ClientID: %s", clientId);
             return clientId;
         }
     }

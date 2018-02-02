@@ -25,18 +25,17 @@ import com.wire.bots.sdk.Util;
 import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.assets.*;
 import com.wire.bots.sdk.models.AssetKey;
-import com.wire.bots.sdk.models.otr.Devices;
-import com.wire.bots.sdk.models.otr.OtrMessage;
-import com.wire.bots.sdk.models.otr.PreKeys;
+import com.wire.bots.sdk.models.otr.*;
 import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.User;
-import com.wire.cryptobox.CryptoException;
-import com.wire.cryptobox.PreKey;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.MessageDigest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.UUID;
 
 public class UserClient implements WireClient {
     private final String botId;
@@ -212,18 +211,18 @@ public class UserClient implements WireClient {
     }
 
     private void postGenericMessage(IGeneric generic) throws Exception {
-        OtrMessage msg = new OtrMessage(clientId);
-
         Messages.GenericMessage genMsg = generic.createGenericMsg();
-        msg.setContent(genMsg.toByteArray());
-
-        otrManager.encrypt(getDevices(), msg);
+        OtrMessage msg = new OtrMessage(clientId, genMsg.toByteArray());
+        
+        Recipients encrypt = otrManager.encrypt(getDevices().missing, msg.getContent());
+        msg.add(encrypt);
 
         Devices missing = getDevices();
         if (!missing.hasMissing()) {
             PreKeys preKeys = api.getPreKeys(missing.missing);
 
-            otrManager.encrypt(preKeys, msg);
+            encrypt = otrManager.encrypt(preKeys, msg.getContent());
+            msg.add(encrypt);
 
             missing = api.sendMessage(msg);
 
@@ -260,33 +259,18 @@ public class UserClient implements WireClient {
     }
 
     @Override
-    public byte[] decrypt(String userId, String clientId, String cypher) throws CryptoException {
+    public byte[] decrypt(String userId, String clientId, String cypher) throws Exception {
         return otrManager.decrypt(userId, clientId, cypher);
     }
 
     @Override
-    public com.wire.bots.sdk.models.otr.PreKey newLastPreKey() throws CryptoException {
-        PreKey preKey = otrManager.newLastPreKey();
-
-        com.wire.bots.sdk.models.otr.PreKey key = new com.wire.bots.sdk.models.otr.PreKey();
-        key.id = preKey.id;
-        key.key = Base64.getEncoder().encodeToString(preKey.data);
-
-        return key;
+    public PreKey newLastPreKey() throws Exception {
+        return otrManager.newLastPreKey();
     }
 
     @Override
-    public ArrayList<com.wire.bots.sdk.models.otr.PreKey> newPreKeys(int from, int count) throws CryptoException {
-        ArrayList<com.wire.bots.sdk.models.otr.PreKey> ret = new ArrayList<>(count);
-
-        com.wire.cryptobox.PreKey[] preKeys = otrManager.newPreKeys(from, count);
-        for (com.wire.cryptobox.PreKey k : preKeys) {
-            com.wire.bots.sdk.models.otr.PreKey prekey = new com.wire.bots.sdk.models.otr.PreKey();
-            prekey.id = k.id;
-            prekey.key = Base64.getEncoder().encodeToString(k.data);
-            ret.add(prekey);
-        }
-        return ret;
+    public ArrayList<com.wire.bots.sdk.models.otr.PreKey> newPreKeys(int from, int count) throws Exception {
+        return otrManager.newPreKeys(from, count);
     }
 
     @Override

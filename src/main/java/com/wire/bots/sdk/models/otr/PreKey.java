@@ -20,5 +20,5 @@ package com.wire.bots.sdk.models.otr;
 
 public class PreKey {
     public int id;
-    public String key;
+    public String key;   //base64 encoded data
 }

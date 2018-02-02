@@ -25,7 +25,6 @@ import com.wire.bots.sdk.models.AssetKey;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.User;
-import com.wire.cryptobox.CryptoException;
 
 import java.io.Closeable;
 import java.io.File;
@@ -216,17 +215,17 @@ public interface WireClient extends Closeable {
      * @param clientId Sender's Client id
      * @param cypher   Encrypted, Base64 encoded string
      * @return Decrypted blob
-     * @throws com.wire.cryptobox.CryptoException
+     * @throws Exception
      */
-    byte[] decrypt(String userId, String clientId, String cypher) throws CryptoException;
+    byte[] decrypt(String userId, String clientId, String cypher) throws Exception;
 
     /**
      * Invoked by the sdk. Called once when the conversation is created
      *
      * @return Last prekey
-     * @throws CryptoException
+     * @throws Exception
      */
-    PreKey newLastPreKey() throws CryptoException;
+    PreKey newLastPreKey() throws Exception;
 
     /**
      * Invoked by the sdk. Called once when the conversation is created and then occasionally when number of available
@@ -235,9 +234,9 @@ public interface WireClient extends Closeable {
      * @param from  Starting offset
      * @param count Number of keys to generate
      * @return List of prekeys
-     * @throws CryptoException
+     * @throws Exception
      */
-    ArrayList<PreKey> newPreKeys(int from, int count) throws CryptoException;
+    ArrayList<PreKey> newPreKeys(int from, int count) throws Exception;
 
     /**
      * Uploads previously generated prekeys to BE

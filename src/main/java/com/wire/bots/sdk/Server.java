@@ -23,7 +23,6 @@ import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.health.HealthCheck;
 import com.wire.bots.sdk.server.resources.BotsResource;
 import com.wire.bots.sdk.server.resources.MessageResource;
-import com.wire.bots.sdk.server.resources.ProviderResource;
 import com.wire.bots.sdk.server.resources.StatusResource;
 import com.wire.bots.sdk.server.tasks.AvailablePrekeysTask;
 import com.wire.bots.sdk.server.tasks.BroadcastAllTask;
@@ -98,7 +97,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
         MessageHandlerBase handler = createHandler(config, env);
 
         addResource(new StatusResource(), env);
-        addResource(new ProviderResource(config), env);
 
         botResource(config, env, handler);
         messageResource(config, env, handler);

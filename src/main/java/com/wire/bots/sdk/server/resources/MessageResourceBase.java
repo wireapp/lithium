@@ -5,9 +5,7 @@ import com.wire.bots.sdk.*;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.GenericMessageProcessor;
 import com.wire.bots.sdk.server.model.InboundMessage;
-import com.wire.cryptobox.CryptoException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -23,7 +21,7 @@ public abstract class MessageResourceBase {
         this.repo = repo;
     }
 
-    protected void handleMessage(InboundMessage inbound, WireClient client) throws CryptoException, IOException {
+    protected void handleMessage(InboundMessage inbound, WireClient client) throws Exception {
         InboundMessage.Data data = inbound.data;
         switch (inbound.type) {
             case "conversation.otr-message-add": {
