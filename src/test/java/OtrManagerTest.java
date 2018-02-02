@@ -49,10 +49,7 @@ public class OtrManagerTest {
         // Encrypt using prekeys
         Recipients encrypt = alice.encrypt(bobKeys, textBytes);
 
-        OtrMessage msg = new OtrMessage(aliceClientId);
-        msg.add(encrypt);
-
-        String base64Encoded = msg.get(bobId, bobClientId);
+        String base64Encoded = encrypt.get(bobId, bobClientId);
         System.out.printf("Alice -> (%s,%s) cipher: %s\n", bobId, bobClientId, base64Encoded);
 
         // Decrypt using initSessionFromMessage
@@ -70,10 +67,8 @@ public class OtrManagerTest {
         byte[] textBytes = text.getBytes();
 
         Recipients encrypt = bob.encrypt(aliceKeys, textBytes);
-        OtrMessage msg = new OtrMessage(bobClientId);
-        msg.add(encrypt);
 
-        String base64Encoded = msg.get(aliceId, aliceClientId);
+        String base64Encoded = encrypt.get(aliceId, aliceClientId);
         System.out.printf("Bob -> (%s,%s) cipher: %s\n", aliceId, aliceClientId, base64Encoded);
 
         // Decrypt using initSessionFromMessage
@@ -95,10 +90,7 @@ public class OtrManagerTest {
         devices.add(aliceId, aliceClientId);
         Recipients encrypt = bob.encrypt(devices, textBytes);
         
-        OtrMessage msg = new OtrMessage(bobClientId);
-        msg.add(encrypt);
-
-        String base64Encoded = msg.get(aliceId, aliceClientId);
+        String base64Encoded = encrypt.get(aliceId, aliceClientId);
         System.out.printf("Bob -> (%s,%s) cipher: %s\n", aliceId, aliceClientId, base64Encoded);
 
         // Decrypt using session

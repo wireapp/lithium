@@ -85,7 +85,7 @@ public class OtrManager implements Closeable {
      * For each prekey encrypt the content that is in the OtrMessage
      *
      * @param preKeys Prekeys
-     * @param content Message containing the plain text content
+     * @param content Plain plain text content
      * @throws Exception throws Exception
      */
     public Recipients encrypt(PreKeys preKeys, byte[] content) throws Exception {
