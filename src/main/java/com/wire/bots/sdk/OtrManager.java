@@ -18,12 +18,18 @@
 
 package com.wire.bots.sdk;
 
-import com.wire.bots.sdk.models.otr.Devices;
-import com.wire.bots.sdk.models.otr.OtrMessage;
+import com.wire.bots.sdk.models.otr.Missing;
+import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.models.otr.PreKeys;
-import com.wire.cryptobox.*;
+import com.wire.bots.sdk.models.otr.Recipients;
+import com.wire.cryptobox.CryptoBox;
+import com.wire.cryptobox.CryptoException;
+import com.wire.cryptobox.CryptoSession;
+import com.wire.cryptobox.SessionMessage;
 
+import javax.annotation.Nullable;
 import java.io.Closeable;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 
@@ -32,8 +38,6 @@ import java.util.HashMap;
  */
 public class OtrManager implements Closeable {
     private final Object lock = new Object();
-    private static final int MAX_PREKEY_ID = 0xFFFE;
-
     private final CryptoBox box;
 
     /**
@@ -54,67 +58,74 @@ public class OtrManager implements Closeable {
      * Generate a new last prekey.
      */
     public PreKey newLastPreKey() throws CryptoException {
-        return box.newLastPreKey();
+        return toPreKey(box.newLastPreKey());
     }
 
     /**
      * Generate a new batch of ephemeral prekeys.
      * <p/>
-     * If <tt>start + num > {@link #MAX_PREKEY_ID}<tt/> the IDs wrap around and start
+     * If <tt>start + num > 0xFFFE <tt/> the IDs wrap around and start
      * over at 0. Thus after any valid invocation of this method, the last generated
-     * prekey ID is always <tt>(start + num) % ({@link #MAX_PREKEY_ID} + 1)</tt>. The caller
+     * prekey ID is always <tt>(start + num) % (0xFFFE + 1)</tt>. The caller
      * can remember that ID and feed it back into {@link #newPreKeys} as the start
      * ID when the next batch of ephemeral keys needs to be generated.
      *
-     * @param fromId The ID (>= 0 and <= {@link #MAX_PREKEY_ID}) of the first prekey to generate.
-     * @param count  The total number of prekeys to generate (> 0 and <= {@link #MAX_PREKEY_ID}).
+     * @param from  The ID (>= 0 and <= 0xFFFE) of the first prekey to generate.
+     * @param count The total number of prekeys to generate (> 0 and <= 0xFFFE).
      */
-    public PreKey[] newPreKeys(int fromId, int count) throws CryptoException {
-        return box.newPreKeys(fromId, count);
+    public ArrayList<PreKey> newPreKeys(int from, int count) throws CryptoException {
+        ArrayList<PreKey> ret = new ArrayList<>(count);
+        for (com.wire.cryptobox.PreKey k : box.newPreKeys(from, count)) {
+            PreKey prekey = toPreKey(k);
+            ret.add(prekey);
+        }
+        return ret;
     }
 
     /**
      * For each prekey encrypt the content that is in the OtrMessage
      *
      * @param preKeys Prekeys
-     * @param msg     Final object containing ciphers for all clients. This will be sent to BE
+     * @param content Message containing the plain text content
      * @throws CryptoException throws CryptoException
      */
-    public void encrypt(PreKeys preKeys, OtrMessage msg) throws CryptoException {
-        byte[] content = msg.getContent();
+    public Recipients encrypt(PreKeys preKeys, byte[] content) throws CryptoException {
+        Recipients recipients = new Recipients();
         for (String userId : preKeys.keySet()) {
-            HashMap<String, com.wire.bots.sdk.models.otr.PreKey> clients = preKeys.get(userId);
+            HashMap<String, PreKey> clients = preKeys.get(userId);
             for (String clientId : clients.keySet()) {
-                com.wire.bots.sdk.models.otr.PreKey pk = clients.get(clientId);
+                PreKey pk = clients.get(clientId);
                 if (pk != null && pk.key != null) {
-                    byte[] decodedKey = Base64.getDecoder().decode(pk.key);
-                    PreKey preKey = new PreKey(pk.id, decodedKey);
                     String id = createId(userId, clientId);
-                    byte[] cipher = encryptFromPreKeys(id, preKey, content);
-                    msg.add(userId, clientId, cipher);
+                    byte[] cipher = encryptFromPreKeys(id, pk, content);
+                    String s = Base64.getEncoder().encodeToString(cipher);
+                    recipients.add(userId, clientId, s);
                 }
             }
         }
+        return recipients;
     }
 
     /**
      * Append cipher to {@param #msg} for each device using crypto box session. Ciphers for those devices that still
      * don't have the session will be skipped and those must be encrypted using prekeys:
-     * {@link #encrypt(PreKeys, OtrMessage)} encrypt
      *
-     * @param devices List of device ids
-     * @param msg     Message containing the plain text content
+     * @param missing List of device that are missing
+     * @param content Plain text content to be encrypted
      */
-    public void encrypt(Devices devices, OtrMessage msg) throws CryptoException {
-        byte[] content = msg.getContent();
-        for (String userId : devices.getUserIds()) {
-            for (String clientId : devices.getClients(userId)) {
+    public Recipients encrypt(Missing missing, byte[] content) throws CryptoException {
+        Recipients recipients = new Recipients();
+        for (String userId : missing.toUserIds()) {
+            for (String clientId : missing.toClients(userId)) {
                 String id = createId(userId, clientId);
                 byte[] cipher = encryptFromSession(id, content);
-                if (cipher != null)
-                    msg.add(userId, clientId, cipher);
+                if (cipher != null) {
+                    String s = Base64.getEncoder().encodeToString(cipher);
+                    recipients.add(userId, clientId, s);
+                }
             }
         }
+        return recipients;
     }
 
     /**
@@ -124,7 +135,7 @@ public class OtrManager implements Closeable {
      * @param clientId Sender's Client id
      * @param cypher   Encrypted, Base64 encoded string
      * @return Decrypted blob
-     * @throws CryptoException  throws CryptoException
+     * @throws CryptoException throws CryptoException
      */
     public byte[] decrypt(String userId, String clientId, String cypher) throws CryptoException {
         byte[] decode = Base64.getDecoder().decode(cypher);
@@ -156,17 +167,23 @@ public class OtrManager implements Closeable {
         }
     }
 
+    public boolean isClosed() {
+        synchronized (lock) {
+            return box.isClosed();
+        }
+    }
+
     /**
      * Inits the session from the prekey and encrypts the given content
      *
      * @param id      Identifier in our case: userId_clientId @see {@link #createId}
      * @param content Unencrypted binary content to be encrypted
      * @return Cipher
-     * @throws CryptoException  throws CryptoException
+     * @throws CryptoException throws CryptoException
      */
     private byte[] encryptFromPreKeys(String id, PreKey preKey, byte[] content) throws CryptoException {
         synchronized (lock) {
-            CryptoSession cryptoSession = box.initSessionFromPreKey(id, preKey);
+            CryptoSession cryptoSession = box.initSessionFromPreKey(id, toPreKey(preKey));
             try {
                 return cryptoSession.encrypt(content);
             } finally {
@@ -181,8 +198,9 @@ public class OtrManager implements Closeable {
      * @param id      Identifier in our case: userId_clientId @see {@link #createId}
      * @param content Unencrypted binary content to be encrypted
      * @return Cipher or NULL in case there is no session for the given {@param #id}
-     * @throws CryptoException  throws CryptoException
+     * @throws CryptoException throws CryptoException
      */
+    @Nullable
     private byte[] encryptFromSession(String id, byte[] content) throws CryptoException {
         synchronized (lock) {
             CryptoSession session = null;
@@ -198,17 +216,24 @@ public class OtrManager implements Closeable {
         return null;
     }
 
-    private void saveSession(CryptoSession cryptoSession) throws CryptoException {
+    private static void saveSession(CryptoSession cryptoSession) throws CryptoException {
         if (cryptoSession != null) {
             cryptoSession.save();
         }
     }
 
-    private static String createId(String userId, String clientId) {
-        return String.format("%s_%s", userId, clientId);
+    private static com.wire.cryptobox.PreKey toPreKey(PreKey preKey) {
+        return new com.wire.cryptobox.PreKey(preKey.id, Base64.getDecoder().decode(preKey.key));
     }
 
-    public boolean isClosed() {
-        return box.isClosed();
+    private static PreKey toPreKey(com.wire.cryptobox.PreKey preKey) {
+        PreKey ret = new PreKey();
+        ret.id = preKey.id;
+        ret.key = Base64.getEncoder().encodeToString(preKey.data);
+        return ret;
+    }
+
+    private static String createId(String userId, String clientId) {
+        return String.format("%s_%s", userId, clientId);
     }
 }

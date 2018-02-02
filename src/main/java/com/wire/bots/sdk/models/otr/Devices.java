@@ -21,28 +21,18 @@ package com.wire.bots.sdk.models.otr;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Devices {
     @JsonProperty
-    public final HashMap<String, ArrayList<String>> missing = new HashMap<>();  //<UserId, [ClientId]>
+    public final Missing missing = new Missing();
 
     @JsonProperty
-    public final HashMap<String, ArrayList<String>> redundant = new HashMap<>();  //<UserId, [ClientId]>
+    public final Missing redundant = new Missing();
 
     @JsonProperty
-    public final HashMap<String, ArrayList<String>> deleted = new HashMap<>();  //<UserId, [ClientId]>
-
-    public Collection<String> getClients(String userId) {
-        return missing.get(userId);
-    }
-
-    public Collection<String> getUserIds() {
-        return missing.keySet();
-    }
+    public final Missing deleted = new Missing();
 
     public boolean hasMissing() {
         return missing.isEmpty();
@@ -53,14 +43,5 @@ public class Devices {
         for (Collection<String> cls : missing.values())
             ret += cls.size();
         return ret;
-    }
-
-    public void add(String userId, String clientId) {
-        ArrayList<String> clients = missing.get(userId);
-        if (clients == null) {
-            clients = new ArrayList<>();
-            missing.put(userId, clients);
-        }
-        clients.add(clientId);
     }
 }

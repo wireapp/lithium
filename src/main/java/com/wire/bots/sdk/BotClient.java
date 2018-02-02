@@ -20,18 +20,18 @@ package com.wire.bots.sdk;
 
 import com.wire.bots.sdk.assets.*;
 import com.wire.bots.sdk.models.AssetKey;
-import com.wire.bots.sdk.models.otr.Devices;
-import com.wire.bots.sdk.models.otr.OtrMessage;
-import com.wire.bots.sdk.models.otr.PreKeys;
+import com.wire.bots.sdk.models.otr.*;
 import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.User;
 import com.wire.cryptobox.CryptoException;
-import com.wire.cryptobox.PreKey;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.MessageDigest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.UUID;
 
 /**
  *
@@ -210,32 +210,17 @@ class BotClient implements WireClient {
     }
 
     @Override
-    public com.wire.bots.sdk.models.otr.PreKey newLastPreKey() throws CryptoException {
-        PreKey preKey = otrManager.newLastPreKey();
-
-        com.wire.bots.sdk.models.otr.PreKey key = new com.wire.bots.sdk.models.otr.PreKey();
-        key.id = preKey.id;
-        key.key = Base64.getEncoder().encodeToString(preKey.data);
-
-        return key;
+    public PreKey newLastPreKey() throws CryptoException {
+        return otrManager.newLastPreKey();
     }
 
     @Override
-    public ArrayList<com.wire.bots.sdk.models.otr.PreKey> newPreKeys(int from, int count) throws CryptoException {
-        ArrayList<com.wire.bots.sdk.models.otr.PreKey> ret = new ArrayList<>(count);
-
-        com.wire.cryptobox.PreKey[] preKeys = otrManager.newPreKeys(from, count);
-        for (com.wire.cryptobox.PreKey k : preKeys) {
-            com.wire.bots.sdk.models.otr.PreKey prekey = new com.wire.bots.sdk.models.otr.PreKey();
-            prekey.id = k.id;
-            prekey.key = Base64.getEncoder().encodeToString(k.data);
-            ret.add(prekey);
-        }
-        return ret;
+    public ArrayList<PreKey> newPreKeys(int from, int count) throws CryptoException {
+        return otrManager.newPreKeys(from, count);
     }
 
     @Override
-    public void uploadPreKeys(ArrayList<com.wire.bots.sdk.models.otr.PreKey> preKeys) throws IOException {
+    public void uploadPreKeys(ArrayList<PreKey> preKeys) throws IOException {
         api.uploadPreKeys((preKeys));
     }
 
@@ -275,7 +260,8 @@ class BotClient implements WireClient {
         OtrMessage msg = new OtrMessage(clientId, generic.createGenericMsg().toByteArray());
 
         // Try to encrypt the msg for those devices that we have the session already
-        otrManager.encrypt(getDevices(), msg);
+        Recipients encrypt = otrManager.encrypt(getDevices().missing, msg.getContent());
+        msg.add(encrypt);
 
         Devices res = api.sendMessage(msg);
         if (!res.hasMissing()) {
@@ -283,7 +269,8 @@ class BotClient implements WireClient {
             PreKeys preKeys = api.getPreKeys(res.missing);
 
             // Encrypt msg for those devices that were missing. This time using preKeys
-            otrManager.encrypt(preKeys, msg);
+            encrypt = otrManager.encrypt(preKeys, msg.getContent());
+            msg.add(encrypt);
 
             // reset devices so they could be pulled next time
             devices = null;

@@ -22,10 +22,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.wire.bots.sdk.Logger;
 import com.wire.bots.sdk.Util;
+import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.Member;
 import com.wire.bots.sdk.user.model.NewClient;
 import com.wire.bots.sdk.user.model.User;
-import com.wire.cryptobox.PreKey;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 
@@ -71,10 +71,7 @@ public class LoginClient {
 
     String registerClient(PreKey key, String token, String password) throws IOException {
         NewClient newClient = new NewClient();
-        newClient.lastPreKey = new com.wire.bots.sdk.models.otr.PreKey();
-        newClient.lastPreKey.id = key.id;
-        newClient.lastPreKey.key = Base64.getEncoder().encodeToString(key.data);
-
+        newClient.lastPreKey = key;
         newClient.sigkeys.enckey = Base64.getEncoder().encodeToString(new byte[32]);
         newClient.sigkeys.mackey = Base64.getEncoder().encodeToString(new byte[32]);
 

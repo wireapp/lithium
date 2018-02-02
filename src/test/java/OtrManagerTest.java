@@ -17,19 +17,16 @@
 //
 
 import com.wire.bots.sdk.OtrManager;
-import com.wire.bots.sdk.models.otr.Devices;
-import com.wire.bots.sdk.models.otr.OtrMessage;
-import com.wire.bots.sdk.models.otr.PreKeys;
+import com.wire.bots.sdk.models.otr.*;
 import com.wire.cryptobox.CryptoException;
-import com.wire.cryptobox.PreKey;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.HashMap;
 
 public class OtrManagerTest {
@@ -53,12 +50,10 @@ public class OtrManagerTest {
         OtrMessage msg = new OtrMessage(aliceClientId, textBytes);
 
         // Encrypt using prekeys
-        alice.encrypt(bobKeys, msg);
+        Recipients encrypt = alice.encrypt(bobKeys, msg.getContent());
+        msg.add(encrypt);
 
-        HashMap<String, byte[]> ciphers = msg.getRecipients().get(bobId);
-        byte[] cipher = ciphers.get(bobClientId);
-
-        String base64Encoded = Base64.getEncoder().encodeToString(cipher);
+        String base64Encoded = msg.get(bobId, bobClientId);
         System.out.printf("Alice -> (%s,%s) cipher: %s\n", bobId, bobClientId, base64Encoded);
 
         // Decrypt using initSessionFromMessage
@@ -77,12 +72,10 @@ public class OtrManagerTest {
 
         OtrMessage msg = new OtrMessage(bobClientId, textBytes);
 
-        bob.encrypt(aliceKeys, msg);
+        Recipients encrypt = bob.encrypt(aliceKeys, msg.getContent());
+        msg.add(encrypt);
 
-        HashMap<String, byte[]> ciphers = msg.getRecipients().get(aliceId);
-        byte[] cipher = ciphers.get(aliceClientId);
-
-        String base64Encoded = Base64.getEncoder().encodeToString(cipher);
+        String base64Encoded = msg.get(aliceId, aliceClientId);
         System.out.printf("Bob -> (%s,%s) cipher: %s\n", aliceId, aliceClientId, base64Encoded);
 
         // Decrypt using initSessionFromMessage
@@ -102,14 +95,12 @@ public class OtrManagerTest {
 
         OtrMessage msg = new OtrMessage(bobClientId, textBytes);
 
-        Devices devices = new Devices();
+        Missing devices = new Missing();
         devices.add(aliceId, aliceClientId);
-        bob.encrypt(devices, msg);
+        Recipients encrypt = bob.encrypt(devices, msg.getContent());
+        msg.add(encrypt);
 
-        HashMap<String, byte[]> ciphers = msg.getRecipients().get(aliceId);
-        byte[] cipher = ciphers.get(aliceClientId);
-
-        String base64Encoded = Base64.getEncoder().encodeToString(cipher);
+        String base64Encoded = msg.get(aliceId, aliceClientId);
         System.out.printf("Bob -> (%s,%s) cipher: %s\n", aliceId, aliceClientId, base64Encoded);
 
         // Decrypt using session
@@ -137,27 +128,23 @@ public class OtrManagerTest {
         File bobDir = mkTmpDir("cryptobox-bob");
         bob = new OtrManager(bobDir.getAbsolutePath());
 
-        PreKey[] preKeys = bob.newPreKeys(0, 1);
+        ArrayList<PreKey> preKeys = bob.newPreKeys(0, 1);
         bobKeys = getPreKeys(preKeys, bobClientId, bobId);
 
         preKeys = alice.newPreKeys(0, 1);
         aliceKeys = getPreKeys(preKeys, aliceClientId, aliceId);
     }
 
-    private static PreKeys getPreKeys(PreKey[] preKeys, String clientId, String userId) {
-        PreKeys bobKeys = new PreKeys();
-        HashMap<String, com.wire.bots.sdk.models.otr.PreKey> devs = new HashMap<>();
-        bobKeys.put(userId, devs);
-
-        for (PreKey key : preKeys) {
-            com.wire.bots.sdk.models.otr.PreKey k = new com.wire.bots.sdk.models.otr.PreKey();
-            k.id = key.id;
-            k.key = Base64.getEncoder().encodeToString(key.data);
-            devs.put(clientId, k);
-
-            System.out.printf("%s, %s, keyId: %s, prekey: %s\n", userId, clientId, k.id, k.key);
+    private static PreKeys getPreKeys(ArrayList<PreKey> array, String clientId, String userId) {
+        HashMap<String, PreKey> devs = new HashMap<>();
+        for (PreKey key : array) {
+            devs.put(clientId, key);
+            System.out.printf("%s, %s, keyId: %s, prekey: %s\n", userId, clientId, key.id, key.key);
         }
-        return bobKeys;
+
+        PreKeys keys = new PreKeys();
+        keys.put(userId, devs);
+        return keys;
     }
 
     @AfterClass

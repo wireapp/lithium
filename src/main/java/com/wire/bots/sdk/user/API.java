@@ -24,10 +24,7 @@ import com.wire.bots.sdk.Logger;
 import com.wire.bots.sdk.Util;
 import com.wire.bots.sdk.assets.IAsset;
 import com.wire.bots.sdk.models.AssetKey;
-import com.wire.bots.sdk.models.otr.Devices;
-import com.wire.bots.sdk.models.otr.OtrMessage;
-import com.wire.bots.sdk.models.otr.PreKey;
-import com.wire.bots.sdk.models.otr.PreKeys;
+import com.wire.bots.sdk.models.otr.*;
 import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.Member;
 import com.wire.bots.sdk.server.model.Service;
@@ -43,7 +40,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 public class API extends LoginClient {
@@ -86,8 +82,8 @@ public class API extends LoginClient {
         return new Devices();
     }
 
-    PreKeys getPreKeys(HashMap<String, ArrayList<String>> devices) throws IOException {
-        if (devices.isEmpty())
+    PreKeys getPreKeys(Missing missing) throws IOException {
+        if (missing.isEmpty())
             return new PreKeys();
 
         return client.target(httpUrl).
@@ -95,7 +91,7 @@ public class API extends LoginClient {
                 request(MediaType.APPLICATION_JSON).
                 header("Authorization", "Bearer " + token).
                 accept(MediaType.APPLICATION_JSON).
-                post(Entity.entity(devices, MediaType.APPLICATION_JSON), PreKeys.class);
+                post(Entity.entity(missing, MediaType.APPLICATION_JSON), PreKeys.class);
     }
 
     byte[] downloadAsset(String assetKey, String assetToken) throws IOException {
