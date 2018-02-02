@@ -33,7 +33,6 @@ import org.glassfish.tyrus.client.ClientManager;
 
 import javax.websocket.*;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -131,7 +130,7 @@ public class Endpoint {
     }
 
     private static String initDevice(String dataDir, String password, String token)
-            throws CryptoException, IOException {
+            throws Exception {
         File base = new File(dataDir);
         if (base.mkdirs())
             Logger.info("Created: " + dataDir);

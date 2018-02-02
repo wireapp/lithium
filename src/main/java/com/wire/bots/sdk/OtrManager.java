@@ -23,7 +23,6 @@ import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.models.otr.PreKeys;
 import com.wire.bots.sdk.models.otr.Recipients;
 import com.wire.cryptobox.CryptoBox;
-import com.wire.cryptobox.CryptoException;
 import com.wire.cryptobox.CryptoSession;
 import com.wire.cryptobox.SessionMessage;
 
@@ -48,16 +47,16 @@ public class OtrManager implements Closeable {
      * overlapping directories. Doing so results in undefined behaviour.
      *
      * @param cryptoDir The root storage directory of the box
-     * @throws CryptoException
+     * @throws Exception
      */
-    public OtrManager(String cryptoDir) throws CryptoException {
+    public OtrManager(String cryptoDir) throws Exception {
         box = CryptoBox.open(cryptoDir);
     }
 
     /**
      * Generate a new last prekey.
      */
-    public PreKey newLastPreKey() throws CryptoException {
+    public PreKey newLastPreKey() throws Exception {
         return toPreKey(box.newLastPreKey());
     }
 
@@ -73,7 +72,7 @@ public class OtrManager implements Closeable {
      * @param from  The ID (>= 0 and <= 0xFFFE) of the first prekey to generate.
      * @param count The total number of prekeys to generate (> 0 and <= 0xFFFE).
      */
-    public ArrayList<PreKey> newPreKeys(int from, int count) throws CryptoException {
+    public ArrayList<PreKey> newPreKeys(int from, int count) throws Exception {
         ArrayList<PreKey> ret = new ArrayList<>(count);
         for (com.wire.cryptobox.PreKey k : box.newPreKeys(from, count)) {
             PreKey prekey = toPreKey(k);
@@ -87,9 +86,9 @@ public class OtrManager implements Closeable {
      *
      * @param preKeys Prekeys
      * @param content Message containing the plain text content
-     * @throws CryptoException throws CryptoException
+     * @throws Exception throws Exception
      */
-    public Recipients encrypt(PreKeys preKeys, byte[] content) throws CryptoException {
+    public Recipients encrypt(PreKeys preKeys, byte[] content) throws Exception {
         Recipients recipients = new Recipients();
         for (String userId : preKeys.keySet()) {
             HashMap<String, PreKey> clients = preKeys.get(userId);
@@ -113,7 +112,7 @@ public class OtrManager implements Closeable {
      * @param missing List of device that are missing
      * @param content Plain text content to be encrypted
      */
-    public Recipients encrypt(Missing missing, byte[] content) throws CryptoException {
+    public Recipients encrypt(Missing missing, byte[] content) throws Exception {
         Recipients recipients = new Recipients();
         for (String userId : missing.toUserIds()) {
             for (String clientId : missing.toClients(userId)) {
@@ -135,9 +134,9 @@ public class OtrManager implements Closeable {
      * @param clientId Sender's Client id
      * @param cypher   Encrypted, Base64 encoded string
      * @return Decrypted blob
-     * @throws CryptoException throws CryptoException
+     * @throws Exception throws Exception
      */
-    public byte[] decrypt(String userId, String clientId, String cypher) throws CryptoException {
+    public byte[] decrypt(String userId, String clientId, String cypher) throws Exception {
         byte[] decode = Base64.getDecoder().decode(cypher);
         String id = createId(userId, clientId);
 
@@ -179,9 +178,9 @@ public class OtrManager implements Closeable {
      * @param id      Identifier in our case: userId_clientId @see {@link #createId}
      * @param content Unencrypted binary content to be encrypted
      * @return Cipher
-     * @throws CryptoException throws CryptoException
+     * @throws Exception throws Exception
      */
-    private byte[] encryptFromPreKeys(String id, PreKey preKey, byte[] content) throws CryptoException {
+    private byte[] encryptFromPreKeys(String id, PreKey preKey, byte[] content) throws Exception {
         synchronized (lock) {
             CryptoSession cryptoSession = box.initSessionFromPreKey(id, toPreKey(preKey));
             try {
@@ -198,10 +197,10 @@ public class OtrManager implements Closeable {
      * @param id      Identifier in our case: userId_clientId @see {@link #createId}
      * @param content Unencrypted binary content to be encrypted
      * @return Cipher or NULL in case there is no session for the given {@param #id}
-     * @throws CryptoException throws CryptoException
+     * @throws Exception throws Exception
      */
     @Nullable
-    private byte[] encryptFromSession(String id, byte[] content) throws CryptoException {
+    private byte[] encryptFromSession(String id, byte[] content) throws Exception {
         synchronized (lock) {
             CryptoSession session = null;
             try {
@@ -216,7 +215,7 @@ public class OtrManager implements Closeable {
         return null;
     }
 
-    private static void saveSession(CryptoSession cryptoSession) throws CryptoException {
+    private static void saveSession(CryptoSession cryptoSession) throws Exception {
         if (cryptoSession != null) {
             cryptoSession.save();
         }

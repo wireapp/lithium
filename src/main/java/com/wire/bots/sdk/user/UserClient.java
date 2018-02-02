@@ -28,7 +28,6 @@ import com.wire.bots.sdk.models.AssetKey;
 import com.wire.bots.sdk.models.otr.*;
 import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.User;
-import com.wire.cryptobox.CryptoException;
 
 import java.io.File;
 import java.io.IOException;
@@ -260,17 +259,17 @@ public class UserClient implements WireClient {
     }
 
     @Override
-    public byte[] decrypt(String userId, String clientId, String cypher) throws CryptoException {
+    public byte[] decrypt(String userId, String clientId, String cypher) throws Exception {
         return otrManager.decrypt(userId, clientId, cypher);
     }
 
     @Override
-    public PreKey newLastPreKey() throws CryptoException {
+    public PreKey newLastPreKey() throws Exception {
         return otrManager.newLastPreKey();
     }
 
     @Override
-    public ArrayList<com.wire.bots.sdk.models.otr.PreKey> newPreKeys(int from, int count) throws CryptoException {
+    public ArrayList<com.wire.bots.sdk.models.otr.PreKey> newPreKeys(int from, int count) throws Exception {
         return otrManager.newPreKeys(from, count);
     }
 

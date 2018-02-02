@@ -31,5 +31,5 @@ public interface WireClientFactory {
      * @return New instance of Wire Client class
      * @throws CryptoException
      */
-    WireClient createClient(String botId, String conversationId, String clientId, String token) throws CryptoException;
+    WireClient createClient(String botId, String conversationId, String clientId, String token) throws Exception;
 }

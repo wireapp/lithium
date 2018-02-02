@@ -18,7 +18,6 @@
 
 import com.wire.bots.sdk.OtrManager;
 import com.wire.bots.sdk.models.otr.*;
-import com.wire.cryptobox.CryptoException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,14 +42,14 @@ public class OtrManagerTest {
     private final static String aliceClientId = "alice_device";
 
     @Test
-    public void testAliceToBob() throws CryptoException, IOException {
+    public void testAliceToBob() throws Exception {
         String text = "Hello Bob, This is Alice!";
         byte[] textBytes = text.getBytes();
 
-        OtrMessage msg = new OtrMessage(aliceClientId, textBytes);
-
         // Encrypt using prekeys
-        Recipients encrypt = alice.encrypt(bobKeys, msg.getContent());
+        Recipients encrypt = alice.encrypt(bobKeys, textBytes);
+
+        OtrMessage msg = new OtrMessage(aliceClientId);
         msg.add(encrypt);
 
         String base64Encoded = msg.get(bobId, bobClientId);
@@ -66,13 +65,12 @@ public class OtrManagerTest {
     }
 
     @Test
-    public void testBobToAlice() throws CryptoException, IOException {
+    public void testBobToAlice() throws Exception {
         String text = "Hello Alice, This is Bob!";
         byte[] textBytes = text.getBytes();
 
-        OtrMessage msg = new OtrMessage(bobClientId, textBytes);
-
-        Recipients encrypt = bob.encrypt(aliceKeys, msg.getContent());
+        Recipients encrypt = bob.encrypt(aliceKeys, textBytes);
+        OtrMessage msg = new OtrMessage(bobClientId);
         msg.add(encrypt);
 
         String base64Encoded = msg.get(aliceId, aliceClientId);
@@ -89,15 +87,15 @@ public class OtrManagerTest {
     }
 
     @Test
-    public void testSessions() throws CryptoException, IOException {
+    public void testSessions() throws Exception {
         String text = "Hello Alice, This is Bob, again!";
         byte[] textBytes = text.getBytes();
 
-        OtrMessage msg = new OtrMessage(bobClientId, textBytes);
-
         Missing devices = new Missing();
         devices.add(aliceId, aliceClientId);
-        Recipients encrypt = bob.encrypt(devices, msg.getContent());
+        Recipients encrypt = bob.encrypt(devices, textBytes);
+        
+        OtrMessage msg = new OtrMessage(bobClientId);
         msg.add(encrypt);
 
         String base64Encoded = msg.get(aliceId, aliceClientId);
@@ -121,7 +119,7 @@ public class OtrManagerTest {
     }
 
     @BeforeClass
-    public static void setUp() throws CryptoException, IOException {
+    public static void setUp() throws Exception {
         File aliceDir = mkTmpDir("cryptobox-alice");
         alice = new OtrManager(aliceDir.getAbsolutePath());
 
