@@ -103,11 +103,11 @@ public abstract class Server<Config extends Configuration> extends Application<C
     }
 
     protected StorageFactory getStorageFactory(Config config) {
-        return botId -> new FileStorage(config.cryptoDir, botId);
+        return botId -> new FileStorage(config.data, botId);
     }
 
     protected CryptoFactory getCryptoFactory(Config config) {
-        return (botId) -> new CryptoFile(config.cryptoDir, botId);
+        return (botId) -> new CryptoFile(config.data, botId);
     }
 
     private void runInBotMode(Config config, Environment env) {
@@ -179,18 +179,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
         env.healthChecks().register("ok", new HealthCheck() {
             @Override
             protected Result check() throws Exception {
-                return Result.healthy();
-            }
-        });
-
-        env.healthChecks().register("data volume", new HealthCheck() {
-            @Override
-            protected Result check() throws Exception {
-                Storage storage = getStorageFactory(conf).create("test");
-                if (!storage.status()) {
-                    Logger.error("Failed storage test: %s", conf.getCryptoDir());
-                    return Result.unhealthy(conf.getCryptoDir());
-                }
                 return Result.healthy();
             }
         });

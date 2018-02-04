@@ -24,31 +24,18 @@ import javax.validation.constraints.NotNull;
  * Application configuration class. Extend this class to add your custom configuration
  */
 public class Configuration extends io.dropwizard.Configuration {
+
     /**
-     * Path to the directory that will hold the cryptoBox data. This directory must exist
+     * Path to the directory that will hold the cryptoBox data.
      */
     @NotNull
-    public String cryptoDir;
+    public String data;
 
     /**
      * Authentication token
      */
     @NotNull
     public String auth;
-
-    public String getCryptoDir() {
-        return cryptoDir;
-    }
-
-    public String getAuth() {
-        return auth;
-    }
-
-    public final static class ConfigValueNotFoundException extends RuntimeException {
-        ConfigValueNotFoundException(String message) {
-            super(message);
-        }
-    }
 
     private static String propOrEnv(String prop, boolean strict) {
         final String env = prop.replace('.', '_').toUpperCase();
@@ -66,6 +53,20 @@ public class Configuration extends io.dropwizard.Configuration {
             return def;
         } else {
             return val;
+        }
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public String getAuth() {
+        return auth;
+    }
+
+    public final static class ConfigValueNotFoundException extends RuntimeException {
+        ConfigValueNotFoundException(String message) {
+            super(message);
         }
     }
 }

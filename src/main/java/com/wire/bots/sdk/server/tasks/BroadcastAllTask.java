@@ -95,7 +95,7 @@ public class BroadcastAllTask extends TaskBase {
     }
 
     private File[] getCryptoDirs() {
-        File dir = new File(conf.getCryptoDir());
+        File dir = new File(conf.getData());
         return dir.listFiles(new FileFilter() {
             @Override
             public boolean accept(File file) {

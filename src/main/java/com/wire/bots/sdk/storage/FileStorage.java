@@ -5,6 +5,7 @@ import com.wire.bots.sdk.server.model.NewBot;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 public class FileStorage implements Storage {
 
@@ -14,21 +15,21 @@ public class FileStorage implements Storage {
     public FileStorage(String path, String botId) {
         this.path = path;
         this.botId = botId;
-        File f = new File(String.format("%s/%s", path, botId));
-        f.mkdirs();
+        File dir = new File(String.format("%s/%s", path, botId));
+        dir.mkdirs();
     }
 
     @Override
     public boolean saveState(NewBot newBot) throws Exception {
+        File file = getStateFile();
         ObjectMapper mapper = new ObjectMapper();
-        File file = new File(getPath());
         mapper.writeValue(file, newBot);
         return true;
     }
 
     @Override
     public NewBot getState() throws Exception {
-        File file = new File(getPath());
+        File file = getStateFile();
         if (!file.exists()) {
             throw new IOException("File does not exist: " + file.getAbsolutePath());
         }
@@ -39,18 +40,37 @@ public class FileStorage implements Storage {
 
     @Override
     public boolean removeState() throws Exception {
-        File f = new File(getPath());
-        return f.delete();
+        File file = getStateFile();
+        if (!file.exists()) {
+            throw new IOException("File does not exist: " + file.getAbsolutePath());
+        }
+        return file.delete();
     }
 
     @Override
-    public boolean status() throws Exception {
-        File dir = new File(String.format("%s/%s", path, botId));
-        return dir.exists();
+    public boolean saveFile(String filename, String content) throws Exception {
+        File file = getFile(filename);
+        Files.write(file.toPath(), content.getBytes());
+        return true;
     }
 
     @Override
-    public String getPath() {
-        return String.format("%s/%s/state.json", path, botId);
+    public String readFile(String filename) throws Exception {
+        File file = getFile(filename);
+        return new String(Files.readAllBytes(file.toPath()));
+    }
+
+    @Override
+    public boolean deleteFile(String filename) throws Exception {
+        File file = getFile(filename);
+        return file.delete();
+    }
+
+    private File getStateFile() {
+        return getFile("state.json");
+    }
+
+    private File getFile(String filename) {
+        return new File(String.format("%s/%s/%s", path, botId, filename));
     }
 }

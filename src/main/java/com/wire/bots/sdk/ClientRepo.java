@@ -23,7 +23,6 @@ public class ClientRepo {
             WireClient wireClient = clients.get(botId);
             if (wireClient == null || wireClient.isClosed()) {
                 try {
-
                     wireClient = wireClientFactory.create(botId);
                     WireClient old = clients.put(botId, wireClient);
                     if (old != null)
@@ -73,7 +72,8 @@ public class ClientRepo {
     }
 
     public void purgeBot(String botId) throws Exception {
-        storageFactory.create(botId).removeState();
+        boolean purged = storageFactory.create(botId).removeState();
+        if (!purged)
+            Logger.error("Failed to purge bot: %s", botId);
     }
-
 }

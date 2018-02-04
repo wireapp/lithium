@@ -3,13 +3,17 @@ package com.wire.bots.sdk.storage;
 import com.wire.bots.sdk.server.model.NewBot;
 
 public interface Storage {
-    NewBot getState() throws Exception;
 
     boolean saveState(NewBot newBot) throws Exception;
 
-    boolean status() throws Exception;
+    NewBot getState() throws Exception;
 
     boolean removeState() throws Exception;
 
-    String getPath();
+    boolean saveFile(String filename, String content) throws Exception;
+
+    String readFile(String filename) throws Exception;
+
+    boolean deleteFile(String filename) throws Exception;
+
 }

@@ -129,18 +129,18 @@ public class Endpoint {
         return new URI(url);
     }
 
-    private String initDevice(String botId, String password, String token)
+    private void initDevice(String botId, String password, String token)
             throws Exception {
 
-        FileStorage storage = new FileStorage(config.cryptoDir, botId);
+        FileStorage storage = new FileStorage(config.data, botId);
         NewBot state = storage.getState();
         if (state != null) {
             Logger.info("initDevice: Existing ClientID: %s", state.client);
-            return state.client;
+            return;
         }
 
         // register new device
-        try (CryptoFile cryptoFile = new CryptoFile(config.cryptoDir, botId)) {
+        try (CryptoFile cryptoFile = new CryptoFile(config.data, botId)) {
             PreKey key = cryptoFile.newLastPreKey();
             LoginClient login = new LoginClient();
 
@@ -151,7 +151,6 @@ public class Endpoint {
 
             storage.saveState(state);
             Logger.info("initDevice: New ClientID: %s", state.client);
-            return state.client;
         }
     }
 
