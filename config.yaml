@@ -1,2 +1,2 @@
-cryptoDir: 'path/to/data/dir'
-auth: 'your auth token from DevBot'
+data: 'path/to/data/dir'
+auth: 'your auth token for your service'

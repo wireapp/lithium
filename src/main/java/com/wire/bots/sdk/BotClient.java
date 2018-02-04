@@ -250,7 +250,8 @@ public class BotClient implements WireClient {
     }
 
     /**
-     * Encrypt whole message for participants in the conversation. Implements the fallback for the 412 error code and missing
+     * Encrypt whole message for participants in the conversation.
+     * Implements the fallback for the 412 error code and missing
      * devices.
      *
      * @param generic generic message to be sent
