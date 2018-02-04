@@ -18,7 +18,6 @@
 
 package com.wire.bots.sdk.models.otr;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
@@ -29,23 +28,12 @@ public class OtrMessage {
     private final String sender; //clientId of the sender
 
     @JsonProperty
-    private final Recipients recipients = new Recipients();
+    private final Recipients recipients;
 
-    @JsonIgnore
-    private final byte[] content;    // GenericMessage proto
 
-    public OtrMessage(String sender) {
-        this.sender = sender;
-        this.content = null;
-    }
-
-    public OtrMessage(String sender, byte[] content) {
-        this.sender = sender;
-        this.content = content;
-    }
-
-    public byte[] getContent() {
-        return content;
+    public OtrMessage(String clinetId, Recipients recipients) {
+        this.sender = clinetId;
+        this.recipients = recipients;
     }
 
     public void add(Recipients rec) {

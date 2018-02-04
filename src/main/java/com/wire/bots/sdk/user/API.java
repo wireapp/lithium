@@ -20,8 +20,6 @@ package com.wire.bots.sdk.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.wire.bots.sdk.Logger;
-import com.wire.bots.sdk.Util;
 import com.wire.bots.sdk.assets.IAsset;
 import com.wire.bots.sdk.models.AssetKey;
 import com.wire.bots.sdk.models.otr.*;
@@ -29,6 +27,8 @@ import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.Member;
 import com.wire.bots.sdk.server.model.Service;
 import com.wire.bots.sdk.server.model.User;
+import com.wire.bots.sdk.tools.Logger;
+import com.wire.bots.sdk.tools.Util;
 import com.wire.bots.sdk.user.model.Connection;
 
 import javax.ws.rs.client.Entity;
@@ -44,8 +44,8 @@ import java.util.List;
 
 public class API extends LoginClient {
 
-    private String convId;
     private final String token;
+    private String convId;
 
     public API(String convId, String token) {
         this.convId = convId;
@@ -54,6 +54,23 @@ public class API extends LoginClient {
 
     public API(String token) throws IOException {
         this.token = token;
+    }
+
+    static String renewAccessToken(String cookie, String token) throws IOException {
+        Response response = client.target(httpUrl).
+                path("access").
+                request(MediaType.APPLICATION_JSON).
+                header("Authorization", "Bearer " + token).
+                header("Cookie", cookie).
+                post(Entity.entity(new Connection(), MediaType.APPLICATION_JSON));
+
+
+        if (response.getStatus() >= 300) {
+            Logger.warning(response.readEntity(String.class));
+            throw new IOException(response.getStatusInfo().getReasonPhrase());
+        }
+
+        return response.readEntity(com.wire.bots.sdk.user.model.User.class).getToken();
     }
 
     Devices sendMessage(OtrMessage msg) throws IOException {
@@ -131,23 +148,6 @@ public class API extends LoginClient {
         }
     }
 
-    static String renewAccessToken(String cookie, String token) throws IOException {
-        Response response = client.target(httpUrl).
-                path("access").
-                request(MediaType.APPLICATION_JSON).
-                header("Authorization", "Bearer " + token).
-                header("Cookie", cookie).
-                post(Entity.entity(new Connection(), MediaType.APPLICATION_JSON));
-
-
-        if (response.getStatus() >= 300) {
-            Logger.warning(response.readEntity(String.class));
-            throw new IOException(response.getStatusInfo().getReasonPhrase());
-        }
-
-        return response.readEntity(com.wire.bots.sdk.user.model.User.class).getToken();
-    }
-
     AssetKey uploadAsset(IAsset asset) throws Exception {
         StringBuilder sb = new StringBuilder();
 
@@ -193,24 +193,6 @@ public class API extends LoginClient {
         }
 
         return response.readEntity(AssetKey.class);
-    }
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class _Cov {
-        @JsonProperty
-        public String id;
-
-        @JsonProperty
-        public String name;
-
-        @JsonProperty
-        public _Members members;
-    }
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class _Members {
-        @JsonProperty
-        public List<Member> others;
     }
 
     Conversation getConversation() throws IOException {
@@ -276,11 +258,6 @@ public class API extends LoginClient {
         }
     }
 
-    class _Service {
-        public String service;
-        public String provider;
-    }
-
     public User addService(String serviceId, String providerId) throws IOException {
         _Service service = new _Service();
         service.service = serviceId;
@@ -336,5 +313,28 @@ public class API extends LoginClient {
                 accept(MediaType.APPLICATION_JSON).
                 get(new GenericType<ArrayList<Integer>>() {
                 });
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class _Cov {
+        @JsonProperty
+        public String id;
+
+        @JsonProperty
+        public String name;
+
+        @JsonProperty
+        public _Members members;
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class _Members {
+        @JsonProperty
+        public List<Member> others;
+    }
+
+    class _Service {
+        public String service;
+        public String provider;
     }
 }

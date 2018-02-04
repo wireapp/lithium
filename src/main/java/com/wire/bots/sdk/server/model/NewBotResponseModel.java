@@ -41,6 +41,17 @@ public class NewBotResponseModel {
     @JsonProperty("assets")
     public ArrayList<Asset> assets;
 
+    public void addAsset(String key, String size) {
+        if (assets == null)
+            assets = new ArrayList<>();
+
+        Asset asset = new Asset();
+        asset.key = key;
+        asset.type = "image";
+        asset.size = size;
+        assets.add(asset);
+    }
+
     public static class Asset {
         @JsonProperty("type")
         public String type;

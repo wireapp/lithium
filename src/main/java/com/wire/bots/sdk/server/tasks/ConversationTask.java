@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.collect.ImmutableMultimap;
 import com.wire.bots.sdk.ClientRepo;
-import com.wire.bots.sdk.Logger;
 import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.server.model.Conversation;
+import com.wire.bots.sdk.tools.Logger;
 
 import java.io.PrintWriter;
 

@@ -20,7 +20,7 @@ package com.wire.bots.sdk.assets;
 
 import com.google.protobuf.ByteString;
 import com.waz.model.Messages;
-import com.wire.bots.sdk.Util;
+import com.wire.bots.sdk.tools.Util;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -16,7 +16,7 @@
 // along with this program. If not, see http://www.gnu.org/licenses/.
 //
 
-package com.wire.bots.sdk;
+package com.wire.bots.sdk.tools;
 
 import javax.crypto.Cipher;
 import javax.crypto.Mac;

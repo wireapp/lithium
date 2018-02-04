@@ -20,8 +20,8 @@ package com.wire.bots.sdk.assets;
 
 import com.google.protobuf.ByteString;
 import com.waz.model.Messages;
-import com.wire.bots.sdk.Logger;
-import com.wire.bots.sdk.Util;
+import com.wire.bots.sdk.tools.Logger;
+import com.wire.bots.sdk.tools.Util;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -47,6 +47,44 @@ public class AudioPreview implements IGeneric {
         this.duration = duration;
         this.size = bytes.length;
         this.levels = getNormalizedLoudness(new ByteArrayInputStream(bytes));
+    }
+
+    private static byte[] getNormalizedLoudness(InputStream stream) {
+        try (AudioInputStream in = AudioSystem.getAudioInputStream(stream)) {
+            ArrayList<Double> vals = new ArrayList<>(100);
+
+            byte[] buffer = Util.toByteArray(in);
+            ByteBuffer bb = ByteBuffer.wrap(buffer);
+            bb.order(ByteOrder.LITTLE_ENDIAN);
+
+            double max = 0;
+            long sum = 0;
+            int step = buffer.length / 100;
+            for (int i = 0; i < buffer.length - 1; i += 2) {
+                short sample = bb.getShort(i);
+                sum += sample * sample;
+                if (i % step == 0) {
+                    double avg = Math.sqrt(sum / step);
+                    sum = 0;
+                    if (avg > max)
+                        max = avg;
+                    vals.add(avg);
+                }
+            }
+
+            byte[] ret = new byte[vals.size()];
+            final double d = 255 / max;
+            for (int i = 0; i < vals.size(); i++) {
+                long round = Math.round(vals.get(i) * d);
+                byte b = (byte) round;
+                ret[i] = b;
+            }
+
+            return ret;
+        } catch (Exception e) {
+            Logger.warning(e.getMessage());
+            return new byte[0];
+        }
     }
 
     @Override
@@ -86,44 +124,6 @@ public class AudioPreview implements IGeneric {
 
     public String getMimeType() {
         return mimeType;
-    }
-
-    private static byte[] getNormalizedLoudness(InputStream stream) {
-        try (AudioInputStream in = AudioSystem.getAudioInputStream(stream)) {
-            ArrayList<Double> vals = new ArrayList<>(100);
-
-            byte[] buffer = Util.toByteArray(in);
-            ByteBuffer bb = ByteBuffer.wrap(buffer);
-            bb.order(ByteOrder.LITTLE_ENDIAN);
-
-            double max = 0;
-            long sum = 0;
-            int step = buffer.length / 100;
-            for (int i = 0; i < buffer.length - 1; i += 2) {
-                short sample = bb.getShort(i);
-                sum += sample * sample;
-                if (i % step == 0) {
-                    double avg = Math.sqrt(sum / step);
-                    sum = 0;
-                    if (avg > max)
-                        max = avg;
-                    vals.add(avg);
-                }
-            }
-
-            byte[] ret = new byte[vals.size()];
-            final double d = 255 / max;
-            for (int i = 0; i < vals.size(); i++) {
-                long round = Math.round(vals.get(i) * d);
-                byte b = (byte) round;
-                ret[i] = b;
-            }
-
-            return ret;
-        } catch (Exception e) {
-            Logger.warning(e.getMessage());
-            return new byte[0];
-        }
     }
 
 }

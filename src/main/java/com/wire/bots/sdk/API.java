@@ -25,6 +25,8 @@ import com.wire.bots.sdk.models.otr.*;
 import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.NewBotResponseModel;
 import com.wire.bots.sdk.server.model.User;
+import com.wire.bots.sdk.tools.Logger;
+import com.wire.bots.sdk.tools.Util;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 
@@ -43,7 +45,6 @@ class API {
 
     private final static Client client;
     private final static String httpUrl;
-    private final String token;
 
     static {
         String env = System.getProperty("env", "prod");
@@ -52,6 +53,8 @@ class API {
         ClientConfig cfg = new ClientConfig(JacksonJsonProvider.class);
         client = JerseyClientBuilder.createClient(cfg);
     }
+
+    private final String token;
 
     API(String token) {
         this.token = token;

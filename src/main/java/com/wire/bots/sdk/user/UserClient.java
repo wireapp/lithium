@@ -18,16 +18,17 @@
 
 package com.wire.bots.sdk.user;
 
-import com.waz.model.Messages;
-import com.wire.bots.sdk.Logger;
-import com.wire.bots.sdk.OtrManager;
-import com.wire.bots.sdk.Util;
 import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.assets.*;
+import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.models.AssetKey;
 import com.wire.bots.sdk.models.otr.*;
 import com.wire.bots.sdk.server.model.Conversation;
+import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.server.model.User;
+import com.wire.bots.sdk.storage.Storage;
+import com.wire.bots.sdk.tools.Logger;
+import com.wire.bots.sdk.tools.Util;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,19 +39,15 @@ import java.util.Collection;
 import java.util.UUID;
 
 public class UserClient implements WireClient {
-    private final String botId;
-    private final String convId;
-    private final String clientId;
     private final API api;
-    private final OtrManager otrManager;
-    private Devices devices;
+    private final Crypto crypto;
+    private final NewBot state;
+    private Devices devices = null;
 
-    public UserClient(OtrManager otrManager, String botId, String convId, String clientId, String token) {
-        this.botId = botId;
-        this.convId = convId;
-        this.clientId = clientId;
-        this.api = new API(convId, token);
-        this.otrManager = otrManager;
+    public UserClient(Crypto crypto, Storage storage) throws Exception {
+        this.state = storage.getState();
+        this.api = new API(state.token);
+        this.crypto = crypto;
     }
 
     @Override
@@ -182,17 +179,17 @@ public class UserClient implements WireClient {
 
     @Override
     public String getId() {
-        return botId;
+        return state.id;
     }
 
     @Override
     public String getConversationId() {
-        return convId;
+        return state.conversation.id;
     }
 
     @Override
     public String getDeviceId() {
-        return clientId;
+        return state.client;
     }
 
     @Override
@@ -211,32 +208,29 @@ public class UserClient implements WireClient {
     }
 
     private void postGenericMessage(IGeneric generic) throws Exception {
-        Messages.GenericMessage genMsg = generic.createGenericMsg();
-        OtrMessage msg = new OtrMessage(clientId, genMsg.toByteArray());
-        
-        Recipients encrypt = otrManager.encrypt(getDevices().missing, msg.getContent());
-        msg.add(encrypt);
+        byte[] content = generic.createGenericMsg().toByteArray();
 
-        Devices missing = getDevices();
-        if (!missing.hasMissing()) {
-            PreKeys preKeys = api.getPreKeys(missing.missing);
+        // Try to encrypt the msg for those devices that we have the session already
+        Recipients encrypt = crypto.encrypt(getDevices().missing, content);
+        OtrMessage msg = new OtrMessage(state.client, encrypt);
 
-            encrypt = otrManager.encrypt(preKeys, msg.getContent());
+        Devices res = api.sendMessage(msg);
+        if (!res.hasMissing()) {
+            // Fetch preKeys for the missing devices from the Backend
+            PreKeys preKeys = api.getPreKeys(res.missing);
+
+            // Encrypt msg for those devices that were missing. This time using preKeys
+            encrypt = crypto.encrypt(preKeys, content);
             msg.add(encrypt);
 
-            missing = api.sendMessage(msg);
+            // reset devices so they could be pulled next time
+            devices = null;
 
-            if (!missing.hasMissing()) {
-                Logger.warning(String.format("Sending otr message with missing %d devices. Conv: %s",
-                        missing.size(),
-                        convId));
-                missing = api.sendMessage(msg, true);
-            }
-
-            if (!missing.hasMissing()) {
-                Logger.error(String.format("Failed to send otr message to %d devices. Conv: %s",
-                        missing.size(),
-                        convId));
+            res = api.sendMessage(msg, true);
+            if (!res.hasMissing()) {
+                Logger.error(String.format("Failed to send otr message to %d devices. Bot: %s",
+                        res.size(),
+                        getId()));
             }
         }
     }
@@ -244,7 +238,7 @@ public class UserClient implements WireClient {
     private Devices getDevices() {
         try {
             if (devices == null || devices.hasMissing()) {
-                devices = api.sendMessage(new OtrMessage(clientId));
+                devices = api.sendMessage(new OtrMessage(state.client, new Recipients()));
             }
         } catch (IOException e) {
             Logger.error(e.getMessage());
@@ -255,22 +249,22 @@ public class UserClient implements WireClient {
 
     @Override
     public void close() throws IOException {
-        otrManager.close();
+        crypto.close();
     }
 
     @Override
     public byte[] decrypt(String userId, String clientId, String cypher) throws Exception {
-        return otrManager.decrypt(userId, clientId, cypher);
+        return crypto.decrypt(userId, clientId, cypher);
     }
 
     @Override
     public PreKey newLastPreKey() throws Exception {
-        return otrManager.newLastPreKey();
+        return crypto.newLastPreKey();
     }
 
     @Override
     public ArrayList<com.wire.bots.sdk.models.otr.PreKey> newPreKeys(int from, int count) throws Exception {
-        return otrManager.newPreKeys(from, count);
+        return crypto.newPreKeys(from, count);
     }
 
     @Override
@@ -280,12 +274,12 @@ public class UserClient implements WireClient {
 
     @Override
     public ArrayList<Integer> getAvailablePrekeys() {
-        return api.getAvailablePrekeys(clientId);
+        return api.getAvailablePrekeys(state.client);
     }
 
     @Override
     public boolean isClosed() {
-        return otrManager.isClosed();
+        return crypto.isClosed();
     }
 
     @Override

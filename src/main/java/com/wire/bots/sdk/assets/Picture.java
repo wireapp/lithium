@@ -20,7 +20,7 @@ package com.wire.bots.sdk.assets;
 
 import com.google.protobuf.ByteString;
 import com.waz.model.Messages;
-import com.wire.bots.sdk.Util;
+import com.wire.bots.sdk.tools.Util;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -79,9 +79,17 @@ public class Picture implements IGeneric, IAsset {
         return mimeType;
     }
 
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
     @Override
     public String getRetention() {
         return retention;
+    }
+
+    public void setRetention(String retention) {
+        this.retention = retention;
     }
 
     @Override
@@ -144,32 +152,28 @@ public class Picture implements IGeneric, IAsset {
         return isPublic;
     }
 
+    public void setPublic(boolean isPublic) {
+        this.isPublic = isPublic;
+    }
+
     public int getWidth() {
         return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
     }
 
     public int getHeight() {
         return height;
     }
 
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
     public byte[] getImageData() {
         return imageData;
-    }
-
-    public void setAssetKey(String assetKey) {
-        this.assetKey = assetKey;
-    }
-
-    public void setAssetToken(String assetToken) {
-        this.assetToken = assetToken;
-    }
-
-    public void setPublic(boolean isPublic) {
-        this.isPublic = isPublic;
-    }
-
-    public void setRetention(String retention) {
-        this.retention = retention;
     }
 
     public byte[] getOtrKey() {
@@ -180,6 +184,10 @@ public class Picture implements IGeneric, IAsset {
         return otrKey;
     }
 
+    public void setOtrKey(byte[] otrKey) {
+        this.otrKey = otrKey;
+    }
+
     public byte[] getSha256() throws NoSuchAlgorithmException {
         if (sha256 == null) {
             sha256 = MessageDigest.getInstance("SHA-256").digest(encBytes);
@@ -187,56 +195,48 @@ public class Picture implements IGeneric, IAsset {
         return sha256;
     }
 
+    public void setSha256(byte[] sha256) {
+        this.sha256 = sha256;
+    }
+
     public String getAssetKey() {
         return assetKey;
+    }
+
+    public void setAssetKey(String assetKey) {
+        this.assetKey = assetKey;
     }
 
     public String getAssetToken() {
         return assetToken;
     }
 
+    public void setAssetToken(String assetToken) {
+        this.assetToken = assetToken;
+    }
+
     public int getSize() {
         return size;
-    }
-
-    public String getMessageId() {
-        return messageId;
-    }
-
-    public void setOtrKey(byte[] otrKey) {
-        this.otrKey = otrKey;
-    }
-
-    public void setSha256(byte[] sha256) {
-        this.sha256 = sha256;
-    }
-
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
     }
 
     public void setSize(int size) {
         this.size = size;
     }
 
+    public String getMessageId() {
+        return messageId;
+    }
+
     public void setMessageId(String messageId) {
         this.messageId = messageId;
     }
 
-    public void setExpires(long expires) {
-        this.expires = expires;
-    }
-
     public long getExpires() {
         return expires;
+    }
+
+    public void setExpires(long expires) {
+        this.expires = expires;
     }
 
     private void loadBufferImage() throws IOException {

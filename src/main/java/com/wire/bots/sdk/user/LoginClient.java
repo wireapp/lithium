@@ -20,10 +20,10 @@ package com.wire.bots.sdk.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import com.wire.bots.sdk.Logger;
-import com.wire.bots.sdk.Util;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.Member;
+import com.wire.bots.sdk.tools.Logger;
+import com.wire.bots.sdk.tools.Util;
 import com.wire.bots.sdk.user.model.NewClient;
 import com.wire.bots.sdk.user.model.User;
 import org.glassfish.jersey.client.ClientConfig;
@@ -94,11 +94,6 @@ public class LoginClient {
         return response.readEntity(_Client.class).id;
     }
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class _Client {
-        public String id;
-    }
-
     public String newConversation(String token, String name) throws IOException {
         Response response = client.target(httpUrl)
                 .path("conversations")
@@ -133,5 +128,10 @@ public class LoginClient {
             throw new IOException(msg);
         }
         return response.getStatus() == 201;
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class _Client {
+        public String id;
     }
 }

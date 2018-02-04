@@ -16,7 +16,7 @@
 // along with this program. If not, see http://www.gnu.org/licenses/.
 //
 
-package com.wire.bots.sdk;
+package com.wire.bots.sdk.crypto;
 
 import com.wire.bots.sdk.models.otr.Missing;
 import com.wire.bots.sdk.models.otr.PreKey;
@@ -27,7 +27,7 @@ import com.wire.cryptobox.CryptoSession;
 import com.wire.cryptobox.SessionMessage;
 
 import javax.annotation.Nullable;
-import java.io.Closeable;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
@@ -35,7 +35,7 @@ import java.util.HashMap;
 /**
  * Wrapper for the Crypto Box. This class is thread safe.
  */
-public class OtrManager implements Closeable {
+public class CryptoFile implements Crypto {
     private final Object lock = new Object();
     private final CryptoBox box;
 
@@ -46,16 +46,42 @@ public class OtrManager implements Closeable {
      * Note: Do not create multiple OtrManagers that operate on the same or
      * overlapping directories. Doing so results in undefined behaviour.
      *
-     * @param cryptoDir The root storage directory of the box
+     * @param uri The root storage directory of the box
+     * @param botId Bot id
      * @throws Exception
      */
-    public OtrManager(String cryptoDir) throws Exception {
-        box = CryptoBox.open(cryptoDir);
+    public CryptoFile(String uri, String botId) throws Exception {
+        String path = String.format("%s/%s", uri, botId);
+        File data = new File(path);
+        data.mkdirs();
+        box = CryptoBox.open(path);
+    }
+
+    private static void saveSession(CryptoSession cryptoSession) throws Exception {
+        if (cryptoSession != null) {
+            cryptoSession.save();
+        }
+    }
+
+    private static com.wire.cryptobox.PreKey toPreKey(PreKey preKey) {
+        return new com.wire.cryptobox.PreKey(preKey.id, Base64.getDecoder().decode(preKey.key));
+    }
+
+    private static PreKey toPreKey(com.wire.cryptobox.PreKey preKey) {
+        PreKey ret = new PreKey();
+        ret.id = preKey.id;
+        ret.key = Base64.getEncoder().encodeToString(preKey.data);
+        return ret;
+    }
+
+    private static String createId(String userId, String clientId) {
+        return String.format("%s_%s", userId, clientId);
     }
 
     /**
      * Generate a new last prekey.
      */
+    @Override
     public PreKey newLastPreKey() throws Exception {
         return toPreKey(box.newLastPreKey());
     }
@@ -72,6 +98,7 @@ public class OtrManager implements Closeable {
      * @param from  The ID (>= 0 and <= 0xFFFE) of the first prekey to generate.
      * @param count The total number of prekeys to generate (> 0 and <= 0xFFFE).
      */
+    @Override
     public ArrayList<PreKey> newPreKeys(int from, int count) throws Exception {
         ArrayList<PreKey> ret = new ArrayList<>(count);
         for (com.wire.cryptobox.PreKey k : box.newPreKeys(from, count)) {
@@ -88,6 +115,7 @@ public class OtrManager implements Closeable {
      * @param content Plain plain text content
      * @throws Exception throws Exception
      */
+    @Override
     public Recipients encrypt(PreKeys preKeys, byte[] content) throws Exception {
         Recipients recipients = new Recipients();
         for (String userId : preKeys.keySet()) {
@@ -112,6 +140,7 @@ public class OtrManager implements Closeable {
      * @param missing List of device that are missing
      * @param content Plain text content to be encrypted
      */
+    @Override
     public Recipients encrypt(Missing missing, byte[] content) throws Exception {
         Recipients recipients = new Recipients();
         for (String userId : missing.toUserIds()) {
@@ -136,6 +165,7 @@ public class OtrManager implements Closeable {
      * @return Decrypted blob
      * @throws Exception throws Exception
      */
+    @Override
     public byte[] decrypt(String userId, String clientId, String cypher) throws Exception {
         byte[] decode = Base64.getDecoder().decode(cypher);
         String id = createId(userId, clientId);
@@ -166,6 +196,7 @@ public class OtrManager implements Closeable {
         }
     }
 
+    @Override
     public boolean isClosed() {
         synchronized (lock) {
             return box.isClosed();
@@ -213,26 +244,5 @@ public class OtrManager implements Closeable {
             }
         }
         return null;
-    }
-
-    private static void saveSession(CryptoSession cryptoSession) throws Exception {
-        if (cryptoSession != null) {
-            cryptoSession.save();
-        }
-    }
-
-    private static com.wire.cryptobox.PreKey toPreKey(PreKey preKey) {
-        return new com.wire.cryptobox.PreKey(preKey.id, Base64.getDecoder().decode(preKey.key));
-    }
-
-    private static PreKey toPreKey(com.wire.cryptobox.PreKey preKey) {
-        PreKey ret = new PreKey();
-        ret.id = preKey.id;
-        ret.key = Base64.getEncoder().encodeToString(preKey.data);
-        return ret;
-    }
-
-    private static String createId(String userId, String clientId) {
-        return String.format("%s_%s", userId, clientId);
     }
 }

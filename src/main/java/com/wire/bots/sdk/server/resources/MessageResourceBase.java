@@ -1,10 +1,13 @@
 package com.wire.bots.sdk.server.resources;
 
 import com.waz.model.Messages;
-import com.wire.bots.sdk.*;
+import com.wire.bots.sdk.ClientRepo;
+import com.wire.bots.sdk.MessageHandlerBase;
+import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.GenericMessageProcessor;
 import com.wire.bots.sdk.server.model.InboundMessage;
+import com.wire.bots.sdk.tools.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,12 +15,10 @@ import java.util.Collections;
 public abstract class MessageResourceBase {
 
     protected final MessageHandlerBase handler;
-    protected final Configuration conf;
     protected final ClientRepo repo;
 
-    public MessageResourceBase(MessageHandlerBase handler, Configuration conf, ClientRepo repo) {
+    public MessageResourceBase(MessageHandlerBase handler, ClientRepo repo) {
         this.handler = handler;
-        this.conf = conf;
         this.repo = repo;
     }
 
@@ -34,7 +35,7 @@ public abstract class MessageResourceBase {
 
                 boolean processed = processor.process(inbound.from, genericMessage);
                 if (processed) {
-                    sendDeliveryReceipt(client, genericMessage.getMessageId());
+                    //sendDeliveryReceipt(client, genericMessage.getMessageId());
                 }
             }
             break;

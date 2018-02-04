@@ -3,9 +3,9 @@ package com.wire.bots.sdk.server.tasks;
 import com.google.common.collect.ImmutableMultimap;
 import com.wire.bots.sdk.ClientRepo;
 import com.wire.bots.sdk.Configuration;
-import com.wire.bots.sdk.Logger;
 import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.server.model.Member;
+import com.wire.bots.sdk.tools.Logger;
 
 import java.io.File;
 import java.io.FileFilter;

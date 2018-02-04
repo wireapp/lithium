@@ -18,8 +18,12 @@
 
 package com.wire.bots.sdk.server.resources;
 
-import com.wire.bots.sdk.*;
+import com.wire.bots.sdk.ClientRepo;
+import com.wire.bots.sdk.MessageHandlerBase;
+import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.server.model.InboundMessage;
+import com.wire.bots.sdk.tools.AuthValidator;
+import com.wire.bots.sdk.tools.Logger;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -28,8 +32,11 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/bots/{bot}/messages")
 public class MessageResource extends MessageResourceBase {
-    public MessageResource(MessageHandlerBase handler, Configuration conf, ClientRepo repo) {
-        super(handler, conf, repo);
+    private final AuthValidator validator;
+
+    public MessageResource(MessageHandlerBase handler, AuthValidator validator, ClientRepo repo) {
+        super(handler, repo);
+        this.validator = validator;
     }
 
     @POST
@@ -37,7 +44,7 @@ public class MessageResource extends MessageResourceBase {
                                @PathParam("bot") String bot,
                                InboundMessage inbound) throws Exception {
 
-        if (!Util.compareTokens(conf.getAuth(), auth)) {
+        if (!validator.validate(auth)) {
             Logger.warning(String.format("Invalid auth. Got: '%s'",
                     auth
             ));

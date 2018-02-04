@@ -16,8 +16,12 @@
 // along with this program. If not, see http://www.gnu.org/licenses/.
 //
 
-import com.wire.bots.sdk.OtrManager;
-import com.wire.bots.sdk.models.otr.*;
+import com.wire.bots.sdk.crypto.Crypto;
+import com.wire.bots.sdk.crypto.CryptoFile;
+import com.wire.bots.sdk.models.otr.Missing;
+import com.wire.bots.sdk.models.otr.PreKey;
+import com.wire.bots.sdk.models.otr.PreKeys;
+import com.wire.bots.sdk.models.otr.Recipients;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,18 +32,54 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class OtrManagerTest {
-
-    private static OtrManager alice;
-    private static OtrManager bob;
-
-    private static PreKeys bobKeys;
-    private static PreKeys aliceKeys;
+public class CryptoFileTest {
 
     private final static String bobId = "bob";
     private final static String bobClientId = "bob_device";
     private final static String aliceId = "alice";
     private final static String aliceClientId = "alice_device";
+    private final static String DATA = "./data";
+    private static Crypto alice;
+    private static Crypto bob;
+    private static PreKeys bobKeys;
+    private static PreKeys aliceKeys;
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        alice = new CryptoFile(DATA, aliceId);
+        bob = new CryptoFile(DATA, bobId);
+
+        ArrayList<PreKey> preKeys = bob.newPreKeys(0, 1);
+        bobKeys = getPreKeys(preKeys, bobClientId, bobId);
+
+        preKeys = alice.newPreKeys(0, 1);
+        aliceKeys = getPreKeys(preKeys, aliceClientId, aliceId);
+    }
+
+    private static File mkTmpDir(String name) throws IOException {
+        File tmpDir = File.createTempFile(name, "");
+        tmpDir.delete();
+        tmpDir.mkdir();
+        return tmpDir;
+    }
+
+    private static PreKeys getPreKeys(ArrayList<PreKey> array, String clientId, String userId) {
+        HashMap<String, PreKey> devs = new HashMap<>();
+        for (PreKey key : array) {
+            devs.put(clientId, key);
+            System.out.printf("%s, %s, keyId: %s, prekey: %s\n", userId, clientId, key.id, key.key);
+        }
+
+        PreKeys keys = new PreKeys();
+        keys.put(userId, devs);
+        return keys;
+    }
+
+    @AfterClass
+    public static void clean() throws IOException {
+        alice.close();
+        bob.close();
+    }
 
     @Test
     public void testAliceToBob() throws Exception {
@@ -89,7 +129,7 @@ public class OtrManagerTest {
         Missing devices = new Missing();
         devices.add(aliceId, aliceClientId);
         Recipients encrypt = bob.encrypt(devices, textBytes);
-        
+
         String base64Encoded = encrypt.get(aliceId, aliceClientId);
         System.out.printf("Bob -> (%s,%s) cipher: %s\n", aliceId, aliceClientId, base64Encoded);
 
@@ -101,45 +141,5 @@ public class OtrManagerTest {
         assert equals;
 
         assert text.equals(text2);
-    }
-
-    private static File mkTmpDir(String name) throws IOException {
-        File tmpDir = File.createTempFile(name, "");
-        tmpDir.delete();
-        tmpDir.mkdir();
-        return tmpDir;
-    }
-
-    @BeforeClass
-    public static void setUp() throws Exception {
-        File aliceDir = mkTmpDir("cryptobox-alice");
-        alice = new OtrManager(aliceDir.getAbsolutePath());
-
-        File bobDir = mkTmpDir("cryptobox-bob");
-        bob = new OtrManager(bobDir.getAbsolutePath());
-
-        ArrayList<PreKey> preKeys = bob.newPreKeys(0, 1);
-        bobKeys = getPreKeys(preKeys, bobClientId, bobId);
-
-        preKeys = alice.newPreKeys(0, 1);
-        aliceKeys = getPreKeys(preKeys, aliceClientId, aliceId);
-    }
-
-    private static PreKeys getPreKeys(ArrayList<PreKey> array, String clientId, String userId) {
-        HashMap<String, PreKey> devs = new HashMap<>();
-        for (PreKey key : array) {
-            devs.put(clientId, key);
-            System.out.printf("%s, %s, keyId: %s, prekey: %s\n", userId, clientId, key.id, key.key);
-        }
-
-        PreKeys keys = new PreKeys();
-        keys.put(userId, devs);
-        return keys;
-    }
-
-    @AfterClass
-    public static void clean() {
-        alice.close();
-        bob.close();
     }
 }

@@ -16,21 +16,14 @@
 // along with this program. If not, see http://www.gnu.org/licenses/.
 //
 
-package com.wire.bots.sdk.server.model;
+package com.wire.bots.sdk.factories;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wire.bots.sdk.WireClient;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Match {
-    @JsonProperty
-    public String id;
-    @JsonProperty
-    public String name;
-    @JsonProperty
-    public boolean matching_base_url;
-    @JsonProperty
-    public boolean matching_public_key;
-    @JsonProperty
-    public boolean matching_auth_token;
+public interface WireClientFactory {
+    /**
+     * Create one thread safe client object that can be used to post messages into conversation
+     *
+     */
+    WireClient create(String botId) throws Exception;
 }
