@@ -21,7 +21,6 @@ package com.wire.bots.sdk.server;
 import com.waz.model.Messages;
 import com.wire.bots.sdk.MessageHandlerBase;
 import com.wire.bots.sdk.WireClient;
-import com.wire.bots.sdk.assets.OT;
 import com.wire.bots.sdk.models.*;
 
 /**
@@ -33,6 +32,20 @@ public class GenericMessageProcessor {
     public GenericMessageProcessor(WireClient client, MessageHandlerBase handler) {
         this.client = client;
         this.handler = handler;
+    }
+
+    private static void initAsset(Messages.Asset asset, Messages.Asset.Original original, MessageAssetBase msg) {
+        msg.setMimeType(original.getMimeType());
+        msg.setSize(original.getSize());
+        msg.setName(original.hasName() ? original.getName() : null);
+
+        if (asset.hasUploaded()) {
+            Messages.Asset.RemoteData uploaded = asset.getUploaded();
+            msg.setAssetKey(uploaded.getAssetId());
+            msg.setAssetToken(uploaded.hasAssetToken() ? uploaded.getAssetToken() : null);
+            msg.setOtrKey(uploaded.getOtrKey().toByteArray());
+            msg.setSha256(uploaded.getSha256().toByteArray());
+        }
     }
 
     public boolean process(String userId, Messages.GenericMessage generic) {
@@ -81,24 +94,6 @@ public class GenericMessageProcessor {
 
             handler.onText(client, msg);
             return true;
-        }
-
-        // OT
-        if (generic.hasOt()) {
-            Messages.OT ot = generic.getOt();
-            OT.Operation operation = OT.Operation.values()[ot.getType().ordinal()];
-
-            OTMessage otMessage = new OTMessage(messageId, convId, clientId, userId);
-            otMessage.setOperation(operation);
-            otMessage.setOffset(ot.getOffset());
-            
-            if (ot.hasText())
-                otMessage.setText(ot.getText());
-            if (ot.hasLength())
-                otMessage.setLength(ot.getLength());
-
-            handler.onOT(client, otMessage);
-            return false; // we dont want to send the delivery receipt for this type of messages
         }
 
         //Logger.info("Generic: hasAsset: %s, hasImage: %s", generic.hasAsset(), generic.hasImage());
@@ -166,19 +161,5 @@ public class GenericMessageProcessor {
         }
 
         return false;
-    }
-
-    private static void initAsset(Messages.Asset asset, Messages.Asset.Original original, MessageAssetBase msg) {
-        msg.setMimeType(original.getMimeType());
-        msg.setSize(original.getSize());
-        msg.setName(original.hasName() ? original.getName() : null);
-
-        if (asset.hasUploaded()) {
-            Messages.Asset.RemoteData uploaded = asset.getUploaded();
-            msg.setAssetKey(uploaded.getAssetId());
-            msg.setAssetToken(uploaded.hasAssetToken() ? uploaded.getAssetToken() : null);
-            msg.setOtrKey(uploaded.getOtrKey().toByteArray());
-            msg.setSha256(uploaded.getSha256().toByteArray());
-        }
     }
 }

@@ -50,11 +50,6 @@ public class UserClient implements WireClient {
         this.crypto = crypto;
     }
 
-    @Override
-    public void sendOT(OT ot) throws Exception {
-        postGenericMessage(ot);
-    }
-
     public void sendText(String txt) throws Exception {
         postGenericMessage(new Text(txt));
     }
@@ -149,11 +144,6 @@ public class UserClient implements WireClient {
     @Override
     public void ping() throws Exception {
         postGenericMessage(new Ping());
-    }
-
-    @Override
-    public void sendDelivery(String msgId) throws Exception {
-        postGenericMessage(new Confirmation(msgId));
     }
 
     @Override

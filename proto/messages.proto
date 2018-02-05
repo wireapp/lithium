@@ -5,7 +5,7 @@ message GenericMessage {
   required string message_id = 1; // client generated random id, preferably UUID
   oneof content {
     Text text = 2;
-    ImageAsset image = 3;
+    ImageAsset image = 3; // deprecated in favour of Asset
     Knock knock = 4;
     LastRead lastRead = 6;
     Cleared cleared = 7;
@@ -20,8 +20,19 @@ message GenericMessage {
     Confirmation confirmation = 16;
     Reaction reaction = 17;
     Ephemeral ephemeral = 18;
-    OT ot = 19;
+    Availability availability = 19;
   }
+}
+
+message Availability {
+  enum Type {
+    NONE = 0;
+    AVAILABLE = 1;
+    AWAY = 2;
+    BUSY = 3;
+  }
+
+  required Type type = 1;
 }
 
 message Ephemeral {
@@ -113,20 +124,9 @@ message Confirmation {
     READ = 1;
   }
 
-  required string message_id = 1;
-  required Type type = 2;
-}
-
-message OT {
-  enum Type {
-    RETAIN = 0;
-    INSERT = 1;
-    DEL = 2;
-  }
-  required Type type = 1;
-  required int32 offset = 2;
-  optional string text = 3;
-  optional int32 length = 4;
+  required Type   type = 2;
+  required string first_message_id = 1;
+  repeated string more_message_ids = 3;
 }
 
 message Location {
@@ -136,7 +136,7 @@ message Location {
   optional int32 zoom = 4; // google maps zoom level (check maps api documentation)
 }
 
-message ImageAsset {
+message ImageAsset { // deprecated in favour of Asset.Original.ImageMetaData
   required string tag = 1;
   required int32 width = 2;
   required int32 height = 3;
@@ -160,6 +160,8 @@ message Asset {
       VideoMetaData video = 5;
       AudioMetaData audio = 6;
     }
+    optional string source = 7; // link to source e.g. http://giphy.com/234245
+    optional string caption = 8; // caption of the asset, e.g. "dog" for a Giphy "dog" search result
   }
 
   message Preview {
@@ -185,6 +187,7 @@ message Asset {
 
   message AudioMetaData {
     optional uint64 duration_in_millis = 1;
+    // repeated float normalized_loudness = 2 [packed=true]; // deprecated - Switched to bytes instead
     optional bytes normalized_loudness = 3;     // each byte represent one loudness value as a byte (char) value.
                                                 // e.g. a 100-bytes field here represents 100 loudness values.
                                                 // Values are in chronological order and range from 0 to 255.
@@ -197,12 +200,15 @@ message Asset {
 
   message RemoteData {
     required bytes otr_key = 1;
-    required bytes sha256 = 2;
-    optional string asset_id = 3;    //key
+    required bytes sha256 = 2; // obsolete but required for backward compatibility
+    optional string asset_id = 3;
+//    optional bytes asset_token = 4; // deprecated - changed type to string
     optional string asset_token = 5;
+    optional EncryptionAlgorithm encryption = 6;
   }
 
   optional Original original = 1;
+//  optional Preview preview = 2;  // deprecated - preview was completely replaced
   oneof status {
     NotUploaded not_uploaded = 3;
     RemoteData uploaded = 4;
@@ -213,7 +219,8 @@ message Asset {
 // Actual message is encrypted with AES and sent as additional data
 message External {
   required bytes otr_key = 1;
-  optional bytes sha256 = 2;      // sha256 of ciphertext
+  optional bytes sha256 = 2;      // sha256 of ciphertext, obsolete but required for backward compatibility
+  optional EncryptionAlgorithm encryption = 3;
 }
 
 message Reaction {
@@ -227,4 +234,9 @@ enum ClientAction {
 
 message Calling {
   required string content = 1;
+}
+
+enum EncryptionAlgorithm {
+  AES_CBC = 0;
+  AES_GCM = 1;
 }

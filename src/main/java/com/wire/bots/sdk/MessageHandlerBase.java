@@ -166,8 +166,4 @@ public abstract class MessageHandlerBase {
     public void onEditText(WireClient client, TextMessage msg) {
 
     }
-
-    public void onOT(WireClient client, OTMessage otMessage) {
-
-    }
 }

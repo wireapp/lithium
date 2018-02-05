@@ -105,12 +105,4 @@ public abstract class MessageResourceBase {
                 break;
         }
     }
-
-    private void sendDeliveryReceipt(WireClient client, String messageId) {
-        try {
-            client.sendDelivery(messageId);
-        } catch (Exception e) {
-            Logger.warning("sendDeliveryReceipt: " + e.getMessage());
-        }
-    }
 }
