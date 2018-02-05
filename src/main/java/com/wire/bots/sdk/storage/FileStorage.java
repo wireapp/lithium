@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wire.bots.sdk.server.model.NewBot;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 
 public class FileStorage implements Storage {
@@ -30,10 +29,6 @@ public class FileStorage implements Storage {
     @Override
     public NewBot getState() throws Exception {
         File file = getStateFile();
-        if (!file.exists()) {
-            throw new IOException("File does not exist: " + file.getAbsolutePath());
-        }
-
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(file, NewBot.class);
     }
@@ -41,9 +36,6 @@ public class FileStorage implements Storage {
     @Override
     public boolean removeState() throws Exception {
         File file = getStateFile();
-        if (!file.exists()) {
-            throw new IOException("File does not exist: " + file.getAbsolutePath());
-        }
         return file.delete();
     }
 
@@ -64,6 +56,16 @@ public class FileStorage implements Storage {
     public boolean deleteFile(String filename) throws Exception {
         File file = getFile(filename);
         return file.delete();
+    }
+
+    public boolean hasState() {
+        File stateFile = getStateFile();
+        return stateFile.exists();
+    }
+
+    public boolean hasFile(String filename) {
+        File stateFile = getFile(filename);
+        return stateFile.exists();
     }
 
     private File getStateFile() {
