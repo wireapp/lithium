@@ -46,7 +46,7 @@ public class BotClient implements WireClient {
     private final NewBot state;
     private Devices devices = null;
 
-    public BotClient(Crypto crypto, Storage storage) throws Exception {
+    BotClient(Crypto crypto, Storage storage) throws Exception {
         this.state = storage.getState();
         this.api = new API(state.token);
         this.crypto = crypto;
