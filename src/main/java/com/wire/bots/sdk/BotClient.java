@@ -195,7 +195,7 @@ public class BotClient implements WireClient {
     }
 
     @Override
-    public byte[] decrypt(String userId, String clientId, String cypher) throws Exception {
+    public String decrypt(String userId, String clientId, String cypher) throws Exception {
         return crypto.decrypt(userId, clientId, cypher);
     }
 

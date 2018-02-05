@@ -203,10 +203,10 @@ public interface WireClient extends Closeable {
      * @param userId   Sender's User id
      * @param clientId Sender's Client id
      * @param cypher   Encrypted, Base64 encoded string
-     * @return Decrypted blob
+     * @return Base64 encoded decrypted text
      * @throws Exception
      */
-    byte[] decrypt(String userId, String clientId, String cypher) throws Exception;
+    String decrypt(String userId, String clientId, String cypher) throws Exception;
 
     /**
      * Invoked by the sdk. Called once when the conversation is created

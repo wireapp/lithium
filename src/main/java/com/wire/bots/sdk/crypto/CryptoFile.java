@@ -162,11 +162,11 @@ public class CryptoFile implements Crypto {
      * @param userId   Sender's User id
      * @param clientId Sender's Client id
      * @param cypher   Encrypted, Base64 encoded string
-     * @return Decrypted blob
+     * @return Decrypted Base64 encoded string
      * @throws Exception throws Exception
      */
     @Override
-    public byte[] decrypt(String userId, String clientId, String cypher) throws Exception {
+    public String decrypt(String userId, String clientId, String cypher) throws Exception {
         byte[] decode = Base64.getDecoder().decode(cypher);
         String id = createId(userId, clientId);
 
@@ -175,11 +175,11 @@ public class CryptoFile implements Crypto {
             try {
                 cryptoSession = box.tryGetSession(id);
                 if (cryptoSession != null) {
-                    return cryptoSession.decrypt(decode);
+                    return Base64.getEncoder().encodeToString(cryptoSession.decrypt(decode));
                 }
                 SessionMessage sessionMessage = box.initSessionFromMessage(id, decode);
                 cryptoSession = sessionMessage.getSession();
-                return sessionMessage.getMessage();
+                return Base64.getEncoder().encodeToString(sessionMessage.getMessage());
             } finally {
                 saveSession(cryptoSession);
             }

@@ -68,12 +68,13 @@ public class GenericMessageProcessor {
 
         // Ephemeral messages
         if (generic.hasEphemeral()) {
-            if (generic.getEphemeral().hasText()) {
-                text = generic.getEphemeral().getText();
+            Messages.Ephemeral ephemeral = generic.getEphemeral();
+            if (ephemeral.hasText()) {
+                text = ephemeral.getText();
             }
 
-            if (generic.getEphemeral().hasAsset()) {
-                asset = generic.getEphemeral().getAsset();
+            if (ephemeral.hasAsset()) {
+                asset = ephemeral.getAsset();
             }
         }
 

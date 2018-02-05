@@ -10,6 +10,7 @@ import com.wire.bots.sdk.server.model.InboundMessage;
 import com.wire.bots.sdk.tools.Logger;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 
 public abstract class MessageResourceBase {
@@ -28,15 +29,13 @@ public abstract class MessageResourceBase {
             case "conversation.otr-message-add": {
                 GenericMessageProcessor processor = new GenericMessageProcessor(client, handler);
 
-                byte[] bytes = client.decrypt(inbound.from, data.sender, data.text);
-                Messages.GenericMessage genericMessage = Messages.GenericMessage.parseFrom(bytes);
+                String encoded = client.decrypt(inbound.from, data.sender, data.text);
+                byte[] decode = Base64.getDecoder().decode(encoded);
+                Messages.GenericMessage genericMessage = Messages.GenericMessage.parseFrom(decode);
 
                 handler.onEvent(client, inbound.from, genericMessage);
 
-                boolean processed = processor.process(inbound.from, genericMessage);
-                if (processed) {
-                    //sendDeliveryReceipt(client, genericMessage.getMessageId());
-                }
+                processor.process(inbound.from, genericMessage);
             }
             break;
             case "conversation.member-join": {

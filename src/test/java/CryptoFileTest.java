@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 
 public class CryptoFileTest {
@@ -67,7 +68,6 @@ public class CryptoFileTest {
         HashMap<String, PreKey> devs = new HashMap<>();
         for (PreKey key : array) {
             devs.put(clientId, key);
-            System.out.printf("%s, %s, keyId: %s, prekey: %s\n", userId, clientId, key.id, key.key);
         }
 
         PreKeys keys = new PreKeys();
@@ -90,15 +90,13 @@ public class CryptoFileTest {
         Recipients encrypt = alice.encrypt(bobKeys, textBytes);
 
         String base64Encoded = encrypt.get(bobId, bobClientId);
-        System.out.printf("Alice -> (%s,%s) cipher: %s\n", bobId, bobClientId, base64Encoded);
 
         // Decrypt using initSessionFromMessage
-        byte[] decrypt = bob.decrypt(aliceId, aliceClientId, base64Encoded);
-        String text2 = new String(decrypt);
+        String decrypt = bob.decrypt(aliceId, aliceClientId, base64Encoded);
+        byte[] decode = Base64.getDecoder().decode(decrypt);
 
-        boolean equals = Arrays.equals(decrypt, textBytes);
-        assert equals;
-        assert text.equals(text2);
+        assert Arrays.equals(decode, textBytes);
+        assert text.equals(new String(decode));
     }
 
     @Test
@@ -109,16 +107,13 @@ public class CryptoFileTest {
         Recipients encrypt = bob.encrypt(aliceKeys, textBytes);
 
         String base64Encoded = encrypt.get(aliceId, aliceClientId);
-        System.out.printf("Bob -> (%s,%s) cipher: %s\n", aliceId, aliceClientId, base64Encoded);
 
         // Decrypt using initSessionFromMessage
-        byte[] decrypt = alice.decrypt(bobId, bobClientId, base64Encoded);
-        String text2 = new String(decrypt);
+        String decrypt = alice.decrypt(bobId, bobClientId, base64Encoded);
+        byte[] decode = Base64.getDecoder().decode(decrypt);
 
-        boolean equals = Arrays.equals(decrypt, textBytes);
-        assert equals;
-
-        assert text.equals(text2);
+        assert Arrays.equals(decode, textBytes);
+        assert text.equals(new String(decode));
     }
 
     @Test
@@ -131,15 +126,12 @@ public class CryptoFileTest {
         Recipients encrypt = bob.encrypt(devices, textBytes);
 
         String base64Encoded = encrypt.get(aliceId, aliceClientId);
-        System.out.printf("Bob -> (%s,%s) cipher: %s\n", aliceId, aliceClientId, base64Encoded);
 
         // Decrypt using session
-        byte[] decrypt = alice.decrypt(bobId, bobClientId, base64Encoded);
-        String text2 = new String(decrypt);
+        String decrypt = alice.decrypt(bobId, bobClientId, base64Encoded);
+        byte[] decode = Base64.getDecoder().decode(decrypt);
 
-        boolean equals = Arrays.equals(decrypt, textBytes);
-        assert equals;
-
-        assert text.equals(text2);
+        assert Arrays.equals(decode, textBytes);
+        assert text.equals(new String(decode));
     }
 }

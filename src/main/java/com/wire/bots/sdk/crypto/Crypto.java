@@ -17,7 +17,7 @@ public interface Crypto extends Closeable {
 
     Recipients encrypt(Missing missing, byte[] content) throws Exception;
 
-    byte[] decrypt(String userId, String clientId, String cypher) throws Exception;
+    String decrypt(String userId, String clientId, String cypher) throws Exception;
 
     boolean isClosed();
 }
