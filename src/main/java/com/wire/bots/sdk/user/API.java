@@ -315,6 +315,10 @@ public class API extends LoginClient {
                 });
     }
 
+    public void setConvId(String convId) {
+        this.convId = convId;
+    }
+
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class _Cov {
         @JsonProperty

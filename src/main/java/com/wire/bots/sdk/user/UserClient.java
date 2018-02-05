@@ -187,6 +187,13 @@ public class UserClient implements WireClient {
         return state.conversation.id;
     }
 
+    // Hack needed for UserClient
+    void setConversationId(String convId) {
+        state.conversation = new Conversation();
+        state.conversation.id = convId;
+        api.setConvId(convId);
+    }
+
     @Override
     public String getDeviceId() {
         return state.client;

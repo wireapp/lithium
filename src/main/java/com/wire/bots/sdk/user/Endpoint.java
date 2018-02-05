@@ -24,7 +24,6 @@ import com.wire.bots.sdk.crypto.CryptoFile;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.InboundMessage;
 import com.wire.bots.sdk.server.model.NewBot;
-import com.wire.bots.sdk.server.resources.MessageResource;
 import com.wire.bots.sdk.storage.FileStorage;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
@@ -34,6 +33,7 @@ import com.wire.cryptobox.CryptoException;
 import org.glassfish.tyrus.client.ClientManager;
 
 import javax.websocket.*;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -52,7 +52,7 @@ public class Endpoint {
     private static final String TOKEN_ID = "token.id";
     private static final String ENV = "env";
     private final Configuration config;
-    private MessageResource messageResource;
+    private UserMessageResource userMessageResource;
     private ClientManager client = null;
     private String token;
     private String cookie;
@@ -63,11 +63,11 @@ public class Endpoint {
         this.config = config;
     }
 
-    public Session connectWebSocket(MessageResource messageResource) throws Exception {
+    public Session connectWebSocket(UserMessageResource userMessageResource) throws Exception {
         if (client == null) {
             client = ClientManager.createClient();
         }
-        this.messageResource = messageResource;
+        this.userMessageResource = userMessageResource;
 
         return client.connectToServer(this, getPath());
     }
@@ -78,6 +78,7 @@ public class Endpoint {
      * @param email     Email address
      * @param password  Plain text password
      * @param persisted True if you want to renew token every 15 mins
+     * @return UserId
      * @throws Exception
      */
     public String signIn(String email, String password, boolean persisted) throws Exception {
@@ -86,8 +87,7 @@ public class Endpoint {
         token = login.getToken();
         cookie = login.getCookie();
         botId = login.extractUserId();
-
-        initDevice(botId, password, token);
+        clientId = initDevice(botId, password, token);
 
         if (persisted)
             initRenewal(15);
@@ -97,14 +97,13 @@ public class Endpoint {
 
     @OnMessage
     public void onMessage(InputStream rawInput) throws Exception {
-        //String s = IOUtils.toString(rawInput);
         ObjectMapper mapper = new ObjectMapper();
         Message message = mapper.readValue(rawInput, Message.class);
 
         for (InboundMessage payload : message.payload) {
             //Logger.info(payload.type);
             try {
-                messageResource.onNewMessage(botId, payload.conversation, payload);
+                userMessageResource.onNewMessage(botId, payload.conversation, payload);
             } catch (Exception e) {
                 Logger.warning(e.getMessage());
             }
@@ -129,28 +128,38 @@ public class Endpoint {
         return new URI(url);
     }
 
-    private void initDevice(String botId, String password, String token)
-            throws Exception {
+    /**
+     * @param userId
+     * @param password
+     * @param token
+     * @return ClientId
+     * @throws Exception
+     */
+    private String initDevice(String userId, String password, String token) throws Exception {
+        FileStorage storage = new FileStorage(config.data, userId);
 
-        FileStorage storage = new FileStorage(config.data, botId);
-        NewBot state = storage.getState();
-        if (state != null) {
+        try {
+            NewBot state = storage.getState();
             Logger.info("initDevice: Existing ClientID: %s", state.client);
-            return;
-        }
-
-        // register new device
-        try (CryptoFile cryptoFile = new CryptoFile(config.data, botId)) {
-            PreKey key = cryptoFile.newLastPreKey();
-            LoginClient login = new LoginClient();
-
-            state = new NewBot();
-            state.id = botId;
-            state.client = login.registerClient(key, token, password);
             state.token = token;
 
             storage.saveState(state);
-            Logger.info("initDevice: New ClientID: %s", state.client);
+            return state.client;
+        } catch (IOException ex) {
+            // register new device
+            try (CryptoFile cryptoFile = new CryptoFile(config.data, userId)) {
+                PreKey key = cryptoFile.newLastPreKey();
+                LoginClient login = new LoginClient();
+
+                NewBot state = new NewBot();
+                state.id = userId;
+                state.client = login.registerClient(key, token, password);
+                state.token = token;
+
+                storage.saveState(state);
+                Logger.info("initDevice: New ClientID: %s", state.client);
+                return state.client;
+            }
         }
     }
 

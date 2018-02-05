@@ -39,6 +39,8 @@ import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
 import com.wire.bots.sdk.user.Endpoint;
 import com.wire.bots.sdk.user.UserClient;
+import com.wire.bots.sdk.user.UserClientRepo;
+import com.wire.bots.sdk.user.UserMessageResource;
 import io.dropwizard.Application;
 import io.dropwizard.servlets.tasks.Task;
 import io.dropwizard.setup.Bootstrap;
@@ -134,21 +136,21 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
         if (email != null && password != null) {
             StorageFactory storageFactory = getStorageFactory(config);
+
             WireClientFactory userClientFactory = (botId) -> {
                 Crypto crypto = getCryptoFactory(config).create(botId);
                 Storage storage = storageFactory.create(botId);
                 return new UserClient(crypto, storage);
             };
 
-            repo = new ClientRepo(userClientFactory, storageFactory);
+            UserClientRepo repo = new UserClientRepo(userClientFactory, storageFactory);
 
             Endpoint ep = new Endpoint(config);
             String userId = ep.signIn(email, password, true);
             Logger.info(String.format("Logged in as User: %s userId: %s", email, userId));
 
-            AuthValidator validator = new AuthValidator(config.getAuth());
             MessageHandlerBase handler = createHandler(config, env);
-            ep.connectWebSocket(new MessageResource(handler, validator, repo));
+            ep.connectWebSocket(new UserMessageResource(handler, repo));
             return true;
         }
         return false;
