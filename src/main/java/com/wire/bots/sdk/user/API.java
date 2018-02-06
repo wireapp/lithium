@@ -43,16 +43,11 @@ import java.util.Collection;
 import java.util.List;
 
 public class API extends LoginClient {
-
     private final String token;
-    private String convId;
+    private final String convId;
 
     public API(String convId, String token) {
         this.convId = convId;
-        this.token = token;
-    }
-
-    public API(String token) throws IOException {
         this.token = token;
     }
 
@@ -71,6 +66,28 @@ public class API extends LoginClient {
         }
 
         return response.readEntity(com.wire.bots.sdk.user.model.User.class).getToken();
+    }
+
+    public static Conversation createConversation(String name, String token) throws IOException {
+        Response response = client.target(httpUrl).
+                path("conversations").
+                request().
+                header("Authorization", "Bearer " + token).
+                accept(MediaType.APPLICATION_JSON).
+                post(Entity.entity("{\"users\":[], \"name\":\"" + name + "\"}", MediaType.APPLICATION_JSON));
+
+        if (response.getStatus() >= 300) {
+            Logger.warning(response.readEntity(String.class));
+            throw new IOException(response.getStatusInfo().getReasonPhrase());
+        }
+
+        _Cov conv = response.readEntity(_Cov.class);
+
+        Conversation ret = new Conversation();
+        ret.name = conv.name;
+        ret.id = conv.id;
+        ret.members = conv.members.others;
+        return ret;
     }
 
     Devices sendMessage(OtrMessage msg) throws IOException {
@@ -218,29 +235,6 @@ public class API extends LoginClient {
         return ret;
     }
 
-    public Conversation createConversation(String name) throws IOException {
-        Response response = client.target(httpUrl).
-                path("conversations").
-                request().
-                header("Authorization", "Bearer " + token).
-                accept(MediaType.APPLICATION_JSON).
-                post(Entity.entity("{\"users\":[], \"name\":\"" + name + "\"}", MediaType.APPLICATION_JSON));
-
-        if (response.getStatus() >= 300) {
-            Logger.warning(response.readEntity(String.class));
-            throw new IOException(response.getStatusInfo().getReasonPhrase());
-        }
-
-        _Cov conv = response.readEntity(_Cov.class);
-
-        convId = conv.id;
-        Conversation ret = new Conversation();
-        ret.name = conv.name;
-        ret.id = conv.id;
-        ret.members = conv.members.others;
-        return ret;
-    }
-
     public void deleteConversation(String teamId) throws IOException {
         Response response = client.target(httpUrl).
                 path("teams").
@@ -313,10 +307,6 @@ public class API extends LoginClient {
                 accept(MediaType.APPLICATION_JSON).
                 get(new GenericType<ArrayList<Integer>>() {
                 });
-    }
-
-    public void setConvId(String convId) {
-        this.convId = convId;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)

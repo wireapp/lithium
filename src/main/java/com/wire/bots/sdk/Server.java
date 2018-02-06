@@ -25,7 +25,6 @@ import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.crypto.CryptoFile;
 import com.wire.bots.sdk.factories.CryptoFactory;
 import com.wire.bots.sdk.factories.StorageFactory;
-import com.wire.bots.sdk.factories.WireClientFactory;
 import com.wire.bots.sdk.server.resources.BotsResource;
 import com.wire.bots.sdk.server.resources.MessageResource;
 import com.wire.bots.sdk.server.resources.StatusResource;
@@ -33,12 +32,10 @@ import com.wire.bots.sdk.server.tasks.AvailablePrekeysTask;
 import com.wire.bots.sdk.server.tasks.BroadcastAllTask;
 import com.wire.bots.sdk.server.tasks.ConversationTask;
 import com.wire.bots.sdk.storage.FileStorage;
-import com.wire.bots.sdk.storage.Storage;
 import com.wire.bots.sdk.tools.AuthValidator;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
 import com.wire.bots.sdk.user.Endpoint;
-import com.wire.bots.sdk.user.UserClient;
 import com.wire.bots.sdk.user.UserClientRepo;
 import com.wire.bots.sdk.user.UserMessageResource;
 import io.dropwizard.Application;
@@ -96,14 +93,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
         onRun(config, env);
     }
 
-    protected WireClientFactory getWireClientFactory(Config config) {
-        return botId -> {
-            Crypto crypto = getCryptoFactory(config).create(botId);
-            Storage storage = getStorageFactory(config).create(botId);
-            return new BotClient(crypto, storage);
-        };
-    }
-
     protected StorageFactory getStorageFactory(Config config) {
         return botId -> new FileStorage(config.data, botId);
     }
@@ -113,10 +102,10 @@ public abstract class Server<Config extends Configuration> extends Application<C
     }
 
     private void runInBotMode(Config config, Environment env) {
-        WireClientFactory wireClientFactory = getWireClientFactory(config);
         StorageFactory storageFactory = getStorageFactory(config);
+        CryptoFactory cryptoFactory = getCryptoFactory(config);
 
-        repo = new ClientRepo(wireClientFactory, storageFactory);
+        repo = new ClientRepo(cryptoFactory, storageFactory);
 
         MessageHandlerBase handler = createHandler(config, env);
 
@@ -136,14 +125,9 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
         if (email != null && password != null) {
             StorageFactory storageFactory = getStorageFactory(config);
+            CryptoFactory cryptoFactory = getCryptoFactory(config);
 
-            WireClientFactory userClientFactory = (botId) -> {
-                Crypto crypto = getCryptoFactory(config).create(botId);
-                Storage storage = storageFactory.create(botId);
-                return new UserClient(crypto, storage);
-            };
-
-            UserClientRepo repo = new UserClientRepo(userClientFactory, storageFactory);
+            UserClientRepo repo = new UserClientRepo(cryptoFactory, storageFactory);
 
             Endpoint ep = new Endpoint(config);
             String userId = ep.signIn(email, password, true);

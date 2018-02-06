@@ -44,10 +44,12 @@ public class UserClient implements WireClient {
     private final NewBot state;
     private Devices devices = null;
 
-    public UserClient(Crypto crypto, Storage storage) throws Exception {
-        this.state = storage.getState();
-        this.api = new API(state.token);
+    UserClient(Crypto crypto, Storage storage, String conv) throws Exception {
         this.crypto = crypto;
+        this.state = storage.getState();
+        state.conversation = new Conversation();
+        state.conversation.id = conv;
+        this.api = new API(conv, state.token);
     }
 
     public void sendText(String txt) throws Exception {
@@ -175,13 +177,6 @@ public class UserClient implements WireClient {
     @Override
     public String getConversationId() {
         return state.conversation.id;
-    }
-
-    // Hack needed for UserClient
-    void setConversationId(String convId) {
-        state.conversation = new Conversation();
-        state.conversation.id = convId;
-        api.setConvId(convId);
     }
 
     @Override
