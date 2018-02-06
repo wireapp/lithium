@@ -52,8 +52,7 @@ public class API extends LoginClient {
     }
 
     static String renewAccessToken(String cookie, String token) throws IOException {
-        Response response = client.target(httpUrl).
-                path("access").
+        Response response = accessPath.
                 request(MediaType.APPLICATION_JSON).
                 header("Authorization", "Bearer " + token).
                 header("Cookie", cookie).
@@ -69,8 +68,7 @@ public class API extends LoginClient {
     }
 
     public static Conversation createConversation(String name, String token) throws IOException {
-        Response response = client.target(httpUrl).
-                path("conversations").
+        Response response = conversationsPath.
                 request().
                 header("Authorization", "Bearer " + token).
                 accept(MediaType.APPLICATION_JSON).
@@ -81,7 +79,7 @@ public class API extends LoginClient {
             throw new IOException(response.getStatusInfo().getReasonPhrase());
         }
 
-        _Cov conv = response.readEntity(_Cov.class);
+        _Conv conv = response.readEntity(_Conv.class);
 
         Conversation ret = new Conversation();
         ret.name = conv.name;
@@ -95,8 +93,7 @@ public class API extends LoginClient {
     }
 
     Devices sendMessage(OtrMessage msg, boolean ignoreMissing) throws IOException {
-        Response response = client.target(httpUrl).
-                path("conversations").
+        Response response = conversationsPath.
                 path(convId).
                 path("otr/messages").
                 queryParam("ignore_missing", ignoreMissing).
@@ -120,8 +117,7 @@ public class API extends LoginClient {
         if (missing.isEmpty())
             return new PreKeys();
 
-        return client.target(httpUrl).
-                path("users/prekeys").
+        return usersPath.path("prekeys").
                 request(MediaType.APPLICATION_JSON).
                 header("Authorization", "Bearer " + token).
                 accept(MediaType.APPLICATION_JSON).
@@ -129,8 +125,7 @@ public class API extends LoginClient {
     }
 
     byte[] downloadAsset(String assetKey, String assetToken) throws IOException {
-        Invocation.Builder req = client.target(httpUrl)
-                .path("assets/v3")
+        Invocation.Builder req = assetsPath
                 .path(assetKey)
                 .request()
                 .header("Authorization", "Bearer " + token);
@@ -152,8 +147,7 @@ public class API extends LoginClient {
         Connection connection = new Connection();
         connection.setStatus("accepted");
 
-        Response response = client.target(httpUrl).
-                path("connections").
+        Response response = connectionsPath.
                 path(user).
                 request(MediaType.APPLICATION_JSON).
                 header("Authorization", "Bearer " + token).
@@ -198,8 +192,7 @@ public class API extends LoginClient {
         os.write(asset.getEncryptedData());
         os.write("\r\n--frontier--\r\n".getBytes("utf-8"));
 
-        Response response = client.target(httpUrl)
-                .path("assets/v3")
+        Response response = assetsPath
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .header("Authorization", "Bearer " + token)
                 .post(Entity.entity(os.toByteArray(), "multipart/mixed; boundary=frontier"));
@@ -213,8 +206,7 @@ public class API extends LoginClient {
     }
 
     Conversation getConversation() throws IOException {
-        Response response = client.target(httpUrl).
-                path("conversations").
+        Response response = conversationsPath.
                 path(convId).
                 request().
                 header("Authorization", "Bearer " + token).
@@ -226,7 +218,7 @@ public class API extends LoginClient {
             throw new IOException(response.getStatusInfo().getReasonPhrase());
         }
 
-        _Cov conv = response.readEntity(_Cov.class);
+        _Conv conv = response.readEntity(_Conv.class);
 
         Conversation ret = new Conversation();
         ret.name = conv.name;
@@ -235,9 +227,8 @@ public class API extends LoginClient {
         return ret;
     }
 
-    public void deleteConversation(String teamId) throws IOException {
-        Response response = client.target(httpUrl).
-                path("teams").
+    public boolean deleteConversation(String teamId) throws IOException {
+        Response response = teamsPath.
                 path(teamId).
                 path("conversations").
                 path(convId).
@@ -250,6 +241,8 @@ public class API extends LoginClient {
             Logger.warning(response.readEntity(String.class));
             throw new IOException(response.getStatusInfo().getReasonPhrase());
         }
+
+        return response.getStatus() == 200;
     }
 
     public User addService(String serviceId, String providerId) throws IOException {
@@ -257,8 +250,7 @@ public class API extends LoginClient {
         service.service = serviceId;
         service.provider = providerId;
 
-        Response response = client.target(httpUrl).
-                path("conversations").
+        Response response = conversationsPath.
                 path(convId).
                 path("bots").
                 request().
@@ -279,9 +271,8 @@ public class API extends LoginClient {
     }
 
     Collection<com.wire.bots.sdk.server.model.User> getUsers(Collection<String> ids) throws IOException {
-        return client.target(httpUrl).
-                path("users").
-                queryParam("ids", String.join(",", ids)).
+        return usersPath.
+                queryParam("ids", ids).
                 request(MediaType.APPLICATION_JSON).
                 header("Authorization", "Bearer " + token).
                 get(new GenericType<ArrayList<com.wire.bots.sdk.server.model.User>>() {
@@ -289,8 +280,7 @@ public class API extends LoginClient {
     }
 
     void uploadPreKeys(ArrayList<PreKey> preKeys) {
-        client.target(httpUrl).
-                path("users/prekeys").
+        usersPath.path("prekeys").
                 request(MediaType.APPLICATION_JSON).
                 header("Authorization", "Bearer " + token).
                 accept(MediaType.APPLICATION_JSON).
@@ -298,8 +288,7 @@ public class API extends LoginClient {
     }
 
     ArrayList<Integer> getAvailablePrekeys(String clientId) {
-        return client.target(httpUrl).
-                path("clients").
+        return clientsPath.
                 path(clientId).
                 path("prekeys").
                 request().
@@ -309,8 +298,19 @@ public class API extends LoginClient {
                 });
     }
 
+    public String getTeam() {
+        _Teams res = teamsPath.request(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + token)
+                .accept(MediaType.APPLICATION_JSON)
+                .get(_Teams.class);
+        if (res.teams.isEmpty())
+            return null;
+
+        return res.teams.get(0).id;
+    }
+
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class _Cov {
+    public static class _Conv {
         @JsonProperty
         public String id;
 
@@ -322,13 +322,28 @@ public class API extends LoginClient {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class _Members {
+    static class _Members {
         @JsonProperty
         public List<Member> others;
     }
 
-    class _Service {
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class _Service {
         public String service;
         public String provider;
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class _Team {
+        @JsonProperty
+        public String id;
+        @JsonProperty
+        public String name;
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class _Teams {
+        @JsonProperty
+        public ArrayList<_Team> teams;
     }
 }

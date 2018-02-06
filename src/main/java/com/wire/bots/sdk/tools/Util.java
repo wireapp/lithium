@@ -137,4 +137,9 @@ public class Util {
         String env = System.getProperty("env", "prod");
         return env.equals("prod") ? "wire.com" : "zinfra.io";
     }
+
+    public static String getHost() {
+        String env = System.getProperty("env", "prod");
+        return String.format("https://%s-nginz-https.%s", env, Util.getDomain());
+    }
 }

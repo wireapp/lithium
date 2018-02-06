@@ -48,8 +48,6 @@ import java.util.concurrent.TimeUnit;
 public class Endpoint {
     private static final String WSS = "wss://%s-nginz-ssl.%s/await?access_token=%s&client=%s";
     private static final String PROD = "prod";
-    private static final String CLIENT_ID = "client.id";
-    private static final String TOKEN_ID = "token.id";
     private static final String ENV = "env";
     private final Configuration config;
     private UserMessageResource userMessageResource;
@@ -82,8 +80,7 @@ public class Endpoint {
      * @throws Exception
      */
     public String signIn(String email, String password, boolean persisted) throws Exception {
-        LoginClient wireClient = new LoginClient();
-        User login = wireClient.login(email, password);
+        User login = LoginClient.login(email, password);
         token = login.getToken();
         cookie = login.getCookie();
         botId = login.extractUserId();
@@ -149,11 +146,10 @@ public class Endpoint {
             // register new device
             try (CryptoFile cryptoFile = new CryptoFile(config.data, userId)) {
                 PreKey key = cryptoFile.newLastPreKey();
-                LoginClient login = new LoginClient();
 
                 NewBot state = new NewBot();
                 state.id = userId;
-                state.client = login.registerClient(key, token, password);
+                state.client = LoginClient.registerClient(key, token, password);
                 state.token = token;
 
                 storage.saveState(state);
