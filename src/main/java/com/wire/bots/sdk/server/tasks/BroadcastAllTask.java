@@ -2,13 +2,10 @@ package com.wire.bots.sdk.server.tasks;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.wire.bots.sdk.ClientRepo;
-import com.wire.bots.sdk.Configuration;
 import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.server.model.Member;
 import com.wire.bots.sdk.tools.Logger;
 
-import java.io.File;
-import java.io.FileFilter;
 import java.io.PrintWriter;
 import java.util.Date;
 import java.util.List;
@@ -25,14 +22,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  * For more on dropwizard tasks check out: http://www.dropwizard.io/1.0.5/docs/manual/core.html#tasks
  */
 public class BroadcastAllTask extends TaskBase {
-    protected final Configuration conf;
     protected final ClientRepo repo;
     AtomicInteger succeeded = new AtomicInteger(0);
     AtomicInteger failed = new AtomicInteger(0);
 
-    public BroadcastAllTask(Configuration conf, ClientRepo repo) {
+    public BroadcastAllTask(ClientRepo repo) {
         super("broadcast");
-        this.conf = conf;
         this.repo = repo;
     }
 
@@ -48,14 +43,8 @@ public class BroadcastAllTask extends TaskBase {
         }
 
         Date start = new Date();
-        for (File botDir : getCryptoDirs()) {
-            final String botId = botDir.getName();
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    send(output, text, botId);
-                }
-            });
+        for (WireClient client : repo.listClients()) {
+            executor.execute(() -> send(output, text, client));
         }
 
         executor.shutdown();
@@ -72,9 +61,8 @@ public class BroadcastAllTask extends TaskBase {
         failed.set(0);
     }
 
-    private void send(PrintWriter output, String text, String botId) {
+    private void send(PrintWriter output, String text, WireClient client) {
         try {
-            WireClient client = repo.getWireClient(botId);
             if (client != null) {
                 List<Member> members = client.getConversation().members;
                 if (!members.isEmpty()) {
@@ -87,21 +75,10 @@ public class BroadcastAllTask extends TaskBase {
                 }
             }
         } catch (Exception e) {
-            Logger.error("Bot: %s. Error: %s", botId, e.getMessage());
-            output.println("Failed for botId: " + botId);
+            Logger.error("Bot: %s. Error: %s", client.getId(), e.getMessage());
+            output.println("Failed for botId: " + client.getId());
             output.flush();
             failed.incrementAndGet();
         }
-    }
-
-    private File[] getCryptoDirs() {
-        File dir = new File(conf.getData());
-        return dir.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                String botId = file.getName();
-                return repo.getWireClient(botId) != null;
-            }
-        });
     }
 }

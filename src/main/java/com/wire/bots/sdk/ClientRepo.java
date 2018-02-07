@@ -3,10 +3,12 @@ package com.wire.bots.sdk;
 import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.factories.CryptoFactory;
 import com.wire.bots.sdk.factories.StorageFactory;
+import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.storage.Storage;
 import com.wire.bots.sdk.tools.Logger;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ClientRepo {
@@ -53,5 +55,31 @@ public class ClientRepo {
         boolean purged = storageFactory.create(botId).removeState();
         if (!purged)
             Logger.error("Failed to purge bot: %s", botId);
+    }
+
+    public ArrayList<WireClient> listClients() throws Exception {
+        ArrayList<WireClient> ret = new ArrayList<>();
+        ArrayList<String> bots = listAllBots();
+        for (String bot : bots) {
+            try {
+                Crypto crypto = cryptoFactory.create(bot);
+                Storage storage = storageFactory.create(bot);
+                BotClient wireClient = new BotClient(crypto, storage);
+                ret.add(wireClient);
+            } catch (Exception e) {
+                Logger.warning(e.getMessage());
+            }
+        }
+        return ret;
+    }
+
+    private ArrayList<String> listAllBots() throws Exception {
+        ArrayList<String> ret = new ArrayList<>();
+        Storage storage = storageFactory.create("");
+        ArrayList<NewBot> newBots = storage.listAllStates();
+        for (NewBot newBot : newBots) {
+            ret.add(newBot.id);
+        }
+        return ret;
     }
 }

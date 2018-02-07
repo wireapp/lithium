@@ -114,7 +114,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
         botResource(config, env, handler);
         messageResource(config, env, handler);
 
-        addTask(new BroadcastAllTask(config, repo), env);
+        addTask(new BroadcastAllTask(repo), env);
         addTask(new ConversationTask(repo), env);
         addTask(new AvailablePrekeysTask(repo), env);
     }

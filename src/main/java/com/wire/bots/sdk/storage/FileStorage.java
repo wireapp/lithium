@@ -5,9 +5,11 @@ import com.wire.bots.sdk.server.model.NewBot;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.ArrayList;
 
 public class FileStorage implements Storage {
 
+    private static final String STATE_FILENAME = "state.json";
     private final String path;
     private final String botId;
 
@@ -40,6 +42,21 @@ public class FileStorage implements Storage {
     }
 
     @Override
+    public ArrayList<NewBot> listAllStates() throws Exception {
+        ArrayList<NewBot> ret = new ArrayList<>();
+        File dir = new File(path);
+        for (String botId : dir.list()) {
+            File stateFile = new File(String.format("%s/%s/%s", path, botId, STATE_FILENAME));
+            if (stateFile.exists()) {
+                ObjectMapper mapper = new ObjectMapper();
+                NewBot newBot = mapper.readValue(stateFile, NewBot.class);
+                ret.add(newBot);
+            }
+        }
+        return ret;
+    }
+
+    @Override
     public boolean saveFile(String filename, String content) throws Exception {
         File file = getFile(filename);
         Files.write(file.toPath(), content.getBytes());
@@ -69,7 +86,7 @@ public class FileStorage implements Storage {
     }
 
     private File getStateFile() {
-        return getFile("state.json");
+        return getFile(STATE_FILENAME);
     }
 
     private File getFile(String filename) {
