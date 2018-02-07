@@ -19,7 +19,6 @@
 package com.wire.bots.sdk.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wire.bots.sdk.Configuration;
 import com.wire.bots.sdk.crypto.CryptoFile;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.InboundMessage;
@@ -49,7 +48,7 @@ public class Endpoint {
     private static final String WSS = "wss://%s-nginz-ssl.%s/await?access_token=%s&client=%s";
     private static final String PROD = "prod";
     private static final String ENV = "env";
-    private final Configuration config;
+    private final String path;
     private UserMessageResource userMessageResource;
     private ClientManager client = null;
     private String token;
@@ -57,8 +56,8 @@ public class Endpoint {
     private String clientId;
     private String botId;
 
-    public Endpoint(Configuration config) throws CryptoException {
-        this.config = config;
+    public Endpoint(String path) throws CryptoException {
+        this.path = path;
     }
 
     public Session connectWebSocket(UserMessageResource userMessageResource) throws Exception {
@@ -133,7 +132,7 @@ public class Endpoint {
      * @throws Exception
      */
     private String initDevice(String userId, String password, String token) throws Exception {
-        FileStorage storage = new FileStorage(config.data, userId);
+        FileStorage storage = new FileStorage(path, userId);
 
         try {
             NewBot state = storage.getState();
@@ -144,7 +143,7 @@ public class Endpoint {
             return state.client;
         } catch (IOException ex) {
             // register new device
-            try (CryptoFile cryptoFile = new CryptoFile(config.data, userId)) {
+            try (CryptoFile cryptoFile = new CryptoFile(path, userId)) {
                 PreKey key = cryptoFile.newLastPreKey();
 
                 NewBot state = new NewBot();

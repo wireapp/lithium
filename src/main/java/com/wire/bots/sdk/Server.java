@@ -129,7 +129,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
             UserClientRepo repo = new UserClientRepo(cryptoFactory, storageFactory);
 
-            Endpoint ep = new Endpoint(config);
+            Endpoint ep = new Endpoint(config.data);
             String userId = ep.signIn(email, password, true);
             Logger.info(String.format("Logged in as User: %s userId: %s", email, userId));
 
