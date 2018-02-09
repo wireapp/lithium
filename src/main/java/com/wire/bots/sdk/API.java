@@ -30,9 +30,9 @@ import com.wire.bots.sdk.tools.Util;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 
-import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -43,21 +43,28 @@ import java.util.Collection;
 
 class API {
 
-    private final static Client client;
-    private final static String httpUrl;
+    private static final WebTarget target;
+    private static final String ASSETS = "assets";
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String CLIENT = "client";
+    private static final String PREKEYS = "prekeys";
+    private static final String USERS = "users";
 
     static {
-        String env = System.getProperty("env", "prod");
-        httpUrl = String.format("https://%s-nginz-https.%s", env, Util.getDomain());
-
         ClientConfig cfg = new ClientConfig(JacksonJsonProvider.class);
-        client = JerseyClientBuilder.createClient(cfg);
+        target = JerseyClientBuilder.createClient(cfg)
+                .target(Util.getHost())
+                .path("bot");
     }
 
     private final String token;
 
     API(String token) {
         this.token = token;
+    }
+
+    private static WebTarget getTarget() {
+        return target;
     }
 
     /**
@@ -69,11 +76,11 @@ class API {
      * @throws IOException CryptoBox exception
      */
     Devices sendMessage(OtrMessage msg, boolean ignoreMissing) throws IOException {
-        Response response = client.target(httpUrl).
-                path("bot/messages").
+        Response response = getTarget().
+                path("messages").
                 queryParam("ignore_missing", ignoreMissing).
                 request(MediaType.APPLICATION_JSON).
-                header("Authorization", "Bearer " + token).
+                header(AUTHORIZATION, getBearer()).
                 post(Entity.entity(msg, MediaType.APPLICATION_JSON));
 
         int statusCode = response.getStatus();
@@ -97,38 +104,40 @@ class API {
     }
 
     Collection<User> getUsers(Collection<String> ids) throws IOException {
-        return client.target(httpUrl).
-                path("bot/users").
+        return getTarget().
+                path(USERS).
                 queryParam("ids", String.join(",", ids)).
                 request(MediaType.APPLICATION_JSON).
-                header("Authorization", "Bearer " + token).
+                header(AUTHORIZATION, getBearer()).
                 get(new GenericType<ArrayList<User>>() {
                 });
     }
 
     Conversation getConversation() {
-        return client.target(httpUrl).
-                path("bot/conversation").
+        return getTarget().
+                path("conversation").
                 request().
-                header("Authorization", "Bearer " + token).
+                header(AUTHORIZATION, getBearer()).
                 accept(MediaType.APPLICATION_JSON).
                 get(Conversation.class);
     }
 
     PreKeys getPreKeys(Missing missing) {
-        return client.target(httpUrl).
-                path("bot/users/prekeys").
+        return getTarget().
+                path(USERS).
+                path(PREKEYS).
                 request(MediaType.APPLICATION_JSON).
-                header("Authorization", "Bearer " + token).
+                header(AUTHORIZATION, getBearer()).
                 accept(MediaType.APPLICATION_JSON).
                 post(Entity.entity(missing, MediaType.APPLICATION_JSON), PreKeys.class);
     }
 
     ArrayList<Integer> getAvailablePrekeys() {
-        return client.target(httpUrl).
-                path("/bot/client/prekeys").
+        return getTarget().
+                path(CLIENT).
+                path(PREKEYS).
                 request().
-                header("Authorization", "Bearer " + token).
+                header(AUTHORIZATION, getBearer()).
                 accept(MediaType.APPLICATION_JSON).
                 get(new GenericType<ArrayList<Integer>>() {
                 });
@@ -138,10 +147,11 @@ class API {
         NewBotResponseModel model = new NewBotResponseModel();
         model.preKeys = preKeys;
 
-        Response res = client.target(httpUrl).
-                path("bot/client/prekeys").
+        Response res = getTarget().
+                path(CLIENT).
+                path(PREKEYS).
                 request(MediaType.APPLICATION_JSON).
-                header("Authorization", "Bearer " + token).
+                header(AUTHORIZATION, getBearer()).
                 accept(MediaType.APPLICATION_JSON).
                 post(Entity.entity(model, MediaType.APPLICATION_JSON));
 
@@ -188,10 +198,10 @@ class API {
         os.write(asset.getEncryptedData());
         os.write("\r\n--frontier--\r\n".getBytes("utf-8"));
 
-        Response response = client.target(httpUrl)
-                .path("bot/assets")
+        Response response = getTarget()
+                .path(ASSETS)
                 .request(MediaType.APPLICATION_JSON_TYPE)
-                .header("Authorization", "Bearer " + token)
+                .header(AUTHORIZATION, getBearer())
                 .post(Entity.entity(os.toByteArray(), "multipart/mixed; boundary=frontier"));
 
         if (response.getStatus() >= 300) {
@@ -203,11 +213,11 @@ class API {
     }
 
     byte[] downloadAsset(String assetKey, String assetToken) throws IOException {
-        Invocation.Builder req = client.target(httpUrl)
-                .path("bot/assets")
+        Invocation.Builder req = getTarget()
+                .path(ASSETS)
                 .path(assetKey)
                 .request()
-                .header("Authorization", "Bearer " + token);
+                .header(AUTHORIZATION, getBearer());
 
         if (assetToken != null)
             req.header("Asset-Token", assetToken);
@@ -220,5 +230,9 @@ class API {
         }
 
         return response.readEntity(byte[].class);
+    }
+
+    private String getBearer() {
+        return String.format("Bearer %s", token);
     }
 }
