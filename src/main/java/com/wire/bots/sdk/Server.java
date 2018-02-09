@@ -63,10 +63,11 @@ public abstract class Server<Config extends Configuration> extends Application<C
      * @param env    Environment object
      * @return Instance of your class that implements {@see @MessageHandlerBase}
      */
-    protected abstract MessageHandlerBase createHandler(Config config, Environment env);
+    protected abstract MessageHandlerBase createHandler(Config config, Environment env) throws Exception;
 
     /**
-     * Override this method in case you need to add custom Resource and/or Task {@link #addResource(Object, io.dropwizard.setup.Environment)}
+     * Override this method in case you need to add custom Resource and/or Task
+     * {@link #addResource(Object, io.dropwizard.setup.Environment)}
      * and {@link #addTask(io.dropwizard.servlets.tasks.Task, io.dropwizard.setup.Environment)}
      *
      * @param config Configuration object (yaml)
@@ -84,6 +85,8 @@ public abstract class Server<Config extends Configuration> extends Application<C
         this.config = config;
         this.environment = env;
 
+        initialize(config, env);
+
         initTelemetry(config, env);
 
         if (!runInUserMode(config, env)) {
@@ -91,6 +94,10 @@ public abstract class Server<Config extends Configuration> extends Application<C
         }
 
         onRun(config, env);
+    }
+
+    protected void initialize(Config config, Environment env) throws Exception {
+
     }
 
     protected StorageFactory getStorageFactory(Config config) {
@@ -101,7 +108,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
         return (botId) -> new CryptoFile(config.data, botId);
     }
 
-    private void runInBotMode(Config config, Environment env) {
+    private void runInBotMode(Config config, Environment env) throws Exception {
         StorageFactory storageFactory = getStorageFactory(config);
         CryptoFactory cryptoFactory = getCryptoFactory(config);
 
