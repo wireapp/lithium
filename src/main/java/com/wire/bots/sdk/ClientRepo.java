@@ -22,20 +22,16 @@ public class ClientRepo {
     }
 
     public WireClient getWireClient(String botId) {
-        synchronized (clients) {
-            WireClient wireClient = clients.get(botId);
-            if (wireClient == null || wireClient.isClosed()) {
-                try {
-                    Crypto crypto = cryptoFactory.create(botId);
-                    Storage storage = storageFactory.create(botId);
-                    wireClient = new BotClient(crypto, storage);
-                    clients.put(botId, wireClient);
-                } catch (Exception e) {
-                    Logger.error("GetWireClient. BotId: %s, status: %s", botId, e.getMessage());
-                }
+        return clients.computeIfAbsent(botId, k -> {
+            try {
+                Crypto crypto = cryptoFactory.create(k);
+                Storage storage = storageFactory.create(k);
+                return new BotClient(crypto, storage);
+            } catch (Exception e) {
+                Logger.error("GetWireClient. BotId: %s, status: %s", botId, e.getMessage());
+                return null;
             }
-            return wireClient;
-        }
+        });
     }
 
     public void removeClient(String botId) {
@@ -53,22 +49,17 @@ public class ClientRepo {
 
     public void purgeBot(String botId) throws Exception {
         boolean purged = storageFactory.create(botId).removeState();
+        removeClient(botId);
         if (!purged)
             Logger.error("Failed to purge bot: %s", botId);
     }
 
     public ArrayList<WireClient> listClients() throws Exception {
         ArrayList<WireClient> ret = new ArrayList<>();
-        ArrayList<String> bots = listAllBots();
-        for (String bot : bots) {
-            try {
-                Crypto crypto = cryptoFactory.create(bot);
-                Storage storage = storageFactory.create(bot);
-                BotClient wireClient = new BotClient(crypto, storage);
+        for (String bot : listAllBots()) {
+            WireClient wireClient = getWireClient(bot);
+            if (wireClient != null)
                 ret.add(wireClient);
-            } catch (Exception e) {
-                Logger.warning(e.getMessage());
-            }
         }
         return ret;
     }
@@ -76,8 +67,7 @@ public class ClientRepo {
     private ArrayList<String> listAllBots() throws Exception {
         ArrayList<String> ret = new ArrayList<>();
         Storage storage = storageFactory.create("");
-        ArrayList<NewBot> newBots = storage.listAllStates();
-        for (NewBot newBot : newBots) {
+        for (NewBot newBot : storage.listAllStates()) {
             ret.add(newBot.id);
         }
         return ret;
