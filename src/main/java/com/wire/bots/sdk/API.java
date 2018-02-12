@@ -20,6 +20,7 @@ package com.wire.bots.sdk;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.wire.bots.sdk.assets.IAsset;
+import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.AssetKey;
 import com.wire.bots.sdk.models.otr.*;
 import com.wire.bots.sdk.server.model.Conversation;
@@ -73,9 +74,9 @@ class API {
      * @param msg           OtrMessage object containing ciphers for all clients
      * @param ignoreMissing If TRUE ignore missing clients and deliver the message to available clients
      * @return List of missing devices in case of fail or an empty list.
-     * @throws IOException CryptoBox exception
+     * @throws HttpException Http Exception is thrown when status >= 400
      */
-    Devices sendMessage(OtrMessage msg, boolean ignoreMissing) throws IOException {
+    Devices sendMessage(OtrMessage msg, boolean ignoreMissing) throws HttpException {
         Response response = getTarget().
                 path("messages").
                 queryParam("ignore_missing", ignoreMissing).
@@ -89,17 +90,14 @@ class API {
             return response.readEntity(Devices.class);
         }
 
-        if (statusCode >= 300) {
-            String log = String.format("sendMessage: %s code: %d",
-                    response.readEntity(String.class),
-                    statusCode);
-            throw new IOException(log);
+        if (statusCode >= 400) {
+            throw new HttpException(response.readEntity(String.class), statusCode);
         }
 
         return response.readEntity(Devices.class);
     }
 
-    Devices sendMessage(OtrMessage msg) throws IOException {
+    Devices sendMessage(OtrMessage msg) throws HttpException {
         return sendMessage(msg, false);
     }
 

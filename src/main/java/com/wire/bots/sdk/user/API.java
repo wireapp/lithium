@@ -21,6 +21,7 @@ package com.wire.bots.sdk.user;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wire.bots.sdk.assets.IAsset;
+import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.AssetKey;
 import com.wire.bots.sdk.models.otr.*;
 import com.wire.bots.sdk.server.model.Conversation;
@@ -51,7 +52,7 @@ public class API extends LoginClient {
         this.token = token;
     }
 
-    static String renewAccessToken(String cookie, String token) throws IOException {
+    static String renewAccessToken(String cookie, String token) throws HttpException {
         Response response = accessPath.
                 request(MediaType.APPLICATION_JSON).
                 header("Authorization", "Bearer " + token).
@@ -59,24 +60,22 @@ public class API extends LoginClient {
                 post(Entity.entity(new Connection(), MediaType.APPLICATION_JSON));
 
 
-        if (response.getStatus() >= 300) {
-            Logger.warning(response.readEntity(String.class));
-            throw new IOException(response.getStatusInfo().getReasonPhrase());
+        if (response.getStatus() >= 400) {
+            throw new HttpException(response.readEntity(String.class), response.getStatus());
         }
 
         return response.readEntity(com.wire.bots.sdk.user.model.User.class).getToken();
     }
 
-    public static Conversation createConversation(String name, String token) throws IOException {
+    public static Conversation createConversation(String name, String token) throws HttpException {
         Response response = conversationsPath.
                 request().
                 header("Authorization", "Bearer " + token).
                 accept(MediaType.APPLICATION_JSON).
                 post(Entity.entity("{\"users\":[], \"name\":\"" + name + "\"}", MediaType.APPLICATION_JSON));
 
-        if (response.getStatus() >= 300) {
-            Logger.warning(response.readEntity(String.class));
-            throw new IOException(response.getStatusInfo().getReasonPhrase());
+        if (response.getStatus() >= 400) {
+            throw new HttpException(response.readEntity(String.class), response.getStatus());
         }
 
         _Conv conv = response.readEntity(_Conv.class);
@@ -88,11 +87,11 @@ public class API extends LoginClient {
         return ret;
     }
 
-    Devices sendMessage(OtrMessage msg) throws IOException {
+    Devices sendMessage(OtrMessage msg) throws HttpException {
         return sendMessage(msg, false);
     }
 
-    Devices sendMessage(OtrMessage msg, boolean ignoreMissing) throws IOException {
+    Devices sendMessage(OtrMessage msg, boolean ignoreMissing) throws HttpException {
         Response response = conversationsPath.
                 path(convId).
                 path("otr/messages").
@@ -107,8 +106,8 @@ public class API extends LoginClient {
             return response.readEntity(Devices.class);
         }
 
-        if (statusCode >= 300)
-            throw new IOException("sendMessage: " + response.readEntity(String.class) + ". code: " + statusCode);
+        if (statusCode >= 400)
+            throw new HttpException(response.readEntity(String.class), response.getStatus());
 
         return new Devices();
     }
@@ -124,7 +123,7 @@ public class API extends LoginClient {
                 post(Entity.entity(missing, MediaType.APPLICATION_JSON), PreKeys.class);
     }
 
-    byte[] downloadAsset(String assetKey, String assetToken) throws IOException {
+    byte[] downloadAsset(String assetKey, String assetToken) throws HttpException {
         Invocation.Builder req = assetsPath
                 .path(assetKey)
                 .request()
@@ -136,14 +135,14 @@ public class API extends LoginClient {
         Response response = req.get();
 
         if (response.getStatus() >= 300) {
-            Logger.warning(response.readEntity(String.class) + ". AssetId: " + assetKey);
-            throw new IOException(response.getStatusInfo().getReasonPhrase());
+            String log = String.format("%s. AssetId: %s", response.readEntity(String.class), assetKey);
+            throw new HttpException(log, response.getStatus());
         }
 
         return response.readEntity(byte[].class);
     }
 
-    void acceptConnection(String user) throws IOException {
+    void acceptConnection(String user) throws HttpException {
         Connection connection = new Connection();
         connection.setStatus("accepted");
 
@@ -153,9 +152,8 @@ public class API extends LoginClient {
                 header("Authorization", "Bearer " + token).
                 put(Entity.entity(connection, MediaType.APPLICATION_JSON));
 
-        if (response.getStatus() >= 300) {
-            Logger.warning(response.readEntity(String.class));
-            throw new IOException(response.getStatusInfo().getReasonPhrase());
+        if (response.getStatus() >= 400) {
+            throw new HttpException(response.readEntity(String.class), response.getStatus());
         }
     }
 
@@ -198,8 +196,7 @@ public class API extends LoginClient {
                 .post(Entity.entity(os.toByteArray(), "multipart/mixed; boundary=frontier"));
 
         if (response.getStatus() >= 300) {
-            Logger.warning(response.readEntity(String.class));
-            throw new IOException(response.getStatusInfo().getReasonPhrase());
+            throw new HttpException(response.readEntity(String.class), response.getStatus());
         }
 
         return response.readEntity(AssetKey.class);
@@ -227,7 +224,7 @@ public class API extends LoginClient {
         return ret;
     }
 
-    public boolean deleteConversation(String teamId) throws IOException {
+    public boolean deleteConversation(String teamId) throws HttpException {
         Response response = teamsPath.
                 path(teamId).
                 path("conversations").
@@ -237,9 +234,8 @@ public class API extends LoginClient {
                 accept(MediaType.APPLICATION_JSON).
                 delete();
 
-        if (response.getStatus() >= 300) {
-            Logger.warning(response.readEntity(String.class));
-            throw new IOException(response.getStatusInfo().getReasonPhrase());
+        if (response.getStatus() >= 400) {
+            throw new HttpException(response.readEntity(String.class), response.getStatus());
         }
 
         return response.getStatus() == 200;

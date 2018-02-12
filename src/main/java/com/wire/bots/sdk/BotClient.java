@@ -20,6 +20,7 @@ package com.wire.bots.sdk;
 
 import com.wire.bots.sdk.assets.*;
 import com.wire.bots.sdk.crypto.Crypto;
+import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.AssetKey;
 import com.wire.bots.sdk.models.otr.*;
 import com.wire.bots.sdk.server.model.Conversation;
@@ -281,14 +282,9 @@ public class BotClient implements WireClient {
      *
      * @return List of all participants in this conversation and their clientIds
      */
-    private Devices getDevices() {
-        try {
-            if (devices == null || devices.hasMissing()) {
-                devices = api.sendMessage(new OtrMessage(state.client, new Recipients()));
-            }
-        } catch (IOException e) {
-            Logger.error(e.getMessage());
-            devices = new Devices();
+    private Devices getDevices() throws HttpException {
+        if (devices == null || devices.hasMissing()) {
+            devices = api.sendMessage(new OtrMessage(state.client, new Recipients()));
         }
         return devices;
     }

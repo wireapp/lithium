@@ -21,6 +21,7 @@ package com.wire.bots.sdk.user;
 import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.assets.*;
 import com.wire.bots.sdk.crypto.Crypto;
+import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.AssetKey;
 import com.wire.bots.sdk.models.otr.*;
 import com.wire.bots.sdk.server.model.Conversation;
@@ -195,7 +196,7 @@ public class UserClient implements WireClient {
     }
 
     @Override
-    public void acceptConnection(String user) throws IOException {
+    public void acceptConnection(String user) throws Exception {
         api.acceptConnection(user);
     }
 
@@ -225,18 +226,6 @@ public class UserClient implements WireClient {
                         getId()));
             }
         }
-    }
-
-    private Devices getDevices() {
-        try {
-            if (devices == null || devices.hasMissing()) {
-                devices = api.sendMessage(new OtrMessage(state.client, new Recipients()));
-            }
-        } catch (IOException e) {
-            Logger.error(e.getMessage());
-            devices = new Devices();
-        }
-        return devices;
     }
 
     @Override
@@ -275,7 +264,14 @@ public class UserClient implements WireClient {
     }
 
     @Override
-    public byte[] downloadProfilePicture(String assetKey) throws IOException {
+    public byte[] downloadProfilePicture(String assetKey) throws Exception {
         return api.downloadAsset(assetKey, null);
+    }
+
+    private Devices getDevices() throws HttpException {
+        if (devices == null || devices.hasMissing()) {
+            devices = api.sendMessage(new OtrMessage(state.client, new Recipients()));
+        }
+        return devices;
     }
 }

@@ -195,7 +195,7 @@ public interface WireClient extends Closeable {
      * @param user User ID as UUID
      * @throws IOException
      */
-    void acceptConnection(String user) throws IOException;
+    void acceptConnection(String user) throws Exception;
 
     /**
      * Decrypt cipher either using existing session or it creates new session from this cipher and decrypts
@@ -257,7 +257,7 @@ public interface WireClient extends Closeable {
      * @return Profile picture binary data
      * @throws IOException
      */
-    byte[] downloadProfilePicture(String assetKey) throws IOException;
+    byte[] downloadProfilePicture(String assetKey) throws Exception;
 
     /**
      * Uploads assert to backend. This method is used in conjunction with sendPicture(IGeneric)

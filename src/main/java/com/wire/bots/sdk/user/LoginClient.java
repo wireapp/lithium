@@ -20,6 +20,7 @@ package com.wire.bots.sdk.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.tools.Util;
 import com.wire.bots.sdk.user.model.NewClient;
@@ -32,7 +33,6 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.util.Base64;
 
 public class LoginClient {
@@ -60,7 +60,7 @@ public class LoginClient {
         connectionsPath = target.path("connections");
     }
 
-    static User login(String email, String password) throws IOException {
+    static User login(String email, String password) throws HttpException {
         User user = new User();
         user.setEmail(email);
         user.setPassword(password);
@@ -71,8 +71,8 @@ public class LoginClient {
                 post(Entity.entity(user, MediaType.APPLICATION_JSON));
 
 
-        if (response.getStatus() >= 300)
-            throw new IOException("Login: " + response.readEntity(String.class) + ". code: " + response.getStatus());
+        if (response.getStatus() >= 400)
+            throw new HttpException(response.readEntity(String.class), response.getStatus());
 
         User ret = response.readEntity(User.class);
         String cookie = response.getStringHeaders().getFirst("Set-Cookie");
@@ -80,7 +80,7 @@ public class LoginClient {
         return ret;
     }
 
-    static String registerClient(PreKey key, String token, String password) throws IOException {
+    static String registerClient(PreKey key, String token, String password) throws HttpException {
         NewClient newClient = new NewClient();
         newClient.lastPreKey = key;
         newClient.sigkeys.enckey = Base64.getEncoder().encodeToString(new byte[32]);
@@ -96,10 +96,8 @@ public class LoginClient {
                 header("Authorization", "Bearer " + token).
                 post(Entity.entity(newClient, MediaType.APPLICATION_JSON));
 
-        if (response.getStatus() >= 300)
-            throw new IOException(String.format("registerClient: %s. code: %d",
-                    response.readEntity(String.class),
-                    response.getStatus()));
+        if (response.getStatus() >= 400)
+            throw new HttpException(response.readEntity(String.class), response.getStatus());
 
         return response.readEntity(_Client.class).id;
     }
