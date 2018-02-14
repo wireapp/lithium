@@ -36,7 +36,6 @@ import java.util.HashMap;
  * Wrapper for the Crypto Box. This class is thread safe.
  */
 public class CryptoFile implements Crypto {
-    private final Object lock = new Object();
     private final CryptoBox box;
 
     /**
@@ -46,7 +45,7 @@ public class CryptoFile implements Crypto {
      * Note: Do not create multiple OtrManagers that operate on the same or
      * overlapping directories. Doing so results in undefined behaviour.
      *
-     * @param uri The root storage directory of the box
+     * @param uri   The root storage directory of the box
      * @param botId Bot id
      * @throws Exception
      */
@@ -83,7 +82,9 @@ public class CryptoFile implements Crypto {
      */
     @Override
     public PreKey newLastPreKey() throws Exception {
-        return toPreKey(box.newLastPreKey());
+        synchronized (box) {
+            return toPreKey(box.newLastPreKey());
+        }
     }
 
     /**
@@ -100,12 +101,14 @@ public class CryptoFile implements Crypto {
      */
     @Override
     public ArrayList<PreKey> newPreKeys(int from, int count) throws Exception {
-        ArrayList<PreKey> ret = new ArrayList<>(count);
-        for (com.wire.cryptobox.PreKey k : box.newPreKeys(from, count)) {
-            PreKey prekey = toPreKey(k);
-            ret.add(prekey);
+        synchronized (box) {
+            ArrayList<PreKey> ret = new ArrayList<>(count);
+            for (com.wire.cryptobox.PreKey k : box.newPreKeys(from, count)) {
+                PreKey prekey = toPreKey(k);
+                ret.add(prekey);
+            }
+            return ret;
         }
-        return ret;
     }
 
     /**
@@ -117,20 +120,22 @@ public class CryptoFile implements Crypto {
      */
     @Override
     public Recipients encrypt(PreKeys preKeys, byte[] content) throws Exception {
-        Recipients recipients = new Recipients();
-        for (String userId : preKeys.keySet()) {
-            HashMap<String, PreKey> clients = preKeys.get(userId);
-            for (String clientId : clients.keySet()) {
-                PreKey pk = clients.get(clientId);
-                if (pk != null && pk.key != null) {
-                    String id = createId(userId, clientId);
-                    byte[] cipher = encryptFromPreKeys(id, pk, content);
-                    String s = Base64.getEncoder().encodeToString(cipher);
-                    recipients.add(userId, clientId, s);
+        synchronized (box) {
+            Recipients recipients = new Recipients();
+            for (String userId : preKeys.keySet()) {
+                HashMap<String, PreKey> clients = preKeys.get(userId);
+                for (String clientId : clients.keySet()) {
+                    PreKey pk = clients.get(clientId);
+                    if (pk != null && pk.key != null) {
+                        String id = createId(userId, clientId);
+                        byte[] cipher = encryptFromPreKeys(id, pk, content);
+                        String s = Base64.getEncoder().encodeToString(cipher);
+                        recipients.add(userId, clientId, s);
+                    }
                 }
             }
+            return recipients;
         }
-        return recipients;
     }
 
     /**
@@ -142,18 +147,20 @@ public class CryptoFile implements Crypto {
      */
     @Override
     public Recipients encrypt(Missing missing, byte[] content) throws Exception {
-        Recipients recipients = new Recipients();
-        for (String userId : missing.toUserIds()) {
-            for (String clientId : missing.toClients(userId)) {
-                String id = createId(userId, clientId);
-                byte[] cipher = encryptFromSession(id, content);
-                if (cipher != null) {
-                    String s = Base64.getEncoder().encodeToString(cipher);
-                    recipients.add(userId, clientId, s);
+        synchronized (box) {
+            Recipients recipients = new Recipients();
+            for (String userId : missing.toUserIds()) {
+                for (String clientId : missing.toClients(userId)) {
+                    String id = createId(userId, clientId);
+                    byte[] cipher = encryptFromSession(id, content);
+                    if (cipher != null) {
+                        String s = Base64.getEncoder().encodeToString(cipher);
+                        recipients.add(userId, clientId, s);
+                    }
                 }
             }
+            return recipients;
         }
-        return recipients;
     }
 
     /**
@@ -170,7 +177,7 @@ public class CryptoFile implements Crypto {
         byte[] decode = Base64.getDecoder().decode(cypher);
         String id = createId(userId, clientId);
 
-        synchronized (lock) {
+        synchronized (box) {
             CryptoSession cryptoSession = null;
             try {
                 cryptoSession = box.tryGetSession(id);
@@ -191,14 +198,14 @@ public class CryptoFile implements Crypto {
      */
     @Override
     public void close() {
-        synchronized (lock) {
+        synchronized (box) {
             box.close();
         }
     }
 
     @Override
     public boolean isClosed() {
-        synchronized (lock) {
+        synchronized (box) {
             return box.isClosed();
         }
     }
@@ -212,13 +219,11 @@ public class CryptoFile implements Crypto {
      * @throws Exception throws Exception
      */
     private byte[] encryptFromPreKeys(String id, PreKey preKey, byte[] content) throws Exception {
-        synchronized (lock) {
-            CryptoSession cryptoSession = box.initSessionFromPreKey(id, toPreKey(preKey));
-            try {
-                return cryptoSession.encrypt(content);
-            } finally {
-                saveSession(cryptoSession);
-            }
+        CryptoSession cryptoSession = box.initSessionFromPreKey(id, toPreKey(preKey));
+        try {
+            return cryptoSession.encrypt(content);
+        } finally {
+            saveSession(cryptoSession);
         }
     }
 
@@ -232,16 +237,14 @@ public class CryptoFile implements Crypto {
      */
     @Nullable
     private byte[] encryptFromSession(String id, byte[] content) throws Exception {
-        synchronized (lock) {
-            CryptoSession session = null;
-            try {
-                session = box.tryGetSession(id);
-                if (session != null) {
-                    return session.encrypt(content);
-                }
-            } finally {
-                saveSession(session);
+        CryptoSession session = null;
+        try {
+            session = box.tryGetSession(id);
+            if (session != null) {
+                return session.encrypt(content);
             }
+        } finally {
+            saveSession(session);
         }
         return null;
     }
