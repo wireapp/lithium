@@ -72,4 +72,12 @@ public class ClientRepo {
         }
         return ret;
     }
+
+    public CryptoFactory getCryptoFactory() {
+        return cryptoFactory;
+    }
+
+    public StorageFactory getStorageFactory() {
+        return storageFactory;
+    }
 }

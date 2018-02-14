@@ -252,7 +252,7 @@ public class BotClient implements WireClient {
         byte[] content = generic.createGenericMsg().toByteArray();
 
         // Try to encrypt the msg for those devices that we have the session already
-        Recipients encrypt = crypto.encrypt(getDevices().missing, content);
+        Recipients encrypt = crypto.encrypt(getMissing(), content);
         OtrMessage msg = new OtrMessage(state.client, encrypt);
 
         Devices res = api.sendMessage(msg);
@@ -274,6 +274,10 @@ public class BotClient implements WireClient {
                         getId()));
             }
         }
+    }
+
+    public Missing getMissing() throws HttpException {
+        return getDevices().missing;
     }
 
     /**
