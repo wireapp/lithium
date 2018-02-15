@@ -240,6 +240,11 @@ public class BotClient implements WireClient {
         return api.uploadAsset(asset);
     }
 
+    @Override
+    public void call(String content) throws Exception {
+        postGenericMessage(new Calling(content));
+    }
+
     /**
      * Encrypt whole message for participants in the conversation.
      * Implements the fallback for the 412 error code and missing

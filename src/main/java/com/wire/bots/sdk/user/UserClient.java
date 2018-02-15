@@ -268,6 +268,11 @@ public class UserClient implements WireClient {
         return api.downloadAsset(assetKey, null);
     }
 
+    @Override
+    public void call(String content) throws Exception {
+        postGenericMessage(new Calling(content));
+    }
+    
     private Devices getDevices() throws HttpException {
         if (devices == null || devices.hasMissing()) {
             devices = api.sendMessage(new OtrMessage(state.client, new Recipients()));

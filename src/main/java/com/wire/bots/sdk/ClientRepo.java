@@ -28,7 +28,7 @@ public class ClientRepo {
                 Storage storage = storageFactory.create(k);
                 return new BotClient(crypto, storage);
             } catch (Exception e) {
-                Logger.error("GetWireClient. BotId: %s, status: %s", botId, e.getMessage());
+                Logger.error("GetWireClient. BotId: %s, status: %s", botId, e);
                 return null;
             }
         });

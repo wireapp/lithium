@@ -122,6 +122,7 @@ public interface WireClient extends Closeable {
 
     /**
      * Sends ping into conversation
+     *
      * @throws Exception
      */
     void ping() throws Exception;
@@ -268,4 +269,5 @@ public interface WireClient extends Closeable {
      */
     AssetKey uploadAsset(IAsset asset) throws Exception;
 
+    void call(String content) throws Exception;
 }
