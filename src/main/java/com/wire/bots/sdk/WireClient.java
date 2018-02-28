@@ -81,6 +81,8 @@ public interface WireClient extends Closeable {
      */
     void sendPicture(byte[] bytes, String mimeType) throws Exception;
 
+    void sendPicture(byte[] bytes, String mimeType, String userId) throws Exception;
+
     /**
      * Post previously uploaded picture
      *
@@ -179,6 +181,15 @@ public interface WireClient extends Closeable {
      * @throws IOException
      */
     Collection<User> getUsers(Collection<String> userIds) throws IOException;
+
+    /**
+     * Fetch users' profiles from the Backend
+     *
+     * @param userId User ID (UUID) that are being requested
+     * @return User profile (name, accent colour,...)
+     * @throws IOException
+     */
+    User getUser(String userId) throws IOException;
 
     /**
      * Fetch conversation details from the Backend

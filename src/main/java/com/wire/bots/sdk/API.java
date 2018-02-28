@@ -76,7 +76,7 @@ class API {
      * @return List of missing devices in case of fail or an empty list.
      * @throws HttpException Http Exception is thrown when status >= 400
      */
-    Devices sendMessage(OtrMessage msg, boolean ignoreMissing) throws HttpException {
+    Devices sendMessage(OtrMessage msg, Object... ignoreMissing) throws HttpException {
         Response response = getTarget().
                 path("messages").
                 queryParam("ignore_missing", ignoreMissing).
@@ -97,8 +97,25 @@ class API {
         return response.readEntity(Devices.class);
     }
 
-    Devices sendMessage(OtrMessage msg) throws HttpException {
-        return sendMessage(msg, false);
+    Devices sendPartialMessage(OtrMessage msg, String userId) throws HttpException {
+        Response response = getTarget().
+                path("messages").
+                queryParam("report_missing", userId).
+                request(MediaType.APPLICATION_JSON).
+                header(AUTHORIZATION, getBearer()).
+                post(Entity.entity(msg, MediaType.APPLICATION_JSON));
+
+        int statusCode = response.getStatus();
+        if (statusCode == 412) {
+            // This message was not sent due to missing clients. Parse those missing clients so the caller can add them
+            return response.readEntity(Devices.class);
+        }
+
+        if (statusCode >= 400) {
+            throw new HttpException(response.readEntity(String.class), statusCode);
+        }
+
+        return response.readEntity(Devices.class);
     }
 
     Collection<User> getUsers(Collection<String> ids) throws IOException {

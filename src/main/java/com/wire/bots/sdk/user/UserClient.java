@@ -34,10 +34,7 @@ import com.wire.bots.sdk.tools.Util;
 import java.io.File;
 import java.io.IOException;
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.UUID;
+import java.util.*;
 
 public class UserClient implements WireClient {
     private final API api;
@@ -76,6 +73,17 @@ public class UserClient implements WireClient {
 
     @Override
     public void sendPicture(byte[] bytes, String mimeType) throws Exception {
+        Picture image = new Picture(bytes, mimeType);
+
+        AssetKey assetKey = uploadAsset(image);
+        image.setAssetKey(assetKey.key);
+        image.setAssetToken(assetKey.token);
+
+        postGenericMessage(image);
+    }
+
+    @Override
+    public void sendPicture(byte[] bytes, String mimeType, String userId) throws Exception {
         Picture image = new Picture(bytes, mimeType);
 
         AssetKey assetKey = uploadAsset(image);
@@ -191,6 +199,12 @@ public class UserClient implements WireClient {
     }
 
     @Override
+    public User getUser(String userId) throws IOException {
+        Collection<User> users = api.getUsers(Collections.singleton(userId));
+        return users.iterator().next();
+    }
+    
+    @Override
     public Conversation getConversation() throws IOException {
         return api.getConversation();
     }
@@ -207,7 +221,7 @@ public class UserClient implements WireClient {
         Recipients encrypt = crypto.encrypt(getDevices().missing, content);
         OtrMessage msg = new OtrMessage(state.client, encrypt);
 
-        Devices res = api.sendMessage(msg);
+        Devices res = api.sendMessage(msg, false);
         if (!res.hasMissing()) {
             // Fetch preKeys for the missing devices from the Backend
             PreKeys preKeys = api.getPreKeys(res.missing);
@@ -272,10 +286,11 @@ public class UserClient implements WireClient {
     public void call(String content) throws Exception {
         postGenericMessage(new Calling(content));
     }
-    
+
     private Devices getDevices() throws HttpException {
         if (devices == null || devices.hasMissing()) {
-            devices = api.sendMessage(new OtrMessage(state.client, new Recipients()));
+            OtrMessage msg = new OtrMessage(state.client, new Recipients());
+            devices = api.sendMessage(msg, false);
         }
         return devices;
     }

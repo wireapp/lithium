@@ -87,10 +87,6 @@ public class API extends LoginClient {
         return ret;
     }
 
-    Devices sendMessage(OtrMessage msg) throws HttpException {
-        return sendMessage(msg, false);
-    }
-
     Devices sendMessage(OtrMessage msg, boolean ignoreMissing) throws HttpException {
         Response response = conversationsPath.
                 path(convId).

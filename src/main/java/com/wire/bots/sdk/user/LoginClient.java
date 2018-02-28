@@ -66,10 +66,9 @@ public class LoginClient {
         user.setPassword(password);
 
         Response response = loginPath.
-                queryParam("persist", true).
+                queryParam("persist", false).
                 request(MediaType.APPLICATION_JSON).
                 post(Entity.entity(user, MediaType.APPLICATION_JSON));
-
 
         if (response.getStatus() >= 400)
             throw new HttpException(response.readEntity(String.class), response.getStatus());
