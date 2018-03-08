@@ -44,6 +44,14 @@ public interface WireClient extends Closeable {
     void sendText(String txt) throws Exception;
 
     /**
+     * Post text to specific user
+     *
+     * @param txt Plain text to be posted into this conversation
+     * @throws Exception
+     */
+    void sendDirectText(String txt, String userId) throws Exception;
+
+    /**
      * Post text into the conversation
      *
      * @param txt     Plain text to be posted into this conversation

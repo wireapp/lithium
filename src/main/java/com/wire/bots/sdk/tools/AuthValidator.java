@@ -10,4 +10,8 @@ public class AuthValidator {
     public boolean validate(String authToken) {
         return Util.compareTokens(auth, authToken);
     }
+
+    public String getAuth() {
+        return auth;
+    }
 }

@@ -60,6 +60,11 @@ public class UserClient implements WireClient {
     }
 
     @Override
+    public void sendDirectText(String txt, String userId) throws Exception {
+        sendText(txt);
+    }
+
+    @Override
     public void sendLinkPreview(String url, String title, IGeneric image) throws Exception {
         postGenericMessage(new LinkPreview(url, title, image.createGenericMsg().getAsset()));
     }
@@ -84,13 +89,7 @@ public class UserClient implements WireClient {
 
     @Override
     public void sendPicture(byte[] bytes, String mimeType, String userId) throws Exception {
-        Picture image = new Picture(bytes, mimeType);
-
-        AssetKey assetKey = uploadAsset(image);
-        image.setAssetKey(assetKey.key);
-        image.setAssetToken(assetKey.token);
-
-        postGenericMessage(image);
+        sendPicture(bytes, mimeType);
     }
 
     @Override
@@ -203,7 +202,7 @@ public class UserClient implements WireClient {
         Collection<User> users = api.getUsers(Collections.singleton(userId));
         return users.iterator().next();
     }
-    
+
     @Override
     public Conversation getConversation() throws IOException {
         return api.getConversation();
