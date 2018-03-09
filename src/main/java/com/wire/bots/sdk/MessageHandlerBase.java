@@ -166,4 +166,8 @@ public abstract class MessageHandlerBase {
     public void onEditText(WireClient client, TextMessage msg) {
 
     }
+
+    public void onCalling(WireClient client, String userId, String clientId, String content) {
+
+    }
 }

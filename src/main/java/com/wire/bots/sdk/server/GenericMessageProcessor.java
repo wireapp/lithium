@@ -97,6 +97,15 @@ public class GenericMessageProcessor {
             return true;
         }
 
+        if (generic.hasCalling()) {
+            Messages.Calling calling = generic.getCalling();
+            if (calling.hasContent()) {
+                String content = calling.getContent();
+                handler.onCalling(client, userId, clientId, content);
+            }
+            return true;
+        }
+
         //Logger.info("Generic: hasAsset: %s, hasImage: %s", generic.hasAsset(), generic.hasImage());
 
         // Assets
