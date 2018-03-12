@@ -62,7 +62,15 @@ public class MessageResource extends MessageResourceBase {
                     build();
         }
 
-        handleMessage(inbound, client);
+        try {
+            handleMessage(inbound, client);
+        } catch (Exception e) {
+            Logger.error("MessageResource::newMessage: %s", e);
+            return Response.
+                    status(400).
+                    entity(e).
+                    build();
+        }
 
         return Response.
                 ok().
