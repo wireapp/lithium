@@ -35,7 +35,7 @@ public abstract class MessageResourceBase {
 
                 handler.onEvent(client, inbound.from, genericMessage);
 
-                processor.process(inbound.from, genericMessage);
+                processor.process(inbound.from, data.sender, genericMessage);
             }
             break;
             case "conversation.member-join": {

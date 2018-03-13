@@ -48,10 +48,9 @@ public class GenericMessageProcessor {
         }
     }
 
-    public boolean process(String userId, Messages.GenericMessage generic) {
+    public boolean process(String userId, String sender, Messages.GenericMessage generic) {
         String messageId = generic.getMessageId();
         String convId = client.getConversationId();
-        String clientId = client.getDeviceId();
 
         Messages.Text text = null;
         Messages.Asset asset = null;
@@ -81,7 +80,7 @@ public class GenericMessageProcessor {
         // Edit message
         if (generic.hasEdited() && generic.getEdited().hasText()) {
             Messages.MessageEdit edited = generic.getEdited();
-            TextMessage msg = new TextMessage(edited.getReplacingMessageId(), convId, clientId, userId);
+            TextMessage msg = new TextMessage(edited.getReplacingMessageId(), convId, sender, userId);
             msg.setText(edited.getText().getContent());
 
             handler.onEditText(client, msg);
@@ -90,7 +89,7 @@ public class GenericMessageProcessor {
 
         // Text
         if (text != null && text.hasContent() && text.getLinkPreviewList().isEmpty()) {
-            TextMessage msg = new TextMessage(messageId, convId, clientId, userId);
+            TextMessage msg = new TextMessage(messageId, convId, sender, userId);
             msg.setText(text.getContent());
 
             handler.onText(client, msg);
@@ -101,7 +100,7 @@ public class GenericMessageProcessor {
             Messages.Calling calling = generic.getCalling();
             if (calling.hasContent()) {
                 String content = calling.getContent();
-                handler.onCalling(client, userId, clientId, content);
+                handler.onCalling(client, userId, sender, content);
             }
             return true;
         }
@@ -117,7 +116,7 @@ public class GenericMessageProcessor {
                 //Logger.info("Generic: hasAudio: %s, hasVideo: %s", original.hasAudio(), original.hasVideo());
 
                 if (original.hasImage()) {
-                    ImageMessage msg = new ImageMessage(messageId, convId, clientId, userId);
+                    ImageMessage msg = new ImageMessage(messageId, convId, sender, userId);
 
                     initAsset(asset, original, msg);
 
@@ -130,7 +129,7 @@ public class GenericMessageProcessor {
                     return true;
                 }
                 if (original.hasAudio()) {
-                    AudioMessage msg = new AudioMessage(messageId, convId, clientId, userId);
+                    AudioMessage msg = new AudioMessage(messageId, convId, sender, userId);
 
                     initAsset(asset, original, msg);
 
@@ -143,7 +142,7 @@ public class GenericMessageProcessor {
                     return true;
                 }
                 if (original.hasVideo()) {
-                    VideoMessage msg = new VideoMessage(messageId, convId, clientId, userId);
+                    VideoMessage msg = new VideoMessage(messageId, convId, sender, userId);
 
                     initAsset(asset, original, msg);
 
@@ -159,7 +158,7 @@ public class GenericMessageProcessor {
 
                 {
                     // this must be a generic file attachment then
-                    AttachmentMessage msg = new AttachmentMessage(messageId, convId, clientId, userId);
+                    AttachmentMessage msg = new AttachmentMessage(messageId, convId, sender, userId);
 
                     initAsset(asset, original, msg);
 
