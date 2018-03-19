@@ -88,7 +88,7 @@ public class UserClient implements WireClient {
     }
 
     @Override
-    public void sendPicture(byte[] bytes, String mimeType, String userId) throws Exception {
+    public void sendDirectPicture(byte[] bytes, String mimeType, String userId) throws Exception {
         sendPicture(bytes, mimeType);
     }
 

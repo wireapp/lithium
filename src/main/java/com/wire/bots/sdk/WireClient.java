@@ -89,7 +89,7 @@ public interface WireClient extends Closeable {
      */
     void sendPicture(byte[] bytes, String mimeType) throws Exception;
 
-    void sendPicture(byte[] bytes, String mimeType, String userId) throws Exception;
+    void sendDirectPicture(byte[] bytes, String mimeType, String userId) throws Exception;
 
     /**
      * Post previously uploaded picture

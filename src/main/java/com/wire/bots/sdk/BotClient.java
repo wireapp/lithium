@@ -89,7 +89,7 @@ public class BotClient implements WireClient {
     }
 
     @Override
-    public void sendPicture(byte[] bytes, String mimeType, String userId) throws Exception {
+    public void sendDirectPicture(byte[] bytes, String mimeType, String userId) throws Exception {
         Picture image = new Picture(bytes, mimeType);
 
         AssetKey assetKey = uploadAsset(image);
