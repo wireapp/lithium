@@ -20,4 +20,10 @@ public interface Storage {
 
     boolean deleteFile(String filename) throws Exception;
 
+    boolean saveGlobalFile(String filename, String content) throws Exception;
+
+    String readGlobalFile(String filename) throws Exception;
+
+    boolean deleteGlobalFile(String filename) throws Exception;
+
 }

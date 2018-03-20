@@ -75,6 +75,21 @@ public class FileStorage implements Storage {
         return file.delete();
     }
 
+    @Override
+    public boolean saveGlobalFile(String filename, String content) throws Exception {
+        return saveFile(filename, content);
+    }
+
+    @Override
+    public String readGlobalFile(String filename) throws Exception {
+        return readFile(filename);
+    }
+
+    @Override
+    public boolean deleteGlobalFile(String filename) throws Exception {
+        return deleteFile(filename);
+    }
+
     public boolean hasState() {
         File stateFile = getStateFile();
         return stateFile.exists();
