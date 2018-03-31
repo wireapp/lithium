@@ -19,6 +19,7 @@
 package com.wire.bots.sdk.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.sdk.crypto.CryptoFile;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.InboundMessage;
@@ -28,7 +29,6 @@ import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
 import com.wire.bots.sdk.user.model.Message;
 import com.wire.bots.sdk.user.model.User;
-import com.wire.cryptobox.CryptoException;
 import org.glassfish.tyrus.client.ClientManager;
 
 import javax.websocket.*;

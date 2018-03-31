@@ -18,14 +18,15 @@
 
 package com.wire.bots.sdk.crypto;
 
-import com.wire.bots.cryptobox.CryptoBox;
+import com.wire.bots.cryptobox.CryptoDb;
 import com.wire.bots.cryptobox.ICryptobox;
+import com.wire.bots.cryptobox.IStorage;
 
 /**
  * Wrapper for the Crypto Box. This class is thread safe.
  */
-public class CryptoFile extends CryptoBase {
-    private final CryptoBox box;
+public class CryptoDatabase extends CryptoBase {
+    private final CryptoDb box;
 
     /**
      * Opens the CryptoBox using given directory path
@@ -34,13 +35,11 @@ public class CryptoFile extends CryptoBase {
      * Note: Do not create multiple OtrManagers that operate on the same or
      * overlapping directories. Doing so results in undefined behaviour.
      *
-     * @param uri   The root storage directory of the box
      * @param botId Bot id
      * @throws Exception
      */
-    public CryptoFile(String uri, String botId) throws Exception {
-        String path = String.format("%s/%s", uri, botId);
-        box = CryptoBox.open(path);
+    public CryptoDatabase(String botId, IStorage storage) throws Exception {
+        box = new CryptoDb(botId, storage);
     }
 
     @Override

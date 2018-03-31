@@ -16,8 +16,9 @@
 // along with this program. If not, see http://www.gnu.org/licenses/.
 //
 
+import com.wire.bots.cryptobox.storage.MemStorage;
 import com.wire.bots.sdk.crypto.Crypto;
-import com.wire.bots.sdk.crypto.CryptoFile;
+import com.wire.bots.sdk.crypto.CryptoDatabase;
 import com.wire.bots.sdk.models.otr.Missing;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.models.otr.PreKeys;
@@ -34,13 +35,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class CryptoFileTest {
+public class CryptoDatabaseTest {
 
     private final static String bobId = "bob";
     private final static String bobClientId = "bob_device";
     private final static String aliceId = "alice";
     private final static String aliceClientId = "alice_device";
-    private final static String DATA = "./data";
     private static Crypto alice;
     private static Crypto bob;
     private static PreKeys bobKeys;
@@ -48,8 +48,9 @@ public class CryptoFileTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        alice = new CryptoFile(DATA, aliceId);
-        bob = new CryptoFile(DATA, bobId);
+        MemStorage storage = new MemStorage();
+        alice = new CryptoDatabase(aliceId, storage);
+        bob = new CryptoDatabase(bobId, storage);
 
         ArrayList<PreKey> preKeys = bob.newPreKeys(0, 1);
         bobKeys = getPreKeys(preKeys, bobClientId, bobId);
@@ -73,7 +74,7 @@ public class CryptoFileTest {
     public static void clean() throws IOException {
         alice.close();
         bob.close();
-        Path rootPath = Paths.get(DATA);
+        Path rootPath = Paths.get("data");
         Files.walk(rootPath, FileVisitOption.FOLLOW_LINKS)
                 .sorted(Comparator.reverseOrder())
                 .map(Path::toFile)

@@ -1,5 +1,6 @@
 package com.wire.bots.sdk.user;
 
+import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.sdk.ClientRepo;
 import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.crypto.Crypto;
@@ -7,7 +8,6 @@ import com.wire.bots.sdk.factories.CryptoFactory;
 import com.wire.bots.sdk.factories.StorageFactory;
 import com.wire.bots.sdk.storage.Storage;
 import com.wire.bots.sdk.tools.Logger;
-import com.wire.cryptobox.CryptoException;
 
 import java.io.IOException;
 
