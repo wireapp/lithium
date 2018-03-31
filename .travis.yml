@@ -1,10 +1,12 @@
 sudo: false
 language: java
-services:
-- docker
+
 cache:
   directories:
   - "$HOME/.cache"
+
+install: true
+script: mvn package -DskipTests=true
 
 deploy:
   provider: script
