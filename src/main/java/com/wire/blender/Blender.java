@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Blender {
+    static {
+        System.loadLibrary("blender"); // Load native library at runtime
+    }
+    
     private final List<BlenderListener> listeners = new ArrayList<>();
     private long blenderPointer;
 
