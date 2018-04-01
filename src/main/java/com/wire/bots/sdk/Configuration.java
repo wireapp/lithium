@@ -28,7 +28,6 @@ public class Configuration extends io.dropwizard.Configuration {
     /**
      * Path to the directory that will hold the cryptoBox data.
      */
-    @NotNull
     public String data;
 
     /**
@@ -36,6 +35,8 @@ public class Configuration extends io.dropwizard.Configuration {
      */
     @NotNull
     public String auth;
+
+    public DB db;
 
     private static String propOrEnv(String prop, boolean strict) {
         final String env = prop.replace('.', '_').toUpperCase();
@@ -62,6 +63,18 @@ public class Configuration extends io.dropwizard.Configuration {
 
     public String getAuth() {
         return auth;
+    }
+
+    public DB getDB() {
+        return db;
+    }
+
+    public static class DB {
+        public String host;
+        public int port;
+        public String database;
+        public String user;
+        public String password;
     }
 
     public final static class ConfigValueNotFoundException extends RuntimeException {
