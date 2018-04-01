@@ -17,7 +17,6 @@
 //
 
 import com.wire.bots.cryptobox.storage.MemStorage;
-import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.crypto.CryptoDatabase;
 import com.wire.bots.sdk.models.otr.Missing;
 import com.wire.bots.sdk.models.otr.PreKey;
@@ -37,15 +36,19 @@ import java.util.*;
 
 public class CryptoDatabaseTest {
 
-    private final static String bobId = "bob";
-    private final static String bobClientId = "bob_device";
-    private final static String aliceId = "alice";
-    private final static String aliceClientId = "alice_device";
-    private static Crypto alice;
-    private static Crypto bob;
+    private final static String bobId;
+    private final static String aliceId;
+    private static CryptoDatabase alice;
+    private static CryptoDatabase bob;
     private static PreKeys bobKeys;
     private static PreKeys aliceKeys;
 
+    static {
+        Random rnd = new Random();
+        aliceId = "" + rnd.nextInt();
+        bobId = "" + rnd.nextInt();
+    }
+    
     @BeforeClass
     public static void setUp() throws Exception {
         MemStorage storage = new MemStorage();
@@ -53,10 +56,10 @@ public class CryptoDatabaseTest {
         bob = new CryptoDatabase(bobId, storage);
 
         ArrayList<PreKey> preKeys = bob.newPreKeys(0, 1);
-        bobKeys = getPreKeys(preKeys, bobClientId, bobId);
+        bobKeys = getPreKeys(preKeys, bobId, bobId);
 
         preKeys = alice.newPreKeys(0, 1);
-        aliceKeys = getPreKeys(preKeys, aliceClientId, aliceId);
+        aliceKeys = getPreKeys(preKeys, aliceId, aliceId);
     }
 
     private static PreKeys getPreKeys(ArrayList<PreKey> array, String clientId, String userId) {
@@ -89,10 +92,10 @@ public class CryptoDatabaseTest {
         // Encrypt using prekeys
         Recipients encrypt = alice.encrypt(bobKeys, textBytes);
 
-        String base64Encoded = encrypt.get(bobId, bobClientId);
+        String base64Encoded = encrypt.get(bobId, bobId);
 
         // Decrypt using initSessionFromMessage
-        String decrypt = bob.decrypt(aliceId, aliceClientId, base64Encoded);
+        String decrypt = bob.decrypt(aliceId, aliceId, base64Encoded);
         byte[] decode = Base64.getDecoder().decode(decrypt);
 
         assert Arrays.equals(decode, textBytes);
@@ -106,10 +109,10 @@ public class CryptoDatabaseTest {
 
         Recipients encrypt = bob.encrypt(aliceKeys, textBytes);
 
-        String base64Encoded = encrypt.get(aliceId, aliceClientId);
+        String base64Encoded = encrypt.get(aliceId, aliceId);
 
         // Decrypt using initSessionFromMessage
-        String decrypt = alice.decrypt(bobId, bobClientId, base64Encoded);
+        String decrypt = alice.decrypt(bobId, bobId, base64Encoded);
         byte[] decode = Base64.getDecoder().decode(decrypt);
 
         assert Arrays.equals(decode, textBytes);
@@ -122,13 +125,13 @@ public class CryptoDatabaseTest {
         byte[] textBytes = text.getBytes();
 
         Missing devices = new Missing();
-        devices.add(aliceId, aliceClientId);
+        devices.add(aliceId, aliceId);
         Recipients encrypt = bob.encrypt(devices, textBytes);
 
-        String base64Encoded = encrypt.get(aliceId, aliceClientId);
+        String base64Encoded = encrypt.get(aliceId, aliceId);
 
         // Decrypt using session
-        String decrypt = alice.decrypt(bobId, bobClientId, base64Encoded);
+        String decrypt = alice.decrypt(bobId, bobId, base64Encoded);
         byte[] decode = Base64.getDecoder().decode(decrypt);
 
         assert Arrays.equals(decode, textBytes);
