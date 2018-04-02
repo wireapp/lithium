@@ -28,7 +28,7 @@ public class Configuration extends io.dropwizard.Configuration {
     /**
      * Path to the directory that will hold the cryptoBox data.
      */
-    public String data;
+    public String data = "data";
 
     /**
      * Authentication token
