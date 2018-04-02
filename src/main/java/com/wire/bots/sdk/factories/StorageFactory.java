@@ -1,7 +1,7 @@
 package com.wire.bots.sdk.factories;
 
-import com.wire.bots.sdk.storage.Storage;
+import com.wire.bots.sdk.state.State;
 
 public interface StorageFactory {
-    Storage create(String botId) throws Exception;
+    State create(String botId) throws Exception;
 }

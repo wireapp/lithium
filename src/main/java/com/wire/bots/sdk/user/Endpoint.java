@@ -24,7 +24,7 @@ import com.wire.bots.sdk.crypto.CryptoFile;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.InboundMessage;
 import com.wire.bots.sdk.server.model.NewBot;
-import com.wire.bots.sdk.storage.FileStorage;
+import com.wire.bots.sdk.state.FileState;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
 import com.wire.bots.sdk.user.model.Message;
@@ -132,7 +132,7 @@ public class Endpoint {
      * @throws Exception
      */
     private String initDevice(String userId, String password, String token) throws Exception {
-        FileStorage storage = new FileStorage(path, userId);
+        FileState storage = new FileState(path, userId);
 
         try {
             NewBot state = storage.getState();

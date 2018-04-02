@@ -1,10 +1,10 @@
-package com.wire.bots.sdk.storage;
+package com.wire.bots.sdk.state;
 
 import com.wire.bots.sdk.server.model.NewBot;
 
 import java.util.ArrayList;
 
-public interface Storage {
+public interface State {
 
     boolean saveState(NewBot newBot) throws Exception;
 

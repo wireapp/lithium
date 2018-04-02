@@ -1,7 +1,7 @@
 import com.wire.bots.sdk.Configuration;
 import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.NewBot;
-import com.wire.bots.sdk.storage.PgStorage;
+import com.wire.bots.sdk.state.PostgresState;
 import org.junit.Test;
 
 import java.util.UUID;
@@ -19,7 +19,7 @@ public class PgStorageTest {
 
         String botId = UUID.randomUUID().toString();
 
-        PgStorage storage = new PgStorage(botId, conf);
+        PostgresState storage = new PostgresState(botId, conf);
         NewBot bot = new NewBot();
         bot.id = botId;
         bot.client = "client";

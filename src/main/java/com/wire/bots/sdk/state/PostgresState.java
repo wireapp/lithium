@@ -1,4 +1,4 @@
-package com.wire.bots.sdk.storage;
+package com.wire.bots.sdk.state;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wire.bots.sdk.Configuration;
@@ -10,13 +10,13 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class PgStorage implements Storage {
+public class PostgresState implements State {
     private final static ObjectMapper mapper = new ObjectMapper();
 
     private final UUID botId;
     private final Configuration.DB conf;
 
-    public PgStorage(String botId, Configuration.DB conf) {
+    public PostgresState(String botId, Configuration.DB conf) {
         this.botId = UUID.fromString(botId);
         this.conf = conf;
     }

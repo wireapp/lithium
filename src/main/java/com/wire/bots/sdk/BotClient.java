@@ -26,7 +26,7 @@ import com.wire.bots.sdk.models.otr.*;
 import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.server.model.User;
-import com.wire.bots.sdk.storage.Storage;
+import com.wire.bots.sdk.state.State;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
 
@@ -44,7 +44,7 @@ public class BotClient implements WireClient {
     private final NewBot state;
     private Devices devices = null;
 
-    BotClient(Crypto crypto, Storage storage) throws Exception {
+    BotClient(Crypto crypto, State storage) throws Exception {
         this.state = storage.getState();
         this.api = new API(state.token);
         this.crypto = crypto;

@@ -30,7 +30,7 @@ import com.wire.bots.sdk.server.resources.StatusResource;
 import com.wire.bots.sdk.server.tasks.AvailablePrekeysTask;
 import com.wire.bots.sdk.server.tasks.BroadcastAllTask;
 import com.wire.bots.sdk.server.tasks.ConversationTask;
-import com.wire.bots.sdk.storage.FileStorage;
+import com.wire.bots.sdk.state.FileState;
 import com.wire.bots.sdk.tools.AuthValidator;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
@@ -99,7 +99,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
     }
 
     protected StorageFactory getStorageFactory(Config config) {
-        return botId -> new FileStorage(config.data, botId);
+        return botId -> new FileState(config.data, botId);
     }
 
     protected CryptoFactory getCryptoFactory(Config config) {

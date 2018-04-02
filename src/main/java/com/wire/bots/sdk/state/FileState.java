@@ -1,19 +1,21 @@
-package com.wire.bots.sdk.storage;
+package com.wire.bots.sdk.state;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wire.bots.sdk.exceptions.MissingStateException;
 import com.wire.bots.sdk.server.model.NewBot;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.UUID;
 
-public class FileStorage implements Storage {
+public class FileState implements State {
 
     private static final String STATE_FILENAME = "state.json";
     private final String path;
     private final String botId;
 
-    public FileStorage(String path, String botId) {
+    public FileState(String path, String botId) {
         this.path = path;
         this.botId = botId;
         File dir = new File(String.format("%s/%s", path, botId));
@@ -31,6 +33,9 @@ public class FileStorage implements Storage {
     @Override
     public NewBot getState() throws Exception {
         File file = getStateFile();
+        if (!file.exists())
+            throw new MissingStateException(UUID.fromString(botId));
+
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(file, NewBot.class);
     }

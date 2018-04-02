@@ -4,7 +4,7 @@ import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.factories.CryptoFactory;
 import com.wire.bots.sdk.factories.StorageFactory;
 import com.wire.bots.sdk.server.model.NewBot;
-import com.wire.bots.sdk.storage.Storage;
+import com.wire.bots.sdk.state.State;
 import com.wire.bots.sdk.tools.Logger;
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class ClientRepo {
         return clients.computeIfAbsent(botId, k -> {
             try {
                 Crypto crypto = cryptoFactory.create(botId);
-                Storage storage = storageFactory.create(botId);
+                State storage = storageFactory.create(botId);
                 return new BotClient(crypto, storage);
             } catch (Exception e) {
                 Logger.error("GetWireClient. BotId: %s %s", botId, e);
@@ -66,7 +66,7 @@ public class ClientRepo {
 
     private ArrayList<String> listAllBots() throws Exception {
         ArrayList<String> ret = new ArrayList<>();
-        Storage storage = storageFactory.create("");
+        State storage = storageFactory.create("");
         for (NewBot newBot : storage.listAllStates()) {
             ret.add(newBot.id);
         }
