@@ -24,11 +24,11 @@ public class ClientRepo {
     public WireClient getWireClient(String botId) {
         return clients.computeIfAbsent(botId, k -> {
             try {
-                Crypto crypto = cryptoFactory.create(k);
-                Storage storage = storageFactory.create(k);
+                Crypto crypto = cryptoFactory.create(botId);
+                Storage storage = storageFactory.create(botId);
                 return new BotClient(crypto, storage);
             } catch (Exception e) {
-                Logger.error("GetWireClient. BotId: %s, status: %s", botId, e);
+                Logger.error("GetWireClient. BotId: %s %s", botId, e);
                 return null;
             }
         });

@@ -2,6 +2,7 @@ package com.wire.bots.sdk.storage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wire.bots.sdk.Configuration;
+import com.wire.bots.sdk.exceptions.MissingStateException;
 import com.wire.bots.sdk.server.model.NewBot;
 import org.postgresql.util.PGobject;
 
@@ -45,7 +46,7 @@ public class PgStorage implements Storage {
                 return mapper.readValue(json, NewBot.class);
             }
         }
-        return null;
+        throw new MissingStateException(botId);
     }
 
     @Override
