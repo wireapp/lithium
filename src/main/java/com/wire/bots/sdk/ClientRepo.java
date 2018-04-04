@@ -33,14 +33,12 @@ public class ClientRepo {
     }
 
     public void removeClient(String botId) {
-        synchronized (clients) {
-            WireClient remove = clients.remove(botId);
-            if (remove != null) {
-                try {
-                    remove.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        WireClient remove = clients.remove(botId);
+        if (remove != null) {
+            try {
+                remove.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }

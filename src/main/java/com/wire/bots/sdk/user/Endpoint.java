@@ -32,7 +32,6 @@ import com.wire.bots.sdk.user.model.User;
 import org.glassfish.tyrus.client.ClientManager;
 
 import javax.websocket.*;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -141,7 +140,7 @@ public class Endpoint {
 
             storage.saveState(state);
             return state.client;
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             // register new device
             try (CryptoFile cryptoFile = new CryptoFile(path, userId)) {
                 PreKey key = cryptoFile.newLastPreKey();

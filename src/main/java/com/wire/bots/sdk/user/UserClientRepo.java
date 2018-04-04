@@ -17,25 +17,20 @@ public class UserClientRepo extends ClientRepo {
     }
 
     public WireClient getWireClient(String botId, String conv) throws CryptoException, IOException {
-        synchronized (clients) {
-            String key = String.format("%s-%s", botId, conv);
-            WireClient wireClient = clients.get(key);
-            if (wireClient == null || wireClient.isClosed()) {
-                try {
-                    Crypto crypto = cryptoFactory.create(botId);
-                    State storage = storageFactory.create(botId);
-
-                    wireClient = new UserClient(crypto, storage, conv);
-                    clients.put(key, wireClient);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Logger.error("GetWireClient. BotId: %s, conv: %s, status: %s",
-                            botId,
-                            conv,
-                            e.getMessage());
-                }
+        String key = String.format("%s-%s", botId, conv);
+        return clients.computeIfAbsent(key, k -> {
+            try {
+                Crypto crypto = cryptoFactory.create(botId);
+                State storage = storageFactory.create(botId);
+                return new UserClient(crypto, storage, conv);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Logger.error("GetWireClient. BotId: %s, conv: %s, status: %s",
+                        botId,
+                        conv,
+                        e.getMessage());
+                return null;
             }
-            return wireClient;
-        }
+        });
     }
 }

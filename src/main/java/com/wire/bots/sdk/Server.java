@@ -125,19 +125,22 @@ public abstract class Server<Config extends Configuration> extends Application<C
     private boolean runInUserMode(Config config, Environment env) throws Exception {
         String email = System.getProperty("email");
         String password = System.getProperty("password");
+        String listening = System.getProperty("listening");
 
         if (email != null && password != null) {
             StorageFactory storageFactory = getStorageFactory(config);
             CryptoFactory cryptoFactory = getCryptoFactory(config);
 
-            UserClientRepo repo = new UserClientRepo(cryptoFactory, storageFactory);
+            UserClientRepo clientRepo = new UserClientRepo(cryptoFactory, storageFactory);
+            repo = clientRepo;
 
             Endpoint ep = new Endpoint(config.data);
             String userId = ep.signIn(email, password, true);
             Logger.info(String.format("Logged in as User: %s userId: %s", email, userId));
 
             MessageHandlerBase handler = createHandler(config, env);
-            ep.connectWebSocket(new UserMessageResource(handler, repo));
+            if (listening != null && listening.equalsIgnoreCase("true"))
+                ep.connectWebSocket(new UserMessageResource(handler, clientRepo));
             return true;
         }
         return false;
