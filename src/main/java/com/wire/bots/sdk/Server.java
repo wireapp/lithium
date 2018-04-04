@@ -28,7 +28,6 @@ import com.wire.bots.sdk.server.resources.BotsResource;
 import com.wire.bots.sdk.server.resources.MessageResource;
 import com.wire.bots.sdk.server.resources.StatusResource;
 import com.wire.bots.sdk.server.tasks.AvailablePrekeysTask;
-import com.wire.bots.sdk.server.tasks.BroadcastAllTask;
 import com.wire.bots.sdk.server.tasks.ConversationTask;
 import com.wire.bots.sdk.state.FileState;
 import com.wire.bots.sdk.tools.AuthValidator;
@@ -119,7 +118,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
         botResource(config, env, handler);
         messageResource(config, env, handler);
 
-        addTask(new BroadcastAllTask(repo), env);
         addTask(new ConversationTask(repo), env);
         addTask(new AvailablePrekeysTask(repo), env);
     }
