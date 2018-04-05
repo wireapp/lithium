@@ -94,7 +94,9 @@ public class PostgresState implements State {
     }
 
     private Connection newConnection() throws SQLException {
-        String url = String.format("jdbc:postgresql://%s:%d/%s", conf.host, conf.port, conf.database);
+        String url = conf.url != null
+                ? conf.url
+                : String.format("jdbc:postgresql://%s:%d/%s", conf.host, conf.port, conf.database);
         return DriverManager.getConnection(url, conf.user, conf.password);
     }
 }
