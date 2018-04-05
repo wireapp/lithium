@@ -58,7 +58,7 @@ public class MessageResource extends MessageResourceBase {
         if (client == null) {
             return Response.
                     ok().
-                    status(410).
+                    status(503).
                     build();
         }
 
