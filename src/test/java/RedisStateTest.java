@@ -6,14 +6,13 @@ import org.junit.Test;
 
 import java.util.UUID;
 
-public class RedisStorageTest {
+public class RedisStateTest {
 
     @Test
     public void test() throws Exception {
         Configuration.DB conf = new Configuration.DB();
         conf.host = "localhost";
         conf.port = 6379;
-        conf.password = "password";
 
         String botId = UUID.randomUUID().toString();
 

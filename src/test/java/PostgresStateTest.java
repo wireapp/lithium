@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import java.util.UUID;
 
-public class PgStorageTest {
+public class PostgresStateTest {
 
     @Test
     public void test() throws Exception {

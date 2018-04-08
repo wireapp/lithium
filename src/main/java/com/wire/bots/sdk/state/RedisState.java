@@ -21,7 +21,10 @@ public class RedisState implements State {
     public RedisState(String botId, Configuration.DB conf) {
         this.botId = UUID.fromString(botId);
         JedisPoolConfig poolConfig = buildPoolConfig();
-        pool = new JedisPool(poolConfig, conf.host, conf.port);
+        if (conf.password != null)
+            pool = new JedisPool(poolConfig, conf.host, conf.port, 5000, conf.password);
+        else
+            pool = new JedisPool(poolConfig, conf.host, conf.port);
     }
 
     @Override
