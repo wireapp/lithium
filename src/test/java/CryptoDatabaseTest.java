@@ -16,7 +16,6 @@
 // along with this program. If not, see http://www.gnu.org/licenses/.
 //
 
-import com.wire.bots.cryptobox.storage.MemStorage;
 import com.wire.bots.sdk.crypto.CryptoDatabase;
 import com.wire.bots.sdk.models.otr.Missing;
 import com.wire.bots.sdk.models.otr.PreKey;

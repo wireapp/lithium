@@ -167,6 +167,9 @@ public class PgStorage implements IStorage {
 
         @Override
         public void persist(byte[] data) {
+            if (data == null)
+                return;
+
             String sql = "INSERT INTO sessions (id, data) VALUES (?, ?) ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setString(1, sid);

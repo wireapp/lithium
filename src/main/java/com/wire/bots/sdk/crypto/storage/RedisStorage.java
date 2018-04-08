@@ -4,7 +4,6 @@ import com.wire.bots.cryptobox.IRecord;
 import com.wire.bots.cryptobox.IStorage;
 import com.wire.bots.cryptobox.PreKey;
 import com.wire.bots.cryptobox.StorageException;
-import com.wire.bots.sdk.tools.Logger;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -35,7 +34,7 @@ public class RedisStorage implements IStorage {
         String key = key(id, sid);
         byte[] data = jedis.getSet(key.getBytes(), EMPTY);
         if (data == null) {
-            Logger.info("redis: fetch   key: %s size: %d\n", key, 0);
+            //Logger.info("redis: fetch   key: %s size: %d", key, 0);
             return new Record(key, null, jedis);
         }
 
@@ -48,7 +47,7 @@ public class RedisStorage implements IStorage {
             throw new StorageException("Redis Timeout when fetching Session with key: " + key);
         }
 
-        Logger.info("redis: fetch   key: %s size: %d\n", key, data.length);
+        //Logger.info("redis: fetch   key: %s size: %d", key, data.length);
         return new Record(key, data, jedis);
     }
 
@@ -139,8 +138,13 @@ public class RedisStorage implements IStorage {
 
         @Override
         public void persist(byte[] data) {
-            jedis.set(key.getBytes(), data);
-            Logger.info("redis: persist key: %s size: %d\n", key, data.length);
+            if (data != null) {
+                jedis.set(key.getBytes(), data);
+                //Logger.info("redis: persist key: %s size: %d", key, data.length);
+            } else {
+                jedis.del(key);
+                //Logger.info("redis: deleted key: %s", key);
+            }
             jedis.close();
         }
     }
