@@ -13,19 +13,56 @@ import java.time.Duration;
 public class RedisStorage implements IStorage {
     private static final byte[] EMPTY = new byte[0];
     private static final int TIMEOUT = 5000;
-    private final JedisPoolConfig poolConfig = buildPoolConfig();
-    private final JedisPool pool;
+    private static JedisPool pool;
+    private final String host;
+    private final Integer port;
+    private final String password;
 
     public RedisStorage(String host, int port, String password) {
-        pool = new JedisPool(poolConfig, host, port, TIMEOUT, password);
+        this.host = host;
+        this.port = port;
+        this.password = password;
     }
 
     public RedisStorage(String host, int port) {
-        pool = new JedisPool(poolConfig, host, port, TIMEOUT);
+        this.host = host;
+        this.port = port;
+        password = null;
     }
 
     public RedisStorage(String host) {
-        pool = new JedisPool(poolConfig, host);
+        this.host = host;
+        password = null;
+        port = null;
+    }
+
+    private static JedisPoolConfig buildPoolConfig() {
+        final JedisPoolConfig poolConfig = new JedisPoolConfig();
+        poolConfig.setMaxTotal(1100);
+        poolConfig.setMaxIdle(16);
+        poolConfig.setMinIdle(16);
+        poolConfig.setTestOnBorrow(true);
+        poolConfig.setTestOnReturn(true);
+        poolConfig.setTestWhileIdle(true);
+        poolConfig.setMinEvictableIdleTimeMillis(Duration.ofSeconds(60).toMillis());
+        poolConfig.setTimeBetweenEvictionRunsMillis(Duration.ofSeconds(30).toMillis());
+        poolConfig.setNumTestsPerEvictionRun(3);
+        poolConfig.setBlockWhenExhausted(true);
+        return poolConfig;
+    }
+
+    private static JedisPool pool(String host, Integer port, String password) {
+        if (pool == null) {
+            JedisPoolConfig poolConfig = buildPoolConfig();
+            if (password != null && port != null)
+                pool = new JedisPool(poolConfig, host, port, TIMEOUT, password);
+            else if (port != null)
+                pool = new JedisPool(poolConfig, host, port);
+            else
+                pool = new JedisPool(poolConfig, host);
+
+        }
+        return pool;
     }
 
     @Override
@@ -70,7 +107,6 @@ public class RedisStorage implements IStorage {
     @Override
     public PreKey[] fetchPrekeys(String id) {
         try (Jedis jedis = getConnection()) {
-
             String key = String.format("pk_%s", id);
             Long llen = jedis.llen(key);
             PreKey[] ret = new PreKey[llen.intValue()];
@@ -101,23 +137,8 @@ public class RedisStorage implements IStorage {
         return String.format("ses_%s-%s", id, sid);
     }
 
-    private JedisPoolConfig buildPoolConfig() {
-        final JedisPoolConfig poolConfig = new JedisPoolConfig();
-        poolConfig.setMaxTotal(1100);
-        poolConfig.setMaxIdle(16);
-        poolConfig.setMinIdle(16);
-        poolConfig.setTestOnBorrow(true);
-        poolConfig.setTestOnReturn(true);
-        poolConfig.setTestWhileIdle(true);
-        poolConfig.setMinEvictableIdleTimeMillis(Duration.ofSeconds(60).toMillis());
-        poolConfig.setTimeBetweenEvictionRunsMillis(Duration.ofSeconds(30).toMillis());
-        poolConfig.setNumTestsPerEvictionRun(3);
-        poolConfig.setBlockWhenExhausted(true);
-        return poolConfig;
-    }
-
     private Jedis getConnection() {
-        return pool.getResource();
+        return pool(host, port, password).getResource();
     }
 
     private class Record implements IRecord {

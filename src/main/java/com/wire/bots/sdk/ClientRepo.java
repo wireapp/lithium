@@ -22,8 +22,8 @@ public class ClientRepo {
     public WireClient getWireClient(String botId) {
         return clients.computeIfAbsent(botId, k -> {
             try {
-                Crypto crypto = cryptoFactory.create(botId);
                 State storage = storageFactory.create(botId);
+                Crypto crypto = cryptoFactory.create(botId);
                 return new BotClient(crypto, storage);
             } catch (Exception e) {
                 Logger.error("GetWireClient. BotId: %s %s", botId, e);

@@ -14,17 +14,40 @@ import java.util.UUID;
 
 public class RedisState implements State {
     private final static ObjectMapper mapper = new ObjectMapper();
+    private static JedisPool pool;
 
     private final UUID botId;
-    private final JedisPool pool;
+    private final Configuration.DB conf;
 
     public RedisState(String botId, Configuration.DB conf) {
         this.botId = UUID.fromString(botId);
-        JedisPoolConfig poolConfig = buildPoolConfig();
-        if (conf.password != null)
-            pool = new JedisPool(poolConfig, conf.host, conf.port, 5000, conf.password);
-        else
-            pool = new JedisPool(poolConfig, conf.host, conf.port);
+        this.conf = conf;
+    }
+
+    private static JedisPoolConfig buildPoolConfig() {
+        final JedisPoolConfig poolConfig = new JedisPoolConfig();
+        poolConfig.setMaxTotal(1100);
+        poolConfig.setMaxIdle(16);
+        poolConfig.setMinIdle(16);
+        poolConfig.setTestOnBorrow(true);
+        poolConfig.setTestOnReturn(true);
+        poolConfig.setTestWhileIdle(true);
+        poolConfig.setMinEvictableIdleTimeMillis(Duration.ofSeconds(60).toMillis());
+        poolConfig.setTimeBetweenEvictionRunsMillis(Duration.ofSeconds(30).toMillis());
+        poolConfig.setNumTestsPerEvictionRun(3);
+        poolConfig.setBlockWhenExhausted(true);
+        return poolConfig;
+    }
+
+    private static JedisPool pool(Configuration.DB conf) {
+        if (pool == null) {
+            JedisPoolConfig poolConfig = buildPoolConfig();
+            if (conf.password != null)
+                pool = new JedisPool(poolConfig, conf.host, conf.port, 5000, conf.password);
+            else
+                pool = new JedisPool(poolConfig, conf.host, conf.port);
+        }
+        return pool;
     }
 
     @Override
@@ -89,22 +112,7 @@ public class RedisState implements State {
         return false;
     }
 
-    private JedisPoolConfig buildPoolConfig() {
-        final JedisPoolConfig poolConfig = new JedisPoolConfig();
-        poolConfig.setMaxTotal(1100);
-        poolConfig.setMaxIdle(16);
-        poolConfig.setMinIdle(16);
-        poolConfig.setTestOnBorrow(true);
-        poolConfig.setTestOnReturn(true);
-        poolConfig.setTestWhileIdle(true);
-        poolConfig.setMinEvictableIdleTimeMillis(Duration.ofSeconds(60).toMillis());
-        poolConfig.setTimeBetweenEvictionRunsMillis(Duration.ofSeconds(30).toMillis());
-        poolConfig.setNumTestsPerEvictionRun(3);
-        poolConfig.setBlockWhenExhausted(true);
-        return poolConfig;
-    }
-
     private Jedis getConnection() {
-        return pool.getResource();
+        return pool(conf).getResource();
     }
 }
