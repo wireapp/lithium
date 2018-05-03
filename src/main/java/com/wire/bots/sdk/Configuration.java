@@ -72,7 +72,7 @@ public class Configuration extends io.dropwizard.Configuration {
     public static class DB {
         public String host;
         public int port;
-        public String database;
+        public String database = "";
         public String driver; // like postgresql
         public String user;
         public String password;
