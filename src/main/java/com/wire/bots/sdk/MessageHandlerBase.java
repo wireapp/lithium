@@ -170,4 +170,8 @@ public abstract class MessageHandlerBase {
     public void onCalling(WireClient client, String userId, String clientId, String content) {
 
     }
+
+    public void onConversationRename(WireClient client) {
+
+    }
 }

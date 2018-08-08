@@ -6,4 +6,4 @@
 target/
 vendor/
 data/
-docker.sh
+current.log

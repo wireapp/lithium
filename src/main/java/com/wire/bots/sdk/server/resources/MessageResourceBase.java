@@ -87,15 +87,19 @@ public abstract class MessageResourceBase {
                 repo.purgeBot(botId);
             }
             break;
+            case "conversation.create": {
+                handler.onNewConversation(client);
+            }
+            break;
+            case "conversation.rename": {
+                handler.onConversationRename(client);
+            }
+            break;
             // Legacy code starts here
             case "user.connection": {
                 if (inbound.connection.status.equals("pending")) {
                     client.acceptConnection(inbound.connection.to);
                 }
-            }
-            break;
-            case "conversation.create": {
-                handler.onNewConversation(client);
             }
             break;
             // Legacy code ends here
