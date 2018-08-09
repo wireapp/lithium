@@ -71,7 +71,7 @@ public class BotsResource {
         }
 
         NewBotResponseModel ret = new NewBotResponseModel();
-        ret.name = handler.getName();
+        ret.name = handler.getName(newBot);
         ret.accentId = handler.getAccentColour();
         String profilePreview = handler.getSmallProfilePicture();
         if (profilePreview != null) {

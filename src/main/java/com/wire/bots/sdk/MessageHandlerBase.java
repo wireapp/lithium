@@ -75,8 +75,9 @@ public abstract class MessageHandlerBase {
 
     /**
      * @return Bot name that will be used for this conversation. If NULL is returned the Default Bot Name will be used
+     * @param newBot
      */
-    public String getName() {
+    public String getName(NewBot newBot) {
         return null;
     }
 
