@@ -80,6 +80,8 @@ public interface WireClient extends Closeable {
      */
     void sendLinkPreview(String url, String title, IGeneric image) throws Exception;
 
+    void sendDirectLinkPreview(String url, String title, IGeneric image, String userId) throws Exception;
+
     /**
      * Post picture
      *

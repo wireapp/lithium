@@ -61,12 +61,18 @@ public class UserClient implements WireClient {
 
     @Override
     public void sendDirectText(String txt, String userId) throws Exception {
-        sendText(txt);
+        sendText(txt); //todo implement direct messaging
     }
 
     @Override
     public void sendLinkPreview(String url, String title, IGeneric image) throws Exception {
         postGenericMessage(new LinkPreview(url, title, image.createGenericMsg().getAsset()));
+    }
+
+    @Override
+    public void sendDirectLinkPreview(String url, String title, IGeneric image, String userId) throws Exception {
+        LinkPreview msg = new LinkPreview(url, title, image.createGenericMsg().getAsset());
+        postGenericMessage(msg); //todo implement direct messaging
     }
 
     @Override

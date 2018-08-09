@@ -78,6 +78,12 @@ public class BotClient implements WireClient {
     }
 
     @Override
+    public void sendDirectLinkPreview(String url, String title, IGeneric image, String userId) throws Exception {
+        LinkPreview msg = new LinkPreview(url, title, image.createGenericMsg().getAsset());
+        postGenericMessage(msg, userId);
+    }
+
+    @Override
     public void sendPicture(byte[] bytes, String mimeType) throws Exception {
         Picture image = new Picture(bytes, mimeType);
 
