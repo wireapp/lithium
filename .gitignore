@@ -7,3 +7,7 @@ target/
 vendor/
 data/
 current.log
+cert.pem
+csr.pem
+key.pem
+pubkey.pem
