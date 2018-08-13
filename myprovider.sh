@@ -296,7 +296,7 @@ new_cert() {
     echo "Writing CSR to $cert_dir/csr.pem"
     openssl req -new -key "$cert_dir/key.pem" -out "$cert_dir/csr.pem"
     echo "Writing self-signed certificate to $cert_dir/cert.pem"
-    openssl x509 -req -days 7300 -in "$cert_dir/csr.pem "-signkey "$cert_dir/key.pem" -out "$cert_dir/cert.pem"
+    openssl x509 -req -days 7300 -in "$cert_dir/csr.pem" -signkey "$cert_dir/key.pem" -out "$cert_dir/cert.pem"
     echo "Writing RSA public key to $cert_dir/pubkey.pem"
     openssl rsa -in "$cert_dir/key.pem" -pubout -out "$cert_dir/pubkey.pem"
 }
