@@ -22,11 +22,11 @@ Usage: $PROGNAME [OPTION ...] [command]
 Service Provider Utility
 
 Commands:
-new                 Register a new provider.
-auth                Authenticate as a provider.
-get-self            Get the provider profile.
-update-self         Update the provider profile.
-delete-self         Delete the provider.
+new-provider        Register a new provider.
+auth-provider       Authenticate as a provider.
+get-provider        Get the provider profile.
+update-provider     Update the provider profile.
+delete-provider     Delete the provider.
 list-services       List services.
 new-service         Add a new service.
 get-service         Get a service.
@@ -110,12 +110,12 @@ new_provider() {
     echo "Done. Please check your e-mail."
 }
 
-get_self() {
+get_provider() {
     check_auth
     curl -s -XGET "$zapi/provider" -b ./.cookie | jq .
 }
 
-update_self() {
+update_provider() {
     check_auth
     read -p "New provider name [default: no change]: " new_name
     read -p "New provider URL [default: no change]: " new_url
@@ -146,7 +146,7 @@ update_self() {
     echo "Done"
 }
 
-delete_self() {
+delete_provider() {
     check_auth
     auth_ident=$(read_ident)
     auth_password=$(read_password)
@@ -349,11 +349,11 @@ fi
 zapi="https://${zenv}-nginz-https.${zdomain}"
 
 case "$zcmd" in
-    "new") new_provider ;;
-    "auth") authenticate ;;
-    "get-self") get_self ;;
-    "update-self") update_self ;;
-    "delete-self") delete_self ;;
+    "new-provider") new_provider ;;
+    "auth-provider") authenticate ;;
+    "get-provider") get_provider ;;
+    "update-provider") update_provider ;;
+    "delete-provider") delete_provider ;;
     "new-service") new_service ;;
     "list-services") list_services ;;
     "get-service") get_service ;;
