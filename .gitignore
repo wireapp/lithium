@@ -15,3 +15,6 @@ pubkey.pem
 .current
 .password
 .email
+.classpath
+.project
+.settings
