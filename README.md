@@ -44,13 +44,17 @@ The `manage.sh` script helps you register as a service provider, create a certif
 
 In order to register a service, you need to generate a certificate (or bring your own), register as a provider and then register the service.
 
-Using the script:
+Using the `manage.sh` script:
 
-- Create a new certifiate with `manage.sh new-cert` and follow the instructions.
-- Register as a provider with `manage.sh new-provider`. If everything goes well, the response will contain a password and provider ID, and you should get an email. Open the email and follow the link in the email to confirm your identity. You need to do this only once, even when developing. This will save the credentials in the local folder, for further authentication.
-- Obtain an authentication token with `manage.sh auth-provider`. The token will need to be refreshed periodically.
-- Register a new service with `manage.sh new-service` and follow the instructions.
-- Once a server is created, you can update/enable it with `manage.sh update-service` and `manage.sh update-service-conn`.
+- Register as a provider with `manage.sh new-provider`. If everything goes well, the response will contain a password and provider ID, and you should get an email. Open the email and follow the link in the email to confirm your identity. You need to do this only once, even when developing multiple services. This will save the credentials in the local folder, for further authentication.
+- If you don't have a certificate already, create a new certifiate with `manage.sh new-cert` and follow the instructions. This needs to match the certificate that is used for the SSL termination on your service.
+- Deploy your service and make it accessible by public IP, using HTTPS and the certificate you created at step one.
+- Obtain an authentication token with `manage.sh auth-provider`. This is a temporary token to perform authenticated requests, and will need to be refreshed periodically if you don't use the script for more than 10 minutes.
+- Register a new service with `manage.sh new-service` and enter the required information. Make sure the base URL is an `https` URL. You will receive an service auth token.
+- Once a server is created, you can update it with `manage.sh update-service`. 
+- Edit the YAML configuration file of your service and add the service token you received at the preivous step.
+- (Re)-start the service with the new configuration file.
+- Activate the service with `manage.sh update-service-conn` to make it active
 
 ## Some examples of Wire Services
 
