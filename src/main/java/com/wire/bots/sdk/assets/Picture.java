@@ -47,7 +47,7 @@ public class Picture implements IGeneric, IAsset {
     private String assetKey;
     private String assetToken;
     private boolean isPublic;
-    private String retention = "volatile";
+    private String retention = "expiring";
     private String messageId = UUID.randomUUID().toString();
     private long expires;
 
