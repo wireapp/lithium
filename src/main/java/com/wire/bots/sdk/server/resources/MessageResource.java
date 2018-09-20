@@ -41,11 +41,12 @@ public class MessageResource extends MessageResourceBase {
 
     @POST
     public Response newMessage(@HeaderParam("Authorization") String auth,
-                               @PathParam("bot") String bot,
-                               InboundMessage inbound) throws Exception {
+                               @PathParam("bot") String botId,
+                               InboundMessage inbound) {
 
         if (!validator.validate(auth)) {
-            Logger.warning(String.format("Invalid auth. Got: '%s'",
+            Logger.warning(String.format("%s, Invalid auth. Got: '%s'",
+                    botId,
                     auth
             ));
             return Response.
@@ -54,7 +55,7 @@ public class MessageResource extends MessageResourceBase {
                     build();
         }
 
-        WireClient client = repo.getWireClient(bot);
+        WireClient client = repo.getWireClient(botId);
         if (client == null) {
             return Response.
                     ok().
@@ -65,7 +66,7 @@ public class MessageResource extends MessageResourceBase {
         try {
             handleMessage(inbound, client);
         } catch (Exception e) {
-            Logger.error("MessageResource::newMessage: %s", e);
+            Logger.error("MessageResource::newMessage: bot: %s %s", botId, e);
             return Response.
                     status(400).
                     entity(e).

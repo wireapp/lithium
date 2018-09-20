@@ -12,6 +12,7 @@ import com.wire.bots.sdk.tools.Logger;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.UUID;
 
 public abstract class MessageResourceBase {
 
@@ -59,6 +60,9 @@ public abstract class MessageResourceBase {
                     }
                     handler.onMemberJoin(client, data.userIds);
                 }
+
+                // Send dummy message just initialize the session for the new member
+                client.sendReaction(UUID.randomUUID().toString(), "");
             }
             break;
             case "conversation.member-leave": {
@@ -88,6 +92,7 @@ public abstract class MessageResourceBase {
             }
             break;
             case "conversation.create": {
+                client.sendReaction(UUID.randomUUID().toString(), "");
                 handler.onNewConversation(client);
             }
             break;
