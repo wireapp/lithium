@@ -37,6 +37,8 @@ import com.wire.bots.sdk.user.Endpoint;
 import com.wire.bots.sdk.user.UserClientRepo;
 import com.wire.bots.sdk.user.UserMessageResource;
 import io.dropwizard.Application;
+import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
+import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.servlets.tasks.Task;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -74,7 +76,12 @@ public abstract class Server<Config extends Configuration> extends Application<C
     }
 
     @Override
-    public void initialize(Bootstrap<Config> configBootstrap) {
+    public void initialize(Bootstrap<Config> bootstrap) {
+        bootstrap.setConfigurationSourceProvider(
+                new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(),
+                        new EnvironmentVariableSubstitutor(false)
+                )
+        );
     }
 
     @Override
