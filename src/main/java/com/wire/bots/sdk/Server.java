@@ -19,6 +19,7 @@
 package com.wire.bots.sdk;
 
 import com.codahale.metrics.Gauge;
+import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.health.HealthCheck;
 import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.crypto.CryptoFile;
@@ -44,6 +45,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Entry point for your Application
@@ -209,5 +211,11 @@ public abstract class Server<Config extends Configuration> extends Application<C
         });
 
         env.metrics().register("logger.errors", (Gauge<Integer>) Logger::getErrorCount);
+
+        JmxReporter jmxReporter = JmxReporter.forRegistry(env.metrics())
+                .convertRatesTo(TimeUnit.SECONDS)
+                .convertDurationsTo(TimeUnit.MILLISECONDS)
+                .build();
+        jmxReporter.start();
     }
 }
