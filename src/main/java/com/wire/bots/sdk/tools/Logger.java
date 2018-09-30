@@ -28,6 +28,7 @@ import java.util.logging.*;
 public class Logger {
     private final static java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
     private static AtomicInteger errorCount = new AtomicInteger();
+    private static AtomicInteger warningCount = new AtomicInteger();
 
     static {
         java.util.logging.Logger.getLogger("org.apache.http.wire").setLevel(Level.SEVERE);
@@ -74,15 +75,21 @@ public class Logger {
     }
 
     public static void warning(String msg) {
+        warningCount.incrementAndGet();
         LOGGER.warning(msg);
     }
 
     public static void warning(String format, Object... args) {
+        warningCount.incrementAndGet();
         LOGGER.warning(String.format(format, args));
     }
 
     public static int getErrorCount() {
         return errorCount.get();
+    }
+
+    public static int getWarningCount() {
+        return warningCount.get();
     }
 
     static class BotFormatter extends Formatter {

@@ -4,7 +4,6 @@ import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.factories.CryptoFactory;
 import com.wire.bots.sdk.factories.StorageFactory;
 import com.wire.bots.sdk.state.State;
-import com.wire.bots.sdk.tools.Logger;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,20 +25,15 @@ public class ClientRepo {
                 Crypto crypto = cryptoFactory.create(botId);
                 return new BotClient(crypto, storage);
             } catch (Exception e) {
-                Logger.error("GetWireClient. BotId: %s %s", botId, e);
                 return null;
             }
         });
     }
 
-    public void removeClient(String botId) {
+    public void removeClient(String botId) throws IOException {
         WireClient remove = clients.remove(botId);
         if (remove != null) {
-            try {
-                remove.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            remove.close();
         }
     }
 
@@ -47,6 +41,6 @@ public class ClientRepo {
         boolean purged = storageFactory.create(botId).removeState();
         removeClient(botId);
         if (!purged)
-            Logger.error("Failed to purge bot: %s", botId);
+            throw new IOException("Failed to purge Bot: " + botId);
     }
 }

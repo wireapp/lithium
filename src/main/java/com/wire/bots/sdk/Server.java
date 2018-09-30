@@ -211,6 +211,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
         });
 
         env.metrics().register("logger.errors", (Gauge<Integer>) Logger::getErrorCount);
+        env.metrics().register("logger.warnings", (Gauge<Integer>) Logger::getWarningCount);
 
         JmxReporter jmxReporter = JmxReporter.forRegistry(env.metrics())
                 .convertRatesTo(TimeUnit.SECONDS)
