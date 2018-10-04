@@ -30,6 +30,12 @@ public class ClientRepo {
         });
     }
 
+    public WireClient getClient(String botId) throws Exception {
+        State storage = storageFactory.create(botId);
+        Crypto crypto = cryptoFactory.create(botId);
+        return new BotClient(crypto, storage);
+    }
+
     public void removeClient(String botId) throws IOException {
         WireClient remove = clients.remove(botId);
         if (remove != null) {
