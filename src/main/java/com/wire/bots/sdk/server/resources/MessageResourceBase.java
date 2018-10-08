@@ -28,6 +28,8 @@ public abstract class MessageResourceBase {
         InboundMessage.Data data = inbound.data;
         switch (inbound.type) {
             case "conversation.otr-message-add": {
+                Logger.debug("conversation.otr-message-add: bot: %s", client.getId());
+
                 GenericMessageProcessor processor = new GenericMessageProcessor(client, handler);
 
                 String encoded = client.decrypt(inbound.from, data.sender, data.text);
@@ -41,7 +43,7 @@ public abstract class MessageResourceBase {
             break;
             case "conversation.member-join": {
                 String botId = client.getId();
-                //Logger.info("conversation.member-join: bot: %s", botId);
+                Logger.debug("conversation.member-join: bot: %s", botId);
 
                 // Check if this bot got added to the conversation
                 if (data.userIds.remove(botId)) {
@@ -67,7 +69,7 @@ public abstract class MessageResourceBase {
             break;
             case "conversation.member-leave": {
                 String botId = client.getId();
-                //Logger.info("conversation.member-leave: bot: %s", botId);
+                Logger.debug("conversation.member-leave: bot: %s", botId);
 
                 // Check if this bot got removed from the conversation
                 if (data.userIds.remove(botId)) {
@@ -83,7 +85,7 @@ public abstract class MessageResourceBase {
             break;
             case "conversation.delete": {
                 String botId = client.getId();
-                Logger.info("conversation.delete: bot: %s", botId);
+                Logger.debug("conversation.delete: bot: %s", botId);
 
                 // Cleanup
                 repo.removeClient(botId);
@@ -92,7 +94,7 @@ public abstract class MessageResourceBase {
             }
             break;
             case "conversation.create": {
-                client.sendReaction(UUID.randomUUID().toString(), "");
+                client.sendReaction(UUID.randomUUID().toString(), ""); //todo hack
                 handler.onNewConversation(client);
             }
             break;

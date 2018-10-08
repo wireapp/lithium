@@ -48,8 +48,9 @@ message Ephemeral {
 
 message Text {
   required string content = 1;
-  repeated Mention mention = 2;
+  // reserved 2; // reserved keyword is not available in older protoc versions
   repeated LinkPreview link_preview = 3;
+  repeated Mention mentions = 4;
 }
 
 message Knock {
@@ -88,8 +89,11 @@ message Article {
 }
 
 message Mention {
-  required string user_id = 1;
-  required string user_name = 2;
+  required int32 start = 1; // offset from beginning of the message counting in utf16 characters
+  required int32 length = 2;
+  oneof mention_type {
+    string user_id = 3;
+  }
 }
 
 message LastRead {

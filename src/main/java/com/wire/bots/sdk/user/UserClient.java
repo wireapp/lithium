@@ -158,6 +158,11 @@ public class UserClient implements WireClient {
     }
 
     @Override
+    public void sendDirectFile(File f, String mime, String userId) throws Exception {
+        sendFile(f, mime);
+    }
+
+    @Override
     public void ping() throws Exception {
         postGenericMessage(new Ping());
     }

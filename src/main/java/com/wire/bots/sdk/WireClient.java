@@ -132,6 +132,8 @@ public interface WireClient extends Closeable {
      */
     void sendFile(File file, String mime) throws Exception;
 
+    void sendDirectFile(File file, String mime, String userId) throws Exception;
+
     /**
      * Sends ping into conversation
      *

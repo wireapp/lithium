@@ -160,6 +160,23 @@ public class BotClient implements WireClient {
     }
 
     @Override
+    public void sendDirectFile(File f, String mime, String userId) throws Exception {
+        FileAssetPreview preview = new FileAssetPreview(f, mime);
+        FileAsset asset = new FileAsset(preview);
+
+        // post preview
+        postGenericMessage(preview, userId);
+
+        // upload asset to backend
+        AssetKey assetKey = uploadAsset(asset);
+        asset.setAssetKey(assetKey.key);
+        asset.setAssetToken(assetKey.token);
+
+        // post original + remote asset message
+        postGenericMessage(asset, userId);
+    }
+
+    @Override
     public void ping() throws Exception {
         postGenericMessage(new Ping());
     }
