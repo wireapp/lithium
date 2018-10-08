@@ -187,6 +187,13 @@ public class GenericMessageProcessor {
             }
         }
 
+        if (generic.hasDeleted()) {
+            String delMsgId = generic.getDeleted().getMessageId();
+            TextMessage msg = new TextMessage(delMsgId, convId, sender, userId);
+
+            handler.onDelete(client, msg);
+            return true;
+        }
         return false;
     }
 }

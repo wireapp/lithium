@@ -53,22 +53,31 @@ public class Picture implements IGeneric, IAsset {
 
     public Picture(byte[] bytes, String mime) throws IOException {
         imageData = bytes;
+        size = bytes.length;
         mimeType = mime;
-        loadBufferImage();
+        BufferedImage bufferedImage = loadBufferImage(bytes);
+        width = bufferedImage.getWidth();
+        height = bufferedImage.getHeight();
     }
 
     public Picture(byte[] bytes) throws IOException {
         imageData = bytes;
-        this.mimeType = Util.extractMimeType(imageData);
-        loadBufferImage();
+        mimeType = Util.extractMimeType(imageData);
+        size = bytes.length;
+        BufferedImage bufferedImage = loadBufferImage(bytes);
+        width = bufferedImage.getWidth();
+        height = bufferedImage.getHeight();
     }
 
     public Picture(String url) throws IOException {
         try (InputStream input = new URL(url).openStream()) {
             imageData = Util.toByteArray(input);
         }
-        this.mimeType = Util.extractMimeType(imageData);
-        loadBufferImage();
+        mimeType = Util.extractMimeType(imageData);
+        size = imageData.length;
+        BufferedImage bufferedImage = loadBufferImage(imageData);
+        width = bufferedImage.getWidth();
+        height = bufferedImage.getHeight();
     }
 
     public Picture() {
@@ -239,12 +248,9 @@ public class Picture implements IGeneric, IAsset {
         this.expires = expires;
     }
 
-    private void loadBufferImage() throws IOException {
+    private BufferedImage loadBufferImage(byte[] imageData) throws IOException {
         try (InputStream input = new ByteArrayInputStream(imageData)) {
-            BufferedImage bufferedImage = ImageIO.read(input);
-            width = bufferedImage.getWidth();
-            height = bufferedImage.getHeight();
-            size = imageData.length;
+            return ImageIO.read(input);
         }
     }
 }

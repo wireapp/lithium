@@ -175,4 +175,8 @@ public abstract class MessageHandlerBase {
     public void onConversationRename(WireClient client) {
 
     }
+
+    public void onDelete(WireClient client, TextMessage msg) {
+
+    }
 }
