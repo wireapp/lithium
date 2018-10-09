@@ -16,8 +16,8 @@ import java.util.UUID;
 
 public abstract class MessageResourceBase {
 
-    protected final MessageHandlerBase handler;
-    protected final ClientRepo repo;
+    final ClientRepo repo;
+    private final MessageHandlerBase handler;
 
     public MessageResourceBase(MessageHandlerBase handler, ClientRepo repo) {
         this.handler = handler;
@@ -25,10 +25,11 @@ public abstract class MessageResourceBase {
     }
 
     protected void handleMessage(InboundMessage inbound, WireClient client) throws Exception {
+        String botId = client.getId();
         InboundMessage.Data data = inbound.data;
         switch (inbound.type) {
             case "conversation.otr-message-add": {
-                Logger.debug("conversation.otr-message-add: bot: %s", client.getId());
+                Logger.debug("conversation.otr-message-add: bot: %s from: %s:%s", botId, inbound.from, data.sender);
 
                 GenericMessageProcessor processor = new GenericMessageProcessor(client, handler);
 
@@ -38,11 +39,12 @@ public abstract class MessageResourceBase {
 
                 handler.onEvent(client, inbound.from, genericMessage);
 
-                processor.process(inbound.from, data.sender, genericMessage);
+                boolean process = processor.process(inbound.from, data.sender, genericMessage);
+                if (process)
+                    processor.cleanUp(genericMessage.getMessageId());
             }
             break;
             case "conversation.member-join": {
-                String botId = client.getId();
                 Logger.debug("conversation.member-join: bot: %s", botId);
 
                 // Check if this bot got added to the conversation
@@ -68,7 +70,6 @@ public abstract class MessageResourceBase {
             }
             break;
             case "conversation.member-leave": {
-                String botId = client.getId();
                 Logger.debug("conversation.member-leave: bot: %s", botId);
 
                 // Check if this bot got removed from the conversation
@@ -84,7 +85,6 @@ public abstract class MessageResourceBase {
             }
             break;
             case "conversation.delete": {
-                String botId = client.getId();
                 Logger.debug("conversation.delete: bot: %s", botId);
 
                 // Cleanup

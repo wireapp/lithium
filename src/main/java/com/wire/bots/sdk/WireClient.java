@@ -101,6 +101,8 @@ public interface WireClient extends Closeable {
      */
     void sendPicture(IGeneric image) throws Exception;
 
+    void sendDirectPicture(IGeneric image, String userId) throws Exception;
+
     /**
      * Post audio file
      *
@@ -133,6 +135,8 @@ public interface WireClient extends Closeable {
     void sendFile(File file, String mime) throws Exception;
 
     void sendDirectFile(File file, String mime, String userId) throws Exception;
+
+    void sendDirectFile(IGeneric preview, IGeneric asset, String userId) throws Exception;
 
     /**
      * Sends ping into conversation

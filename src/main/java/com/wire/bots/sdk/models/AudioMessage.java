@@ -18,6 +18,8 @@
 
 package com.wire.bots.sdk.models;
 
+import com.waz.model.Messages;
+
 /**
  */
 public class AudioMessage extends MessageAssetBase {
@@ -25,6 +27,11 @@ public class AudioMessage extends MessageAssetBase {
 
     public AudioMessage(String msgId, String convId, String clientId, String userId) {
         super(msgId, convId, clientId, userId);
+    }
+
+    public AudioMessage(MessageAssetBase base, Messages.Asset.AudioMetaData audio) {
+        super(base);
+        setDuration(audio.getDurationInMillis());
     }
 
     public void setDuration(long duration) {

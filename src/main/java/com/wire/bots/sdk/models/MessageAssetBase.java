@@ -20,18 +20,28 @@ package com.wire.bots.sdk.models;
 
 /**
  */
-public abstract class MessageAssetBase extends MessageBase {
+public class MessageAssetBase extends MessageBase {
     private String assetKey;
     private String assetToken;
     private byte[] otrKey;
     private String mimeType;
     private long size;
-    private String name;
     private byte[] sha256;
-    private byte[] data;  //decrypted
+    private String name;
 
     public MessageAssetBase(String msgId, String convId, String clientId, String userId) {
         super(msgId, convId, clientId, userId);
+    }
+
+    MessageAssetBase(MessageAssetBase msg) {
+        super(msg.messageId, msg.conversationId, msg.clientId, msg.userId);
+        assetKey = msg.assetKey;
+        assetToken = msg.assetToken;
+        otrKey = msg.otrKey;
+        mimeType = msg.mimeType;
+        size = msg.size;
+        sha256 = msg.sha256;
+        name = msg.name;
     }
 
     public void setSize(long size) {
@@ -74,14 +84,6 @@ public abstract class MessageAssetBase extends MessageBase {
         this.assetKey = assetKey;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public void setSha256(byte[] sha256) {
         this.sha256 = sha256;
     }
@@ -90,11 +92,11 @@ public abstract class MessageAssetBase extends MessageBase {
         return sha256;
     }
 
-    public byte[] getData() {
-        return data;
+    public String getName() {
+        return name;
     }
 
-    public void setData(byte[] data) {
-        this.data = data;
+    public void setName(String name) {
+        this.name = name;
     }
 }

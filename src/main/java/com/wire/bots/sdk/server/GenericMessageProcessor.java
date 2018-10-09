@@ -30,6 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class GenericMessageProcessor {
     private final static ConcurrentHashMap<String, Messages.Asset.Original> originals = new ConcurrentHashMap<>();
+    private final static ConcurrentHashMap<String, Messages.Asset.RemoteData> remotes = new ConcurrentHashMap<>();
 
     private final WireClient client;
     private final MessageHandlerBase handler;
@@ -50,6 +51,11 @@ public class GenericMessageProcessor {
         msg.setMimeType(original.getMimeType());
         msg.setSize(original.getSize());
         msg.setName(original.hasName() ? original.getName() : null);
+    }
+
+    public void cleanUp(String messageId) {
+        remotes.remove(messageId);
+        originals.remove(messageId);
     }
 
     public boolean process(String userId, String sender, Messages.GenericMessage generic) {
@@ -113,80 +119,6 @@ public class GenericMessageProcessor {
             return true;
         }
 
-        // Assets
-        if (asset != null) {
-            Logger.debug("Asset: msgId: %s hasOriginal: %s, hasUploaded: %s",
-                    messageId,
-                    asset.hasOriginal(),
-                    asset.hasUploaded());
-
-            if (asset.hasOriginal()) {
-                Messages.Asset.Original original = asset.getOriginal();
-
-                Logger.debug("Original: msgId: %s hasAudio: %s, hasVideo: %s, hasImage: %s",
-                        messageId,
-                        original.hasAudio(),
-                        original.hasVideo(),
-                        original.hasImage());
-
-                originals.put(messageId, original);
-
-                if (original.hasImage() && asset.hasUploaded()) {
-                    ImageMessage msg = new ImageMessage(messageId, convId, sender, userId);
-
-                    origin(msg, original);
-                    uploaded(msg, asset.getUploaded());
-
-                    Messages.Asset.ImageMetaData image = original.getImage();
-                    msg.setHeight(image.getHeight());
-                    msg.setWidth(image.getWidth());
-                    msg.setTag(image.hasTag() ? image.getTag() : null);
-
-                    handler.onImage(client, msg);
-                    return true;
-                }
-                if (original.hasAudio() && asset.hasUploaded()) {
-                    AudioMessage msg = new AudioMessage(messageId, convId, sender, userId);
-
-                    origin(msg, original);
-                    uploaded(msg, asset.getUploaded());
-
-                    Messages.Asset.AudioMetaData audio = original.getAudio();
-                    msg.setDuration(audio.getDurationInMillis());
-
-                    handler.onAudio(client, msg);
-                    return true;
-                }
-                if (original.hasVideo() && asset.hasUploaded()) {
-                    VideoMessage msg = new VideoMessage(messageId, convId, sender, userId);
-
-                    origin(msg, original);
-                    uploaded(msg, asset.getUploaded());
-
-                    Messages.Asset.VideoMetaData video = original.getVideo();
-                    msg.setDuration(video.getDurationInMillis());
-                    msg.setHeight(video.getHeight());
-                    msg.setWidth(video.getWidth());
-
-                    handler.onVideo(client, msg);
-                    return true;
-                }
-            }
-
-            if (asset.hasUploaded()) {
-                Messages.Asset.Original original = originals.remove(messageId);
-                if (original != null) {
-                    AttachmentMessage msg = new AttachmentMessage(messageId, convId, sender, userId);
-
-                    origin(msg, original);
-                    uploaded(msg, asset.getUploaded());
-
-                    handler.onAttachment(client, msg);
-                    return true;
-                }
-            }
-        }
-
         if (generic.hasDeleted()) {
             String delMsgId = generic.getDeleted().getMessageId();
             TextMessage msg = new TextMessage(delMsgId, convId, sender, userId);
@@ -194,6 +126,64 @@ public class GenericMessageProcessor {
             handler.onDelete(client, msg);
             return true;
         }
+
+        // Assets
+        if (asset != null) {
+            Logger.debug("Asset: msgId: %s hasOriginal: %s, hasUploaded: %s",
+                    messageId,
+                    asset.hasOriginal(),
+                    asset.hasUploaded());
+
+            if (asset.hasUploaded()) {
+                remotes.put(messageId, asset.getUploaded());
+            }
+
+            if (asset.hasOriginal()) {
+                originals.put(messageId, asset.getOriginal());
+            }
+
+            Messages.Asset.Original original = originals.get(messageId);
+            Messages.Asset.RemoteData remoteData = remotes.get(messageId);
+
+            if (original != null && remoteData != null) {
+
+                Logger.debug("Original: msgId: %s hasAudio: %s, hasVideo: %s, hasImage: %s",
+                        messageId,
+                        original.hasAudio(),
+                        original.hasVideo(),
+                        original.hasImage());
+
+                MessageAssetBase base = new MessageAssetBase(messageId, convId, sender, userId);
+                origin(base, original);
+                uploaded(base, remoteData);
+
+                if (original.hasImage()) {
+                    ImageMessage msg = new ImageMessage(base, original.getImage());
+
+                    handler.onImage(client, msg);
+                    return true;
+                }
+                if (original.hasAudio()) {
+                    AudioMessage msg = new AudioMessage(base, original.getAudio());
+
+                    handler.onAudio(client, msg);
+                    return true;
+                }
+                if (original.hasVideo()) {
+                    VideoMessage msg = new VideoMessage(base, original.getVideo());
+
+                    handler.onVideo(client, msg);
+                    return true;
+                }
+                {
+                    AttachmentMessage msg = new AttachmentMessage(base);
+
+                    handler.onAttachment(client, msg);
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 }

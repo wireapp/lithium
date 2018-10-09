@@ -99,6 +99,11 @@ public class UserClient implements WireClient {
     }
 
     @Override
+    public void sendDirectPicture(IGeneric image, String userId) throws Exception {
+        postGenericMessage(image);
+    }
+
+    @Override
     public AssetKey uploadAsset(IAsset asset) throws Exception {
         return api.uploadAsset(asset);
     }
@@ -141,12 +146,11 @@ public class UserClient implements WireClient {
 
     @Override
     public void sendFile(File f, String mime) throws Exception {
-        // post original asset message (preview)
-        FileAssetPreview assetPreview = new FileAssetPreview(f, mime);
+        String messageId = UUID.randomUUID().toString();
+        FileAssetPreview preview = new FileAssetPreview(f.getName(), mime, f.length(), messageId);
+        FileAsset asset = new FileAsset(f, mime, messageId);
 
-        postGenericMessage(assetPreview);
-
-        FileAsset asset = new FileAsset(assetPreview);
+        postGenericMessage(preview);
 
         // upload asset to backend
         AssetKey assetKey = api.uploadAsset(asset);
@@ -154,6 +158,12 @@ public class UserClient implements WireClient {
         asset.setAssetToken(assetKey.token);
 
         // post original + remote asset message
+        postGenericMessage(asset);
+    }
+
+    @Override
+    public void sendDirectFile(IGeneric preview, IGeneric asset, String userId) throws Exception {
+        postGenericMessage(preview);
         postGenericMessage(asset);
     }
 

@@ -18,6 +18,8 @@
 
 package com.wire.bots.sdk.models;
 
+import com.waz.model.Messages;
+
 /**
  */
 public class VideoMessage extends MessageAssetBase {
@@ -27,6 +29,13 @@ public class VideoMessage extends MessageAssetBase {
 
     public VideoMessage(String msgId, String convId, String clientId, String userId) {
         super(msgId, convId, clientId, userId);
+    }
+
+    public VideoMessage(MessageAssetBase base, Messages.Asset.VideoMetaData video) {
+        super(base);
+        setDuration(video.getDurationInMillis());
+        setHeight(video.getHeight());
+        setWidth(video.getWidth());
     }
 
     public void setDuration(long duration) {

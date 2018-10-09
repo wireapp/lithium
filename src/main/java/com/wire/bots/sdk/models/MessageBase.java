@@ -26,7 +26,7 @@ abstract class MessageBase {
     protected final String conversationId;
     protected final String messageId;
 
-    public MessageBase(String msgId, String convId, String clientId, String userId) {
+    MessageBase(String msgId, String convId, String clientId, String userId) {
         this.messageId = msgId;
         this.conversationId = convId;
         this.clientId = clientId;

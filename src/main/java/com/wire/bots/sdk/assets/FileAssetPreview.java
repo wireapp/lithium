@@ -20,27 +20,21 @@ package com.wire.bots.sdk.assets;
 
 import com.waz.model.Messages;
 
-import java.io.File;
-import java.util.UUID;
-
 public class FileAssetPreview implements IGeneric {
-
-    private final String id;
     private final String name;
     private final String mimeType;
-    private final File file;
     private final long size;
+    private final String messageId;
 
-    public FileAssetPreview(File file, String mimeType) throws Exception {
-        this.id = UUID.randomUUID().toString();
-        this.name = file.getName();
+    public FileAssetPreview(String name, String mimeType, long size, String messageId) {
+        this.messageId = messageId;
+        this.name = name;
         this.mimeType = mimeType;
-        this.file = file;
-        this.size = file.length();
+        this.size = size;
     }
 
     @Override
-    public Messages.GenericMessage createGenericMsg() throws Exception {
+    public Messages.GenericMessage createGenericMsg() {
         Messages.Asset.Original.Builder original = Messages.Asset.Original.newBuilder()
                 .setSize(size)
                 .setName(name)
@@ -50,13 +44,13 @@ public class FileAssetPreview implements IGeneric {
                 .setOriginal(original);
 
         return Messages.GenericMessage.newBuilder()
-                .setMessageId(id)
+                .setMessageId(messageId)
                 .setAsset(asset)
                 .build();
     }
 
-    public String getId() {
-        return id;
+    public String getMessageId() {
+        return messageId;
     }
 
     public String getName() {
@@ -65,9 +59,5 @@ public class FileAssetPreview implements IGeneric {
 
     public String getMimeType() {
         return mimeType;
-    }
-
-    public File getFile() {
-        return file;
     }
 }

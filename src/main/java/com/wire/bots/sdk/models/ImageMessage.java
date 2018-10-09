@@ -18,6 +18,8 @@
 
 package com.wire.bots.sdk.models;
 
+import com.waz.model.Messages;
+
 /**
  */
 public class ImageMessage extends MessageAssetBase {
@@ -27,6 +29,13 @@ public class ImageMessage extends MessageAssetBase {
 
     public ImageMessage(String messageId, String convId, String clientId, String userId) {
         super(messageId, convId, clientId, userId);
+    }
+
+    public ImageMessage(MessageAssetBase base, Messages.Asset.ImageMetaData image) {
+        super(base);
+        setHeight(image.getHeight());
+        setWidth(image.getWidth());
+        setTag(image.hasTag() ? image.getTag() : null);
     }
 
     public int getHeight() {

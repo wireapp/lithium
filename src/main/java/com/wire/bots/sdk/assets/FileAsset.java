@@ -26,79 +26,60 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
-import java.util.UUID;
 
 public class FileAsset implements IGeneric, IAsset {
 
     static private final SecureRandom random = new SecureRandom();
 
-    private final String id;
-    private final String name;
     private final String mimeType;
-    private final int size;
+    private final String messageId;
     private final byte[] encBytes;
-    private final byte[] key = new byte[32];
-    private String assetKey = null;
+    private final byte[] otrKey = new byte[32];
+    private final byte[] sha256;
+
+    private String assetKey;
     private String assetToken;
 
-    public FileAsset(FileAssetPreview preview) throws Exception {
-        this.id = preview.getId();
-        this.name = preview.getName();
-        this.mimeType = preview.getMimeType();
-        random.nextBytes(key);
-
-        byte[] iv = new byte[16];
-        random.nextBytes(iv);
-
-        try (FileInputStream input = new FileInputStream(preview.getFile())) {
-            byte[] bytes = Util.toByteArray(input);
-            size = bytes.length;
-            encBytes = Util.encrypt(key, bytes, iv);
-        }
-    }
-
-    public FileAsset(File file, String mimeType) throws Exception {
-        this.id = UUID.randomUUID().toString();
-        this.name = file.getName();
+    public FileAsset(File file, String mimeType, String messageId) throws Exception {
         this.mimeType = mimeType;
-        random.nextBytes(key);
+        this.messageId = messageId;
+
+        random.nextBytes(otrKey);
 
         byte[] iv = new byte[16];
         random.nextBytes(iv);
 
         try (FileInputStream input = new FileInputStream(file)) {
             byte[] bytes = Util.toByteArray(input);
-            size = bytes.length;
-            encBytes = Util.encrypt(key, bytes, iv);
+            encBytes = Util.encrypt(otrKey, bytes, iv);
         }
+
+        sha256 = MessageDigest.getInstance("SHA-256").digest(encBytes);
+    }
+
+    public FileAsset(String assetKey, String assetToken, byte[] sha256, String messageId) {
+        this.messageId = messageId;
+        this.assetKey = assetKey;
+        this.assetToken = assetToken;
+        this.sha256 = sha256;
+        mimeType = null;
+        encBytes = null;
     }
 
     @Override
-    public Messages.GenericMessage createGenericMsg() throws Exception {
-
-        // Original
-        Messages.Asset.Original.Builder original = Messages.Asset.Original.newBuilder()
-                .setSize(size)
-                .setName(name)
-                .setMimeType(mimeType);
-
+    public Messages.GenericMessage createGenericMsg() {
         // Remote
         Messages.Asset.RemoteData.Builder remote = Messages.Asset.RemoteData.newBuilder()
-                .setOtrKey(ByteString.copyFrom(key))
-                .setSha256(ByteString.copyFrom(MessageDigest.getInstance("SHA-256").digest(getEncryptedData())))
-                .setAssetId(assetKey);
-
-        // Only set token on private assets
-        if (assetToken != null) {
-            remote.setAssetToken(assetToken);
-        }
+                .setOtrKey(ByteString.copyFrom(otrKey))
+                .setSha256(ByteString.copyFrom(sha256))
+                .setAssetId(assetKey)
+                .setAssetToken(assetToken);
 
         Messages.Asset.Builder asset = Messages.Asset.newBuilder()
-                .setOriginal(original)
                 .setUploaded(remote);
 
         return Messages.GenericMessage.newBuilder()
-                .setMessageId(id)
+                .setMessageId(messageId)
                 .setAsset(asset)
                 .build();
     }
@@ -118,7 +99,7 @@ public class FileAsset implements IGeneric, IAsset {
 
     @Override
     public String getRetention() {
-        return "volatile";
+        return "expiring";
     }
 
     @Override

@@ -111,6 +111,11 @@ public class BotClient implements WireClient {
     }
 
     @Override
+    public void sendDirectPicture(IGeneric image, String userId) throws Exception {
+        postGenericMessage(image, userId);
+    }
+
+    @Override
     public void sendAudio(byte[] bytes, String name, String mimeType, long duration) throws Exception {
         AudioPreview preview = new AudioPreview(bytes, name, mimeType, duration);
         AudioAsset audioAsset = new AudioAsset(bytes, preview);
@@ -126,8 +131,7 @@ public class BotClient implements WireClient {
     }
 
     @Override
-    public void sendVideo(byte[] bytes, String name, String mimeType, long duration, int h, int w)
-            throws Exception {
+    public void sendVideo(byte[] bytes, String name, String mimeType, long duration, int h, int w) throws Exception {
         String messageId = UUID.randomUUID().toString();
         VideoPreview preview = new VideoPreview(name, mimeType, duration, h, w, bytes.length, messageId);
         VideoAsset asset = new VideoAsset(bytes, mimeType, messageId);
@@ -144,10 +148,11 @@ public class BotClient implements WireClient {
 
     @Override
     public void sendFile(File f, String mime) throws Exception {
-        FileAssetPreview preview = new FileAssetPreview(f, mime);
-        FileAsset asset = new FileAsset(preview);
+        String messageId = UUID.randomUUID().toString();
+        FileAssetPreview preview = new FileAssetPreview(f.getName(), mime, f.length(), messageId);
+        FileAsset asset = new FileAsset(f, mime, messageId);
 
-        // post preview
+        // post original
         postGenericMessage(preview);
 
         // upload asset to backend
@@ -155,16 +160,17 @@ public class BotClient implements WireClient {
         asset.setAssetKey(assetKey.key);
         asset.setAssetToken(assetKey.token);
 
-        // post original + remote asset message
+        // post remote asset message
         postGenericMessage(asset);
     }
 
     @Override
     public void sendDirectFile(File f, String mime, String userId) throws Exception {
-        FileAssetPreview preview = new FileAssetPreview(f, mime);
-        FileAsset asset = new FileAsset(preview);
+        String messageId = UUID.randomUUID().toString();
+        FileAssetPreview preview = new FileAssetPreview(f.getName(), mime, f.length(), messageId);
+        FileAsset asset = new FileAsset(f, mime, messageId);
 
-        // post preview
+        // post original
         postGenericMessage(preview, userId);
 
         // upload asset to backend
@@ -172,7 +178,16 @@ public class BotClient implements WireClient {
         asset.setAssetKey(assetKey.key);
         asset.setAssetToken(assetKey.token);
 
-        // post original + remote asset message
+        // post remote asset message
+        postGenericMessage(asset, userId);
+    }
+
+    @Override
+    public void sendDirectFile(IGeneric preview, IGeneric asset, String userId) throws Exception {
+        // post original
+        postGenericMessage(preview, userId);
+
+        // post remote asset message
         postGenericMessage(asset, userId);
     }
 
