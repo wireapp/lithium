@@ -53,7 +53,7 @@ public class LoginClient {
         connectionsPath = target.path("connections");
     }
 
-    static User login(String email, String password) throws HttpException {
+    public static User login(String email, String password) throws HttpException {
         User user = new User();
         user.setEmail(email);
         user.setPassword(password);
@@ -72,7 +72,7 @@ public class LoginClient {
         return ret;
     }
 
-    static String registerClient(PreKey key, String token, String password) throws HttpException {
+    public static String registerClient(PreKey key, String token, String password) throws HttpException {
         NewClient newClient = new NewClient();
         newClient.lastPreKey = key;
         newClient.sigkeys.enckey = Base64.getEncoder().encodeToString(new byte[32]);

@@ -32,6 +32,8 @@ import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
 import com.wire.bots.sdk.user.model.Connection;
 
+import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.GenericType;
@@ -40,6 +42,7 @@ import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -67,12 +70,16 @@ public class API extends LoginClient {
         return response.readEntity(com.wire.bots.sdk.user.model.User.class).getToken();
     }
 
-    public static Conversation createConversation(String name, String token) throws HttpException {
+    public static Conversation createConversation(String name, String token, @Nullable Collection<String> participants)
+            throws HttpException {
+        _NewConv newConv = new _NewConv();
+        newConv.name = name;
+        newConv.users = participants;
+
         Response response = conversationsPath.
-                request().
+                request(MediaType.APPLICATION_JSON).
                 header("Authorization", "Bearer " + token).
-                accept(MediaType.APPLICATION_JSON).
-                post(Entity.entity("{\"users\":[], \"name\":\"" + name + "\"}", MediaType.APPLICATION_JSON));
+                post(Entity.entity(newConv, MediaType.APPLICATION_JSON));
 
         if (response.getStatus() >= 400) {
             throw new HttpException(response.readEntity(String.class), response.getStatus());
@@ -108,7 +115,7 @@ public class API extends LoginClient {
         return new Devices();
     }
 
-    PreKeys getPreKeys(Missing missing) throws IOException {
+    PreKeys getPreKeys(Missing missing) {
         if (missing.isEmpty())
             return new PreKeys();
 
@@ -203,7 +210,6 @@ public class API extends LoginClient {
                 path(convId).
                 request().
                 header("Authorization", "Bearer " + token).
-                accept(MediaType.APPLICATION_JSON).
                 get();
 
         if (response.getStatus() >= 300) {
@@ -227,7 +233,6 @@ public class API extends LoginClient {
                 path(convId).
                 request().
                 header("Authorization", "Bearer " + token).
-                accept(MediaType.APPLICATION_JSON).
                 delete();
 
         if (response.getStatus() >= 400) {
@@ -247,7 +252,6 @@ public class API extends LoginClient {
                 path("bots").
                 request().
                 header("Authorization", "Bearer " + token).
-                accept(MediaType.APPLICATION_JSON).
                 post(Entity.entity(service, MediaType.APPLICATION_JSON));
 
         if (response.getStatus() >= 300) {
@@ -262,7 +266,26 @@ public class API extends LoginClient {
         return user;
     }
 
-    Collection<com.wire.bots.sdk.server.model.User> getUsers(Collection<String> ids) throws IOException {
+    public User addParticipants(String... userIds) throws IOException {
+        _NewConv newConv = new _NewConv();
+        newConv.users = Arrays.asList(userIds);
+
+        Response response = conversationsPath.
+                path(convId).
+                path("members").
+                request().
+                header("Authorization", "Bearer " + token).
+                post(Entity.entity(newConv, MediaType.APPLICATION_JSON));
+
+        if (response.getStatus() >= 300) {
+            Logger.warning(response.readEntity(String.class));
+            throw new IOException(response.getStatusInfo().getReasonPhrase());
+        }
+
+        return response.readEntity(User.class);
+    }
+
+    Collection<com.wire.bots.sdk.server.model.User> getUsers(Collection<String> ids) {
         return usersPath.
                 queryParam("ids", ids).
                 request(MediaType.APPLICATION_JSON).
@@ -337,5 +360,14 @@ public class API extends LoginClient {
     static class _Teams {
         @JsonProperty
         public ArrayList<_Team> teams;
+    }
+
+    static class _NewConv {
+        @JsonProperty
+        @NotNull
+        public String name;
+
+        @JsonProperty
+        public Collection<String> users;
     }
 }
