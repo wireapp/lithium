@@ -21,16 +21,19 @@ package com.wire.bots.sdk;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.health.HealthCheck;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.crypto.CryptoFile;
 import com.wire.bots.sdk.factories.CryptoFactory;
 import com.wire.bots.sdk.factories.StorageFactory;
+import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.server.resources.BotsResource;
 import com.wire.bots.sdk.server.resources.MessageResource;
 import com.wire.bots.sdk.server.resources.StatusResource;
 import com.wire.bots.sdk.server.tasks.AvailablePrekeysTask;
 import com.wire.bots.sdk.server.tasks.ConversationTask;
 import com.wire.bots.sdk.state.FileState;
+import com.wire.bots.sdk.state.State;
 import com.wire.bots.sdk.tools.AuthValidator;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
@@ -45,6 +48,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -177,18 +181,23 @@ public abstract class Server<Config extends Configuration> extends Application<C
     }
 
     private void initTelemetry(final Config conf, Environment env) {
-        env.healthChecks().register("ok", new HealthCheck() {
+        env.healthChecks().register("Storage", new HealthCheck() {
             @Override
             protected Result check() throws Exception {
-                return Result.healthy();
+                ObjectMapper objectMapper = new ObjectMapper();
+                byte[] resource = Util.getResource("newBot.json");
+                NewBot newBot = objectMapper.readValue(resource, NewBot.class);
+                State state = getStorageFactory(conf).create(newBot.id);
+                return state.saveState(newBot) ? Result.healthy() : Result.unhealthy("Failed to save the state");
             }
         });
 
-        //todo: implement crypto.status()
         env.healthChecks().register("Crypto", new HealthCheck() {
             @Override
             protected Result check() throws Exception {
-                try (Crypto crypto = getCryptoFactory(conf).create("test")) {
+                try (Crypto crypto = getCryptoFactory(conf).create(UUID.randomUUID().toString())) {
+                    crypto.newLastPreKey();
+                    crypto.newPreKeys(0, 8);
                     return Result.healthy();
                 }
             }

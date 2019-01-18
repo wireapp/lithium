@@ -133,7 +133,7 @@ public class Util {
         }
     }
 
-    public static String getDomain(){
+    public static String getDomain() {
         String env = System.getProperty("env", "prod");
         return env.equals("prod") ? "wire.com" : "zinfra.io";
     }
@@ -141,5 +141,12 @@ public class Util {
     public static String getHost() {
         String env = System.getProperty("env", "prod");
         return String.format("https://%s-nginz-https.%s", env, Util.getDomain());
+    }
+
+    public static byte[] getResource(String name) throws IOException {
+        ClassLoader classLoader = Util.class.getClassLoader();
+        try (InputStream resourceAsStream = classLoader.getResourceAsStream(name)) {
+            return toByteArray(resourceAsStream);
+        }
     }
 }
