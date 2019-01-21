@@ -35,6 +35,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
@@ -46,7 +47,6 @@ class API {
 
     private static final WebTarget target;
     private static final String ASSETS = "assets";
-    private static final String AUTHORIZATION = "Authorization";
     private static final String CLIENT = "client";
     private static final String PREKEYS = "prekeys";
     private static final String USERS = "users";
@@ -81,7 +81,7 @@ class API {
                 path("messages").
                 queryParam("ignore_missing", ignoreMissing).
                 request(MediaType.APPLICATION_JSON).
-                header(AUTHORIZATION, getBearer()).
+                header(HttpHeaders.AUTHORIZATION, getBearer()).
                 post(Entity.entity(msg, MediaType.APPLICATION_JSON));
 
         int statusCode = response.getStatus();
@@ -102,7 +102,7 @@ class API {
                 path("messages").
                 queryParam("report_missing", userId).
                 request(MediaType.APPLICATION_JSON).
-                header(AUTHORIZATION, getBearer()).
+                header(HttpHeaders.AUTHORIZATION, getBearer()).
                 post(Entity.entity(msg, MediaType.APPLICATION_JSON));
 
         int statusCode = response.getStatus();
@@ -118,12 +118,12 @@ class API {
         return response.readEntity(Devices.class);
     }
 
-    Collection<User> getUsers(Collection<String> ids) throws IOException {
+    Collection<User> getUsers(Collection<String> ids) {
         return getTarget().
                 path(USERS).
                 queryParam("ids", String.join(",", ids)).
                 request(MediaType.APPLICATION_JSON).
-                header(AUTHORIZATION, getBearer()).
+                header(HttpHeaders.AUTHORIZATION, getBearer()).
                 get(new GenericType<ArrayList<User>>() {
                 });
     }
@@ -132,7 +132,7 @@ class API {
         return getTarget().
                 path("conversation").
                 request().
-                header(AUTHORIZATION, getBearer()).
+                header(HttpHeaders.AUTHORIZATION, getBearer()).
                 accept(MediaType.APPLICATION_JSON).
                 get(Conversation.class);
     }
@@ -142,7 +142,7 @@ class API {
                 path(USERS).
                 path(PREKEYS).
                 request(MediaType.APPLICATION_JSON).
-                header(AUTHORIZATION, getBearer()).
+                header(HttpHeaders.AUTHORIZATION, getBearer()).
                 accept(MediaType.APPLICATION_JSON).
                 post(Entity.entity(missing, MediaType.APPLICATION_JSON), PreKeys.class);
     }
@@ -152,7 +152,7 @@ class API {
                 path(CLIENT).
                 path(PREKEYS).
                 request().
-                header(AUTHORIZATION, getBearer()).
+                header(HttpHeaders.AUTHORIZATION, getBearer()).
                 accept(MediaType.APPLICATION_JSON).
                 get(new GenericType<ArrayList<Integer>>() {
                 });
@@ -166,7 +166,7 @@ class API {
                 path(CLIENT).
                 path(PREKEYS).
                 request(MediaType.APPLICATION_JSON).
-                header(AUTHORIZATION, getBearer()).
+                header(HttpHeaders.AUTHORIZATION, getBearer()).
                 accept(MediaType.APPLICATION_JSON).
                 post(Entity.entity(model, MediaType.APPLICATION_JSON));
 
@@ -216,7 +216,7 @@ class API {
         Response response = getTarget()
                 .path(ASSETS)
                 .request(MediaType.APPLICATION_JSON_TYPE)
-                .header(AUTHORIZATION, getBearer())
+                .header(HttpHeaders.AUTHORIZATION, getBearer())
                 .post(Entity.entity(os.toByteArray(), "multipart/mixed; boundary=frontier"));
 
         if (response.getStatus() >= 300) {
@@ -232,7 +232,7 @@ class API {
                 .path(ASSETS)
                 .path(assetKey)
                 .request()
-                .header(AUTHORIZATION, getBearer());
+                .header(HttpHeaders.AUTHORIZATION, getBearer());
 
         if (assetToken != null)
             req.header("Asset-Token", assetToken);

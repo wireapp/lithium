@@ -26,6 +26,7 @@ import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.crypto.CryptoFile;
 import com.wire.bots.sdk.factories.CryptoFactory;
 import com.wire.bots.sdk.factories.StorageFactory;
+import com.wire.bots.sdk.healthchecks.Alice2Bob;
 import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.server.resources.BotsResource;
 import com.wire.bots.sdk.server.resources.MessageResource;
@@ -97,7 +98,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
         initialize(config, env);
 
-        initTelemetry(config, env);
+        initTelemetry(env);
 
         if (!runInUserMode(config, env)) {
             runInBotMode(config, env);
@@ -180,14 +181,14 @@ public abstract class Server<Config extends Configuration> extends Application<C
         env.jersey().register(component);
     }
 
-    private void initTelemetry(final Config conf, Environment env) {
+    private void initTelemetry(Environment env) {
         env.healthChecks().register("Storage", new HealthCheck() {
             @Override
             protected Result check() throws Exception {
                 ObjectMapper objectMapper = new ObjectMapper();
                 byte[] resource = Util.getResource("newBot.json");
                 NewBot newBot = objectMapper.readValue(resource, NewBot.class);
-                State state = getStorageFactory(conf).create(newBot.id);
+                State state = getStorageFactory(config).create(newBot.id);
                 return state.saveState(newBot) ? Result.healthy() : Result.unhealthy("Failed to save the state");
             }
         });
@@ -195,13 +196,15 @@ public abstract class Server<Config extends Configuration> extends Application<C
         env.healthChecks().register("Crypto", new HealthCheck() {
             @Override
             protected Result check() throws Exception {
-                try (Crypto crypto = getCryptoFactory(conf).create(UUID.randomUUID().toString())) {
+                try (Crypto crypto = getCryptoFactory(config).create(UUID.randomUUID().toString())) {
                     crypto.newLastPreKey();
                     crypto.newPreKeys(0, 8);
                     return Result.healthy();
                 }
             }
         });
+
+        env.healthChecks().register("Alice2Bob", new Alice2Bob(getCryptoFactory(config)));
 
         env.healthChecks().register("JCEPolicy", new HealthCheck() {
             @Override

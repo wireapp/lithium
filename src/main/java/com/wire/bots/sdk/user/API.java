@@ -37,6 +37,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
@@ -58,7 +59,7 @@ public class API extends LoginClient {
     static String renewAccessToken(String cookie, String token) throws HttpException {
         Response response = accessPath.
                 request(MediaType.APPLICATION_JSON).
-                header("Authorization", "Bearer " + token).
+                header(HttpHeaders.AUTHORIZATION, "Bearer " + token).
                 header("Cookie", cookie).
                 post(Entity.entity(new Connection(), MediaType.APPLICATION_JSON));
 
@@ -78,7 +79,7 @@ public class API extends LoginClient {
 
         Response response = conversationsPath.
                 request(MediaType.APPLICATION_JSON).
-                header("Authorization", "Bearer " + token).
+                header(HttpHeaders.AUTHORIZATION, "Bearer " + token).
                 post(Entity.entity(newConv, MediaType.APPLICATION_JSON));
 
         if (response.getStatus() >= 400) {
@@ -100,7 +101,7 @@ public class API extends LoginClient {
                 path("otr/messages").
                 queryParam("ignore_missing", ignoreMissing).
                 request(MediaType.APPLICATION_JSON).
-                header("Authorization", "Bearer " + token).
+                header(HttpHeaders.AUTHORIZATION, "Bearer " + token).
                 post(Entity.entity(msg, MediaType.APPLICATION_JSON));
 
         int statusCode = response.getStatus();
@@ -121,7 +122,7 @@ public class API extends LoginClient {
 
         return usersPath.path("prekeys").
                 request(MediaType.APPLICATION_JSON).
-                header("Authorization", "Bearer " + token).
+                header(HttpHeaders.AUTHORIZATION, "Bearer " + token).
                 accept(MediaType.APPLICATION_JSON).
                 post(Entity.entity(missing, MediaType.APPLICATION_JSON), PreKeys.class);
     }
@@ -130,7 +131,7 @@ public class API extends LoginClient {
         Invocation.Builder req = assetsPath
                 .path(assetKey)
                 .request()
-                .header("Authorization", "Bearer " + token);
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 
         if (assetToken != null)
             req.header("Asset-Token", assetToken);
@@ -152,7 +153,7 @@ public class API extends LoginClient {
         Response response = connectionsPath.
                 path(user).
                 request(MediaType.APPLICATION_JSON).
-                header("Authorization", "Bearer " + token).
+                header(HttpHeaders.AUTHORIZATION, "Bearer " + token).
                 put(Entity.entity(connection, MediaType.APPLICATION_JSON));
 
         if (response.getStatus() >= 400) {
@@ -195,7 +196,7 @@ public class API extends LoginClient {
 
         Response response = assetsPath
                 .request(MediaType.APPLICATION_JSON_TYPE)
-                .header("Authorization", "Bearer " + token)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .post(Entity.entity(os.toByteArray(), "multipart/mixed; boundary=frontier"));
 
         if (response.getStatus() >= 300) {
@@ -209,7 +210,7 @@ public class API extends LoginClient {
         Response response = conversationsPath.
                 path(convId).
                 request().
-                header("Authorization", "Bearer " + token).
+                header(HttpHeaders.AUTHORIZATION, "Bearer " + token).
                 get();
 
         if (response.getStatus() >= 300) {
@@ -232,7 +233,7 @@ public class API extends LoginClient {
                 path("conversations").
                 path(convId).
                 request().
-                header("Authorization", "Bearer " + token).
+                header(HttpHeaders.AUTHORIZATION, "Bearer " + token).
                 delete();
 
         if (response.getStatus() >= 400) {
@@ -251,7 +252,7 @@ public class API extends LoginClient {
                 path(convId).
                 path("bots").
                 request().
-                header("Authorization", "Bearer " + token).
+                header(HttpHeaders.AUTHORIZATION, "Bearer " + token).
                 post(Entity.entity(service, MediaType.APPLICATION_JSON));
 
         if (response.getStatus() >= 300) {
@@ -274,7 +275,7 @@ public class API extends LoginClient {
                 path(convId).
                 path("members").
                 request().
-                header("Authorization", "Bearer " + token).
+                header(HttpHeaders.AUTHORIZATION, "Bearer " + token).
                 post(Entity.entity(newConv, MediaType.APPLICATION_JSON));
 
         if (response.getStatus() >= 300) {
@@ -289,7 +290,7 @@ public class API extends LoginClient {
         return usersPath.
                 queryParam("ids", ids).
                 request(MediaType.APPLICATION_JSON).
-                header("Authorization", "Bearer " + token).
+                header(HttpHeaders.AUTHORIZATION, "Bearer " + token).
                 get(new GenericType<ArrayList<com.wire.bots.sdk.server.model.User>>() {
                 });
     }
@@ -297,7 +298,7 @@ public class API extends LoginClient {
     void uploadPreKeys(ArrayList<PreKey> preKeys) {
         usersPath.path("prekeys").
                 request(MediaType.APPLICATION_JSON).
-                header("Authorization", "Bearer " + token).
+                header(HttpHeaders.AUTHORIZATION, "Bearer " + token).
                 accept(MediaType.APPLICATION_JSON).
                 post(Entity.entity(preKeys, MediaType.APPLICATION_JSON));
     }
@@ -307,7 +308,7 @@ public class API extends LoginClient {
                 path(clientId).
                 path("prekeys").
                 request().
-                header("Authorization", "Bearer " + token).
+                header(HttpHeaders.AUTHORIZATION, "Bearer " + token).
                 accept(MediaType.APPLICATION_JSON).
                 get(new GenericType<ArrayList<Integer>>() {
                 });
@@ -315,7 +316,7 @@ public class API extends LoginClient {
 
     public String getTeam() {
         _Teams res = teamsPath.request(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + token)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON)
                 .get(_Teams.class);
         if (res.teams.isEmpty())

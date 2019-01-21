@@ -55,21 +55,10 @@ public class CryptoFileTest {
         bob = new CryptoFile(DATA, bobId);
 
         ArrayList<PreKey> preKeys = bob.newPreKeys(0, 1);
-        bobKeys = getPreKeys(preKeys, bobId, bobId);
+        bobKeys = new PreKeys(preKeys, bobId, bobId);
 
         preKeys = alice.newPreKeys(0, 1);
-        aliceKeys = getPreKeys(preKeys, aliceId, aliceId);
-    }
-
-    private static PreKeys getPreKeys(ArrayList<PreKey> array, String clientId, String userId) {
-        HashMap<String, PreKey> devs = new HashMap<>();
-        for (PreKey key : array) {
-            devs.put(clientId, key);
-        }
-
-        PreKeys keys = new PreKeys();
-        keys.put(userId, devs);
-        return keys;
+        aliceKeys = new PreKeys(preKeys, aliceId, aliceId);
     }
 
     @AfterClass

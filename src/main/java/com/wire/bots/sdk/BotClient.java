@@ -233,23 +233,23 @@ public class BotClient implements WireClient {
     }
 
     @Override
-    public Collection<User> getUsers(Collection<String> userIds) throws IOException {
+    public Collection<User> getUsers(Collection<String> userIds) {
         return api.getUsers(userIds);
     }
 
     @Override
-    public User getUser(String userId) throws IOException {
+    public User getUser(String userId) {
         Collection<User> users = api.getUsers(Collections.singleton(userId));
         return users.iterator().next();
     }
 
     @Override
-    public Conversation getConversation() throws IOException {
+    public Conversation getConversation() {
         return api.getConversation();
     }
 
     @Override
-    public void acceptConnection(String user) throws IOException {
+    public void acceptConnection(String user) {
         // bots cannot accept connections
     }
 

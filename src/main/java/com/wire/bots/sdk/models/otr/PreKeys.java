@@ -18,8 +18,20 @@
 
 package com.wire.bots.sdk.models.otr;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PreKeys extends HashMap<String, HashMap<String, PreKey>> {
+    public PreKeys() {
+    }
 
+    public PreKeys(ArrayList<PreKey> array, String clientId, String userId) {
+        super();
+
+        HashMap<String, PreKey> devs = new HashMap<>();
+        for (PreKey key : array) {
+            devs.put(clientId, key);
+        }
+        put(userId, devs);
+    }
 }
