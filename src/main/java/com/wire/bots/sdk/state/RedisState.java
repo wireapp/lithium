@@ -14,6 +14,7 @@ import java.util.UUID;
 
 public class RedisState implements State {
     private final static ObjectMapper mapper = new ObjectMapper();
+    private static final int TIMEOUT = 5000;
     private static JedisPool pool;
 
     private final UUID botId;
@@ -42,10 +43,12 @@ public class RedisState implements State {
     private static JedisPool pool(Configuration.DB conf) {
         if (pool == null) {
             JedisPoolConfig poolConfig = buildPoolConfig();
-            if (conf.password != null)
-                pool = new JedisPool(poolConfig, conf.host, conf.port, 5000, conf.password);
+            if (conf.password != null && conf.port != null)
+                pool = new JedisPool(poolConfig, conf.host, conf.port, TIMEOUT, conf.password);
+            else if (conf.port != null)
+                pool = new JedisPool(poolConfig, conf.host, conf.port, TIMEOUT);
             else
-                pool = new JedisPool(poolConfig, conf.host, conf.port);
+                pool = new JedisPool(poolConfig, conf.host);
         }
         return pool;
     }
@@ -70,7 +73,7 @@ public class RedisState implements State {
     }
 
     @Override
-    public boolean removeState() throws Exception {
+    public boolean removeState() {
         try (Jedis jedis = getConnection()) {
             jedis.del(botId.toString());
             return true;
@@ -78,37 +81,37 @@ public class RedisState implements State {
     }
 
     @Override
-    public ArrayList<NewBot> listAllStates() throws Exception {
+    public ArrayList<NewBot> listAllStates() {
         return null;
     }
 
     @Override
-    public boolean saveFile(String filename, String content) throws Exception {
+    public boolean saveFile(String filename, String content) {
         return false;
     }
 
     @Override
-    public String readFile(String filename) throws Exception {
+    public String readFile(String filename) {
         return null;
     }
 
     @Override
-    public boolean deleteFile(String filename) throws Exception {
+    public boolean deleteFile(String filename) {
         return false;
     }
 
     @Override
-    public boolean saveGlobalFile(String filename, String content) throws Exception {
+    public boolean saveGlobalFile(String filename, String content) {
         return false;
     }
 
     @Override
-    public String readGlobalFile(String filename) throws Exception {
+    public String readGlobalFile(String filename) {
         return null;
     }
 
     @Override
-    public boolean deleteGlobalFile(String filename) throws Exception {
+    public boolean deleteGlobalFile(String filename) {
         return false;
     }
 

@@ -4,6 +4,7 @@ import com.wire.bots.cryptobox.IRecord;
 import com.wire.bots.cryptobox.IStorage;
 import com.wire.bots.cryptobox.PreKey;
 import com.wire.bots.cryptobox.StorageException;
+import com.wire.bots.sdk.tools.Logger;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -57,10 +58,9 @@ public class RedisStorage implements IStorage {
             if (password != null && port != null)
                 pool = new JedisPool(poolConfig, host, port, TIMEOUT, password);
             else if (port != null)
-                pool = new JedisPool(poolConfig, host, port);
+                pool = new JedisPool(poolConfig, host, port, TIMEOUT);
             else
                 pool = new JedisPool(poolConfig, host);
-
         }
         return pool;
     }
@@ -71,7 +71,7 @@ public class RedisStorage implements IStorage {
         String key = key(id, sid);
         byte[] data = jedis.getSet(key.getBytes(), EMPTY);
         if (data == null) {
-            //Logger.info("redis: fetch   key: %s size: %d", key, 0);
+            Logger.debug("redis: fetch key: %s size: %d", key, 0);
             return new Record(key, null, jedis);
         }
 
@@ -84,7 +84,7 @@ public class RedisStorage implements IStorage {
             throw new StorageException("Redis Timeout when fetching Session with key: " + key);
         }
 
-        //Logger.info("redis: fetch   key: %s size: %d", key, data.length);
+        Logger.debug("redis: fetch key: %s size: %d", key, data.length);
         return new Record(key, data, jedis);
     }
 
@@ -92,7 +92,9 @@ public class RedisStorage implements IStorage {
     public byte[] fetchIdentity(String id) {
         try (Jedis jedis = getConnection()) {
             String key = String.format("id_%s", id);
-            return jedis.get(key.getBytes());
+            byte[] bytes = jedis.get(key.getBytes());
+            Logger.debug("fetchIdentity: %s, is NULL: %s", key, bytes == null);
+            return bytes;
         }
     }
 
