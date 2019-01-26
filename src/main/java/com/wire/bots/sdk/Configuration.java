@@ -18,12 +18,18 @@
 
 package com.wire.bots.sdk;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
+
 import javax.validation.constraints.NotNull;
 
 /**
  * Application configuration class. Extend this class to add your custom configuration
  */
 public class Configuration extends io.dropwizard.Configuration {
+
+    @JsonProperty("swagger")
+    public SwaggerBundleConfiguration swagger;
 
     /**
      * Path to the directory that will hold the cryptoBox data.
@@ -67,6 +73,10 @@ public class Configuration extends io.dropwizard.Configuration {
 
     public DB getDB() {
         return db;
+    }
+
+    public SwaggerBundleConfiguration getSwagger() {
+        return swagger;
     }
 
     public static class DB {

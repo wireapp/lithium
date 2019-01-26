@@ -18,14 +18,24 @@
 
 package com.wire.bots.sdk.server.resources;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+@Api
 @Path("/bots/status")
+@Produces(MediaType.TEXT_PLAIN)
 public class StatusResource {
     @GET
+    @ApiOperation(value = "Status")
     public Response status() {
-        return Response.ok("**All good!**").build();
+        return Response
+                .ok("**All good!**")
+                .build();
     }
 }

@@ -21,15 +21,21 @@ package com.wire.bots.sdk.server.resources;
 import com.wire.bots.sdk.ClientRepo;
 import com.wire.bots.sdk.MessageHandlerBase;
 import com.wire.bots.sdk.WireClient;
+import com.wire.bots.sdk.server.model.ErrorMessage;
 import com.wire.bots.sdk.server.model.InboundMessage;
 import com.wire.bots.sdk.tools.AuthValidator;
 import com.wire.bots.sdk.tools.Logger;
+import io.swagger.annotations.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+@Api
 @Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 @Path("/bots/{bot}/messages")
 public class MessageResource extends MessageResourceBase {
     private final AuthValidator validator;
@@ -40,9 +46,14 @@ public class MessageResource extends MessageResourceBase {
     }
 
     @POST
-    public Response newMessage(@HeaderParam("Authorization") String auth,
-                               @PathParam("bot") String botId,
-                               InboundMessage inbound) {
+    @ApiOperation(value = "New OTR Message")
+    @ApiResponses(value = {
+            @ApiResponse(code = 403, message = "Invalid Authorization", response = ErrorMessage.class),
+            @ApiResponse(code = 503, message = "Missing bot's state object", response = ErrorMessage.class),
+            @ApiResponse(code = 200, message = "Alles gute")})
+    public Response newMessage(@ApiParam("Service Authorization token") @NotNull @HeaderParam("Authorization") String auth,
+                               @ApiParam @PathParam("bot") String botId,
+                               @ApiParam @Valid @NotNull InboundMessage inbound) {
 
         if (!validator.validate(auth)) {
             Logger.warning(String.format("%s, Invalid auth. Got: '%s'",
@@ -50,16 +61,16 @@ public class MessageResource extends MessageResourceBase {
                     auth
             ));
             return Response.
-                    ok("Invalid Authorization: " + auth).
                     status(403).
+                    entity(new ErrorMessage("Invalid Authorization token")).
                     build();
         }
 
         WireClient client = repo.getWireClient(botId);
         if (client == null) {
             return Response.
-                    ok().
                     status(503).
+                    entity(new ErrorMessage("Missing state")).
                     build();
         }
 
@@ -69,7 +80,7 @@ public class MessageResource extends MessageResourceBase {
             Logger.error("MessageResource::newMessage: bot: %s %s", botId, e);
             return Response.
                     status(400).
-                    entity(e).
+                    entity(new ErrorMessage(e.getMessage())).
                     build();
         }
 

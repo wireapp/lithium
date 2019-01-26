@@ -21,19 +21,25 @@ package com.wire.bots.sdk.server.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InboundMessage {
     @JsonProperty
+    @NotNull
     public String type;
     @JsonProperty
+    @NotNull
     public String conversation;
     @JsonProperty
+    @NotNull
     public String from;
     @JsonProperty
+    @NotNull
     public String time;
     @JsonProperty
+    @NotNull
     public Data data;
 
     // legacy
@@ -43,8 +49,10 @@ public class InboundMessage {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Data {
         @JsonProperty
+        @NotNull
         public String sender;
         @JsonProperty
+        @NotNull
         public String recipient;
         @JsonProperty
         public String text;

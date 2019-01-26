@@ -47,6 +47,8 @@ import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.servlets.tasks.Task;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.federecio.dropwizard.swagger.SwaggerBundle;
+import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 
 import java.util.Random;
 import java.util.UUID;
@@ -89,6 +91,13 @@ public abstract class Server<Config extends Configuration> extends Application<C
                         new EnvironmentVariableSubstitutor(false)
                 )
         );
+
+        bootstrap.addBundle(new SwaggerBundle<Config>() {
+            @Override
+            protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(Config configuration) {
+                return configuration.getSwagger();
+            }
+        });
     }
 
     @Override
