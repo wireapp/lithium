@@ -53,7 +53,7 @@ public class MessageResource extends MessageResourceBase {
             @ApiResponse(code = 200, message = "Alles gute")})
     public Response newMessage(@ApiParam("Service Authorization token") @NotNull @HeaderParam("Authorization") String auth,
                                @ApiParam @PathParam("bot") String botId,
-                               @ApiParam @Valid @NotNull InboundMessage inbound) {
+                               @ApiParam @Valid @NotNull InboundMessage inbound) throws Exception {
 
         if (!validator.validate(auth)) {
             Logger.warning(String.format("%s, Invalid auth. Got: '%s'",
@@ -78,6 +78,8 @@ public class MessageResource extends MessageResourceBase {
             handleMessage(inbound, client);
         } catch (Exception e) {
             Logger.error("MessageResource::newMessage: bot: %s %s", botId, e);
+            repo.getClient(botId).sendText(e.getMessage());
+
             return Response.
                     status(400).
                     entity(new ErrorMessage(e.getMessage())).

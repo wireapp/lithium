@@ -19,13 +19,13 @@ public class RedisStorage implements IStorage {
     private final Integer port;
     private final String password;
 
-    public RedisStorage(String host, int port, String password) {
+    public RedisStorage(String host, Integer port, String password) {
         this.host = host;
         this.port = port;
         this.password = password;
     }
 
-    public RedisStorage(String host, int port) {
+    public RedisStorage(String host, Integer port) {
         this.host = host;
         this.port = port;
         password = null;
@@ -163,10 +163,10 @@ public class RedisStorage implements IStorage {
         public void persist(byte[] data) {
             if (data != null) {
                 jedis.set(key.getBytes(), data);
-                //Logger.info("redis: persist key: %s size: %d", key, data.length);
+                Logger.debug("redis: persist key: %s size: %d", key, data.length);
             } else {
                 jedis.del(key);
-                //Logger.info("redis: deleted key: %s", key);
+                Logger.debug("redis: deleted key: %s", key);
             }
             jedis.close();
         }
