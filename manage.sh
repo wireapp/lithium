@@ -171,7 +171,7 @@ new_service() {
     read -p "Service summary: " service_summary
     read -p "Service base URL: " service_base_url
     read -p "Service RSA public key file: " service_pubkey_file
-    read -p "Service tags (comma-separated): " service_tags_str
+    read -p "Service tags (ie: tutorial): " service_tags_str
 
     service_pubkey=$(< "$service_pubkey_file")
     service_tags=$(echo "$service_tags_str" | sed 's/,/","/g')
