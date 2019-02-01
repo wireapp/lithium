@@ -1,5 +1,6 @@
 package com.wire.bots.sdk;
 
+import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.factories.CryptoFactory;
 import com.wire.bots.sdk.factories.StorageFactory;
@@ -30,7 +31,7 @@ public class ClientRepo {
         });
     }
 
-    public WireClient getClient(String botId) throws Exception {
+    public WireClient getClient(String botId) throws IOException, CryptoException {
         State storage = storageFactory.create(botId);
         Crypto crypto = cryptoFactory.create(botId);
         return new BotClient(crypto, storage);
@@ -43,7 +44,7 @@ public class ClientRepo {
         }
     }
 
-    public void purgeBot(String botId) throws Exception {
+    public void purgeBot(String botId) throws IOException {
         boolean purged = storageFactory.create(botId).removeState();
         removeClient(botId);
         if (!purged)

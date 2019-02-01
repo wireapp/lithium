@@ -18,6 +18,7 @@
 
 package com.wire.bots.sdk.crypto;
 
+import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.cryptobox.ICryptobox;
 import com.wire.bots.sdk.models.otr.Missing;
 import com.wire.bots.sdk.models.otr.PreKey;
@@ -54,7 +55,7 @@ abstract class CryptoBase implements Crypto {
      * Generate a new last prekey.
      */
     @Override
-    public PreKey newLastPreKey() throws Exception {
+    public PreKey newLastPreKey() throws CryptoException {
         return toPreKey(box().newLastPreKey());
     }
 
@@ -71,7 +72,7 @@ abstract class CryptoBase implements Crypto {
      * @param count The total number of prekeys to generate (> 0 and <= 0xFFFE).
      */
     @Override
-    public ArrayList<PreKey> newPreKeys(int from, int count) throws Exception {
+    public ArrayList<PreKey> newPreKeys(int from, int count) throws CryptoException {
         ArrayList<PreKey> ret = new ArrayList<>(count);
         for (com.wire.bots.cryptobox.PreKey k : box().newPreKeys(from, count)) {
             PreKey prekey = toPreKey(k);
@@ -88,7 +89,7 @@ abstract class CryptoBase implements Crypto {
      * @throws Exception throws Exception
      */
     @Override
-    public Recipients encrypt(PreKeys preKeys, byte[] content) throws Exception {
+    public Recipients encrypt(PreKeys preKeys, byte[] content) throws CryptoException {
         Recipients recipients = new Recipients();
         for (String userId : preKeys.keySet()) {
             HashMap<String, PreKey> clients = preKeys.get(userId);
@@ -113,7 +114,7 @@ abstract class CryptoBase implements Crypto {
      * @param content Plain text content to be encrypted
      */
     @Override
-    public Recipients encrypt(Missing missing, byte[] content) throws Exception {
+    public Recipients encrypt(Missing missing, byte[] content) throws CryptoException {
         Recipients recipients = new Recipients();
         for (String userId : missing.toUserIds()) {
             for (String clientId : missing.toClients(userId)) {
@@ -138,7 +139,7 @@ abstract class CryptoBase implements Crypto {
      * @throws Exception throws Exception
      */
     @Override
-    public String decrypt(String userId, String clientId, String cypher) throws Exception {
+    public String decrypt(String userId, String clientId, String cypher) throws CryptoException {
         byte[] decode = Base64.getDecoder().decode(cypher);
         String id = createId(userId, clientId);
 

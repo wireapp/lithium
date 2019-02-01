@@ -1,6 +1,8 @@
 package com.wire.bots.sdk.server.resources;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.waz.model.Messages;
+import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.sdk.ClientRepo;
 import com.wire.bots.sdk.MessageHandlerBase;
 import com.wire.bots.sdk.WireClient;
@@ -33,15 +35,13 @@ public abstract class MessageResourceBase {
 
                 GenericMessageProcessor processor = new GenericMessageProcessor(client, handler);
 
-                String encoded = client.decrypt(inbound.from, data.sender, data.text);
-                byte[] decode = Base64.getDecoder().decode(encoded);
-                Messages.GenericMessage genericMessage = Messages.GenericMessage.parseFrom(decode);
+                Messages.GenericMessage message = decrypt(client, inbound);
 
-                handler.onEvent(client, inbound.from, genericMessage);
+                handler.onEvent(client, inbound.from, message);
 
-                boolean process = processor.process(inbound.from, data.sender, genericMessage);
+                boolean process = processor.process(inbound.from, data.sender, message);
                 if (process)
-                    processor.cleanUp(genericMessage.getMessageId());
+                    processor.cleanUp(message.getMessageId());
             }
             break;
             case "conversation.member-join": {
@@ -114,5 +114,16 @@ public abstract class MessageResourceBase {
                 Logger.warning("Unknown event: %s, bot: %s", inbound.type, client.getId());
                 break;
         }
+    }
+
+    private Messages.GenericMessage decrypt(WireClient client, InboundMessage inbound)
+            throws CryptoException, InvalidProtocolBufferException {
+        String userId = inbound.from;
+        String clientId = inbound.data.sender;
+        String cypher = inbound.data.text;
+
+        String encoded = client.decrypt(userId, clientId, cypher);
+        byte[] decoded = Base64.getDecoder().decode(encoded);
+        return Messages.GenericMessage.parseFrom(decoded);
     }
 }

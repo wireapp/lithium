@@ -18,6 +18,7 @@
 
 package com.wire.bots.sdk.user;
 
+import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.assets.*;
 import com.wire.bots.sdk.crypto.Crypto;
@@ -42,7 +43,7 @@ public class UserClient implements WireClient {
     private final NewBot state;
     private Devices devices = null;
 
-    UserClient(Crypto crypto, State storage, String conv) throws Exception {
+    UserClient(Crypto crypto, State storage, String conv) throws IOException {
         this.crypto = crypto;
         this.state = storage.getState();
         state.conversation = new Conversation();
@@ -268,22 +269,22 @@ public class UserClient implements WireClient {
     }
 
     @Override
-    public String decrypt(String userId, String clientId, String cypher) throws Exception {
+    public String decrypt(String userId, String clientId, String cypher) throws CryptoException {
         return crypto.decrypt(userId, clientId, cypher);
     }
 
     @Override
-    public PreKey newLastPreKey() throws Exception {
+    public PreKey newLastPreKey() throws CryptoException {
         return crypto.newLastPreKey();
     }
 
     @Override
-    public ArrayList<com.wire.bots.sdk.models.otr.PreKey> newPreKeys(int from, int count) throws Exception {
+    public ArrayList<com.wire.bots.sdk.models.otr.PreKey> newPreKeys(int from, int count) throws CryptoException {
         return crypto.newPreKeys(from, count);
     }
 
     @Override
-    public void uploadPreKeys(ArrayList<com.wire.bots.sdk.models.otr.PreKey> preKeys) throws IOException {
+    public void uploadPreKeys(ArrayList<com.wire.bots.sdk.models.otr.PreKey> preKeys) {
         api.uploadPreKeys(preKeys);
     }
 

@@ -18,6 +18,7 @@
 
 package com.wire.bots.sdk;
 
+import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.sdk.assets.*;
 import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.exceptions.HttpException;
@@ -44,7 +45,7 @@ public class BotClient implements WireClient {
     private final NewBot state;
     private Devices devices = null;
 
-    BotClient(Crypto crypto, State storage) throws Exception {
+    BotClient(Crypto crypto, State storage) throws IOException {
         this.state = storage.getState();
         this.api = new API(state.token);
         this.crypto = crypto;
@@ -254,17 +255,17 @@ public class BotClient implements WireClient {
     }
 
     @Override
-    public String decrypt(String userId, String clientId, String cypher) throws Exception {
+    public String decrypt(String userId, String clientId, String cypher) throws CryptoException {
         return crypto.decrypt(userId, clientId, cypher);
     }
 
     @Override
-    public PreKey newLastPreKey() throws Exception {
+    public PreKey newLastPreKey() throws CryptoException {
         return crypto.newLastPreKey();
     }
 
     @Override
-    public ArrayList<PreKey> newPreKeys(int from, int count) throws Exception {
+    public ArrayList<PreKey> newPreKeys(int from, int count) throws CryptoException {
         return crypto.newPreKeys(from, count);
     }
 

@@ -6,6 +6,7 @@ import com.wire.bots.sdk.exceptions.MissingStateException;
 import com.wire.bots.sdk.server.model.NewBot;
 import org.postgresql.util.PGobject;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -22,7 +23,7 @@ public class PostgresState implements State {
     }
 
     @Override
-    public boolean saveState(NewBot newBot) throws Exception {
+    public boolean saveState(NewBot newBot) throws IOException {
         try (Connection c = newConnection()) {
             PGobject jsonObject = new PGobject();
             jsonObject.setType("json");
@@ -32,11 +33,13 @@ public class PostgresState implements State {
             stmt.setObject(1, botId);
             stmt.setObject(2, jsonObject);
             return stmt.executeUpdate() == 1;
+        } catch (SQLException e) {
+            throw new IOException(e);
         }
     }
 
     @Override
-    public NewBot getState() throws Exception {
+    public NewBot getState() throws IOException {
         try (Connection c = newConnection()) {
             PreparedStatement stmt = c.prepareStatement("SELECT bot FROM states WHERE botId = ?");
             stmt.setObject(1, botId);
@@ -45,51 +48,55 @@ public class PostgresState implements State {
                 String json = resultSet.getString("bot");
                 return mapper.readValue(json, NewBot.class);
             }
+        } catch (SQLException e) {
+            throw new IOException(e);
         }
         throw new MissingStateException(botId);
     }
 
     @Override
-    public boolean removeState() throws Exception {
+    public boolean removeState() throws IOException {
         try (Connection c = newConnection()) {
             PreparedStatement stmt = c.prepareStatement("DELETE FROM states WHERE botId = ?");
             stmt.setObject(1, botId);
             return stmt.executeUpdate() == 1;
+        } catch (SQLException e) {
+            throw new IOException(e);
         }
     }
 
     @Override
-    public ArrayList<NewBot> listAllStates() throws Exception {
+    public ArrayList<NewBot> listAllStates() {
         return null;
     }
 
     @Override
-    public boolean saveFile(String filename, String content) throws Exception {
+    public boolean saveFile(String filename, String content) {
         return false;
     }
 
     @Override
-    public String readFile(String filename) throws Exception {
+    public String readFile(String filename) {
         return null;
     }
 
     @Override
-    public boolean deleteFile(String filename) throws Exception {
+    public boolean deleteFile(String filename) {
         return false;
     }
 
     @Override
-    public boolean saveGlobalFile(String filename, String content) throws Exception {
+    public boolean saveGlobalFile(String filename, String content) {
         return false;
     }
 
     @Override
-    public String readGlobalFile(String filename) throws Exception {
+    public String readGlobalFile(String filename) {
         return null;
     }
 
     @Override
-    public boolean deleteGlobalFile(String filename) throws Exception {
+    public boolean deleteGlobalFile(String filename) {
         return false;
     }
 

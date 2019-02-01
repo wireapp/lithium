@@ -5,6 +5,7 @@ import com.wire.bots.sdk.exceptions.MissingStateException;
 import com.wire.bots.sdk.server.model.NewBot;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -23,7 +24,7 @@ public class FileState implements State {
     }
 
     @Override
-    public boolean saveState(NewBot newBot) throws Exception {
+    public boolean saveState(NewBot newBot) throws IOException {
         File file = getStateFile();
         ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(file, newBot);
@@ -31,7 +32,7 @@ public class FileState implements State {
     }
 
     @Override
-    public NewBot getState() throws Exception {
+    public NewBot getState() throws IOException {
         File file = getStateFile();
         if (!file.exists())
             throw new MissingStateException(UUID.fromString(botId));
@@ -41,13 +42,13 @@ public class FileState implements State {
     }
 
     @Override
-    public boolean removeState() throws Exception {
+    public boolean removeState() {
         File file = getStateFile();
         return file.delete();
     }
 
     @Override
-    public ArrayList<NewBot> listAllStates() throws Exception {
+    public ArrayList<NewBot> listAllStates() throws IOException {
         ArrayList<NewBot> ret = new ArrayList<>();
         File dir = new File(path);
         for (String botId : dir.list()) {
@@ -62,36 +63,36 @@ public class FileState implements State {
     }
 
     @Override
-    public boolean saveFile(String filename, String content) throws Exception {
+    public boolean saveFile(String filename, String content) throws IOException {
         File file = getFile(filename);
         Files.write(file.toPath(), content.getBytes());
         return true;
     }
 
     @Override
-    public String readFile(String filename) throws Exception {
+    public String readFile(String filename) throws IOException {
         File file = getFile(filename);
         return new String(Files.readAllBytes(file.toPath()));
     }
 
     @Override
-    public boolean deleteFile(String filename) throws Exception {
+    public boolean deleteFile(String filename) {
         File file = getFile(filename);
         return file.delete();
     }
 
     @Override
-    public boolean saveGlobalFile(String filename, String content) throws Exception {
+    public boolean saveGlobalFile(String filename, String content) throws IOException {
         return saveFile(filename, content);
     }
 
     @Override
-    public String readGlobalFile(String filename) throws Exception {
+    public String readGlobalFile(String filename) throws IOException {
         return readFile(filename);
     }
 
     @Override
-    public boolean deleteGlobalFile(String filename) throws Exception {
+    public boolean deleteGlobalFile(String filename) throws IOException {
         return deleteFile(filename);
     }
 

@@ -2,28 +2,29 @@ package com.wire.bots.sdk.state;
 
 import com.wire.bots.sdk.server.model.NewBot;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public interface State {
 
-    boolean saveState(NewBot newBot) throws Exception;
+    boolean saveState(NewBot newBot) throws IOException;
 
-    NewBot getState() throws Exception;
+    NewBot getState() throws IOException;
 
-    boolean removeState() throws Exception;
+    boolean removeState() throws IOException;
 
-    ArrayList<NewBot> listAllStates() throws Exception;
+    ArrayList<NewBot> listAllStates() throws IOException;
 
-    boolean saveFile(String filename, String content) throws Exception;
+    boolean saveFile(String filename, String content) throws IOException;
 
-    String readFile(String filename) throws Exception;
+    String readFile(String filename) throws IOException;
 
-    boolean deleteFile(String filename) throws Exception;
+    boolean deleteFile(String filename) throws IOException;
 
-    boolean saveGlobalFile(String filename, String content) throws Exception;
+    boolean saveGlobalFile(String filename, String content) throws IOException;
 
-    String readGlobalFile(String filename) throws Exception;
+    String readGlobalFile(String filename) throws IOException;
 
-    boolean deleteGlobalFile(String filename) throws Exception;
+    boolean deleteGlobalFile(String filename) throws IOException;
 
 }

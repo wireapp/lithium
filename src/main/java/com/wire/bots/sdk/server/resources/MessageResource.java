@@ -18,6 +18,7 @@
 
 package com.wire.bots.sdk.server.resources;
 
+import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.sdk.ClientRepo;
 import com.wire.bots.sdk.MessageHandlerBase;
 import com.wire.bots.sdk.WireClient;
@@ -56,30 +57,34 @@ public class MessageResource extends MessageResourceBase {
                                @ApiParam @Valid @NotNull InboundMessage inbound) throws Exception {
 
         if (!validator.validate(auth)) {
-            Logger.warning(String.format("%s, Invalid auth. Got: '%s'",
-                    botId,
-                    auth
-            ));
+            Logger.warning("%s, Invalid auth. Got: '%s'", botId, auth);
             return Response.
                     status(403).
                     entity(new ErrorMessage("Invalid Authorization token")).
                     build();
         }
 
-        WireClient client = repo.getWireClient(botId);
-        if (client == null) {
-            return Response.
-                    status(503).
-                    entity(new ErrorMessage("Missing state")).
-                    build();
-        }
+        try (WireClient client = repo.getClient(botId)) {
+            if (client == null) {
+                Logger.warning("MessageResource::newMessage: Missing state. bot: %s", botId);
+                return Response.
+                        status(503).
+                        entity(new ErrorMessage("Missing state")).
+                        build();
+            }
 
-        try {
             handleMessage(inbound, client);
+        } catch (CryptoException e) {
+            Logger.error("MessageResource::newMessage: bot: %s %s", botId, e);
+            String msg = String.format("Failed to decrypt the message. Please retry. %s", e.getMessage());
+            repo.getClient(botId).sendText(msg);
+
+            return Response.
+                    status(400).
+                    entity(new ErrorMessage(e.getMessage())).
+                    build();
         } catch (Exception e) {
             Logger.error("MessageResource::newMessage: bot: %s %s", botId, e);
-            repo.getClient(botId).sendText(e.getMessage());
-
             return Response.
                     status(400).
                     entity(new ErrorMessage(e.getMessage())).

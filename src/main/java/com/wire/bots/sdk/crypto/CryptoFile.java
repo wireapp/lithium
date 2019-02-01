@@ -19,6 +19,7 @@
 package com.wire.bots.sdk.crypto;
 
 import com.wire.bots.cryptobox.CryptoBox;
+import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.cryptobox.ICryptobox;
 
 /**
@@ -38,7 +39,7 @@ public class CryptoFile extends CryptoBase {
      * @param botId Bot id
      * @throws Exception
      */
-    public CryptoFile(String uri, String botId) throws Exception {
+    public CryptoFile(String uri, String botId) throws CryptoException {
         String path = String.format("%s/%s", uri, botId);
         box = CryptoBox.open(path);
     }

@@ -8,6 +8,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -54,7 +55,7 @@ public class RedisState implements State {
     }
 
     @Override
-    public boolean saveState(NewBot newBot) throws Exception {
+    public boolean saveState(NewBot newBot) throws IOException {
         try (Jedis jedis = getConnection()) {
             String value = mapper.writeValueAsString(newBot);
             jedis.set(botId.toString(), value);
@@ -63,7 +64,7 @@ public class RedisState implements State {
     }
 
     @Override
-    public NewBot getState() throws Exception {
+    public NewBot getState() throws IOException {
         try (Jedis jedis = getConnection()) {
             String json = jedis.get(botId.toString());
             if (json == null)

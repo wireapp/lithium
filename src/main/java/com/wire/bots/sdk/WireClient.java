@@ -18,6 +18,7 @@
 
 package com.wire.bots.sdk;
 
+import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.sdk.assets.IAsset;
 import com.wire.bots.sdk.assets.IGeneric;
 import com.wire.bots.sdk.models.AssetKey;
@@ -234,7 +235,7 @@ public interface WireClient extends Closeable {
      * @return Base64 encoded decrypted text
      * @throws Exception
      */
-    String decrypt(String userId, String clientId, String cypher) throws Exception;
+    String decrypt(String userId, String clientId, String cypher) throws CryptoException;
 
     /**
      * Invoked by the sdk. Called once when the conversation is created
@@ -242,7 +243,7 @@ public interface WireClient extends Closeable {
      * @return Last prekey
      * @throws Exception
      */
-    PreKey newLastPreKey() throws Exception;
+    PreKey newLastPreKey() throws CryptoException;
 
     /**
      * Invoked by the sdk. Called once when the conversation is created and then occasionally when number of available
@@ -253,7 +254,7 @@ public interface WireClient extends Closeable {
      * @return List of prekeys
      * @throws Exception
      */
-    ArrayList<PreKey> newPreKeys(int from, int count) throws Exception;
+    ArrayList<PreKey> newPreKeys(int from, int count) throws CryptoException;
 
     /**
      * Uploads previously generated prekeys to BE
