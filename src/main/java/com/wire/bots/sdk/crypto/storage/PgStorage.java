@@ -132,7 +132,7 @@ public class PgStorage implements IStorage {
         }
     }
 
-    private Connection newConnection() throws SQLException, InterruptedException {
+    private Connection newConnection() throws InterruptedException {
         while (true) {
             try {
                 String url = String.format("jdbc:postgresql://%s:%d/%s", host, port, db);

@@ -19,6 +19,7 @@ public class ClientRepo {
         this.storageFactory = storageFactory;
     }
 
+    @Deprecated
     public WireClient getWireClient(String botId) {
         return clients.computeIfAbsent(botId, k -> {
             try {
