@@ -6,7 +6,7 @@
 
 [![Build Status](https://travis-ci.org/wireapp/lithium.svg?branch=master)](https://travis-ci.org/wireapp/lithium)
 
-- Lithium is a Wire Services SDK written in Java
+- Lithium is Wire Services SDK written in Java
 
 ## Documentation
 
@@ -23,6 +23,7 @@ Requirements:
 
 - Java >1.8 (http://www.oracle.com)
 - Maven (https://maven.apache.org)
+- Cryptobox4j (https://github.com/wireapp/cryptobox4j)
 
 To build the library, run:
 
