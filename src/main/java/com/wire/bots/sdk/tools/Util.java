@@ -92,7 +92,6 @@ public class Util {
         }
     }
 
-
     public static String calcMd5(byte[] encryptedData) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("MD5");
         md.update(encryptedData, 0, encryptedData.length);
@@ -118,12 +117,17 @@ public class Util {
         return output.toByteArray();
     }
 
-    public static boolean compareTokens(String token1, String token2) {
-        if (token1 == null || token2 == null)
+    public static boolean compareAuthorizations(String auth1, String auth2) {
+        if (auth1 == null || auth2 == null)
             return false;
-        String t1 = token1.replace("Bearer", "").trim();
-        String t2 = token2.replace("Bearer", "").trim();
-        return t1.equals(t2);
+        String token1 = extractToken(auth1);
+        String token2 = extractToken(auth2);
+        return token1.equals(token2);
+    }
+
+    private static String extractToken(String auth) {
+        String[] split = auth.split(" ");
+        return split.length == 1 ? split[0] : split[1];
     }
 
     public static String extractMimeType(byte[] imageData) throws IOException {

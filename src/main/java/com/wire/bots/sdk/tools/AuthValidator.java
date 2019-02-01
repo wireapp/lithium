@@ -7,8 +7,8 @@ public class AuthValidator {
         this.auth = auth;
     }
 
-    public boolean validate(String authToken) {
-        return Util.compareTokens(auth, authToken);
+    public boolean validate(String auth) {
+        return Util.compareAuthorizations(this.auth, auth);
     }
 
     public String getAuth() {
