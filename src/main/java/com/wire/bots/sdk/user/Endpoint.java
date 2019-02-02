@@ -19,7 +19,6 @@
 package com.wire.bots.sdk.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.sdk.crypto.CryptoFile;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.InboundMessage;
@@ -55,7 +54,7 @@ public class Endpoint {
     private String clientId;
     private String botId;
 
-    public Endpoint(String path) throws CryptoException {
+    public Endpoint(String path) {
         this.path = path;
     }
 

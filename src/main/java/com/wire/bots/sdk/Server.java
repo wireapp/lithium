@@ -22,11 +22,13 @@ import com.codahale.metrics.Gauge;
 import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.health.HealthCheck;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.crypto.CryptoFile;
 import com.wire.bots.sdk.factories.CryptoFactory;
 import com.wire.bots.sdk.factories.StorageFactory;
 import com.wire.bots.sdk.healthchecks.Alice2Bob;
+import com.wire.bots.sdk.healthchecks.Outbound;
 import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.server.resources.BotsResource;
 import com.wire.bots.sdk.server.resources.MessageResource;
@@ -49,6 +51,9 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
+import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientProperties;
 
 import java.util.Random;
 import java.util.UUID;
@@ -190,6 +195,23 @@ public abstract class Server<Config extends Configuration> extends Application<C
         env.jersey().register(component);
     }
 
+    public static ClientConfig getClientConfig() {
+        String proxyUri = System.getProperty("https.proxyHost");
+        String port = System.getProperty("https.proxyPort");
+        if (proxyUri != null && port != null)
+            proxyUri = String.format("%s:%s", proxyUri, port);
+
+        String user = System.getProperty("https.proxyUser");
+        String password = System.getProperty("https.proxyPassword");
+
+        ClientConfig cfg = new ClientConfig(JacksonJsonProvider.class);
+        cfg.connectorProvider(new ApacheConnectorProvider());
+        cfg.property(ClientProperties.PROXY_URI, proxyUri);
+        cfg.property(ClientProperties.PROXY_USERNAME, user);
+        cfg.property(ClientProperties.PROXY_PASSWORD, password);
+        return cfg;
+    }
+
     private void initTelemetry(Environment env) {
         env.healthChecks().register("Storage", new HealthCheck() {
             @Override
@@ -214,6 +236,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
         });
 
         env.healthChecks().register("Alice2Bob", new Alice2Bob(getCryptoFactory(config)));
+        env.healthChecks().register("Outbound", new Outbound());
 
         env.healthChecks().register("JCEPolicy", new HealthCheck() {
             @Override

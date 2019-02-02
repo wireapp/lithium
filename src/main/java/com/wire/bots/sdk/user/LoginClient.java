@@ -19,11 +19,14 @@
 package com.wire.bots.sdk.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.wire.bots.sdk.Server;
 import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.tools.Util;
 import com.wire.bots.sdk.user.model.NewClient;
 import com.wire.bots.sdk.user.model.User;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.JerseyClientBuilder;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -42,7 +45,11 @@ public class LoginClient {
     private final static WebTarget loginPath;
 
     static {
-        WebTarget target = TrustedTlsClientBuilder.build().target(Util.getHost());
+        ClientConfig cfg = Server.getClientConfig();
+        WebTarget target = JerseyClientBuilder
+                .createClient(cfg)
+                .target(Util.getHost());
+
         loginPath = target.path("login");
         clientsPath = target.path("clients");
         conversationsPath = target.path("conversations");
