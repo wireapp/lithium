@@ -32,8 +32,6 @@ import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
 import com.wire.bots.sdk.user.model.Connection;
 
-import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.GenericType;
@@ -68,34 +66,6 @@ public class API extends LoginClient {
         }
 
         return response.readEntity(com.wire.bots.sdk.user.model.User.class).getToken();
-    }
-
-    public static Conversation createConversation(String name, String token, @Nullable Collection<String> participants)
-            throws HttpException {
-        _NewConv newConv = new _NewConv();
-        newConv.name = name;
-        newConv.users = participants;
-
-        Response response = conversationsPath.
-                request(MediaType.APPLICATION_JSON).
-                header(HttpHeaders.AUTHORIZATION, bearer(token)).
-                post(Entity.entity(newConv, MediaType.APPLICATION_JSON));
-
-        if (response.getStatus() >= 400) {
-            throw new HttpException(response.readEntity(String.class), response.getStatus());
-        }
-
-        _Conv conv = response.readEntity(_Conv.class);
-
-        Conversation ret = new Conversation();
-        ret.name = conv.name;
-        ret.id = conv.id;
-        ret.members = conv.members.others;
-        return ret;
-    }
-
-    private static String bearer(String token) {
-        return "Bearer " + token;
     }
 
     Devices sendMessage(OtrMessage msg, boolean ignoreMissing) throws HttpException {
@@ -209,6 +179,10 @@ public class API extends LoginClient {
         return response.readEntity(AssetKey.class);
     }
 
+    private static String bearer(String token) {
+        return "Bearer " + token;
+    }
+
     Conversation getConversation() throws IOException {
         Response response = conversationsPath.
                 path(convId).
@@ -289,13 +263,32 @@ public class API extends LoginClient {
         return response.readEntity(User.class);
     }
 
-    Collection<com.wire.bots.sdk.server.model.User> getUsers(Collection<String> ids) {
-        return usersPath.
-                queryParam("ids", ids).
+    public Conversation createConversation(String name, String teamId, List<String> users, String token)
+            throws HttpException {
+        _NewConv newConv = new _NewConv();
+        newConv.name = name;
+        newConv.users = users;
+        if (teamId != null) {
+            newConv.team = new _TeamInfo();
+            newConv.team.teamId = teamId;
+        }
+
+        Response response = conversationsPath.
                 request(MediaType.APPLICATION_JSON).
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
-                get(new GenericType<ArrayList<com.wire.bots.sdk.server.model.User>>() {
-                });
+                post(Entity.entity(newConv, MediaType.APPLICATION_JSON));
+
+        if (response.getStatus() >= 400) {
+            throw new HttpException(response.readEntity(String.class), response.getStatus());
+        }
+
+        _Conv conv = response.readEntity(_Conv.class);
+
+        Conversation ret = new Conversation();
+        ret.name = conv.name;
+        ret.id = conv.id;
+        ret.members = conv.members.others;
+        return ret;
     }
 
     void uploadPreKeys(ArrayList<PreKey> preKeys) {
@@ -317,8 +310,18 @@ public class API extends LoginClient {
                 });
     }
 
+    Collection<User> getUsers(Collection<String> ids) {
+        return usersPath.
+                queryParam("ids", ids).
+                request(MediaType.APPLICATION_JSON).
+                header(HttpHeaders.AUTHORIZATION, bearer(token)).
+                get(new GenericType<ArrayList<User>>() {
+                });
+    }
+
     public String getTeam() {
-        _Teams res = teamsPath.request(MediaType.APPLICATION_JSON)
+        _Teams res = teamsPath
+                .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, bearer(token))
                 .accept(MediaType.APPLICATION_JSON)
                 .get(_Teams.class);
@@ -368,10 +371,20 @@ public class API extends LoginClient {
 
     static class _NewConv {
         @JsonProperty
-        @NotNull
         public String name;
 
         @JsonProperty
-        public Collection<String> users;
+        public _TeamInfo team;
+
+        @JsonProperty
+        public List<String> users;
+    }
+
+    static class _TeamInfo {
+        @JsonProperty("teamid")
+        public String teamId;
+
+        @JsonProperty
+        public boolean managed;
     }
 }
