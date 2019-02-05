@@ -19,8 +19,10 @@
 package com.wire.bots.sdk;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.dropwizard.client.JerseyClientConfiguration;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -30,6 +32,20 @@ public class Configuration extends io.dropwizard.Configuration {
 
     @JsonProperty("swagger")
     public SwaggerBundleConfiguration swagger;
+
+    @Valid
+    @NotNull
+    public JerseyClientConfiguration jerseyClient = new JerseyClientConfiguration();
+
+    @JsonProperty("jerseyClient")
+    public JerseyClientConfiguration getJerseyClientConfiguration() {
+        return jerseyClient;
+    }
+
+    @JsonProperty("jerseyClient")
+    public void setJerseyClientConfiguration(JerseyClientConfiguration jerseyClient) {
+        this.jerseyClient = jerseyClient;
+    }
 
     /**
      * Path to the directory that will hold the cryptoBox data.

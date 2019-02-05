@@ -19,10 +19,9 @@
 package com.wire.bots.sdk;
 
 import com.codahale.metrics.Gauge;
-import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.health.HealthCheck;
+import com.codahale.metrics.jmx.JmxReporter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.crypto.CryptoFile;
 import com.wire.bots.sdk.factories.CryptoFactory;
@@ -44,6 +43,7 @@ import com.wire.bots.sdk.user.Endpoint;
 import com.wire.bots.sdk.user.UserClientRepo;
 import com.wire.bots.sdk.user.UserMessageResource;
 import io.dropwizard.Application;
+import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.servlets.tasks.Task;
@@ -51,10 +51,8 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
-import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.client.ClientProperties;
 
+import javax.ws.rs.client.Client;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -68,6 +66,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
     protected ClientRepo repo;
     protected Config config;
     protected Environment environment;
+    protected Client client;
 
     /**
      * This method is called once by the sdk in order to create the main message handler
@@ -110,6 +109,10 @@ public abstract class Server<Config extends Configuration> extends Application<C
         this.config = config;
         this.environment = env;
 
+        client = new JerseyClientBuilder(environment)
+                .using(config.getJerseyClientConfiguration())
+                .build(getName());
+
         initialize(config, env);
 
         initTelemetry(env);
@@ -137,7 +140,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
         StorageFactory storageFactory = getStorageFactory(config);
         CryptoFactory cryptoFactory = getCryptoFactory(config);
 
-        repo = new ClientRepo(cryptoFactory, storageFactory);
+        repo = new ClientRepo(client, cryptoFactory, storageFactory);
 
         MessageHandlerBase handler = createHandler(config, env);
 
@@ -159,10 +162,10 @@ public abstract class Server<Config extends Configuration> extends Application<C
             StorageFactory storageFactory = getStorageFactory(config);
             CryptoFactory cryptoFactory = getCryptoFactory(config);
 
-            UserClientRepo clientRepo = new UserClientRepo(cryptoFactory, storageFactory);
+            UserClientRepo clientRepo = new UserClientRepo(client, cryptoFactory, storageFactory);
             repo = clientRepo;
 
-            Endpoint ep = new Endpoint(config.data);
+            Endpoint ep = new Endpoint(client, cryptoFactory, storageFactory);
             String userId = ep.signIn(email, password, true);
             Logger.info(String.format("Logged in as User: %s userId: %s", email, userId));
 
@@ -195,23 +198,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
         env.jersey().register(component);
     }
 
-    public static ClientConfig getClientConfig() {
-        String proxyUri = System.getProperty("https.proxyHost");
-        String port = System.getProperty("https.proxyPort");
-        if (proxyUri != null && port != null)
-            proxyUri = String.format("%s:%s", proxyUri, port);
-
-        String user = System.getProperty("https.proxyUser");
-        String password = System.getProperty("https.proxyPassword");
-
-        ClientConfig cfg = new ClientConfig(JacksonJsonProvider.class);
-        cfg.connectorProvider(new ApacheConnectorProvider());
-        cfg.property(ClientProperties.PROXY_URI, proxyUri);
-        cfg.property(ClientProperties.PROXY_USERNAME, user);
-        cfg.property(ClientProperties.PROXY_PASSWORD, password);
-        return cfg;
-    }
-
     private void initTelemetry(Environment env) {
         env.healthChecks().register("Storage", new HealthCheck() {
             @Override
@@ -223,7 +209,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
                 return state.saveState(newBot) ? Result.healthy() : Result.unhealthy("Failed to save the state");
             }
         });
-
         env.healthChecks().register("Crypto", new HealthCheck() {
             @Override
             protected Result check() throws Exception {
@@ -234,10 +219,8 @@ public abstract class Server<Config extends Configuration> extends Application<C
                 }
             }
         });
-
         env.healthChecks().register("Alice2Bob", new Alice2Bob(getCryptoFactory(config)));
-        env.healthChecks().register("Outbound", new Outbound());
-
+        env.healthChecks().register("Outbound", new Outbound(client));
         env.healthChecks().register("JCEPolicy", new HealthCheck() {
             @Override
             protected Result check() throws Exception {

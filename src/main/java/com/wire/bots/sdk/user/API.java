@@ -32,8 +32,10 @@ import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
 import com.wire.bots.sdk.user.model.Connection;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -46,15 +48,35 @@ import java.util.Collection;
 import java.util.List;
 
 public class API extends LoginClient {
+    private final WebTarget conversationsPath;
+    private final WebTarget usersPath;
+    private final WebTarget accessPath;
+    private final WebTarget assetsPath;
+    private final WebTarget teamsPath;
+    private final WebTarget connectionsPath;
+    private final WebTarget selfPath;
+
     private final String token;
     private final String convId;
 
-    public API(String convId, String token) {
+    public API(Client client, String convId, String token) {
+        super(client);
         this.convId = convId;
         this.token = token;
+
+        WebTarget target = client
+                .target(Util.getHost());
+
+        conversationsPath = target.path("conversations");
+        usersPath = target.path("users");
+        accessPath = target.path("access");
+        assetsPath = target.path("assets/v3");
+        teamsPath = target.path("teams");
+        connectionsPath = target.path("connections");
+        selfPath = target.path("self");
     }
 
-    static String renewAccessToken(String cookie, String token) throws HttpException {
+    String renewAccessToken(String cookie) throws HttpException {
         Response response = accessPath.
                 request(MediaType.APPLICATION_JSON).
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
@@ -317,6 +339,13 @@ public class API extends LoginClient {
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
                 get(new GenericType<ArrayList<User>>() {
                 });
+    }
+
+    public User getSelf() {
+        return selfPath.
+                request(MediaType.APPLICATION_JSON).
+                header(HttpHeaders.AUTHORIZATION, bearer(token)).
+                get(User.class);
     }
 
     public String getTeam() {

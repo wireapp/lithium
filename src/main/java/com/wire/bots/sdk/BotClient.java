@@ -31,6 +31,7 @@ import com.wire.bots.sdk.state.State;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
 
+import javax.ws.rs.client.Client;
 import java.io.File;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -45,9 +46,9 @@ public class BotClient implements WireClient {
     private final NewBot state;
     private Devices devices = null;
 
-    BotClient(Crypto crypto, State storage) throws IOException {
+    BotClient(Client httpClient, Crypto crypto, State storage) throws IOException {
         this.state = storage.getState();
-        this.api = new API(state.token);
+        this.api = new API(httpClient, state.token);
         this.crypto = crypto;
     }
 
@@ -377,7 +378,7 @@ public class BotClient implements WireClient {
         }
     }
 
-    public Missing getAllDevices() throws HttpException {
+    private Missing getAllDevices() throws HttpException {
         return getDevices().missing;
     }
 

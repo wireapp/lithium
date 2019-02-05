@@ -19,15 +19,13 @@
 package com.wire.bots.sdk.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.wire.bots.sdk.Server;
 import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.tools.Util;
 import com.wire.bots.sdk.user.model.NewClient;
 import com.wire.bots.sdk.user.model.User;
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.client.JerseyClientBuilder;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
@@ -35,32 +33,19 @@ import javax.ws.rs.core.Response;
 import java.util.Base64;
 
 public class LoginClient {
-    final static WebTarget clientsPath;
-    final static WebTarget conversationsPath;
-    final static WebTarget usersPath;
-    final static WebTarget accessPath;
-    final static WebTarget assetsPath;
-    final static WebTarget teamsPath;
-    final static WebTarget connectionsPath;
-    private final static WebTarget loginPath;
+    final WebTarget clientsPath;
+    private final WebTarget loginPath;
 
-    static {
-        ClientConfig cfg = Server.getClientConfig();
-        WebTarget target = JerseyClientBuilder
-                .createClient(cfg)
-                .target(Util.getHost());
-
-        loginPath = target.path("login");
-        clientsPath = target.path("clients");
-        conversationsPath = target.path("conversations");
-        usersPath = target.path("users");
-        accessPath = target.path("access");
-        assetsPath = target.path("assets/v3");
-        teamsPath = target.path("teams");
-        connectionsPath = target.path("connections");
+    public LoginClient(Client client) {
+        loginPath = client
+                .target(Util.getHost())
+                .path("login");
+        clientsPath = client
+                .target(Util.getHost())
+                .path("clients");
     }
 
-    public static User login(String email, String password) throws HttpException {
+    public User login(String email, String password) throws HttpException {
         User user = new User();
         user.setEmail(email);
         user.setPassword(password);
@@ -79,7 +64,7 @@ public class LoginClient {
         return ret;
     }
 
-    public static String registerClient(PreKey key, String token, String password) throws HttpException {
+    public String registerClient(PreKey key, String token, String password) throws HttpException {
         NewClient newClient = new NewClient();
         newClient.lastPreKey = key;
         newClient.sigkeys.enckey = Base64.getEncoder().encodeToString(new byte[32]);

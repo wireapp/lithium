@@ -27,12 +27,11 @@ import com.wire.bots.sdk.server.model.NewBotResponseModel;
 import com.wire.bots.sdk.server.model.User;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.client.JerseyClientBuilder;
-import org.glassfish.jersey.client.JerseyWebTarget;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -44,19 +43,20 @@ import java.util.Collection;
 
 public class API {
 
-    private static final JerseyWebTarget messages;
-    private static final JerseyWebTarget assets;
-    private static final JerseyWebTarget client;
-    private static final JerseyWebTarget prekeys;
-    private static final JerseyWebTarget users;
-    private static final JerseyWebTarget conversation;
-    private static final JerseyWebTarget bot;
+    private final WebTarget messages;
+    private final WebTarget assets;
+    private final WebTarget client;
+    private final WebTarget prekeys;
+    private final WebTarget users;
+    private final WebTarget conversation;
+    private final WebTarget bot;
 
-    static {
-        ClientConfig cfg = Server.getClientConfig();
+    private final String token;
 
-        bot = JerseyClientBuilder
-                .createClient(cfg)
+    public API(Client httpClient, String token) {
+        this.token = token;
+
+        bot = httpClient
                 .target(Util.getHost())
                 .path("bot");
         messages = bot
@@ -74,14 +74,7 @@ public class API {
                 .path("prekeys");
     }
 
-    private final String token;
-
-    API(String token) {
-
-        this.token = token;
-    }
-
-    public static Response options() {
+    public Response options() {
         return bot
                 .request()
                 .options();

@@ -4,12 +4,20 @@ import com.codahale.metrics.health.HealthCheck;
 import com.wire.bots.sdk.API;
 import com.wire.bots.sdk.tools.Logger;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.core.Response;
 
 public class Outbound extends HealthCheck {
+    private final Client client;
+
+    public Outbound(Client client) {
+        this.client = client;
+    }
+
     @Override
     protected Result check() {
-        Response options = API.options();
+        API api = new API(client, null);
+        Response options = api.options();
         String s = options.readEntity(String.class);
         int status = options.getStatus();
         Logger.info("Outbound healthcheck. %s Status: %d", s, status);

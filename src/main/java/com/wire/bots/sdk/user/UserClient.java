@@ -32,6 +32,7 @@ import com.wire.bots.sdk.state.State;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
 
+import javax.ws.rs.client.Client;
 import java.io.File;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -43,12 +44,12 @@ public class UserClient implements WireClient {
     private final NewBot state;
     private Devices devices = null;
 
-    UserClient(Crypto crypto, State storage, String conv) throws IOException {
+    UserClient(Client httpClient, Crypto crypto, State storage, String conv) throws IOException {
         this.crypto = crypto;
         this.state = storage.getState();
         state.conversation = new Conversation();
         state.conversation.id = conv;
-        this.api = new API(conv, state.token);
+        this.api = new API(httpClient, conv, state.token);
     }
 
     public void sendText(String txt) throws Exception {

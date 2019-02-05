@@ -19,11 +19,14 @@
 package com.wire.bots.sdk.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wire.bots.sdk.crypto.CryptoFile;
-import com.wire.bots.sdk.models.otr.PreKey;
+import com.wire.bots.cryptobox.CryptoException;
+import com.wire.bots.sdk.crypto.Crypto;
+import com.wire.bots.sdk.exceptions.HttpException;
+import com.wire.bots.sdk.factories.CryptoFactory;
+import com.wire.bots.sdk.factories.StorageFactory;
 import com.wire.bots.sdk.server.model.InboundMessage;
 import com.wire.bots.sdk.server.model.NewBot;
-import com.wire.bots.sdk.state.FileState;
+import com.wire.bots.sdk.state.State;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
 import com.wire.bots.sdk.user.model.Message;
@@ -31,6 +34,8 @@ import com.wire.bots.sdk.user.model.User;
 import org.glassfish.tyrus.client.ClientManager;
 
 import javax.websocket.*;
+import javax.ws.rs.client.Client;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -46,7 +51,9 @@ public class Endpoint {
     private static final String WSS = "wss://%s-nginz-ssl.%s/await?access_token=%s&client=%s";
     private static final String PROD = "prod";
     private static final String ENV = "env";
-    private final String path;
+    private final Client httpClient;
+    private final StorageFactory storageFactory;
+    private final CryptoFactory cryptoFactory;
     private UserMessageResource userMessageResource;
     private ClientManager client = null;
     private String token;
@@ -54,8 +61,10 @@ public class Endpoint {
     private String clientId;
     private String botId;
 
-    public Endpoint(String path) {
-        this.path = path;
+    public Endpoint(Client httpClient, CryptoFactory cryptoFactory, StorageFactory storageFactory) {
+        this.httpClient = httpClient;
+        this.storageFactory = storageFactory;
+        this.cryptoFactory = cryptoFactory;
     }
 
     public Session connectWebSocket(UserMessageResource userMessageResource) throws Exception {
@@ -77,7 +86,8 @@ public class Endpoint {
      * @throws Exception
      */
     public String signIn(String email, String password, boolean persisted) throws Exception {
-        User login = LoginClient.login(email, password);
+        LoginClient loginClient = new LoginClient(httpClient);
+        User login = loginClient.login(email, password);
         token = login.getToken();
         cookie = login.getCookie();
         botId = login.extractUserId();
@@ -130,30 +140,34 @@ public class Endpoint {
      * @throws Exception
      */
     private String initDevice(String userId, String password, String token) throws Exception {
-        FileState storage = new FileState(path, userId);
+        State storage = storageFactory.create(userId);
+        NewBot state = getState(userId, password, token, storage);
+        storage.saveState(state);
+        return state.client;
+    }
 
+    private NewBot getState(String userId, String password, String token, State storage)
+            throws IOException, HttpException, CryptoException {
+        NewBot state;
         try {
-            NewBot state = storage.getState();
-            Logger.info("initDevice: Existing ClientID: %s", state.client);
+            state = storage.getState();
             state.token = token;
 
-            storage.saveState(state);
-            return state.client;
-        } catch (Exception ex) {
+            Logger.info("initDevice: Existing ClientID: %s", state.client);
+        } catch (IOException ex) {
             // register new device
-            try (CryptoFile cryptoFile = new CryptoFile(path, userId)) {
-                PreKey key = cryptoFile.newLastPreKey();
+            try (Crypto crypto = cryptoFactory.create(userId)) {
+                LoginClient loginClient = new LoginClient(httpClient);
 
-                NewBot state = new NewBot();
+                state = new NewBot();
                 state.id = userId;
-                state.client = LoginClient.registerClient(key, token, password);
+                state.client = loginClient.registerClient(crypto.newLastPreKey(), token, password);
                 state.token = token;
 
-                storage.saveState(state);
                 Logger.info("initDevice: New ClientID: %s", state.client);
-                return state.client;
             }
         }
+        return state;
     }
 
     private void initRenewal(int periodMinutes) {
@@ -161,7 +175,8 @@ public class Endpoint {
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 try {
-                    token = API.renewAccessToken(cookie, token);
+                    API api = new API(httpClient, null, token);
+                    token = api.renewAccessToken(cookie);
                 } catch (Exception e) {
                     Logger.warning("Failed periodic access_token renewal: " + e.getMessage());
                     e.printStackTrace();
