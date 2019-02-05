@@ -18,6 +18,7 @@
 
 package com.wire.bots.sdk;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wire.bots.sdk.assets.IAsset;
 import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.AssetKey;
@@ -27,17 +28,17 @@ import com.wire.bots.sdk.server.model.NewBotResponseModel;
 import com.wire.bots.sdk.server.model.User;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
+import org.glassfish.jersey.media.multipart.BodyPart;
+import org.glassfish.jersey.media.multipart.MultiPart;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -188,7 +189,6 @@ public class API {
         String strMetadata = String.format("{\"public\": %s, \"retention\": \"%s\"}",
                 asset.isPublic(),
                 asset.getRetention());
-
         sb.append("--frontier\r\n");
         sb.append("Content-Type: application/json; charset=utf-8\r\n");
         sb.append("Content-Length: ")
@@ -228,6 +228,23 @@ public class API {
         return response.readEntity(AssetKey.class);
     }
 
+    private MultiPart getMultiPart(IAsset asset) throws NoSuchAlgorithmException {
+        MetaData metaData = new MetaData();
+        metaData.retention = asset.getRetention();
+        metaData.scope = asset.isPublic();
+
+        BodyPart bodyPart1 = new BodyPart(metaData, MediaType.APPLICATION_JSON_TYPE);
+        BodyPart bodyPart2 = new BodyPart().entity(asset.getEncryptedData());
+
+        MultivaluedMap<String, String> headers = bodyPart2.getHeaders();
+        headers.add("Content-Type", asset.getMimeType());
+        headers.add("Content-MD5", Util.calcMd5(asset.getEncryptedData()));
+
+        return new MultiPart()
+                .bodyPart(bodyPart1)
+                .bodyPart(bodyPart2);
+    }
+
     byte[] downloadAsset(String assetKey, String assetToken) throws IOException {
         Invocation.Builder req = assets
                 .path(assetKey)
@@ -249,5 +266,12 @@ public class API {
 
     private String bearer() {
         return String.format("Bearer %s", token);
+    }
+
+    public static class MetaData {
+        @JsonProperty("public")
+        public boolean scope;
+        @JsonProperty
+        public String retention;
     }
 }

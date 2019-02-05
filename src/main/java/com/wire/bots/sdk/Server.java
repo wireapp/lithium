@@ -44,6 +44,7 @@ import com.wire.bots.sdk.user.UserClientRepo;
 import com.wire.bots.sdk.user.UserMessageResource;
 import io.dropwizard.Application;
 import io.dropwizard.client.JerseyClientBuilder;
+import io.dropwizard.client.JerseyClientConfiguration;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.servlets.tasks.Task;
@@ -51,6 +52,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 import javax.ws.rs.client.Client;
 import java.util.Random;
@@ -109,8 +111,14 @@ public abstract class Server<Config extends Configuration> extends Application<C
         this.config = config;
         this.environment = env;
 
+        JerseyClientConfiguration jerseyCfg = config.getJerseyClientConfiguration();
+        jerseyCfg.setChunkedEncodingEnabled(false);
+        jerseyCfg.setGzipEnabled(false);
+        jerseyCfg.setGzipEnabledForRequests(false);
+
         client = new JerseyClientBuilder(environment)
-                .using(config.getJerseyClientConfiguration())
+                .using(jerseyCfg)
+                .withProvider(MultiPartFeature.class)
                 .build(getName());
 
         initialize(config, env);
