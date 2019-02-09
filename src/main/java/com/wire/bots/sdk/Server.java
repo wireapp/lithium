@@ -22,6 +22,7 @@ import com.codahale.metrics.Gauge;
 import com.codahale.metrics.health.HealthCheck;
 import com.codahale.metrics.jmx.JmxReporter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.crypto.CryptoFile;
 import com.wire.bots.sdk.factories.CryptoFactory;
@@ -87,7 +88,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
      * @param config Configuration object (yaml)
      * @param env    Environment object
      */
-    protected void onRun(Config config, Environment env) {
+    protected void onRun(Config config, Environment env) throws Exception {
     }
 
     @Override
@@ -106,6 +107,10 @@ public abstract class Server<Config extends Configuration> extends Application<C
         });
     }
 
+    protected void initialize(Config config, Environment env) throws Exception {
+
+    }
+
     @Override
     public void run(final Config config, Environment env) throws Exception {
         this.config = config;
@@ -119,21 +124,20 @@ public abstract class Server<Config extends Configuration> extends Application<C
         client = new JerseyClientBuilder(environment)
                 .using(jerseyCfg)
                 .withProvider(MultiPartFeature.class)
+                .withProvider(JacksonJsonProvider.class)
                 .build(getName());
+
+        if (config.userMode) {
+            repo = runInUserMode(config, env, client);
+        } else {
+            repo = runInBotMode(config, env, client);
+        }
 
         initialize(config, env);
 
         initTelemetry(env);
 
-        if (!runInUserMode(config, env)) {
-            runInBotMode(config, env);
-        }
-
         onRun(config, env);
-    }
-
-    protected void initialize(Config config, Environment env) throws Exception {
-
     }
 
     protected StorageFactory getStorageFactory(Config config) {
@@ -144,48 +148,47 @@ public abstract class Server<Config extends Configuration> extends Application<C
         return (botId) -> new CryptoFile(config.data, botId);
     }
 
-    private void runInBotMode(Config config, Environment env) throws Exception {
+    private ClientRepo runInBotMode(Config config, Environment env, Client client) throws Exception {
         StorageFactory storageFactory = getStorageFactory(config);
         CryptoFactory cryptoFactory = getCryptoFactory(config);
 
-        repo = new ClientRepo(client, cryptoFactory, storageFactory);
+        ClientRepo repo = new ClientRepo(client, cryptoFactory, storageFactory);
 
         MessageHandlerBase handler = createHandler(config, env);
 
         addResource(new StatusResource(), env);
 
         botResource(config, env, handler);
-        messageResource(config, env, handler);
+        messageResource(config, env, handler, repo);
 
         addTask(new ConversationTask(repo), env);
         addTask(new AvailablePrekeysTask(repo), env);
+
+        return repo;
     }
 
-    private boolean runInUserMode(Config config, Environment env) throws Exception {
+    private ClientRepo runInUserMode(Config config, Environment env, Client client) throws Exception {
         String email = System.getProperty("email");
         String password = System.getProperty("password");
         String listening = System.getProperty("listening");
 
-        if (email != null && password != null) {
-            StorageFactory storageFactory = getStorageFactory(config);
-            CryptoFactory cryptoFactory = getCryptoFactory(config);
+        StorageFactory storageFactory = getStorageFactory(config);
+        CryptoFactory cryptoFactory = getCryptoFactory(config);
 
-            UserClientRepo clientRepo = new UserClientRepo(client, cryptoFactory, storageFactory);
-            repo = clientRepo;
+        UserClientRepo clientRepo = new UserClientRepo(client, cryptoFactory, storageFactory);
 
-            Endpoint ep = new Endpoint(client, cryptoFactory, storageFactory);
-            String userId = ep.signIn(email, password, true);
-            Logger.info(String.format("Logged in as User: %s userId: %s", email, userId));
+        Endpoint ep = new Endpoint(client, cryptoFactory, storageFactory);
+        String userId = ep.signIn(email, password, true);
+        Logger.info(String.format("Logged in as User: %s userId: %s", email, userId));
 
-            MessageHandlerBase handler = createHandler(config, env);
-            if (listening != null && listening.equalsIgnoreCase("true"))
-                ep.connectWebSocket(new UserMessageResource(handler, clientRepo));
-            return true;
-        }
-        return false;
+        MessageHandlerBase handler = createHandler(config, env);
+        if (listening != null && listening.equalsIgnoreCase("true"))
+            ep.connectWebSocket(new UserMessageResource(handler, clientRepo));
+
+        return clientRepo;
     }
 
-    protected void messageResource(Config config, Environment env, MessageHandlerBase handler) {
+    protected void messageResource(Config config, Environment env, MessageHandlerBase handler, ClientRepo repo) {
         AuthValidator validator = new AuthValidator(config.getAuth());
         addResource(new MessageResource(handler, validator, repo), env);
     }
@@ -253,5 +256,21 @@ public abstract class Server<Config extends Configuration> extends Application<C
                 .convertDurationsTo(TimeUnit.MILLISECONDS)
                 .build();
         jmxReporter.start();
+    }
+
+    public ClientRepo getRepo() {
+        return repo;
+    }
+
+    public Config getConfig() {
+        return config;
+    }
+
+    public Environment getEnvironment() {
+        return environment;
+    }
+
+    public Client getClient() {
+        return client;
     }
 }
