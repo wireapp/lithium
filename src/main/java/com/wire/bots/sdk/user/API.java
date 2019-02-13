@@ -156,7 +156,7 @@ public class API extends LoginClient {
         }
     }
 
-    AssetKey uploadAsset(IAsset asset) throws Exception {
+    public AssetKey uploadAsset(IAsset asset) throws Exception {
         StringBuilder sb = new StringBuilder();
 
         // Part 1
