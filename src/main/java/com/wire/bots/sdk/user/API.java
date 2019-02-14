@@ -310,6 +310,20 @@ public class API extends LoginClient {
         return ret;
     }
 
+    public void leaveConversation(String user) throws HttpException {
+        Response response = conversationsPath
+                .path(convId)
+                .path("members")
+                .path(user)
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, bearer(token))
+                .delete();
+
+        if (response.getStatus() >= 400) {
+            throw new HttpException(response.readEntity(String.class), response.getStatus());
+        }
+    }
+
     void uploadPreKeys(ArrayList<PreKey> preKeys) {
         usersPath.path("prekeys").
                 request(MediaType.APPLICATION_JSON).
