@@ -105,6 +105,7 @@ public class Configuration extends io.dropwizard.Configuration {
         public String user;
         public String password;
         public String url;    // a database url of the form: ``` jdbc:`subprotocol`:`subname` ```
+        public Integer timeout = 5000;
     }
 
     public final static class ConfigValueNotFoundException extends RuntimeException {

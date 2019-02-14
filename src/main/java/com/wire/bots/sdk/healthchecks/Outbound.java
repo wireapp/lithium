@@ -16,11 +16,17 @@ public class Outbound extends HealthCheck {
 
     @Override
     protected Result check() {
-        API api = new API(client, null);
-        Response options = api.options();
-        String s = options.readEntity(String.class);
-        int status = options.getStatus();
-        Logger.info("Outbound healthcheck. %s Status: %d", s, status);
-        return status == 401 ? Result.healthy() : Result.unhealthy(String.format("%s. status: %d", s, status));
+        try {
+            Logger.debug("Starting Outbound healthcheck");
+            API api = new API(client, null);
+            Response options = api.options();
+            String s = options.readEntity(String.class);
+            int status = options.getStatus();
+            return status == 401 ? Result.healthy() : Result.unhealthy(String.format("%s. status: %d", s, status));
+        } catch (Exception e) {
+            return Result.unhealthy(e.getMessage());
+        } finally {
+            Logger.debug("Finished Outbound healthcheck");
+        }
     }
 }

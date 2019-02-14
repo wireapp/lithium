@@ -19,27 +19,23 @@
 package com.wire.bots.sdk;
 
 import com.codahale.metrics.Gauge;
-import com.codahale.metrics.health.HealthCheck;
 import com.codahale.metrics.jmx.JmxReporter;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.crypto.CryptoFile;
 import com.wire.bots.sdk.factories.CryptoFactory;
 import com.wire.bots.sdk.factories.StorageFactory;
 import com.wire.bots.sdk.healthchecks.Alice2Bob;
+import com.wire.bots.sdk.healthchecks.CryptoHealthCheck;
 import com.wire.bots.sdk.healthchecks.Outbound;
-import com.wire.bots.sdk.server.model.NewBot;
+import com.wire.bots.sdk.healthchecks.StorageHealthCheck;
 import com.wire.bots.sdk.server.resources.BotsResource;
 import com.wire.bots.sdk.server.resources.MessageResource;
 import com.wire.bots.sdk.server.resources.StatusResource;
 import com.wire.bots.sdk.server.tasks.AvailablePrekeysTask;
 import com.wire.bots.sdk.server.tasks.ConversationTask;
 import com.wire.bots.sdk.state.FileState;
-import com.wire.bots.sdk.state.State;
 import com.wire.bots.sdk.tools.AuthValidator;
 import com.wire.bots.sdk.tools.Logger;
-import com.wire.bots.sdk.tools.Util;
 import com.wire.bots.sdk.user.Endpoint;
 import com.wire.bots.sdk.user.UserClientRepo;
 import com.wire.bots.sdk.user.UserMessageResource;
@@ -56,8 +52,6 @@ import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 import javax.ws.rs.client.Client;
-import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -210,43 +204,13 @@ public abstract class Server<Config extends Configuration> extends Application<C
     }
 
     private void initTelemetry(Environment env) {
-        env.healthChecks().register("Storage", new HealthCheck() {
-            @Override
-            protected Result check() throws Exception {
-                ObjectMapper objectMapper = new ObjectMapper();
-                byte[] resource = Util.getResource("newBot.json");
-                NewBot newBot = objectMapper.readValue(resource, NewBot.class);
-                State state = getStorageFactory(config).create(newBot.id);
-                return state.saveState(newBot) ? Result.healthy() : Result.unhealthy("Failed to save the state");
-            }
-        });
-        env.healthChecks().register("Crypto", new HealthCheck() {
-            @Override
-            protected Result check() throws Exception {
-                try (Crypto crypto = getCryptoFactory(config).create(UUID.randomUUID().toString())) {
-                    crypto.newLastPreKey();
-                    crypto.newPreKeys(0, 8);
-                    return Result.healthy();
-                }
-            }
-        });
-        env.healthChecks().register("Alice2Bob", new Alice2Bob(getCryptoFactory(config)));
-        env.healthChecks().register("Outbound", new Outbound(client));
-        env.healthChecks().register("JCEPolicy", new HealthCheck() {
-            @Override
-            protected Result check() throws Exception {
-                byte[] otrKey = new byte[32];
-                byte[] iv = new byte[16];
-                byte[] data = new byte[1024];
+        final CryptoFactory cryptoFactory = getCryptoFactory(config);
+        final StorageFactory storageFactory = getStorageFactory(config);
 
-                Random random = new Random();
-                random.nextBytes(otrKey);
-                random.nextBytes(iv);
-                random.nextBytes(data);
-                Util.encrypt(otrKey, data, iv);
-                return Result.healthy();
-            }
-        });
+        env.healthChecks().register("Storage", new StorageHealthCheck(storageFactory));
+        env.healthChecks().register("Crypto", new CryptoHealthCheck(cryptoFactory));
+        env.healthChecks().register("Alice2Bob", new Alice2Bob(cryptoFactory));
+        env.healthChecks().register("Outbound", new Outbound(client));
 
         env.metrics().register("logger.errors", (Gauge<Integer>) Logger::getErrorCount);
         env.metrics().register("logger.warnings", (Gauge<Integer>) Logger::getWarningCount);

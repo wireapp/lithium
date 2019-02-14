@@ -18,6 +18,8 @@
 
 package com.wire.bots.sdk.tools;
 
+import com.wire.bots.sdk.Configuration;
+
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
@@ -65,7 +67,8 @@ public class Util {
         return cipher.doFinal(bytes);
     }
 
-    public static SecretKey genKey(char[] password, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public static SecretKey genKey(char[] password, byte[] salt)
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
         KeySpec spec = new PBEKeySpec(password, salt, 65536, 256);
         SecretKey tmp = factory.generateSecret(spec);
@@ -100,7 +103,8 @@ public class Util {
         return new String(byteArray);
     }
 
-    public static String getHmacSHA1(String payload, String secret) throws NoSuchAlgorithmException, InvalidKeyException {
+    public static String getHmacSHA1(String payload, String secret)
+            throws NoSuchAlgorithmException, InvalidKeyException {
         Mac hmac = Mac.getInstance(HMAC_SHA_1);
         hmac.init(new SecretKeySpec(secret.getBytes(Charset.forName("UTF-8")), HMAC_SHA_1));
         byte[] bytes = hmac.doFinal(payload.getBytes(Charset.forName("UTF-8")));
@@ -138,12 +142,12 @@ public class Util {
     }
 
     public static String getDomain() {
-        String env = System.getProperty("env", "prod");
+        String env = Configuration.propOrEnv("env", "prod");
         return env.equals("prod") ? "wire.com" : "zinfra.io";
     }
 
     public static String getHost() {
-        String env = System.getProperty("env", "prod");
+        String env = Configuration.propOrEnv("env", "prod");
         return String.format("https://%s-nginz-https.%s", env, Util.getDomain());
     }
 

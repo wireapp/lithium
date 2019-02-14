@@ -28,6 +28,7 @@ import com.wire.bots.sdk.user.model.User;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Base64;
@@ -37,12 +38,21 @@ public class LoginClient {
     private final WebTarget loginPath;
 
     public LoginClient(Client client) {
+        String host = host();
         loginPath = client
-                .target(Util.getHost())
+                .target(host)
                 .path("login");
         clientsPath = client
-                .target(Util.getHost())
+                .target(host)
                 .path("clients");
+    }
+
+    public static String host() {
+        return Util.getHost();
+    }
+
+    static String bearer(String token) {
+        return "Bearer " + token;
     }
 
     public User login(String email, String password) throws HttpException {
@@ -59,7 +69,7 @@ public class LoginClient {
             throw new HttpException(response.readEntity(String.class), response.getStatus());
 
         User ret = response.readEntity(User.class);
-        String cookie = response.getStringHeaders().getFirst("Set-Cookie");
+        String cookie = response.getStringHeaders().getFirst(HttpHeaders.SET_COOKIE);
         ret.setCookie(cookie);
         return ret;
     }
@@ -75,10 +85,10 @@ public class LoginClient {
         newClient.label = "wbotz";
         newClient.type = "permanent";
 
-        Response response = clientsPath.
-                request(MediaType.APPLICATION_JSON).
-                header("Authorization", "Bearer " + token).
-                post(Entity.entity(newClient, MediaType.APPLICATION_JSON));
+        Response response = clientsPath
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, bearer(token))
+                .post(Entity.entity(newClient, MediaType.APPLICATION_JSON));
 
         if (response.getStatus() >= 400)
             throw new HttpException(response.readEntity(String.class), response.getStatus());

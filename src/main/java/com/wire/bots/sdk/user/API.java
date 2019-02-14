@@ -64,8 +64,9 @@ public class API extends LoginClient {
         this.convId = convId;
         this.token = token;
 
+        String host = host();
         WebTarget target = client
-                .target(Util.getHost());
+                .target(host);
 
         conversationsPath = target.path("conversations");
         usersPath = target.path("users");
@@ -80,7 +81,7 @@ public class API extends LoginClient {
         Response response = accessPath.
                 request(MediaType.APPLICATION_JSON).
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
-                header("Cookie", cookie).
+                header(HttpHeaders.COOKIE, cookie).
                 post(Entity.entity(new Connection(), MediaType.APPLICATION_JSON));
 
         if (response.getStatus() >= 400) {
@@ -199,10 +200,6 @@ public class API extends LoginClient {
         }
 
         return response.readEntity(AssetKey.class);
-    }
-
-    private static String bearer(String token) {
-        return "Bearer " + token;
     }
 
     Conversation getConversation() throws IOException {

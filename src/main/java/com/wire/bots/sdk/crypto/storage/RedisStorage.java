@@ -13,11 +13,18 @@ import java.time.Duration;
 
 public class RedisStorage implements IStorage {
     private static final byte[] EMPTY = new byte[0];
-    private static final int TIMEOUT = 5000;
+    private static int timeout = 5000;
     private static JedisPool pool;
     private final String host;
     private final Integer port;
     private final String password;
+
+    public RedisStorage(String host, Integer port, String password, int timeout) {
+        this.host = host;
+        this.port = port;
+        this.password = password;
+        this.timeout = timeout;
+    }
 
     public RedisStorage(String host, Integer port, String password) {
         this.host = host;
@@ -28,13 +35,13 @@ public class RedisStorage implements IStorage {
     public RedisStorage(String host, Integer port) {
         this.host = host;
         this.port = port;
-        password = null;
+        this.password = null;
     }
 
     public RedisStorage(String host) {
         this.host = host;
-        password = null;
-        port = null;
+        this.password = null;
+        this.port = null;
     }
 
     private static JedisPoolConfig buildPoolConfig() {
@@ -56,9 +63,9 @@ public class RedisStorage implements IStorage {
         if (pool == null) {
             JedisPoolConfig poolConfig = buildPoolConfig();
             if (password != null && port != null)
-                pool = new JedisPool(poolConfig, host, port, TIMEOUT, password);
+                pool = new JedisPool(poolConfig, host, port, timeout, password);
             else if (port != null)
-                pool = new JedisPool(poolConfig, host, port, TIMEOUT);
+                pool = new JedisPool(poolConfig, host, port, timeout);
             else
                 pool = new JedisPool(poolConfig, host);
         }
