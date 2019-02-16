@@ -62,7 +62,7 @@ public class Endpoint {
         this.httpClient = httpClient;
         this.storageFactory = storageFactory;
         this.cryptoFactory = cryptoFactory;
-        clientManager = ClientManager.createClient();
+        this.clientManager = ClientManager.createClient();
     }
 
     /**
@@ -116,10 +116,14 @@ public class Endpoint {
     @OnClose
     public void onClose(Session closed, CloseReason reason) throws Exception {
         Logger.debug("Session closed: %s, %s", closed.getId(), reason);
-        NewBot state = storageFactory.create(user.getUserId().toString()).getState();
+        NewBot state = getState();
         String wss = Util.getWss(state.token, state.client);
         session = clientManager.connectToServer(this, new URI(wss));
         Logger.debug("New Session %s", this.session.getId());
+    }
+
+    private NewBot getState() throws IOException {
+        return storageFactory.create(user.getUserId().toString()).getState();
     }
 
     /**
@@ -130,28 +134,29 @@ public class Endpoint {
      * @throws Exception
      */
     private String initDevice(UUID userId, String password, String token) throws Exception {
-        State storage = storageFactory.create(userId.toString());
-        NewBot state = getState(userId, password, token, storage);
+        NewBot state = getState(password, token);
         state.token = token;
 
         // save the state with new token
+        State storage = storageFactory.create(userId.toString());
         storage.saveState(state);
         return state.client;
     }
 
-    private NewBot getState(UUID userId, String password, String token, State storage)
+    private NewBot getState(String password, String token)
             throws IOException, HttpException, CryptoException {
+        String botId = user.getUserId().toString();
         NewBot state;
         try {
-            state = storage.getState();
+            state = getState();
             Logger.info("initDevice: Existing ClientID: %s", state.client);
         } catch (IOException ex) {
             // register new device
-            try (Crypto crypto = cryptoFactory.create(userId.toString())) {
+            try (Crypto crypto = cryptoFactory.create(botId)) {
                 LoginClient loginClient = new LoginClient(httpClient);
 
                 state = new NewBot();
-                state.id = userId.toString();
+                state.id = botId;
                 state.client = loginClient.registerClient(crypto.newLastPreKey(), token, password);
 
                 Logger.info("initDevice: New ClientID: %s", state.client);
