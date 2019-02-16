@@ -25,6 +25,7 @@ import com.wire.bots.sdk.tools.Util;
 import com.wire.bots.sdk.user.model.NewClient;
 import com.wire.bots.sdk.user.model.User;
 
+import javax.naming.AuthenticationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -55,11 +56,11 @@ public class LoginClient {
         return "Bearer " + token;
     }
 
-    public User login(String email, String password) throws HttpException {
+    public User login(String email, String password) throws HttpException, AuthenticationException {
         return login(email, password, false);
     }
 
-    public User login(String email, String password, boolean persisted) throws HttpException {
+    public User login(String email, String password, boolean persisted) throws HttpException, AuthenticationException {
         User user = new User();
         user.setEmail(email);
         user.setPassword(password);
@@ -75,6 +76,7 @@ public class LoginClient {
         User ret = response.readEntity(User.class);
         String cookie = response.getStringHeaders().getFirst(HttpHeaders.SET_COOKIE);
         ret.setCookie(cookie);
+        ret.setUserId(User.extractUserId(ret.getToken()));
         return ret;
     }
 

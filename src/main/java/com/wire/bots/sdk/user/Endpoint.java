@@ -40,7 +40,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -80,23 +79,19 @@ public class Endpoint {
 
         String accessToken = user.getToken();
 
-        UUID userId = User.extractUserId(accessToken);
-        user.setUserId(userId);
-
-        String clientId = initDevice(userId, password, accessToken);
+        String clientId = initDevice(password, accessToken);
         user.setClientId(clientId);
 
         if (persisted)
-            initRenewal(RENEW_PERIOD_MINUTES);
+            initRenewal();
 
         return user;
     }
 
-    public Session connectWebSocket(UserMessageResource userMessageResource, URI wss)
+    public void connectWebSocket(UserMessageResource userMessageResource, URI wss)
             throws IOException, DeploymentException {
         this.userMessageResource = userMessageResource;
         this.session = clientManager.connectToServer(this, wss);
-        return session;
     }
 
     @OnMessage
@@ -116,29 +111,28 @@ public class Endpoint {
     @OnClose
     public void onClose(Session closed, CloseReason reason) throws Exception {
         Logger.debug("Session closed: %s, %s", closed.getId(), reason);
-        NewBot state = initState();
+        NewBot state = getState();
         String wss = Util.getWss(state.token, state.client);
         session = clientManager.connectToServer(this, new URI(wss));
         Logger.debug("New Session %s", this.session.getId());
     }
 
-    private NewBot initState() throws IOException {
+    private NewBot getState() throws IOException {
         return storageFactory.create(user.getUserId().toString()).getState();
     }
 
     /**
-     * @param userId
      * @param password
      * @param token
      * @return ClientId
      * @throws Exception
      */
-    private String initDevice(UUID userId, String password, String token) throws Exception {
+    private String initDevice(String password, String token) throws Exception {
         NewBot state = initState(password, token);
         state.token = token;
 
         // save the state with new token
-        State storage = storageFactory.create(userId.toString());
+        State storage = storageFactory.create(user.getUserId().toString());
         storage.saveState(state);
         return state.client;
     }
@@ -147,7 +141,7 @@ public class Endpoint {
         String botId = user.getUserId().toString();
         NewBot state;
         try {
-            state = initState();
+            state = getState();
             Logger.info("initDevice: Existing ClientID: %s", state.client);
         } catch (IOException ex) {
             // register new device
@@ -164,7 +158,7 @@ public class Endpoint {
         return state;
     }
 
-    private void initRenewal(int periodMinutes) {
+    private void initRenewal() {
         Timer timer = new Timer("RenewToken");
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
@@ -178,10 +172,12 @@ public class Endpoint {
                     storage.saveState(state);
 
                     Logger.debug("New access token: %s", newUser.getToken());
+
+                    session.close();
                 } catch (Exception e) {
                     Logger.error("Failed periodic access_token renewal: " + e.getMessage());
                 }
             }
-        }, TimeUnit.MINUTES.toMillis(periodMinutes), TimeUnit.MINUTES.toMillis(periodMinutes));
+        }, TimeUnit.MINUTES.toMillis(RENEW_PERIOD_MINUTES), TimeUnit.MINUTES.toMillis(RENEW_PERIOD_MINUTES));
     }
 }
