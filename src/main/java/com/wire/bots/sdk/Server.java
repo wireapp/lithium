@@ -36,9 +36,11 @@ import com.wire.bots.sdk.server.tasks.ConversationTask;
 import com.wire.bots.sdk.state.FileState;
 import com.wire.bots.sdk.tools.AuthValidator;
 import com.wire.bots.sdk.tools.Logger;
+import com.wire.bots.sdk.tools.Util;
 import com.wire.bots.sdk.user.Endpoint;
 import com.wire.bots.sdk.user.UserClientRepo;
 import com.wire.bots.sdk.user.UserMessageResource;
+import com.wire.bots.sdk.user.model.User;
 import io.dropwizard.Application;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.client.JerseyClientConfiguration;
@@ -52,6 +54,7 @@ import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 import javax.ws.rs.client.Client;
+import java.net.URI;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -162,9 +165,8 @@ public abstract class Server<Config extends Configuration> extends Application<C
     }
 
     private ClientRepo runInUserMode(Config config, Environment env, Client client) throws Exception {
-        String email = System.getProperty("email");
-        String password = System.getProperty("password");
-        String listening = System.getProperty("listening");
+        String email = Configuration.propOrEnv("email", true);
+        String password = Configuration.propOrEnv("password", true);
 
         StorageFactory storageFactory = getStorageFactory(config);
         CryptoFactory cryptoFactory = getCryptoFactory(config);
@@ -172,12 +174,14 @@ public abstract class Server<Config extends Configuration> extends Application<C
         UserClientRepo clientRepo = new UserClientRepo(client, cryptoFactory, storageFactory);
 
         Endpoint ep = new Endpoint(client, cryptoFactory, storageFactory);
-        String userId = ep.signIn(email, password, true);
-        Logger.info(String.format("Logged in as User: %s userId: %s", email, userId));
+        User user = ep.signIn(email, password, true);
+        Logger.info("Logged in as User: %s userId: %s", email, user.getUserId());
 
         MessageHandlerBase handler = createHandler(config, env);
-        if (listening != null && listening.equalsIgnoreCase("true"))
-            ep.connectWebSocket(new UserMessageResource(handler, clientRepo));
+        UserMessageResource userMessageResource = new UserMessageResource(handler, clientRepo);
+        String wss = Util.getWss(user.getToken(), user.getClientId());
+
+        ep.connectWebSocket(userMessageResource, new URI(wss));
 
         return clientRepo;
     }

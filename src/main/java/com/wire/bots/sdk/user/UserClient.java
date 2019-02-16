@@ -44,7 +44,7 @@ public class UserClient implements WireClient {
     private final NewBot state;
     private Devices devices = null;
 
-    UserClient(Client httpClient, Crypto crypto, State storage, String conv) throws IOException {
+    UserClient(Client httpClient, Crypto crypto, State storage, UUID conv) throws IOException {
         this.crypto = crypto;
         this.state = storage.getState();
         state.conversation = new Conversation();
@@ -206,7 +206,7 @@ public class UserClient implements WireClient {
     }
 
     @Override
-    public String getConversationId() {
+    public UUID getConversationId() {
         return state.conversation.id;
     }
 
@@ -216,12 +216,12 @@ public class UserClient implements WireClient {
     }
 
     @Override
-    public Collection<User> getUsers(Collection<String> userIds) throws IOException {
+    public Collection<User> getUsers(Collection<String> userIds) {
         return api.getUsers(userIds);
     }
 
     @Override
-    public User getUser(String userId) throws IOException {
+    public User getUser(String userId) {
         Collection<User> users = api.getUsers(Collections.singleton(userId));
         return users.iterator().next();
     }

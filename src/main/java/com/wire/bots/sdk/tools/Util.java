@@ -146,6 +146,15 @@ public class Util {
         return env.equals("prod") ? "wire.com" : "zinfra.io";
     }
 
+    public static String getWss(String token, String clientId) {
+        String env = Configuration.propOrEnv("env", "prod");
+        return String.format("wss://%s-nginz-ssl.%s/await?access_token=%s&client=%s",
+                env,
+                getDomain(),
+                token,
+                clientId);
+    }
+
     public static String getHost() {
         String env = Configuration.propOrEnv("env", "prod");
         return String.format("https://%s-nginz-https.%s", env, Util.getDomain());

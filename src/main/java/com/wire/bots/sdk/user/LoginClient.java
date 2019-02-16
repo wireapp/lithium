@@ -56,12 +56,16 @@ public class LoginClient {
     }
 
     public User login(String email, String password) throws HttpException {
+        return login(email, password, false);
+    }
+
+    public User login(String email, String password, boolean persisted) throws HttpException {
         User user = new User();
         user.setEmail(email);
         user.setPassword(password);
 
         Response response = loginPath.
-                queryParam("persist", false).
+                queryParam("persist", persisted).
                 request(MediaType.APPLICATION_JSON).
                 post(Entity.entity(user, MediaType.APPLICATION_JSON));
 

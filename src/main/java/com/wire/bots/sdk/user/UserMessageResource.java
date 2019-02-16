@@ -5,18 +5,18 @@ import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.server.model.InboundMessage;
 import com.wire.bots.sdk.server.resources.MessageResourceBase;
 
+import java.util.UUID;
+
 public class UserMessageResource extends MessageResourceBase {
-    private UserClientRepo repo;
+    private UserClientRepo userClientRepo;
 
     public UserMessageResource(MessageHandlerBase handler, UserClientRepo repo) {
         super(handler, repo);
-        this.repo = repo;
+        this.userClientRepo = repo;
     }
 
-    void onNewMessage(String bot, String convId, InboundMessage inbound) throws Exception {
-        WireClient client = repo.getWireClient(bot, convId);
-        if (client != null) {
-            handleMessage(inbound, client);
-        }
+    void onNewMessage(UUID bot, UUID convId, InboundMessage inbound) throws Exception {
+        WireClient client = userClientRepo.getWireClient(bot, convId);
+        handleMessage(inbound, client);
     }
 }

@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.UUID;
 
 /**
  * Thread safe class for postings into this conversation
@@ -183,7 +184,7 @@ public interface WireClient extends Closeable {
     /**
      * @return Conversation ID as UUID
      */
-    String getConversationId();
+    UUID getConversationId();
 
     /**
      * @return Device ID as returned by the Wire Backend

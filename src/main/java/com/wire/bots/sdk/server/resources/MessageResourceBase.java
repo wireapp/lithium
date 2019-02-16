@@ -66,7 +66,7 @@ public abstract class MessageResourceBase {
                 }
 
                 // Send dummy message just initialize the session for the new member
-                client.sendReaction(UUID.randomUUID().toString(), "");
+                client.sendReaction(UUID.randomUUID().toString(), "");   //todo hack
             }
             break;
             case "conversation.member-leave": {
@@ -111,7 +111,7 @@ public abstract class MessageResourceBase {
             break;
             // Legacy code ends here
             default:
-                Logger.warning("Unknown event: %s, bot: %s", inbound.type, client.getId());
+                Logger.debug("Unknown event: %s, bot: %s", inbound.type, client.getId());
                 break;
         }
     }

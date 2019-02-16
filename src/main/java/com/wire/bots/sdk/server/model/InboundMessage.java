@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.UUID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InboundMessage {
@@ -31,7 +32,7 @@ public class InboundMessage {
     public String type;
     @JsonProperty
     @NotNull
-    public String conversation;
+    public UUID conversation;
     @JsonProperty
     @NotNull
     public String from;

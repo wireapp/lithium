@@ -225,7 +225,7 @@ public class BotClient implements WireClient {
     }
 
     @Override
-    public String getConversationId() {
+    public UUID getConversationId() {
         return state.conversation.id;
     }
 

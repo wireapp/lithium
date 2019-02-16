@@ -61,14 +61,13 @@ public class Configuration extends io.dropwizard.Configuration {
     public DB db;
 
     public boolean userMode = false;
-    
-    private static String propOrEnv(String prop, boolean strict) {
+
+    public static String propOrEnv(String prop, boolean strict) {
         final String env = prop.replace('.', '_').toUpperCase();
         final String val = System.getProperty(prop, System.getenv(env));
         if (val == null && strict) {
             throw new ConfigValueNotFoundException(prop + " (" + env + ") not found");
         }
-
         return val;
     }
 
