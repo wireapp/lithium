@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit;
  */
 @ClientEndpoint
 public class Endpoint {
-    private static final int RENEW_PERIOD_MINUTES = 12;
+    private static final int RENEW_PERIOD_MINUTES = 15;
 
     private final Client httpClient;
     private final StorageFactory storageFactory;
@@ -116,13 +116,13 @@ public class Endpoint {
     @OnClose
     public void onClose(Session closed, CloseReason reason) throws Exception {
         Logger.debug("Session closed: %s, %s", closed.getId(), reason);
-        NewBot state = getState();
+        NewBot state = initState();
         String wss = Util.getWss(state.token, state.client);
         session = clientManager.connectToServer(this, new URI(wss));
         Logger.debug("New Session %s", this.session.getId());
     }
 
-    private NewBot getState() throws IOException {
+    private NewBot initState() throws IOException {
         return storageFactory.create(user.getUserId().toString()).getState();
     }
 
@@ -134,7 +134,7 @@ public class Endpoint {
      * @throws Exception
      */
     private String initDevice(UUID userId, String password, String token) throws Exception {
-        NewBot state = getState(password, token);
+        NewBot state = initState(password, token);
         state.token = token;
 
         // save the state with new token
@@ -143,12 +143,11 @@ public class Endpoint {
         return state.client;
     }
 
-    private NewBot getState(String password, String token)
-            throws IOException, HttpException, CryptoException {
+    private NewBot initState(String password, String token) throws IOException, HttpException, CryptoException {
         String botId = user.getUserId().toString();
         NewBot state;
         try {
-            state = getState();
+            state = initState();
             Logger.info("initDevice: Existing ClientID: %s", state.client);
         } catch (IOException ex) {
             // register new device
