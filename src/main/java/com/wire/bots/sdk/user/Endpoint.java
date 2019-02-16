@@ -28,6 +28,7 @@ import com.wire.bots.sdk.server.model.InboundMessage;
 import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.state.State;
 import com.wire.bots.sdk.tools.Logger;
+import com.wire.bots.sdk.tools.Util;
 import com.wire.bots.sdk.user.model.Message;
 import com.wire.bots.sdk.user.model.User;
 import org.glassfish.tyrus.client.ClientManager;
@@ -54,11 +55,14 @@ public class Endpoint {
     private final CryptoFactory cryptoFactory;
     private UserMessageResource userMessageResource;
     private User user;
+    private ClientManager clientManager;
+    private Session session;
 
     public Endpoint(Client httpClient, CryptoFactory cryptoFactory, StorageFactory storageFactory) {
         this.httpClient = httpClient;
         this.storageFactory = storageFactory;
         this.cryptoFactory = cryptoFactory;
+        clientManager = ClientManager.createClient();
     }
 
     /**
@@ -91,9 +95,8 @@ public class Endpoint {
     public Session connectWebSocket(UserMessageResource userMessageResource, URI wss)
             throws IOException, DeploymentException {
         this.userMessageResource = userMessageResource;
-
-        ClientManager clientManager = ClientManager.createClient();
-        return clientManager.connectToServer(this, wss);
+        this.session = clientManager.connectToServer(this, wss);
+        return session;
     }
 
     @OnMessage
@@ -102,7 +105,6 @@ public class Endpoint {
         Message message = mapper.readValue(rawInput, Message.class);
 
         for (InboundMessage payload : message.payload) {
-            Logger.debug(payload.type);
             try {
                 userMessageResource.onNewMessage(user.getUserId(), payload.conversation, payload);
             } catch (Exception e) {
@@ -112,9 +114,12 @@ public class Endpoint {
     }
 
     @OnClose
-    public void onClose(Session session, CloseReason reason) throws Exception {
-        Logger.warning("Session closed: %s, %s", session.getId(), reason);
-        //   client.connectToServer(this, getPath());
+    public void onClose(Session closed, CloseReason reason) throws Exception {
+        Logger.debug("Session closed: %s, %s", closed.getId(), reason);
+        NewBot state = storageFactory.create(user.getUserId().toString()).getState();
+        String wss = Util.getWss(state.token, state.client);
+        session = clientManager.connectToServer(this, new URI(wss));
+        Logger.debug("New Session %s", this.session.getId());
     }
 
     /**
@@ -164,9 +169,11 @@ public class Endpoint {
                     NewBot state = storage.getState();
 
                     API api = new API(httpClient, null, state.token);
-                    User user = api.renewAccessToken(Endpoint.this.user.getCookie());
-                    state.token = user.getToken();
+                    User newUser = api.renewAccessToken(user.getCookie());
+                    state.token = newUser.getToken();
                     storage.saveState(state);
+
+                    Logger.debug("New access token: %s", newUser.getToken());
                 } catch (Exception e) {
                     Logger.error("Failed periodic access_token renewal: " + e.getMessage());
                 }

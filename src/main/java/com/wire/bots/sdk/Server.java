@@ -165,6 +165,8 @@ public abstract class Server<Config extends Configuration> extends Application<C
     }
 
     private ClientRepo runInUserMode(Config config, Environment env, Client client) throws Exception {
+        Logger.info("Starting in User Mode");
+
         String email = Configuration.propOrEnv("email", true);
         String password = Configuration.propOrEnv("password", true);
 
@@ -175,7 +177,11 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
         Endpoint ep = new Endpoint(client, cryptoFactory, storageFactory);
         User user = ep.signIn(email, password, true);
-        Logger.info("Logged in as User: %s userId: %s", email, user.getUserId());
+        Logger.info("Logged in as: %s userId: %s:%s token: %s",
+                email,
+                user.getUserId(),
+                user.getClientId(),
+                user.getToken());
 
         MessageHandlerBase handler = createHandler(config, env);
         UserMessageResource userMessageResource = new UserMessageResource(handler, clientRepo);
