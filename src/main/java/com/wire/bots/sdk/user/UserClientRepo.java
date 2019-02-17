@@ -22,4 +22,17 @@ public class UserClientRepo extends ClientRepo {
         State storage = storageFactory.create(botId.toString());
         return new UserClient(httpClient, crypto, storage, conv);
     }
+
+    @Override
+    public void removeClient(String botId) {
+
+    }
+
+    /*
+    We dont want to purge the state when running in UserMode
+     */
+    @Override
+    public void purgeBot(String botId) {
+
+    }
 }

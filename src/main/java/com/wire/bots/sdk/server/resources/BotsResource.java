@@ -66,7 +66,7 @@ public class BotsResource {
         if (!validator.validate(auth)) {
             Logger.warning("Invalid auth '%s'", auth);
             return Response
-                    .status(403)
+                    .status(401)
                     .entity(new ErrorMessage("Invalid Authorization: " + auth))
                     .build();
         }
