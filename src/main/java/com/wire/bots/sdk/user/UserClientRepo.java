@@ -13,19 +13,24 @@ import java.io.IOException;
 import java.util.UUID;
 
 public class UserClientRepo extends ClientRepo {
-    public UserClientRepo(Client httpClient, CryptoFactory cryptoFactory, StorageFactory storageFactory) {
-        super(httpClient, cryptoFactory, storageFactory);
+    final private Object lock = new Object();
+    private Crypto crypto;
+    private State state;
+
+    public UserClientRepo(Client httpClient, CryptoFactory cf, StorageFactory sf) {
+        super(httpClient, cf, sf);
     }
 
     public WireClient getWireClient(UUID botId, UUID conv) throws CryptoException, IOException {
-        Crypto crypto = cryptoFactory.create(botId.toString());
-        State storage = storageFactory.create(botId.toString());
-        return new UserClient(httpClient, crypto, storage, conv);
-    }
-
-    @Override
-    public void removeClient(String botId) {
-
+        synchronized (lock) {
+            if (crypto == null || crypto.isClosed()) {
+                crypto = cf.create(botId.toString());
+            }
+            if (state == null) {
+                state = sf.create(botId.toString());
+            }
+        }
+        return new UserClient(httpClient, crypto, state, conv);
     }
 
     /*

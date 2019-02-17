@@ -42,14 +42,15 @@ public class UserClient implements WireClient {
     private final API api;
     private final Crypto crypto;
     private final NewBot state;
+    private final UUID conv;
     private Devices devices = null;
 
     UserClient(Client httpClient, Crypto crypto, State storage, UUID conv) throws IOException {
         this.crypto = crypto;
-        this.state = storage.getState();
-        state.conversation = new Conversation();
-        state.conversation.id = conv;
-        this.api = new API(httpClient, conv, state.token);
+        this.conv = conv;
+
+        state = storage.getState();
+        api = new API(httpClient, conv, state.token);
     }
 
     public void sendText(String txt) throws Exception {
@@ -207,7 +208,7 @@ public class UserClient implements WireClient {
 
     @Override
     public UUID getConversationId() {
-        return state.conversation.id;
+        return conv;
     }
 
     @Override
@@ -264,6 +265,9 @@ public class UserClient implements WireClient {
         }
     }
 
+    /*
+    This will close the Cryptobox and render this object useless
+     */
     @Override
     public void close() throws IOException {
         crypto.close();

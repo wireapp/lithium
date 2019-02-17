@@ -54,11 +54,11 @@ public class API extends LoginClient {
     private final WebTarget selfPath;
 
     private final String token;
-    private final UUID convId;
+    private final String convId;
 
     public API(Client client, UUID convId, String token) {
         super(client);
-        this.convId = convId;
+        this.convId = convId.toString();
         this.token = token;
 
         String host = host();
@@ -90,7 +90,7 @@ public class API extends LoginClient {
 
     Devices sendMessage(OtrMessage msg, boolean ignoreMissing) throws HttpException {
         Response response = conversationsPath.
-                path(convId.toString()).
+                path(convId).
                 path("otr/messages").
                 queryParam("ignore_missing", ignoreMissing).
                 request(MediaType.APPLICATION_JSON).
@@ -201,7 +201,7 @@ public class API extends LoginClient {
 
     Conversation getConversation() throws IOException {
         Response response = conversationsPath.
-                path(convId.toString()).
+                path(convId).
                 request().
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
                 get();
@@ -224,7 +224,7 @@ public class API extends LoginClient {
         Response response = teamsPath.
                 path(teamId.toString()).
                 path("conversations").
-                path(convId.toString()).
+                path(convId).
                 request().
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
                 delete();
@@ -242,7 +242,7 @@ public class API extends LoginClient {
         service.provider = providerId;
 
         Response response = conversationsPath.
-                path(convId.toString()).
+                path(convId).
                 path("bots").
                 request().
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
@@ -265,7 +265,7 @@ public class API extends LoginClient {
         newConv.users = Arrays.asList(userIds);
 
         Response response = conversationsPath.
-                path(convId.toString()).
+                path(convId).
                 path("members").
                 request().
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
@@ -342,7 +342,7 @@ public class API extends LoginClient {
 
     public void leaveConversation(UUID user) throws HttpException {
         Response response = conversationsPath
-                .path(convId.toString())
+                .path(convId)
                 .path("members")
                 .path(user.toString())
                 .request(MediaType.APPLICATION_JSON)
