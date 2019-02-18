@@ -26,13 +26,12 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class InboundMessage {
+public class Payload {
     @JsonProperty
     @NotNull
     public String type;
-    @JsonProperty
-    @NotNull
-    public UUID conversation;
+    @JsonProperty("conversation")
+    public UUID convId;
     @JsonProperty
     @NotNull
     public String from;
@@ -42,6 +41,8 @@ public class InboundMessage {
     @JsonProperty
     @NotNull
     public Data data;
+    @JsonProperty
+    public UUID team;
 
     // legacy
     @JsonProperty
@@ -57,8 +58,6 @@ public class InboundMessage {
         public String recipient;
         @JsonProperty
         public String text;
-        @JsonProperty
-        public String data;
         @JsonProperty("user_ids")
         public ArrayList<String> userIds;
         @JsonProperty
@@ -69,6 +68,8 @@ public class InboundMessage {
         public String id;
         @JsonProperty
         public String key;
+        @JsonProperty
+        public UUID user;
     }
 
     // legacy

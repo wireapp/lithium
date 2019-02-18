@@ -24,8 +24,8 @@ import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.factories.CryptoFactory;
 import com.wire.bots.sdk.factories.StorageFactory;
-import com.wire.bots.sdk.server.model.InboundMessage;
 import com.wire.bots.sdk.server.model.NewBot;
+import com.wire.bots.sdk.server.model.Payload;
 import com.wire.bots.sdk.state.State;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
@@ -96,12 +96,25 @@ public class Endpoint {
 
     @OnMessage
     public void onMessage(InputStream rawInput) throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        Message message = mapper.readValue(rawInput, Message.class);
+        byte[] bytes = Util.toByteArray(rawInput);
+        Logger.debug("Endpoint:onMessage %s", new String(bytes));
 
-        for (InboundMessage payload : message.payload) {
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(bytes, Message.class);
+
+        for (Payload payload : message.payload) {
             try {
-                userMessageResource.onNewMessage(user.getUserId(), payload.conversation, payload);
+                switch (payload.type) {
+                    case "team.member-join":
+                        userMessageResource.onUpdate(payload);
+                        break;
+                    case "user.update":
+                        userMessageResource.onUpdate(payload);
+                        break;
+                    default:
+                        userMessageResource.onNewMessage(user.getUserId(), payload.convId, payload);
+                        break;
+                }
             } catch (Exception e) {
                 Logger.error("Endpoint:onMessage: %s", e);
             }

@@ -20,12 +20,14 @@ package com.wire.bots.sdk.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.wire.bots.sdk.server.model.InboundMessage;
+import com.wire.bots.sdk.server.model.Payload;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Message {
     @JsonProperty
     public String id;
     @JsonProperty
-    public InboundMessage[] payload;
+    public Payload[] payload;
+    @JsonProperty("transient")
+    public boolean trans;
 }

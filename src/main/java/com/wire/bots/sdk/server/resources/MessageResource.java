@@ -24,7 +24,7 @@ import com.wire.bots.sdk.MessageHandlerBase;
 import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.exceptions.MissingStateException;
 import com.wire.bots.sdk.server.model.ErrorMessage;
-import com.wire.bots.sdk.server.model.InboundMessage;
+import com.wire.bots.sdk.server.model.Payload;
 import com.wire.bots.sdk.tools.AuthValidator;
 import com.wire.bots.sdk.tools.Logger;
 import io.swagger.annotations.*;
@@ -55,7 +55,7 @@ public class MessageResource extends MessageResourceBase {
             @ApiResponse(code = 200, message = "Alles gute")})
     public Response newMessage(@ApiParam("Service token") @HeaderParam("Authorization") @NotNull String auth,
                                @ApiParam("Bot instance id") @PathParam("bot") String botId,
-                               @ApiParam @Valid @NotNull InboundMessage inbound) {
+                               @ApiParam @Valid @NotNull Payload inbound) {
 
         if (!validator.validate(auth)) {
             Logger.warning("%s, Invalid auth. Got: '%s'", botId, auth);

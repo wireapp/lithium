@@ -8,7 +8,7 @@ import com.wire.bots.sdk.MessageHandlerBase;
 import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.GenericMessageProcessor;
-import com.wire.bots.sdk.server.model.InboundMessage;
+import com.wire.bots.sdk.server.model.Payload;
 import com.wire.bots.sdk.tools.Logger;
 
 import java.util.ArrayList;
@@ -26,20 +26,21 @@ public abstract class MessageResourceBase {
         this.repo = repo;
     }
 
-    protected void handleMessage(InboundMessage inbound, WireClient client) throws Exception {
+    protected void handleMessage(Payload payload, WireClient client) throws Exception {
+        Payload.Data data = payload.data;
         String botId = client.getId();
-        InboundMessage.Data data = inbound.data;
-        switch (inbound.type) {
+
+        switch (payload.type) {
             case "conversation.otr-message-add": {
-                Logger.debug("conversation.otr-message-add: bot: %s from: %s:%s", botId, inbound.from, data.sender);
+                Logger.debug("conversation.otr-message-add: bot: %s from: %s:%s", botId, payload.from, data.sender);
 
                 GenericMessageProcessor processor = new GenericMessageProcessor(client, handler);
 
-                Messages.GenericMessage message = decrypt(client, inbound);
+                Messages.GenericMessage message = decrypt(client, payload);
 
-                handler.onEvent(client, inbound.from, message);
+                handler.onEvent(client, payload.from, message);
 
-                boolean process = processor.process(inbound.from, data.sender, message);
+                boolean process = processor.process(payload.from, data.sender, message);
                 if (process)
                     processor.cleanUp(message.getMessageId());
             }
@@ -74,7 +75,6 @@ public abstract class MessageResourceBase {
 
                 // Check if this bot got removed from the conversation
                 if (data.userIds.remove(botId)) {
-                    repo.removeClient(botId);
                     handler.onBotRemoved(botId);
                     repo.purgeBot(botId);
                 }
@@ -88,35 +88,51 @@ public abstract class MessageResourceBase {
                 Logger.debug("conversation.delete: bot: %s", botId);
 
                 // Cleanup
-                repo.removeClient(botId);
                 handler.onBotRemoved(botId);
                 repo.purgeBot(botId);
             }
             break;
             case "conversation.create": {
+                Logger.debug("conversation.create: bot: %s", botId);
+
                 client.sendReaction(UUID.randomUUID().toString(), ""); //todo hack
                 handler.onNewConversation(client);
             }
             break;
             case "conversation.rename": {
+                Logger.debug("conversation.rename: bot: %s", botId);
                 handler.onConversationRename(client);
             }
             break;
-            // Legacy code starts here
+            // UserMode code starts here
             case "user.connection": {
-                if (inbound.connection.status.equals("pending")) {
-                    client.acceptConnection(inbound.connection.to);
+                Logger.debug("user.connection: bot: %s, status: %s", botId, payload.connection.status);
+                if (payload.connection.status.equals("pending")) {
+                    client.acceptConnection(payload.connection.to);
                 }
             }
             break;
-            // Legacy code ends here
+            // UserMode code ends here
             default:
-                Logger.debug("Unknown event: %s, bot: %s", inbound.type, client.getId());
+                Logger.debug("Unknown event: %s", payload.type);
                 break;
         }
     }
 
-    private Messages.GenericMessage decrypt(WireClient client, InboundMessage inbound)
+    protected void handleUpdate(Payload payload) {
+        switch (payload.type) {
+            case "team.member-join": {
+                Logger.debug("team.member-join: team: %s, user: %s", payload.team, payload.data.user);
+                handler.onNewTeamMember(payload.team, payload.data.user);
+            }
+            break;
+            default:
+                Logger.debug("Unknown event: %s", payload.type);
+                break;
+        }
+    }
+
+    private Messages.GenericMessage decrypt(WireClient client, Payload inbound)
             throws CryptoException, InvalidProtocolBufferException {
         String userId = inbound.from;
         String clientId = inbound.data.sender;
