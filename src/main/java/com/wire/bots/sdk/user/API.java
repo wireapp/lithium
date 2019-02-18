@@ -58,7 +58,7 @@ public class API extends LoginClient {
 
     public API(Client client, UUID convId, String token) {
         super(client);
-        this.convId = convId.toString();
+        this.convId = convId != null ? convId.toString() : null;
         this.token = token;
 
         String host = host();
