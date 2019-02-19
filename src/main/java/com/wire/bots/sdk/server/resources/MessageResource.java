@@ -22,8 +22,9 @@ import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.sdk.ClientRepo;
 import com.wire.bots.sdk.MessageHandlerBase;
 import com.wire.bots.sdk.WireClient;
+import com.wire.bots.sdk.exceptions.MissingStateException;
 import com.wire.bots.sdk.server.model.ErrorMessage;
-import com.wire.bots.sdk.server.model.InboundMessage;
+import com.wire.bots.sdk.server.model.Payload;
 import com.wire.bots.sdk.tools.AuthValidator;
 import com.wire.bots.sdk.tools.Logger;
 import io.swagger.annotations.*;
@@ -52,35 +53,31 @@ public class MessageResource extends MessageResourceBase {
             @ApiResponse(code = 403, message = "Invalid Authorization", response = ErrorMessage.class),
             @ApiResponse(code = 503, message = "Missing bot's state object", response = ErrorMessage.class),
             @ApiResponse(code = 200, message = "Alles gute")})
-    public Response newMessage(@ApiParam("Service Authorization token") @NotNull @HeaderParam("Authorization") String auth,
-                               @ApiParam @PathParam("bot") String botId,
-                               @ApiParam @Valid @NotNull InboundMessage inbound) throws Exception {
+    public Response newMessage(@ApiParam("Service token") @HeaderParam("Authorization") @NotNull String auth,
+                               @ApiParam("Bot instance id") @PathParam("bot") String botId,
+                               @ApiParam @Valid @NotNull Payload inbound) {
 
         if (!validator.validate(auth)) {
             Logger.warning("%s, Invalid auth. Got: '%s'", botId, auth);
             return Response.
-                    status(403).
+                    status(401).
                     entity(new ErrorMessage("Invalid Authorization token")).
                     build();
         }
 
         try (WireClient client = repo.getClient(botId)) {
-            if (client == null) {
-                Logger.warning("MessageResource::newMessage: Missing state. bot: %s", botId);
-                return Response.
-                        status(503).
-                        entity(new ErrorMessage("Missing state")).
-                        build();
-            }
-
             handleMessage(inbound, client);
         } catch (CryptoException e) {
             Logger.error("MessageResource::newMessage: bot: %s %s", botId, e);
-            String msg = String.format("Failed to decrypt the message. Please retry. %s", e.getMessage());
-            repo.getClient(botId).sendText(msg);
-
+            respondWithError(botId, "Failed to decrypt the message. Please retry");
             return Response.
-                    status(400).
+                    status(503).
+                    entity(new ErrorMessage(e.getMessage())).
+                    build();
+        } catch (MissingStateException e) {
+            Logger.error("MessageResource::newMessage: bot: %s %s", botId, e);
+            return Response.
+                    status(410).
                     entity(new ErrorMessage(e.getMessage())).
                     build();
         } catch (Exception e) {
@@ -95,5 +92,13 @@ public class MessageResource extends MessageResourceBase {
                 ok().
                 status(200).
                 build();
+    }
+
+    private void respondWithError(String botId, String message) {
+        try (WireClient client = repo.getClient(botId)) {
+            client.sendText(message);
+        } catch (Exception e1) {
+            Logger.error("MessageResource::newMessage: bot: %s %s", botId, e1);
+        }
     }
 }

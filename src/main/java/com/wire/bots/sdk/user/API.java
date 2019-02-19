@@ -42,10 +42,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class API extends LoginClient {
     private final WebTarget conversationsPath;
@@ -59,9 +56,9 @@ public class API extends LoginClient {
     private final String token;
     private final String convId;
 
-    public API(Client client, String convId, String token) {
+    public API(Client client, UUID convId, String token) {
         super(client);
-        this.convId = convId;
+        this.convId = convId != null ? convId.toString() : null;
         this.token = token;
 
         String host = host();
@@ -77,7 +74,7 @@ public class API extends LoginClient {
         selfPath = target.path("self");
     }
 
-    String renewAccessToken(String cookie) throws HttpException {
+    com.wire.bots.sdk.user.model.User renewAccessToken(String cookie) throws HttpException {
         Response response = accessPath.
                 request(MediaType.APPLICATION_JSON).
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
@@ -88,7 +85,7 @@ public class API extends LoginClient {
             throw new HttpException(response.readEntity(String.class), response.getStatus());
         }
 
-        return response.readEntity(com.wire.bots.sdk.user.model.User.class).getToken();
+        return response.readEntity(com.wire.bots.sdk.user.model.User.class);
     }
 
     Devices sendMessage(OtrMessage msg, boolean ignoreMissing) throws HttpException {
@@ -223,9 +220,9 @@ public class API extends LoginClient {
         return ret;
     }
 
-    public boolean deleteConversation(String teamId) throws HttpException {
+    public boolean deleteConversation(UUID teamId) throws HttpException {
         Response response = teamsPath.
-                path(teamId).
+                path(teamId.toString()).
                 path("conversations").
                 path(convId).
                 request().
@@ -239,7 +236,7 @@ public class API extends LoginClient {
         return response.getStatus() == 200;
     }
 
-    public User addService(String serviceId, String providerId) throws IOException {
+    public User addService(UUID serviceId, UUID providerId) throws IOException {
         _Service service = new _Service();
         service.service = serviceId;
         service.provider = providerId;
@@ -259,7 +256,7 @@ public class API extends LoginClient {
         User user = response.readEntity(User.class);
         user.service = new Service();
         user.service.id = serviceId;
-        user.service.provider = providerId;
+        user.service.providerId = providerId;
         return user;
     }
 
@@ -282,7 +279,7 @@ public class API extends LoginClient {
         return response.readEntity(User.class);
     }
 
-    public Conversation createConversation(String name, String teamId, List<String> users, String token)
+    public Conversation createConversation(String name, UUID teamId, List<String> users, String token)
             throws HttpException {
         _NewConv newConv = new _NewConv();
         newConv.name = name;
@@ -310,11 +307,44 @@ public class API extends LoginClient {
         return ret;
     }
 
-    public void leaveConversation(String user) throws HttpException {
+    public Conversation createOne2One(UUID teamId, UUID serviceId, UUID providerId, String token)
+            throws HttpException {
+        _Service service = new _Service();
+        service.service = serviceId;
+        service.provider = providerId;
+
+        _NewConv newConv = new _NewConv();
+        newConv.service = service;
+
+        if (teamId != null) {
+            newConv.team = new _TeamInfo();
+            newConv.team.teamId = teamId;
+        }
+
+        Response response = conversationsPath
+                .path("one2one")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, bearer(token))
+                .post(Entity.entity(newConv, MediaType.APPLICATION_JSON));
+
+        if (response.getStatus() >= 400) {
+            throw new HttpException(response.readEntity(String.class), response.getStatus());
+        }
+
+        _Conv conv = response.readEntity(_Conv.class);
+
+        Conversation ret = new Conversation();
+        ret.name = conv.name;
+        ret.id = conv.id;
+        ret.members = conv.members.others;
+        return ret;
+    }
+
+    public void leaveConversation(UUID user) throws HttpException {
         Response response = conversationsPath
                 .path(convId)
                 .path("members")
-                .path(user)
+                .path(user.toString())
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, bearer(token))
                 .delete();
@@ -359,7 +389,7 @@ public class API extends LoginClient {
                 get(User.class);
     }
 
-    public String getTeam() {
+    public UUID getTeam() {
         _Teams res = teamsPath
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, bearer(token))
@@ -374,7 +404,7 @@ public class API extends LoginClient {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class _Conv {
         @JsonProperty
-        public String id;
+        public UUID id;
 
         @JsonProperty
         public String name;
@@ -391,14 +421,14 @@ public class API extends LoginClient {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     static class _Service {
-        public String service;
-        public String provider;
+        public UUID service;
+        public UUID provider;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     static class _Team {
         @JsonProperty
-        public String id;
+        public UUID id;
         @JsonProperty
         public String name;
     }
@@ -418,11 +448,14 @@ public class API extends LoginClient {
 
         @JsonProperty
         public List<String> users;
+
+        @JsonProperty
+        public _Service service;
     }
 
     static class _TeamInfo {
         @JsonProperty("teamid")
-        public String teamId;
+        public UUID teamId;
 
         @JsonProperty
         public boolean managed;

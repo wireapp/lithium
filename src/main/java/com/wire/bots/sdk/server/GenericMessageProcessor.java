@@ -24,6 +24,7 @@ import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.models.*;
 import com.wire.bots.sdk.tools.Logger;
 
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -60,7 +61,7 @@ public class GenericMessageProcessor {
 
     public boolean process(String userId, String sender, Messages.GenericMessage generic) {
         String messageId = generic.getMessageId();
-        String convId = client.getConversationId();
+        UUID convId = client.getConversationId();
 
         Messages.Text text = null;
         Messages.Asset asset = null;
@@ -94,7 +95,7 @@ public class GenericMessageProcessor {
         // Edit message
         if (generic.hasEdited() && generic.getEdited().hasText()) {
             Messages.MessageEdit edited = generic.getEdited();
-            TextMessage msg = new TextMessage(edited.getReplacingMessageId(), convId, sender, userId);
+            TextMessage msg = new TextMessage(edited.getReplacingMessageId(), convId.toString(), sender, userId);
             msg.setText(edited.getText().getContent());
 
             handler.onEditText(client, msg);
@@ -103,7 +104,7 @@ public class GenericMessageProcessor {
 
         // Text
         if (text != null && text.hasContent() && text.getLinkPreviewList().isEmpty()) {
-            TextMessage msg = new TextMessage(messageId, convId, sender, userId);
+            TextMessage msg = new TextMessage(messageId, convId.toString(), sender, userId);
             msg.setText(text.getContent());
 
             handler.onText(client, msg);
@@ -121,7 +122,7 @@ public class GenericMessageProcessor {
 
         if (generic.hasDeleted()) {
             String delMsgId = generic.getDeleted().getMessageId();
-            TextMessage msg = new TextMessage(delMsgId, convId, sender, userId);
+            TextMessage msg = new TextMessage(delMsgId, convId.toString(), sender, userId);
 
             handler.onDelete(client, msg);
             return true;
@@ -153,7 +154,7 @@ public class GenericMessageProcessor {
                         original.hasVideo(),
                         original.hasImage());
 
-                MessageAssetBase base = new MessageAssetBase(messageId, convId, sender, userId);
+                MessageAssetBase base = new MessageAssetBase(messageId, convId.toString(), sender, userId);
                 origin(base, original);
                 uploaded(base, remoteData);
 

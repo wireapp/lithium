@@ -21,14 +21,18 @@ package com.wire.bots.sdk.user.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.naming.AuthenticationException;
+import java.util.UUID;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
+    private UUID userId;
     private String email;
     private String password;
     private String cookie;
-
     @JsonProperty("access_token")
     private String token;
+    private String clientId;
 
     public void setEmail(String email) {
         this.email = email;
@@ -62,13 +66,29 @@ public class User {
         this.cookie = cookie;
     }
 
-    public String extractUserId() {
+    public static UUID extractUserId(String token) throws AuthenticationException {
         String[] pairs = token.split("\\.");
         for (String pair : pairs) {
             String[] vals = pair.split("=");
             if (vals.length == 2 && vals[0].equals("u"))
-                return vals[1];
+                return UUID.fromString(vals[1]);
         }
-        return null;
+        throw new AuthenticationException("Error extracting userId from token");
+    }
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 }

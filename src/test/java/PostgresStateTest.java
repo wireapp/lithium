@@ -26,7 +26,7 @@ public class PostgresStateTest {
         bot.locale = "en";
         bot.token = "token";
         bot.conversation = new Conversation();
-        bot.conversation.id = UUID.randomUUID().toString();
+        bot.conversation.id = UUID.randomUUID();
         bot.conversation.name = "conv";
 
         boolean b = storage.saveState(bot);

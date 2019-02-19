@@ -23,6 +23,7 @@ import com.wire.bots.sdk.models.*;
 import com.wire.bots.sdk.server.model.NewBot;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public abstract class MessageHandlerBase {
 
@@ -31,7 +32,7 @@ public abstract class MessageHandlerBase {
      *               -  id          : The unique user ID for the bot.
      *               -  client      : The client ID for the bot.
      *               -  origin      : The profile of the user who requested the bot, as it is returned from GET /bot/users.
-     *               -  conversation: The conversation as seen by the bot and as returned from GET /bot/conversation.
+     *               -  conversation: The convId as seen by the bot and as returned from GET /bot/convId.
      *               -  token       : The bearer token that the bot must use on inbound requests.
      *               -  locale      : The preferred locale for the bot to use, in form of an IETF language tag.
      * @return If TRUE is returned new bot instance is created for this conversation
@@ -74,8 +75,8 @@ public abstract class MessageHandlerBase {
     }
 
     /**
-     * @return Bot name that will be used for this conversation. If NULL is returned the Default Bot Name will be used
      * @param newBot
+     * @return Bot name that will be used for this conversation. If NULL is returned the Default Bot Name will be used
      */
     public String getName(NewBot newBot) {
         return null;
@@ -177,6 +178,10 @@ public abstract class MessageHandlerBase {
     }
 
     public void onDelete(WireClient client, TextMessage msg) {
+
+    }
+
+    public void onNewTeamMember(UUID teamId, UUID userId) {
 
     }
 }
