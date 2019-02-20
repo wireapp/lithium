@@ -9,6 +9,7 @@ import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.GenericMessageProcessor;
 import com.wire.bots.sdk.server.model.Payload;
+import com.wire.bots.sdk.user.UserClientRepo;
 import com.wire.bots.sdk.tools.Logger;
 
 import java.util.ArrayList;
@@ -108,7 +109,11 @@ public abstract class MessageResourceBase {
             case "user.connection": {
                 Logger.debug("user.connection: bot: %s, status: %s", botId, payload.connection.status);
                 if (payload.connection.status.equals("pending")) {
-                    client.acceptConnection(payload.connection.to);
+                    UUID convId = client.acceptConnection(payload.connection.to);
+
+                    try (WireClient c = ((UserClientRepo) repo).getWireClient(UUID.fromString(botId), convId)) {
+                        handler.onNewConversation(c);
+                    }
                 }
             }
             break;

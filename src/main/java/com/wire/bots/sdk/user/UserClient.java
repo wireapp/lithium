@@ -233,8 +233,8 @@ public class UserClient implements WireClient {
     }
 
     @Override
-    public void acceptConnection(String user) throws Exception {
-        api.acceptConnection(user);
+    public UUID acceptConnection(String user) throws Exception {
+        return api.acceptConnection(user);
     }
 
     private void postGenericMessage(IGeneric generic) throws Exception {
