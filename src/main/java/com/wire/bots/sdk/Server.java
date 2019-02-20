@@ -124,11 +124,13 @@ public abstract class Server<Config extends Configuration> extends Application<C
                 .withProvider(JacksonJsonProvider.class)
                 .build(getName());
 
+        MessageHandlerBase handler = createHandler(config, env);
+
         if (config.userMode) {
-            repo = runInUserMode(config, env, client);
-        } else {
-            repo = runInBotMode(config, env, client);
+            runInUserMode(config, handler);
         }
+
+        repo = runInBotMode(config, env, handler);
 
         initialize(config, env);
 
@@ -145,13 +147,11 @@ public abstract class Server<Config extends Configuration> extends Application<C
         return (botId) -> new CryptoFile(config.data, botId);
     }
 
-    private ClientRepo runInBotMode(Config config, Environment env, Client client) throws Exception {
+    private ClientRepo runInBotMode(Config config, Environment env, MessageHandlerBase handler) {
         StorageFactory storageFactory = getStorageFactory(config);
         CryptoFactory cryptoFactory = getCryptoFactory(config);
 
         ClientRepo repo = new ClientRepo(client, cryptoFactory, storageFactory);
-
-        MessageHandlerBase handler = createHandler(config, env);
 
         addResource(new StatusResource(), env);
 
@@ -164,7 +164,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
         return repo;
     }
 
-    private ClientRepo runInUserMode(Config config, Environment env, Client client) throws Exception {
+    private void runInUserMode(Config config, MessageHandlerBase handler) throws Exception {
         Logger.info("Starting in User Mode");
 
         String email = Configuration.propOrEnv("email", true);
@@ -183,13 +183,10 @@ public abstract class Server<Config extends Configuration> extends Application<C
                 user.getClientId(),
                 user.getToken());
 
-        MessageHandlerBase handler = createHandler(config, env);
         UserMessageResource userMessageResource = new UserMessageResource(handler, clientRepo);
         String wss = Util.getWss(user.getToken(), user.getClientId());
 
         ep.connectWebSocket(userMessageResource, new URI(wss));
-
-        return clientRepo;
     }
 
     protected void messageResource(Config config, Environment env, MessageHandlerBase handler, ClientRepo repo) {

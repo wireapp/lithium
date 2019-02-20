@@ -260,7 +260,7 @@ public class API extends LoginClient {
         return user;
     }
 
-    public User addParticipants(String... userIds) throws IOException {
+    public User addParticipants(UUID... userIds) throws IOException {
         _NewConv newConv = new _NewConv();
         newConv.users = Arrays.asList(userIds);
 
@@ -279,7 +279,7 @@ public class API extends LoginClient {
         return response.readEntity(User.class);
     }
 
-    public Conversation createConversation(String name, UUID teamId, List<String> users, String token)
+    public Conversation createConversation(String name, UUID teamId, List<UUID> users, String token)
             throws HttpException {
         _NewConv newConv = new _NewConv();
         newConv.name = name;
@@ -447,7 +447,7 @@ public class API extends LoginClient {
         public _TeamInfo team;
 
         @JsonProperty
-        public List<String> users;
+        public List<UUID> users;
 
         @JsonProperty
         public _Service service;
