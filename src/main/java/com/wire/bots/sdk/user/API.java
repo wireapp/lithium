@@ -139,7 +139,7 @@ public class API extends LoginClient {
         return response.readEntity(byte[].class);
     }
 
-    UUID acceptConnection(String user) throws HttpException {
+    void acceptConnection(String user) throws HttpException {
         Connection connection = new Connection();
         connection.setStatus("accepted");
 
@@ -152,8 +152,6 @@ public class API extends LoginClient {
         if (response.getStatus() >= 400) {
             throw new HttpException(response.readEntity(String.class), response.getStatus());
         }
-
-        return response.readEntity(_Connection.class).conversation;
     }
 
     public AssetKey uploadAsset(IAsset asset) throws Exception {
@@ -461,11 +459,5 @@ public class API extends LoginClient {
 
         @JsonProperty
         public boolean managed;
-    }
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    static class _Connection {
-        @JsonProperty
-        public UUID conversation;
     }
 }
