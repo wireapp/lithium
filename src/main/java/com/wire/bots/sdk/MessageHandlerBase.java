@@ -21,6 +21,7 @@ package com.wire.bots.sdk;
 import com.waz.model.Messages;
 import com.wire.bots.sdk.models.*;
 import com.wire.bots.sdk.server.model.NewBot;
+import com.wire.bots.sdk.tools.Logger;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -48,6 +49,23 @@ public abstract class MessageHandlerBase {
      * @param client Thread safe wire client that can be used to post back to this conversation
      */
     public void onNewConversation(WireClient client) {
+    }
+
+    /**
+     * This callback is invoked by the framework every time connection request is received
+     *
+     * @param client Thread safe wire client that can be used to post back to this conversation
+     * @param status Relation status of the connection request
+     * @param user UserId of the connection request source user
+     */
+    public void onConnectRequest(WireClient client, String status, String user) {
+        if (status.equals("pending")) {
+            try {
+                client.acceptConnection(user);
+            } catch (Exception e) {
+                Logger.error("MessageHandlerBase:onConnectRequest: %s", e);
+            }
+        }
     }
 
     /**

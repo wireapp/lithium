@@ -107,9 +107,7 @@ public abstract class MessageResourceBase {
             // UserMode code starts here
             case "user.connection": {
                 Logger.debug("user.connection: bot: %s, status: %s", botId, payload.connection.status);
-                if (payload.connection.status.equals("pending")) {
-                    client.acceptConnection(payload.connection.to);
-                }
+                handler.onConnectRequest(client, payload.connection.status, payload.connection.to);
             }
             break;
             // UserMode code ends here

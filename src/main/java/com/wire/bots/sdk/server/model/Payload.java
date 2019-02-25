@@ -80,5 +80,8 @@ public class Payload {
 
         @JsonProperty
         public String to;
+
+        @JsonProperty
+        public UUID conversation;
     }
 }
