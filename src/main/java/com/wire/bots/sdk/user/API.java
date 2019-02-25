@@ -139,12 +139,12 @@ public class API extends LoginClient {
         return response.readEntity(byte[].class);
     }
 
-    void acceptConnection(String user) throws HttpException {
+    void acceptConnection(UUID user) throws HttpException {
         Connection connection = new Connection();
         connection.setStatus("accepted");
 
         Response response = connectionsPath.
-                path(user).
+                path(user.toString()).
                 request(MediaType.APPLICATION_JSON).
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
                 put(Entity.entity(connection, MediaType.APPLICATION_JSON));

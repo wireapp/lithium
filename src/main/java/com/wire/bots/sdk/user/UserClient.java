@@ -233,7 +233,7 @@ public class UserClient implements WireClient {
     }
 
     @Override
-    public void acceptConnection(String user) throws Exception {
+    public void acceptConnection(UUID user) throws Exception {
         api.acceptConnection(user);
     }
 

@@ -106,8 +106,19 @@ public abstract class MessageResourceBase {
             break;
             // UserMode code starts here
             case "user.connection": {
-                Logger.debug("user.connection: bot: %s, status: %s", botId, payload.connection.status);
-                handler.onConnectRequest(client, payload.connection.status, payload.connection.to);
+                Payload.Connection connection = payload.connection;
+                Logger.debug("user.connection: bot: %s, from: %s to: %s status: %s",
+                        botId,
+                        connection.from,
+                        connection.to,
+                        connection.status);
+
+                boolean accepted = handler.onConnectRequest(client, connection.from, connection.to, connection.status);
+                if (accepted) {
+                    // Send dummy message just initialize the session for the new member
+                    client.sendReaction(UUID.randomUUID().toString(), ""); //todo hack
+                    handler.onNewConversation(client);
+                }
             }
             break;
             // UserMode code ends here

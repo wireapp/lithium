@@ -44,7 +44,7 @@ public class Payload {
     @JsonProperty
     public UUID team;
 
-    // legacy
+    // User Mode
     @JsonProperty
     public Connection connection;
 
@@ -63,7 +63,7 @@ public class Payload {
         @JsonProperty
         public String name;
 
-        //legacy
+        // User Mode
         @JsonProperty
         public String id;
         @JsonProperty
@@ -72,16 +72,19 @@ public class Payload {
         public UUID user;
     }
 
-    // legacy
+    // User Mode
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Connection {
         @JsonProperty
         public String status;
 
         @JsonProperty
-        public String to;
+        public UUID from;
 
         @JsonProperty
-        public UUID conversation;
+        public UUID to;
+
+        @JsonProperty("conversation")
+        public UUID convId;
     }
 }

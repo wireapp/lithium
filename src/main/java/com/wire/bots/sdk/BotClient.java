@@ -251,7 +251,7 @@ public class BotClient implements WireClient {
     }
 
     @Override
-    public void acceptConnection(String user) {
+    public void acceptConnection(UUID user) {
         // bots cannot accept connections
     }
 

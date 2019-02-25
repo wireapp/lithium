@@ -15,9 +15,9 @@ public class UserMessageResource extends MessageResourceBase {
         this.userClientRepo = repo;
     }
 
-    void onNewMessage(UUID bot, UUID convId, Payload inbound) throws Exception {
+    void onNewMessage(UUID bot, UUID convId, Payload payload) throws Exception {
         try (WireClient client = userClientRepo.getWireClient(bot, convId)) {
-            handleMessage(inbound, client);
+            handleMessage(payload, client);
         }
     }
 

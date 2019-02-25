@@ -112,7 +112,7 @@ public class Endpoint {
                         userMessageResource.onUpdate(payload);
                         break;
                     case "user.connection":
-                        userMessageResource.onNewMessage(user.getUserId(), payload.connection.conversation, payload);
+                        userMessageResource.onNewMessage(user.getUserId(), payload.connection.convId, payload);
                         break;
                     default:
                         userMessageResource.onNewMessage(user.getUserId(), payload.convId, payload);

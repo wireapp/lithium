@@ -55,17 +55,27 @@ public abstract class MessageHandlerBase {
      * This callback is invoked by the framework every time connection request is received
      *
      * @param client Thread safe wire client that can be used to post back to this conversation
+     * @param from   UserId of the connection request source user
+     * @param to     UserId of the connection request destination user
      * @param status Relation status of the connection request
-     * @param user UserId of the connection request source user
+     * @return TRUE if connection was accepted
      */
-    public void onConnectRequest(WireClient client, String status, String user) {
+    public boolean onConnectRequest(WireClient client, UUID from, UUID to, String status) {
+        // Bot received connect request and we want to accept it immediately
         if (status.equals("pending")) {
             try {
-                client.acceptConnection(user);
+                client.acceptConnection(to);
+                return true;
             } catch (Exception e) {
                 Logger.error("MessageHandlerBase:onConnectRequest: %s", e);
+                return false;
             }
         }
+        // Connect request sent by the bot got accepted
+        if (status.equals("accepted")) {
+            return true;
+        }
+        return false;
     }
 
     /**

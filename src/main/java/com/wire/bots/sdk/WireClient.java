@@ -225,7 +225,7 @@ public interface WireClient extends Closeable {
      * @param user User ID as UUID
      * @throws IOException
      */
-    void acceptConnection(String user) throws Exception;
+    void acceptConnection(UUID user) throws Exception;
 
     /**
      * Decrypt cipher either using existing session or it creates new session from this cipher and decrypts
