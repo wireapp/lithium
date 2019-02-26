@@ -106,13 +106,11 @@ public class Endpoint {
             try {
                 switch (payload.type) {
                     case "team.member-join":
-                        userMessageResource.onUpdate(payload);
-                        break;
                     case "user.update":
                         userMessageResource.onUpdate(payload);
                         break;
                     case "user.connection":
-                        userMessageResource.onNewMessage(user.getUserId(), payload.connection.conversation, payload);
+                        userMessageResource.onNewMessage(user.getUserId(), payload.connection.convId, payload);
                         break;
                     default:
                         userMessageResource.onNewMessage(user.getUserId(), payload.convId, payload);

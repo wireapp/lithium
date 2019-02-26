@@ -44,9 +44,11 @@ public class Payload {
     @JsonProperty
     public UUID team;
 
-    // legacy
+    // User Mode
     @JsonProperty
     public Connection connection;
+    @JsonProperty
+    public User user;
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Data {
@@ -63,7 +65,7 @@ public class Payload {
         @JsonProperty
         public String name;
 
-        //legacy
+        // User Mode
         @JsonProperty
         public String id;
         @JsonProperty
@@ -72,16 +74,38 @@ public class Payload {
         public UUID user;
     }
 
-    // legacy
+    // User Mode
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Connection {
         @JsonProperty
         public String status;
 
         @JsonProperty
-        public String to;
+        public UUID from;
 
         @JsonProperty
-        public UUID conversation;
+        public UUID to;
+
+        @JsonProperty("conversation")
+        public UUID convId;
+    }
+
+    // User Mode
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class User {
+        @JsonProperty
+        public UUID id;
+
+        @JsonProperty
+        public String name;
+
+        @JsonProperty("accent_id")
+        public int accent;
+
+        @JsonProperty
+        public String handle;
+
+        @JsonProperty
+        public String email;
     }
 }
