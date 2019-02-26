@@ -212,4 +212,8 @@ public abstract class MessageHandlerBase {
     public void onNewTeamMember(UUID teamId, UUID userId) {
 
     }
+
+    public void onUserUpdate(UUID userId) {
+
+    }
 }

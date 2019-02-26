@@ -136,8 +136,8 @@ public abstract class MessageResourceBase {
             }
             break;
             case "user.update": {
-                //todo
                 Logger.debug("%s: id: %s", payload.type, payload.user.id);
+                handler.onUserUpdate(payload.user.id);
             }
             break;
             default:
