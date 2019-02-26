@@ -106,8 +106,6 @@ public class Endpoint {
             try {
                 switch (payload.type) {
                     case "team.member-join":
-                        userMessageResource.onUpdate(payload);
-                        break;
                     case "user.update":
                         userMessageResource.onUpdate(payload);
                         break;

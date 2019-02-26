@@ -47,6 +47,8 @@ public class Payload {
     // User Mode
     @JsonProperty
     public Connection connection;
+    @JsonProperty
+    public User user;
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Data {
@@ -86,5 +88,24 @@ public class Payload {
 
         @JsonProperty("conversation")
         public UUID convId;
+    }
+
+    // User Mode
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class User {
+        @JsonProperty
+        public UUID id;
+
+        @JsonProperty
+        public String name;
+
+        @JsonProperty("accent_id")
+        public int accent;
+
+        @JsonProperty
+        public String handle;
+
+        @JsonProperty
+        public String email;
     }
 }

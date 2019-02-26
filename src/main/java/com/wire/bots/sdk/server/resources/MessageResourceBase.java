@@ -131,8 +131,13 @@ public abstract class MessageResourceBase {
     protected void handleUpdate(Payload payload) {
         switch (payload.type) {
             case "team.member-join": {
-                Logger.debug("team.member-join: team: %s, user: %s", payload.team, payload.data.user);
+                Logger.debug("%s: team: %s, user: %s", payload.type, payload.team, payload.data.user);
                 handler.onNewTeamMember(payload.team, payload.data.user);
+            }
+            break;
+            case "user.update": {
+                //todo
+                Logger.debug("%s: id: %s", payload.type, payload.user.id);
             }
             break;
             default:
