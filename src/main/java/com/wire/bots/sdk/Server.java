@@ -124,6 +124,8 @@ public abstract class Server<Config extends Configuration> extends Application<C
                 .withProvider(JacksonJsonProvider.class)
                 .build(getName());
 
+        initialize(config, env);
+
         MessageHandlerBase handler = createHandler(config, env);
 
         if (config.userMode) {
@@ -131,8 +133,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
         }
 
         repo = runInBotMode(config, env, handler);
-
-        initialize(config, env);
 
         initTelemetry(env);
 

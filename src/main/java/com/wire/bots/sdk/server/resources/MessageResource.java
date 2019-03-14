@@ -34,6 +34,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.UUID;
 
 @Api
 @Produces(MediaType.APPLICATION_JSON)
@@ -69,7 +70,7 @@ public class MessageResource extends MessageResourceBase {
             handleMessage(inbound, client);
         } catch (CryptoException e) {
             Logger.error("MessageResource::newMessage: bot: %s %s", botId, e);
-            respondWithError(botId, "Failed to decrypt the message. Please retry");
+            respondWithError(botId, "Something went wrong");
             return Response.
                     status(503).
                     entity(new ErrorMessage(e.getMessage())).
@@ -96,7 +97,7 @@ public class MessageResource extends MessageResourceBase {
 
     private void respondWithError(String botId, String message) {
         try (WireClient client = repo.getClient(botId)) {
-            client.sendText(message);
+            client.sendReaction(UUID.randomUUID().toString(), message);
         } catch (Exception e1) {
             Logger.error("MessageResource::newMessage: bot: %s %s", botId, e1);
         }
