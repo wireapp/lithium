@@ -120,7 +120,7 @@ public class API extends LoginClient {
                 post(Entity.entity(missing, MediaType.APPLICATION_JSON), PreKeys.class);
     }
 
-    byte[] downloadAsset(String assetKey, String assetToken) throws HttpException {
+    public byte[] downloadAsset(String assetKey, String assetToken) throws HttpException {
         Invocation.Builder req = assetsPath
                 .path(assetKey)
                 .request()
@@ -373,13 +373,26 @@ public class API extends LoginClient {
                 });
     }
 
-    Collection<User> getUsers(Collection<String> ids) {
+    public Collection<User> getUsers(Collection<String> ids) {
         return usersPath.
                 queryParam("ids", ids).
                 request(MediaType.APPLICATION_JSON).
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
                 get(new GenericType<ArrayList<User>>() {
                 });
+    }
+
+    public User getUser(UUID userId) {
+        ArrayList<User> users = usersPath.
+                queryParam("ids", userId).
+                request(MediaType.APPLICATION_JSON).
+                header(HttpHeaders.AUTHORIZATION, bearer(token)).
+                get(new GenericType<ArrayList<User>>() {
+                });
+        if (users.isEmpty())
+            return null;
+
+        return users.get(0);
     }
 
     public User getSelf() {

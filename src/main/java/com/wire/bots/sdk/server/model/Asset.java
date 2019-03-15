@@ -21,25 +21,14 @@ package com.wire.bots.sdk.server.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.ArrayList;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class User {
+public class Asset {
     @JsonProperty
-    public String id;
+    public String type;
 
     @JsonProperty
-    public String name;
-
-    @JsonProperty("accent_id")
-    public int accent;
+    public String key;
 
     @JsonProperty
-    public String handle;
-
-    @JsonProperty
-    public Service service;
-
-    @JsonProperty
-    public ArrayList<Asset> assets;
+    public String size;
 }
