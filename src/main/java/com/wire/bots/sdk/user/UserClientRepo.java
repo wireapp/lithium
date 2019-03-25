@@ -21,13 +21,13 @@ public class UserClientRepo extends ClientRepo {
         super(httpClient, cf, sf);
     }
 
-    public WireClient getWireClient(UUID botId, UUID conv) throws CryptoException, IOException {
+    public WireClient getWireClient(UUID userId, UUID conv) throws CryptoException, IOException {
         synchronized (lock) {
             if (crypto == null || crypto.isClosed()) {
-                crypto = cf.create(botId.toString());
+                crypto = cf.create(userId.toString());
             }
             if (state == null) {
-                state = sf.create(botId.toString());
+                state = sf.create(userId.toString());
             }
         }
         return new UserClient(httpClient, crypto, state, conv);

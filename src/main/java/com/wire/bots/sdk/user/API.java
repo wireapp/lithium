@@ -20,6 +20,7 @@ package com.wire.bots.sdk.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wire.bots.sdk.assets.IAsset;
 import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.AssetKey;
@@ -30,6 +31,7 @@ import com.wire.bots.sdk.server.model.Service;
 import com.wire.bots.sdk.server.model.User;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
+import com.wire.bots.sdk.user.model.Access;
 import com.wire.bots.sdk.user.model.Connection;
 
 import javax.ws.rs.client.Client;
@@ -74,18 +76,27 @@ public class API extends LoginClient {
         selfPath = target.path("self");
     }
 
-    com.wire.bots.sdk.user.model.User renewAccessToken(String cookie) throws HttpException {
+    Access renewAccessToken(String cookie) throws HttpException, IOException {
         Response response = accessPath.
                 request(MediaType.APPLICATION_JSON).
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
                 header(HttpHeaders.COOKIE, cookie).
                 post(Entity.entity(new Connection(), MediaType.APPLICATION_JSON));
 
+        String entity = response.readEntity(String.class);
+
+        //Logger.debug("renewAccessToken: cookie: %s, resp: %s, status: %s", cookie, entity, response.getStatus());
+
         if (response.getStatus() >= 400) {
-            throw new HttpException(response.readEntity(String.class), response.getStatus());
+            throw new HttpException(entity, response.getStatus());
         }
 
-        return response.readEntity(com.wire.bots.sdk.user.model.User.class);
+        ObjectMapper mapper = new ObjectMapper();
+        Access access = mapper.readValue(entity, Access.class);
+
+        access.cookie = response.getStringHeaders().getFirst(HttpHeaders.SET_COOKIE);
+
+        return access;
     }
 
     Devices sendMessage(OtrMessage msg, boolean ignoreMissing) throws HttpException {
@@ -99,12 +110,11 @@ public class API extends LoginClient {
 
         int statusCode = response.getStatus();
         if (statusCode == 412) {
-            //Logger.info(response.readEntity(String.class));
             return response.readEntity(Devices.class);
         }
 
         if (statusCode >= 400)
-            throw new HttpException(response.readEntity(String.class), response.getStatus());
+            throw new HttpException(response.getStatusInfo().getReasonPhrase(), response.getStatus());
 
         return new Devices();
     }
@@ -132,7 +142,7 @@ public class API extends LoginClient {
         Response response = req.get();
 
         if (response.getStatus() >= 300) {
-            String log = String.format("%s. AssetId: %s", response.readEntity(String.class), assetKey);
+            String log = String.format("%s. AssetId: %s", response.getStatusInfo().getReasonPhrase(), assetKey);
             throw new HttpException(log, response.getStatus());
         }
 

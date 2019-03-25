@@ -38,9 +38,9 @@ public abstract class MessageResourceBase {
 
                 Messages.GenericMessage message = decrypt(client, payload);
 
-                handler.onEvent(client, payload.from, message);
+                handler.onEvent(client, payload.from.toString(), message);
 
-                boolean process = processor.process(payload.from, data.sender, message);
+                boolean process = processor.process(payload.from.toString(), data.sender, message);
                 if (process)
                     processor.cleanUp(message.getMessageId());
             }
@@ -148,7 +148,7 @@ public abstract class MessageResourceBase {
 
     private Messages.GenericMessage decrypt(WireClient client, Payload inbound)
             throws CryptoException, InvalidProtocolBufferException {
-        String userId = inbound.from;
+        String userId = inbound.from.toString();
         String clientId = inbound.data.sender;
         String cypher = inbound.data.text;
 

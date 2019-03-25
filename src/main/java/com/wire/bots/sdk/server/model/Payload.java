@@ -34,7 +34,7 @@ public class Payload {
     public UUID convId;
     @JsonProperty
     @NotNull
-    public String from;
+    public UUID from;
     @JsonProperty
     @NotNull
     public String time;

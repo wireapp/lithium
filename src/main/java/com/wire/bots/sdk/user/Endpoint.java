@@ -29,6 +29,7 @@ import com.wire.bots.sdk.server.model.Payload;
 import com.wire.bots.sdk.state.State;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
+import com.wire.bots.sdk.user.model.Access;
 import com.wire.bots.sdk.user.model.Message;
 import com.wire.bots.sdk.user.model.User;
 import org.glassfish.tyrus.client.ClientManager;
@@ -40,6 +41,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -47,15 +49,15 @@ import java.util.concurrent.TimeUnit;
  */
 @ClientEndpoint
 public class Endpoint {
-    private static final int RENEW_PERIOD_MINUTES = 15;
+    protected static final int RENEW_PERIOD_MINUTES = 5;
 
-    private final Client httpClient;
-    private final StorageFactory storageFactory;
-    private final CryptoFactory cryptoFactory;
-    private UserMessageResource userMessageResource;
-    private User user;
-    private ClientManager clientManager;
-    private Session session;
+    protected final Client httpClient;
+    protected final StorageFactory storageFactory;
+    protected final CryptoFactory cryptoFactory;
+    protected UserMessageResource userMessageResource;
+    protected User user;
+    protected ClientManager clientManager;
+    protected Session session;
 
     public Endpoint(Client httpClient, CryptoFactory cryptoFactory, StorageFactory storageFactory) {
         this.httpClient = httpClient;
@@ -79,7 +81,7 @@ public class Endpoint {
 
         String accessToken = user.getToken();
 
-        String clientId = initDevice(password, accessToken);
+        String clientId = initDevice(user.getUserId(), password, accessToken);
         user.setClientId(clientId);
 
         if (persisted)
@@ -110,13 +112,16 @@ public class Endpoint {
                         userMessageResource.onUpdate(payload);
                         break;
                     case "user.connection":
-                        userMessageResource.onNewMessage(user.getUserId(), payload.connection.convId, payload);
+                        userMessageResource.onNewMessage(payload.connection.from, payload.connection.convId, payload);
+                        break;
+                    case "conversation.otr-message-add":
+                        userMessageResource.onNewMessage(payload.from, payload.convId, payload);
                         break;
                     default:
-                        userMessageResource.onNewMessage(user.getUserId(), payload.convId, payload);
-                        break;
+                        Logger.info("Unknown type: %s, from: %s", payload.type, payload.from);
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 Logger.error("Endpoint:onMessage: %s", e);
             }
         }
@@ -124,15 +129,15 @@ public class Endpoint {
 
     @OnClose
     public void onClose(Session closed, CloseReason reason) throws Exception {
-        Logger.debug("Session closed: %s, %s", closed.getId(), reason);
-        NewBot state = getState();
-        String wss = Util.getWss(state.token, state.client);
+        //Logger.debug("Session closed: %s, %s", closed.getId(), reason);
+        Access access = getAccess();
+        String wss = Util.getWss(access.token, access.clientId);
         session = clientManager.connectToServer(this, new URI(wss));
-        Logger.debug("New Session %s", this.session.getId());
+        //Logger.debug("New Session %s", this.session.getId());
     }
 
-    private NewBot getState() throws IOException {
-        return storageFactory.create(user.getUserId().toString()).getState();
+    private NewBot getState(UUID userId) throws IOException {
+        return storageFactory.create(userId.toString()).getState();
     }
 
     /**
@@ -141,21 +146,22 @@ public class Endpoint {
      * @return ClientId
      * @throws Exception
      */
-    private String initDevice(String password, String token) throws Exception {
-        NewBot state = initState(password, token);
+    private String initDevice(UUID userId, String password, String token) throws Exception {
+        NewBot state = initState(userId, password, token);
         state.token = token;
 
         // save the state with new token
-        State storage = storageFactory.create(user.getUserId().toString());
+        State storage = storageFactory.create(userId.toString());
         storage.saveState(state);
         return state.client;
     }
 
-    private NewBot initState(String password, String token) throws IOException, HttpException, CryptoException {
-        String botId = user.getUserId().toString();
+    private NewBot initState(UUID userId, String password, String token)
+            throws IOException, HttpException, CryptoException {
+        String botId = userId.toString();
         NewBot state;
         try {
-            state = getState();
+            state = getState(userId);
             Logger.info("initDevice: Existing ClientID: %s", state.client);
         } catch (IOException ex) {
             // register new device
@@ -172,26 +178,59 @@ public class Endpoint {
         return state;
     }
 
-    private void initRenewal() {
+    public void initRenewal() {
         Timer timer = new Timer("RenewToken");
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 try {
-                    State storage = storageFactory.create(user.getUserId().toString());
-                    NewBot state = storage.getState();
+                    Access access = getAccess();
 
-                    API api = new API(httpClient, null, state.token);
-                    User newUser = api.renewAccessToken(user.getCookie());
-                    state.token = newUser.getToken();
-                    storage.saveState(state);
+//                    Logger.debug("Old access user: %s token: %s, cookie: %s",
+//                            access.userId,
+//                            access.token,
+//                            access.cookie);
 
-                    Logger.debug("New access token: %s", newUser.getToken());
+                    API api = new API(httpClient, null, access.token);
+                    Access newAccess = api.renewAccessToken(access.cookie);
 
-                    session.close();
+                    newAccess.cookie = newAccess.cookie != null ? newAccess.cookie : access.cookie;
+
+                    boolean persisted = persistAccess(newAccess);
+
+//                    Logger.debug("New access persisted: %s, user: %s token: %s, cookie: %s",
+//                            persisted,
+//                            newAccess.userId,
+//                            newAccess.token,
+//                            newAccess.cookie);
+
+                    if (session != null)
+                        session.close();
                 } catch (Exception e) {
-                    Logger.error("Failed periodic access_token renewal: " + e.getMessage());
+                    Logger.error("Failed periodic access_token renewal: %s", e);
                 }
             }
         }, TimeUnit.MINUTES.toMillis(RENEW_PERIOD_MINUTES), TimeUnit.MINUTES.toMillis(RENEW_PERIOD_MINUTES));
+    }
+
+    protected Access getAccess() throws IOException {
+        UUID userId = user.getUserId();
+        State storage = storageFactory.create(userId.toString());
+        NewBot state = storage.getState();
+
+        Access access = new Access();
+        access.userId = userId;
+        access.token = state.token;
+        access.cookie = user.getCookie();
+        access.clientId = user.getClientId();
+
+        return access;
+    }
+
+    protected boolean persistAccess(Access access) throws IOException {
+        UUID userId = access.userId;
+        State storage = storageFactory.create(userId.toString());
+        NewBot state = storage.getState();
+        state.token = access.token;
+        return storage.saveState(state);
     }
 }

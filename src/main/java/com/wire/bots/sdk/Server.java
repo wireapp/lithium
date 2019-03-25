@@ -67,6 +67,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
     protected Config config;
     protected Environment environment;
     protected Client client;
+    protected MessageHandlerBase messageHandler;
 
     /**
      * This method is called once by the sdk in order to create the main message handler
@@ -126,13 +127,13 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
         initialize(config, env);
 
-        MessageHandlerBase handler = createHandler(config, env);
+        messageHandler = createHandler(config, env);
 
         if (config.userMode) {
-            runInUserMode(config, handler);
+            runInUserMode(config, messageHandler);
         }
 
-        repo = runInBotMode(config, env, handler);
+        repo = runInBotMode(config, env, messageHandler);
 
         initTelemetry(env);
 
