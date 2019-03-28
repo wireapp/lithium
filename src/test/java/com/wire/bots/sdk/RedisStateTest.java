@@ -1,25 +1,23 @@
-import com.wire.bots.sdk.Configuration;
+package com.wire.bots.sdk;
+
 import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.NewBot;
-import com.wire.bots.sdk.state.PostgresState;
+import com.wire.bots.sdk.state.RedisState;
 import org.junit.Test;
 
 import java.util.UUID;
 
-public class PostgresStateTest {
+public class RedisStateTest {
 
     @Test
     public void test() throws Exception {
         Configuration.DB conf = new Configuration.DB();
         conf.host = "localhost";
-        conf.port = 5432;
-        conf.database = "postgres";
-        conf.user = "dejankovacevic";
-        conf.password = "password";
+        conf.port = 6379;
 
         String botId = UUID.randomUUID().toString();
 
-        PostgresState storage = new PostgresState(botId, conf);
+        RedisState storage = new RedisState(botId, conf);
         NewBot bot = new NewBot();
         bot.id = botId;
         bot.client = "client";

@@ -1,7 +1,9 @@
-import com.wire.bots.cryptobox.CryptoBox;
+package com.wire.bots.sdk;
+
 import com.wire.bots.cryptobox.CryptoDb;
 import com.wire.bots.cryptobox.PreKey;
-import com.wire.bots.sdk.crypto.storage.PgStorage;
+import com.wire.bots.sdk.crypto.storage.RedisStorage;
+import com.wire.bots.sdk.helpers.Util;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -16,22 +18,22 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class CryptoPostgresTest {
+public class CryptoRedisTest {
+    private static final Random random = new Random();
     private static String bobId;
     private static String aliceId;
     private static CryptoDb alice;
     private static CryptoDb bob;
     private static PreKey[] bobKeys;
     private static PreKey[] aliceKeys;
-    private static PgStorage storage;
+    private static RedisStorage storage;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        Random random = new Random();
-        aliceId = "" + random.nextInt();
-        bobId = "" + random.nextInt();
+        aliceId = randomId();
+        bobId = randomId();
 
-        storage = new PgStorage("dejankovacevic", "password", "postgres", "localhost", 5432);
+        storage = new RedisStorage("localhost", 6379);
         alice = new CryptoDb(aliceId, storage);
         bob = new CryptoDb(bobId, storage);
 
@@ -47,6 +49,13 @@ public class CryptoPostgresTest {
         Util.deleteDir("data");
     }
 
+    private static String randomId() {
+        int rnd;
+        while ((rnd = random.nextInt()) < 0)
+            ;
+        return "" + rnd;
+    }
+
     @Test
     public void testAliceToBob() throws Exception {
         String text = "Hello Bob, This is Alice!";
@@ -56,6 +65,39 @@ public class CryptoPostgresTest {
 
         // Decrypt using initSessionFromMessage
         byte[] decrypt = bob.decrypt(aliceId, cipher);
+
+        assert Arrays.equals(decrypt, text.getBytes());
+        assert text.equals(new String(decrypt));
+    }
+
+    @Test
+    public void test2Way() throws Exception {
+        String aliceId = randomId();
+        String bobId = randomId();
+
+        RedisStorage storage = new RedisStorage("localhost", 6379);
+        CryptoDb alice = new CryptoDb(aliceId, storage);
+        CryptoDb bob = new CryptoDb(bobId, storage);
+
+        PreKey bobKeys = bob.newLastPreKey();
+
+        String text = "Hello Bob, This is Alice!";
+
+        // Encrypt using prekeys
+        byte[] cipher = alice.encryptFromPreKeys(bobId, bobKeys, text.getBytes());
+
+        // Decrypt using initSessionFromMessage
+        byte[] decrypt = bob.decrypt(aliceId, cipher);
+
+        assert Arrays.equals(decrypt, text.getBytes());
+        assert text.equals(new String(decrypt));
+
+        text = "Hello Alice, This is Bob";
+
+        cipher = bob.encryptFromSession(aliceId, text.getBytes());
+
+        // Decrypt using session
+        decrypt = alice.decrypt(bobId, cipher);
 
         assert Arrays.equals(decrypt, text.getBytes());
         assert text.equals(new String(decrypt));
@@ -89,19 +131,18 @@ public class CryptoPostgresTest {
 
     @Test
     public void testIdentity() throws Exception {
-        Random random = new Random();
-        final String carlId = "" + random.nextInt();
-        final String dir = "data/" + carlId;
+        final String carlId = randomId();
+        final String carlDir = "data/" + carlId;
 
         CryptoDb carl = new CryptoDb(carlId, storage);
-        PreKey[] carlPrekeys = carl.newPreKeys(0, 8);
+        final PreKey[] carlPrekeys = carl.newPreKeys(0, 8);
 
-        String daveId = "" + random.nextInt();
-        String davePath = String.format("data/%s", daveId);
-        CryptoBox dave = CryptoBox.open(davePath);
-        PreKey[] davePrekeys = dave.newPreKeys(0, 8);
+        final String daveId = randomId();
+        final String daveDir = "data/" + daveId;
+        CryptoDb dave = new CryptoDb(daveId, storage);
+        final PreKey[] davePrekeys = dave.newPreKeys(0, 8);
 
-        String text = "Hello Bob, This is Carl!";
+        final String text = "Hello Bob, This is Carl!";
 
         // Encrypt using prekeys
         byte[] cipher = dave.encryptFromPreKeys(carlId, carlPrekeys[0], text.getBytes());
@@ -110,26 +151,20 @@ public class CryptoPostgresTest {
         assert text.equals(new String(decrypt));
 
         carl.close();
-        Util.deleteDir(dir);
+        dave.close();
+        Util.deleteDir(carlDir);
+        Util.deleteDir(daveDir);
 
-        cipher = dave.encryptFromSession(carlId, text.getBytes());
+        dave = new CryptoDb(daveId, storage);
         carl = new CryptoDb(carlId, storage);
+        cipher = dave.encryptFromSession(carlId, text.getBytes());
         decrypt = carl.decrypt(daveId, cipher);
 
         assert Arrays.equals(decrypt, text.getBytes());
         assert text.equals(new String(decrypt));
 
         carl.close();
-        Util.deleteDir(dir);
-
-        carl = new CryptoDb(carlId, storage);
-
-        cipher = carl.encryptFromPreKeys(daveId, davePrekeys[0], text.getBytes());
-        decrypt = dave.decrypt(carlId, cipher);
-        assert Arrays.equals(decrypt, text.getBytes());
-        assert text.equals(new String(decrypt));
-
-        carl.close();
+        dave.close();
     }
 
     @Test
@@ -192,9 +227,8 @@ public class CryptoPostgresTest {
 
     @Test
     public void testConcurrentMultipleSessions() throws Exception {
-        final int count = 100;
-        Random random = new Random();
-        String aliceId = "" + random.nextInt();
+        final int count = 1000;
+        String aliceId = randomId();
         CryptoDb alice = new CryptoDb(aliceId, storage);
         PreKey[] aliceKeys = alice.newPreKeys(0, count);
 
@@ -204,17 +238,16 @@ public class CryptoPostgresTest {
                 "Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello " +
                 "Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello ").getBytes();
 
-
         ArrayList<CryptoDb> boxes = new ArrayList<>();
 
         for (int i = 0; i < count; i++) {
-            String bobId = "" + random.nextInt();
+            String bobId = randomId();
             CryptoDb bob = new CryptoDb(bobId, storage);
             bob.encryptFromPreKeys(aliceId, aliceKeys[i], bytes);
             boxes.add(bob);
         }
 
-        ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(24);
+        ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(12);
         Date s = new Date();
         for (CryptoDb bob : boxes) {
             executor.execute(() -> {

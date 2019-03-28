@@ -184,7 +184,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
                 user.getClientId(),
                 user.getToken());
 
-        UserMessageResource userMessageResource = new UserMessageResource(handler, clientRepo);
+        UserMessageResource userMessageResource = new UserMessageResource(user.getUserId(), handler, clientRepo);
         String wss = Util.getWss(user.getToken(), user.getClientId());
 
         ep.connectWebSocket(userMessageResource, new URI(wss));

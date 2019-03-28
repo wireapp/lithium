@@ -78,16 +78,20 @@ public class RedisStorage implements IStorage {
         String key = key(id, sid);
         byte[] data = jedis.getSet(key.getBytes(), EMPTY);
         if (data == null) {
-            Logger.debug("redis: fetch key: %s size: %d", key, 0);
+            Logger.debug("redis: fetch key: %s size: null", key);
             return new Record(key, null, jedis);
         }
 
         for (int i = 0; i < 1000 && data.length == 0; i++) {
             sleep(5);
             data = jedis.getSet(key.getBytes(), EMPTY);
+            if (data == null)
+                break;
         }
 
-        if (data.length == 0) {
+        if (data == null || data.length == 0) {
+            Logger.warning("redis: fetch key: %s size: %d", key, 0);
+            jedis.del(key);
             throw new StorageException("Redis Timeout when fetching Session with key: " + key);
         }
 

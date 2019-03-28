@@ -1,3 +1,5 @@
+package com.wire.bots.sdk;
+
 import com.wire.bots.cryptobox.IRecord;
 import com.wire.bots.cryptobox.StorageException;
 import com.wire.bots.sdk.crypto.storage.RedisStorage;

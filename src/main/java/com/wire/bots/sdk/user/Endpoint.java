@@ -115,6 +115,8 @@ public class Endpoint {
                         userMessageResource.onNewMessage(payload.connection.from, payload.connection.convId, payload);
                         break;
                     case "conversation.otr-message-add":
+                    case "conversation.member-join":
+                    case "conversation.create":
                         userMessageResource.onNewMessage(payload.from, payload.convId, payload);
                         break;
                     default:
@@ -122,7 +124,7 @@ public class Endpoint {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Logger.error("Endpoint:onMessage: %s", e);
+                Logger.error("Endpoint:onMessage: %s %s", payload.type, e);
             }
         }
     }

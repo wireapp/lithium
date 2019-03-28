@@ -1,3 +1,5 @@
+package com.wire.bots.sdk.helpers;
+
 import com.wire.bots.cryptobox.IRecord;
 import com.wire.bots.cryptobox.IStorage;
 import com.wire.bots.cryptobox.PreKey;

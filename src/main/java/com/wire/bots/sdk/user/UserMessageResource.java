@@ -10,10 +10,12 @@ import com.wire.bots.sdk.tools.Logger;
 import java.util.UUID;
 
 public class UserMessageResource extends MessageResourceBase {
+    private final UUID owner;
     private UserClientRepo userClientRepo;
 
-    public UserMessageResource(MessageHandlerBase handler, UserClientRepo repo) {
+    public UserMessageResource(UUID owner, MessageHandlerBase handler, UserClientRepo repo) {
         super(handler, repo);
+        this.owner = owner;
         this.userClientRepo = repo;
     }
 
@@ -30,8 +32,13 @@ public class UserMessageResource extends MessageResourceBase {
         try (WireClient client = userClientRepo.getWireClient(userId, convId)) {
             handleMessage(payload, client);
         } catch (CryptoException e) {
-            Logger.error("onMessage::newMessage: user: %s, conv: %s %s", userId, convId, e);
-            respondWithError(userId, convId);
+            Logger.error("onNewMessage:(%s:%s) from: %s:%s %s",
+                    owner,
+                    payload.data.recipient,
+                    userId,
+                    payload.data.sender,
+                    e.code);
+            //respondWithError(userId, convId);
         }
     }
 
@@ -41,7 +48,7 @@ public class UserMessageResource extends MessageResourceBase {
 
     private void respondWithError(UUID userId, UUID convId) {
         try (WireClient client = userClientRepo.getWireClient(userId, convId)) {
-            //client.sendReaction(UUID.randomUUID().toString(), "");
+            client.sendReaction(UUID.randomUUID().toString(), "");
         } catch (Exception e) {
             Logger.error("MessageResource::respondWithError: user: %s, conv: %s, %s", userId, convId, e);
         }

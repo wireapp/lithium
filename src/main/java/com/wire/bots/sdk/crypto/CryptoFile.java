@@ -45,7 +45,7 @@ public class CryptoFile extends CryptoBase {
     }
 
     @Override
-    ICryptobox box() {
+    public ICryptobox box() {
         return box;
     }
 }

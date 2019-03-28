@@ -31,8 +31,8 @@ public class OtrMessage {
     private final Recipients recipients;
 
 
-    public OtrMessage(String clinetId, Recipients recipients) {
-        this.sender = clinetId;
+    public OtrMessage(String clientId, Recipients recipients) {
+        this.sender = clientId;
         this.recipients = recipients;
     }
 

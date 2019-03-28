@@ -27,11 +27,9 @@ import com.wire.bots.sdk.models.otr.*;
 import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.server.model.User;
-import com.wire.bots.sdk.state.State;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
 
-import javax.ws.rs.client.Client;
 import java.io.File;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -46,15 +44,16 @@ public class BotClient implements WireClient {
     private final NewBot state;
     private Devices devices = null;
 
-    BotClient(Client httpClient, Crypto crypto, State storage) throws IOException {
-        this.state = storage.getState();
-        this.api = new API(httpClient, state.token);
+    BotClient(NewBot state, Crypto crypto, API api) {
+        this.state = state;
+        this.api = api;
         this.crypto = crypto;
     }
 
     @Override
     public void sendText(String txt) throws Exception {
-        postGenericMessage(new Text(txt));
+        Text generic = new Text(txt);
+        postGenericMessage(generic);
     }
 
     @Override

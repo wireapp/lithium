@@ -50,7 +50,7 @@ public class CryptoDatabase extends CryptoBase {
     }
 
     @Override
-    ICryptobox box() {
+    public ICryptobox box() {
         return box;
     }
 }

@@ -6,31 +6,22 @@ import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.factories.CryptoFactory;
 import com.wire.bots.sdk.factories.StorageFactory;
-import com.wire.bots.sdk.state.State;
+import com.wire.bots.sdk.server.model.NewBot;
 
 import javax.ws.rs.client.Client;
 import java.io.IOException;
 import java.util.UUID;
 
 public class UserClientRepo extends ClientRepo {
-    final private Object lock = new Object();
-    private Crypto crypto;
-    private State state;
-
     public UserClientRepo(Client httpClient, CryptoFactory cf, StorageFactory sf) {
         super(httpClient, cf, sf);
     }
 
     public WireClient getWireClient(UUID userId, UUID conv) throws CryptoException, IOException {
-        synchronized (lock) {
-            if (crypto == null || crypto.isClosed()) {
-                crypto = cf.create(userId.toString());
-            }
-            if (state == null) {
-                state = sf.create(userId.toString());
-            }
-        }
-        return new UserClient(httpClient, crypto, state, conv);
+        Crypto crypto = cf.create(userId.toString());
+        NewBot state = sf.create(userId.toString()).getState();
+        API api = new API(httpClient, conv, state.token);
+        return new UserClient(state, conv, crypto, api);
     }
 
     /*

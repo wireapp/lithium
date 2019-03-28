@@ -49,7 +49,7 @@ abstract class CryptoBase implements Crypto {
         return String.format("%s_%s", userId, clientId);
     }
 
-    abstract ICryptobox box();
+    public abstract ICryptobox box();
 
     /**
      * Generate a new last prekey.
@@ -143,7 +143,9 @@ abstract class CryptoBase implements Crypto {
         byte[] decode = Base64.getDecoder().decode(cypher);
         String id = createId(userId, clientId);
 
-        return Base64.getEncoder().encodeToString(box().decrypt(id, decode));
+        ICryptobox cryptobox = box();
+        byte[] decrypt = cryptobox.decrypt(id, decode);
+        return Base64.getEncoder().encodeToString(decrypt);
     }
 
     /**

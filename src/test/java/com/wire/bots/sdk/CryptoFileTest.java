@@ -1,4 +1,4 @@
-//
+package com.wire.bots.sdk;//
 // Wire
 // Copyright (C) 2016 Wire Swiss GmbH
 //
@@ -16,7 +16,7 @@
 // along with this program. If not, see http://www.gnu.org/licenses/.
 //
 
-import com.wire.bots.sdk.crypto.CryptoDatabase;
+import com.wire.bots.sdk.crypto.CryptoFile;
 import com.wire.bots.sdk.models.otr.Missing;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.models.otr.PreKeys;
@@ -33,12 +33,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class CryptoDatabaseTest {
+public class CryptoFileTest {
 
     private final static String bobId;
     private final static String aliceId;
-    private static CryptoDatabase alice;
-    private static CryptoDatabase bob;
+    private final static String DATA = "data";
+    private static CryptoFile alice;
+    private static CryptoFile bob;
     private static PreKeys bobKeys;
     private static PreKeys aliceKeys;
 
@@ -50,9 +51,8 @@ public class CryptoDatabaseTest {
     
     @BeforeClass
     public static void setUp() throws Exception {
-        MemStorage storage = new MemStorage();
-        alice = new CryptoDatabase(aliceId, storage);
-        bob = new CryptoDatabase(bobId, storage);
+        alice = new CryptoFile(DATA, aliceId);
+        bob = new CryptoFile(DATA, bobId);
 
         ArrayList<PreKey> preKeys = bob.newPreKeys(0, 1);
         bobKeys = new PreKeys(preKeys, bobId, bobId);
@@ -65,7 +65,7 @@ public class CryptoDatabaseTest {
     public static void clean() throws IOException {
         alice.close();
         bob.close();
-        Path rootPath = Paths.get("data");
+        Path rootPath = Paths.get(DATA);
         Files.walk(rootPath, FileVisitOption.FOLLOW_LINKS)
                 .sorted(Comparator.reverseOrder())
                 .map(Path::toFile)

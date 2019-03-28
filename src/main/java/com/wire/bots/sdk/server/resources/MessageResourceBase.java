@@ -14,7 +14,6 @@ import com.wire.bots.sdk.tools.Logger;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
-import java.util.UUID;
 
 public abstract class MessageResourceBase {
 
@@ -57,7 +56,7 @@ public abstract class MessageResourceBase {
                 if (minAvailable > 0) {
                     ArrayList<Integer> availablePrekeys = client.getAvailablePrekeys();
                     availablePrekeys.remove(new Integer(65535));  //remove last prekey
-                    if (availablePrekeys.size() < minAvailable) {
+                    if (!availablePrekeys.isEmpty() && availablePrekeys.size() < minAvailable) {
                         Integer lastKeyOffset = Collections.max(availablePrekeys);
                         ArrayList<PreKey> keys = client.newPreKeys(lastKeyOffset + 1, minAvailable);
                         client.uploadPreKeys(keys);
@@ -67,7 +66,7 @@ public abstract class MessageResourceBase {
                 }
 
                 // Send dummy message just initialize the session for the new member
-                client.sendReaction(UUID.randomUUID().toString(), "");   //todo hack
+                //client.sendReaction(UUID.randomUUID().toString(), "");   //todo hack
             }
             break;
             case "conversation.member-leave": {
@@ -95,7 +94,7 @@ public abstract class MessageResourceBase {
             case "conversation.create": {
                 Logger.debug("conversation.create: bot: %s", botId);
 
-                client.sendReaction(UUID.randomUUID().toString(), ""); //todo hack
+                //client.sendReaction(UUID.randomUUID().toString(), ""); //todo hack
                 handler.onNewConversation(client);
             }
             break;
@@ -116,7 +115,7 @@ public abstract class MessageResourceBase {
                 boolean accepted = handler.onConnectRequest(client, connection.from, connection.to, connection.status);
                 if (accepted) {
                     // Send dummy message just initialize the session for the new member
-                    client.sendReaction(UUID.randomUUID().toString(), ""); //todo hack
+                    //client.sendReaction(UUID.randomUUID().toString(), ""); //todo hack
                     handler.onNewConversation(client);
                 }
             }
