@@ -51,7 +51,8 @@ public class UserClient implements WireClient {
     }
 
     public void sendText(String txt) throws Exception {
-        postGenericMessage(new Text(txt));
+        Text generic = new Text(txt);
+        postGenericMessage(generic);
     }
 
     @Override

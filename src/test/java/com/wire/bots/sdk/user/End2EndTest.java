@@ -1,7 +1,7 @@
 package com.wire.bots.sdk.user;
 
 import com.wire.bots.sdk.crypto.CryptoDatabase;
-import com.wire.bots.sdk.crypto.storage.RedisStorage;
+import com.wire.bots.sdk.helpers.MemStorage;
 import com.wire.bots.sdk.helpers.Util;
 import com.wire.bots.sdk.models.otr.OtrMessage;
 import com.wire.bots.sdk.server.model.NewBot;
@@ -21,7 +21,7 @@ public class End2EndTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        RedisStorage storage = new RedisStorage("localhost", 6379);
+        MemStorage storage = new MemStorage();
 
         aliceId = "alice";
         bobId = "bob";
@@ -56,26 +56,26 @@ public class End2EndTest {
         api.addDevice(bobId, client1);
         api.addDevice(bobId, client2);
         api.addDevice(aliceId, client3);
-        api.addLastKey(bobId, aliceCrypto.box().newLastPreKey());
-        api.addLastKey(aliceId, bobCrypto.box().newLastPreKey());
+        api.addLastKey(aliceId, aliceCrypto.box().newLastPreKey());
+        api.addLastKey(bobId, bobCrypto.box().newLastPreKey());
 
         UserClient bobClient = new UserClient(bobState, null, bobCrypto, api);
         UserClient aliceClient = new UserClient(aliceState, null, aliceCrypto, api);
 
         for (int i = 0; i < 10; i++) {
             String text = "Hello Bob, This is Alice!";
-            bobClient.sendText(text);
+            aliceClient.sendText(text);
 
             OtrMessage msg = api.getMsg();
 
             String cipher1 = msg.get(bobId, client1);
-            aliceCrypto.decrypt(bobId, client1, cipher1);
-
+            bobClient.decrypt(bobId, client1, cipher1);
+            
             String cipher2 = msg.get(bobId, client2);
-            aliceCrypto.decrypt(bobId, client2, cipher2);
+            bobClient.decrypt(bobId, client2, cipher2);
 
             String cipher3 = msg.get(aliceId, client3);
-            aliceClient.decrypt(aliceId, client3, cipher3);
+            bobClient.decrypt(aliceId, client3, cipher3);
         }
     }
 }
