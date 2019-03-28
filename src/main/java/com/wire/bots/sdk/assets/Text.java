@@ -38,7 +38,7 @@ public class Text implements IGeneric {
     }
 
     @Override
-    public Messages.GenericMessage createGenericMsg() throws Exception {
+    public Messages.GenericMessage createGenericMsg() {
         Messages.GenericMessage.Builder ret = Messages.GenericMessage.newBuilder()
                 .setMessageId(messageId);
 
