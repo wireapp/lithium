@@ -19,22 +19,17 @@ public class End2EndTest {
     private static CryptoDatabase bobCrypto1;
     private static CryptoDatabase bobCrypto2;
 
-    private static NewBot aliceState;
+    private static String aliceId = "alice";
+    private static String alice = "alice1";
+    private static String bobId = "bob";
 
     @BeforeClass
     public static void setUp() throws Exception {
         MemStorage storage = new MemStorage();
 
-        String aliceId = "alice";
-        String bobId = "bob";
-
         aliceCrypto = new CryptoDatabase(aliceId, storage);
         bobCrypto1 = new CryptoDatabase(bobId, storage);
         bobCrypto2 = new CryptoDatabase(bobId, storage);
-
-        aliceState = new NewBot();
-        aliceState.id = aliceId;
-        aliceState.client = "alice";
     }
 
     @AfterClass
@@ -42,6 +37,7 @@ public class End2EndTest {
         aliceCrypto.close();
         bobCrypto1.close();
         bobCrypto2.close();
+
         Util.deleteDir("data");
     }
 
@@ -51,6 +47,10 @@ public class End2EndTest {
         String client1 = "bob1";
         String client2 = "bob2";
 
+        NewBot state = new NewBot();
+        state.id = aliceId;
+        state.client = alice;
+
         DummyAPI api = new DummyAPI();
         api.addDevice(bobId, client1);
         api.addDevice(bobId, client2);
@@ -58,7 +58,7 @@ public class End2EndTest {
         api.addLastKey(bobId, client1, bobCrypto1.box().newLastPreKey());
         api.addLastKey(bobId, client2, bobCrypto2.box().newLastPreKey());
 
-        UserClient aliceClient = new UserClient(aliceState, null, aliceCrypto, api);
+        UserClient aliceClient = new UserClient(state, null, aliceCrypto, api);
 
         for (int i = 0; i < 10; i++) {
             String text = "Hello Bob, This is Alice!";
@@ -67,12 +67,12 @@ public class End2EndTest {
             OtrMessage msg = api.getMsg();
 
             String cipher1 = msg.get(bobId, client1);
-            String decrypt = bobCrypto1.decrypt(bobId, client1, cipher1);
+            String decrypt = bobCrypto1.decrypt(aliceId, msg.getSender(), cipher1);
             String s1 = getText(decrypt);
             assert text.equals(s1);
 
             String cipher2 = msg.get(bobId, client2);
-            String decrypt2 = bobCrypto2.decrypt(bobId, client2, cipher2);
+            String decrypt2 = bobCrypto2.decrypt(aliceId, msg.getSender(), cipher2);
             String s2 = getText(decrypt2);
             assert text.equals(s2);
         }

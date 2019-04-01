@@ -36,7 +36,8 @@ class DummyAPI extends API {
             HashMap<String, PreKey> devs = new HashMap<>();
             for (String client : missing.toClients(userId)) {
                 String key = key(userId, client);
-                devs.put(client, lastPreKeys.get(key));
+                PreKey preKey = lastPreKeys.get(key);
+                devs.put(client, preKey);
             }
             ret.put(userId, devs);
         }
@@ -57,7 +58,8 @@ class DummyAPI extends API {
 
     void addLastKey(String userId, String clientId, com.wire.bots.cryptobox.PreKey lastKey) {
         String key = key(userId, clientId);
-        lastPreKeys.put(key, convert(lastKey));
+        PreKey preKey = convert(lastKey);
+        lastPreKeys.put(key, preKey);
     }
 
     private String key(String userId, String clientId) {

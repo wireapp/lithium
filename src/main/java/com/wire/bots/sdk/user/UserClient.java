@@ -130,7 +130,8 @@ public class UserClient implements WireClient {
     }
 
     @Override
-    public void sendVideo(byte[] bytes, String name, String mimeType, long duration, int h, int w) throws Exception {
+    public void sendVideo(byte[] bytes, String name, String mimeType, long duration, int h, int w)
+            throws Exception {
         String messageId = UUID.randomUUID().toString();
         VideoPreview preview = new VideoPreview(name, mimeType, duration, h, w, bytes.length, messageId);
         VideoAsset asset = new VideoAsset(bytes, mimeType, messageId);
@@ -246,6 +247,8 @@ public class UserClient implements WireClient {
         if (!res.hasMissing()) {
             // Fetch preKeys for the missing devices from the Backend
             PreKeys preKeys = api.getPreKeys(res.missing);
+
+            Logger.debug("Fetched %d preKeys for %d devices. Bot: %s", preKeys.size(), res.size(), getId());
 
             // Encrypt msg for those devices that were missing. This time using preKeys
             encrypt = crypto.encrypt(preKeys, content);
