@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 class DummyAPI extends API {
     private final Devices devices = new Devices();
-    private final HashMap<String, PreKey> lastPreKeys = new HashMap<>();
+    private final HashMap<String, PreKey> lastPreKeys = new HashMap<>(); // <userId-clientId, PreKey>
     private OtrMessage msg;
 
     DummyAPI() {
@@ -35,7 +35,9 @@ class DummyAPI extends API {
         for (String userId : missing.toUserIds()) {
             HashMap<String, PreKey> devs = new HashMap<>();
             for (String client : missing.toClients(userId)) {
-                devs.put(client, lastPreKeys.get(userId));
+                String key = key(userId, client);
+                PreKey preKey = lastPreKeys.get(key);
+                devs.put(client, preKey);
             }
             ret.put(userId, devs);
         }
@@ -54,8 +56,14 @@ class DummyAPI extends API {
         devices.missing.add(userId, client);
     }
 
-    void addLastKey(String userId, com.wire.bots.cryptobox.PreKey lastKey) {
-        lastPreKeys.put(userId, convert(lastKey));
+    void addLastKey(String userId, String clientId, com.wire.bots.cryptobox.PreKey lastKey) {
+        String key = key(userId, clientId);
+        PreKey preKey = convert(lastKey);
+        lastPreKeys.put(key, preKey);
+    }
+
+    private String key(String userId, String clientId) {
+        return String.format("%s-%s", userId, clientId);
     }
 
     OtrMessage getMsg() {

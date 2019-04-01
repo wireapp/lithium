@@ -51,4 +51,8 @@ public class OtrMessage {
         }
         return count;
     }
+
+    public String getSender() {
+        return sender;
+    }
 }

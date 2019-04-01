@@ -18,6 +18,7 @@ package com.wire.bots.sdk;//
 
 import com.wire.bots.sdk.crypto.CryptoDatabase;
 import com.wire.bots.sdk.helpers.MemStorage;
+import com.wire.bots.sdk.helpers.Util;
 import com.wire.bots.sdk.models.otr.Missing;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.models.otr.PreKeys;
@@ -26,13 +27,11 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileVisitOption;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Random;
 
 public class CryptoDatabaseTest {
 
@@ -66,11 +65,7 @@ public class CryptoDatabaseTest {
     public static void clean() throws IOException {
         alice.close();
         bob.close();
-        Path rootPath = Paths.get("data");
-        Files.walk(rootPath, FileVisitOption.FOLLOW_LINKS)
-                .sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(File::delete);
+        Util.deleteDir("data");
     }
 
     @Test
