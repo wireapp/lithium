@@ -5,20 +5,26 @@ import com.waz.model.Messages;
 import java.util.UUID;
 
 public class Delete implements IGeneric {
-    private final String delMessageId;
+    private final UUID delMessageId;
+    private final UUID messageId = UUID.randomUUID();
 
-    public Delete(String delMessageId) {
+    public Delete(UUID delMessageId) {
         this.delMessageId = delMessageId;
     }
 
     @Override
-    public Messages.GenericMessage createGenericMsg() throws Exception {
+    public Messages.GenericMessage createGenericMsg() {
         Messages.MessageDelete.Builder del = Messages.MessageDelete.newBuilder()
-                .setMessageId(delMessageId);
+                .setMessageId(delMessageId.toString());
 
         return Messages.GenericMessage.newBuilder()
-                .setMessageId(UUID.randomUUID().toString())
+                .setMessageId(getMessageId().toString())
                 .setDeleted(del)
                 .build();
+    }
+
+    @Override
+    public UUID getMessageId() {
+        return messageId;
     }
 }

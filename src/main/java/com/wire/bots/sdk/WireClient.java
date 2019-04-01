@@ -41,36 +41,29 @@ public interface WireClient extends Closeable {
      * Post text in the conversation
      *
      * @param txt Plain text to be posted into this conversation
+     * @return MessageId
      * @throws Exception
      */
-    void sendText(String txt) throws Exception;
+    UUID sendText(String txt) throws Exception;
 
     /**
      * Post text to specific user
      *
      * @param txt Plain text to be posted into this conversation
+     * @return MessageId
      * @throws Exception
      */
-    void sendDirectText(String txt, String userId) throws Exception;
+    UUID sendDirectText(String txt, String userId) throws Exception;
 
     /**
      * Post text into the conversation
      *
      * @param txt     Plain text to be posted into this conversation
      * @param expires Time in milliseconds for this message to expire
+     * @return MessageId
      * @throws Exception
      */
-    void sendText(String txt, long expires) throws Exception;
-
-    /**
-     * Post text into the conversation
-     *
-     * @param txt       Plain text to be posted into this conversation
-     * @param expires   Time in milliseconds for this message to expire
-     * @param messageId Message ID
-     * @throws Exception
-     */
-    void sendText(String txt, long expires, String messageId) throws Exception;
+    UUID sendText(String txt, long expires) throws Exception;
 
     /**
      * Post url with preview into the conversation
@@ -78,32 +71,35 @@ public interface WireClient extends Closeable {
      * @param url   Original url
      * @param title Page title (see og:title)
      * @param image Page preview image (og:image). Image must be previously uploaded
+     * @return MessageId
      * @throws Exception
      */
-    void sendLinkPreview(String url, String title, IGeneric image) throws Exception;
+    UUID sendLinkPreview(String url, String title, IGeneric image) throws Exception;
 
-    void sendDirectLinkPreview(String url, String title, IGeneric image, String userId) throws Exception;
+    UUID sendDirectLinkPreview(String url, String title, IGeneric image, String userId) throws Exception;
 
     /**
      * Post picture
      *
      * @param bytes    Row image to be sent
      * @param mimeType Mime type of the image.
+     * @return MessageId
      * @throws Exception
      */
-    void sendPicture(byte[] bytes, String mimeType) throws Exception;
+    UUID sendPicture(byte[] bytes, String mimeType) throws Exception;
 
-    void sendDirectPicture(byte[] bytes, String mimeType, String userId) throws Exception;
+    UUID sendDirectPicture(byte[] bytes, String mimeType, String userId) throws Exception;
 
     /**
      * Post previously uploaded picture
      *
      * @param image Image that has been previously uploaded (@see uploadAsset)
+     * @return MessageId
      * @throws Exception
      */
-    void sendPicture(IGeneric image) throws Exception;
+    UUID sendPicture(IGeneric image) throws Exception;
 
-    void sendDirectPicture(IGeneric image, String userId) throws Exception;
+    UUID sendDirectPicture(IGeneric image, String userId) throws Exception;
 
     /**
      * Post audio file
@@ -112,9 +108,10 @@ public interface WireClient extends Closeable {
      * @param name     Name of this content - this will be showed as title
      * @param mimeType Mime Type of this content
      * @param duration Duration in milliseconds
+     * @return MessageId
      * @throws Exception
      */
-    void sendAudio(byte[] bytes, String name, String mimeType, long duration) throws Exception;
+    UUID sendAudio(byte[] bytes, String name, String mimeType, long duration) throws Exception;
 
     /**
      * Post video file
@@ -123,38 +120,42 @@ public interface WireClient extends Closeable {
      * @param name     Name of this content - this will be showed as title
      * @param mimeType Mime Type of this content
      * @param duration Duration in milliseconds
+     * @return MessageId
      * @throws Exception
      */
-    void sendVideo(byte[] bytes, String name, String mimeType, long duration, int h, int w) throws Exception;
+    UUID sendVideo(byte[] bytes, String name, String mimeType, long duration, int h, int w) throws Exception;
 
     /**
      * Post generic file up to 25MB as an attachment into this conversation.
      *
      * @param file File to be sent as attachment
      * @param mime Mime type of this attachment
+     * @return MessageId
      * @throws Exception
      */
-    void sendFile(File file, String mime) throws Exception;
+    UUID sendFile(File file, String mime) throws Exception;
 
-    void sendDirectFile(File file, String mime, String userId) throws Exception;
+    UUID sendDirectFile(File file, String mime, String userId) throws Exception;
 
-    void sendDirectFile(IGeneric preview, IGeneric asset, String userId) throws Exception;
+    UUID sendDirectFile(IGeneric preview, IGeneric asset, String userId) throws Exception;
 
     /**
      * Sends ping into conversation
      *
+     * @return MessageId
      * @throws Exception
      */
-    void ping() throws Exception;
+    UUID ping() throws Exception;
 
     /**
      * Post Like for a message
      *
      * @param msgId Message ID
      * @param emoji Emoji - Should be '❤' for Like
+     * @return MessageId
      * @throws Exception
      */
-    void sendReaction(String msgId, String emoji) throws Exception;
+    UUID sendReaction(UUID msgId, String emoji) throws Exception;
 
     /**
      * Deletes previously posted message
@@ -162,7 +163,7 @@ public interface WireClient extends Closeable {
      * @param msgId Message ID
      * @throws Exception
      */
-    void deleteMessage(String msgId) throws Exception;
+    void deleteMessage(UUID msgId) throws Exception;
 
     /**
      * This method downloads asset from the Backend.

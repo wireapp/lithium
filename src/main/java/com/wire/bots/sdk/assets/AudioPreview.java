@@ -35,15 +35,15 @@ import java.util.UUID;
 public class AudioPreview implements IGeneric {
     private final String name;
     private final String mimeType;
-    private final String messageId;
+    private final UUID messageId;
     private final long duration;
     private final int size;
     private final byte[] levels;
 
-    public AudioPreview(byte[] bytes, String name, String mimeType, long duration) throws Exception {
+    public AudioPreview(byte[] bytes, String name, String mimeType, long duration) {
         this.name = name;
         this.mimeType = mimeType;
-        this.messageId = UUID.randomUUID().toString();
+        this.messageId = UUID.randomUUID();
         this.duration = duration;
         this.size = bytes.length;
         this.levels = getNormalizedLoudness(new ByteArrayInputStream(bytes));
@@ -88,7 +88,7 @@ public class AudioPreview implements IGeneric {
     }
 
     @Override
-    public Messages.GenericMessage createGenericMsg() throws Exception {
+    public Messages.GenericMessage createGenericMsg() {
 
         Messages.Asset.AudioMetaData.Builder audio = Messages.Asset.AudioMetaData.newBuilder()
                 .setDurationInMillis(duration)
@@ -105,17 +105,13 @@ public class AudioPreview implements IGeneric {
                 .build();
 
         return Messages.GenericMessage.newBuilder()
-                .setMessageId(messageId)
+                .setMessageId(getMessageId().toString())
                 .setAsset(asset)
                 .build();
     }
 
     public String getName() {
         return name;
-    }
-
-    public String getMessageId() {
-        return messageId;
     }
 
     public int getSize() {
@@ -126,4 +122,8 @@ public class AudioPreview implements IGeneric {
         return mimeType;
     }
 
+    @Override
+    public UUID getMessageId() {
+        return messageId;
+    }
 }

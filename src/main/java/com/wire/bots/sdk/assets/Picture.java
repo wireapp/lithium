@@ -48,7 +48,7 @@ public class Picture implements IGeneric, IAsset {
     private String assetToken;
     private boolean isPublic;
     private String retention = "expiring";
-    private String messageId = UUID.randomUUID().toString();
+    private UUID messageId = UUID.randomUUID();
     private long expires;
 
     public Picture(byte[] bytes, String mime) throws IOException {
@@ -104,7 +104,7 @@ public class Picture implements IGeneric, IAsset {
     @Override
     public Messages.GenericMessage createGenericMsg() throws Exception {
         Messages.GenericMessage.Builder ret = Messages.GenericMessage.newBuilder()
-                .setMessageId(messageId);
+                .setMessageId(getMessageId().toString());
 
         Messages.Asset.ImageMetaData.Builder metaData = Messages.Asset.ImageMetaData.newBuilder()
                 .setHeight(height)
@@ -232,12 +232,9 @@ public class Picture implements IGeneric, IAsset {
         this.size = size;
     }
 
-    public String getMessageId() {
+    @Override
+    public UUID getMessageId() {
         return messageId;
-    }
-
-    public void setMessageId(String messageId) {
-        this.messageId = messageId;
     }
 
     public long getExpires() {

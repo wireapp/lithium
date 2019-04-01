@@ -24,24 +24,30 @@ import java.util.UUID;
 
 
 public class Reaction implements IGeneric {
+    private final UUID messageId = UUID.randomUUID();
 
-    private final String msgId;
+    private final UUID msgId;
     private final String emoji;
 
-    public Reaction(String msgId, String emoji) {
+    public Reaction(UUID msgId, String emoji) {
         this.msgId = msgId;
         this.emoji = emoji;
     }
 
     @Override
-    public Messages.GenericMessage createGenericMsg() throws Exception {
+    public Messages.GenericMessage createGenericMsg() {
         Messages.Reaction.Builder reaction = Messages.Reaction.newBuilder()
-                .setMessageId(msgId)
+                .setMessageId(msgId.toString())
                 .setEmoji(emoji);
 
         return Messages.GenericMessage.newBuilder()
-                .setMessageId(UUID.randomUUID().toString())
+                .setMessageId(getMessageId().toString())
                 .setReaction(reaction)
                 .build();
+    }
+
+    @Override
+    public UUID getMessageId() {
+        return messageId;
     }
 }

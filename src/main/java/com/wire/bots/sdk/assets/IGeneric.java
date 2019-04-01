@@ -20,6 +20,10 @@ package com.wire.bots.sdk.assets;
 
 import com.waz.model.Messages;
 
+import java.util.UUID;
+
 public interface IGeneric {
     Messages.GenericMessage createGenericMsg() throws Exception;
+
+    UUID getMessageId();
 }

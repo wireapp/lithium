@@ -24,11 +24,12 @@ import com.wire.bots.sdk.tools.Util;
 
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.util.UUID;
 
 public class AudioAsset implements IGeneric, IAsset {
     static private final SecureRandom random = new SecureRandom();
 
-    private final String messageId;
+    private final UUID messageId;
     private final byte[] encBytes;
     private final byte[] otrKey = new byte[32];
     private final String mimeType;
@@ -64,7 +65,7 @@ public class AudioAsset implements IGeneric, IAsset {
                 .build();
 
         return Messages.GenericMessage.newBuilder()
-                .setMessageId(messageId)
+                .setMessageId(getMessageId().toString())
                 .setAsset(asset)
                 .build();
     }
@@ -97,4 +98,8 @@ public class AudioAsset implements IGeneric, IAsset {
         return false;
     }
 
+    @Override
+    public UUID getMessageId() {
+        return messageId;
+    }
 }
