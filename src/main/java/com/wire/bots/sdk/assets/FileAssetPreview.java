@@ -20,13 +20,15 @@ package com.wire.bots.sdk.assets;
 
 import com.waz.model.Messages;
 
+import java.util.UUID;
+
 public class FileAssetPreview implements IGeneric {
     private final String name;
     private final String mimeType;
     private final long size;
-    private final String messageId;
+    private final UUID messageId;
 
-    public FileAssetPreview(String name, String mimeType, long size, String messageId) {
+    public FileAssetPreview(String name, String mimeType, long size, UUID messageId) {
         this.messageId = messageId;
         this.name = name;
         this.mimeType = mimeType;
@@ -44,13 +46,9 @@ public class FileAssetPreview implements IGeneric {
                 .setOriginal(original);
 
         return Messages.GenericMessage.newBuilder()
-                .setMessageId(messageId)
+                .setMessageId(getMessageId().toString())
                 .setAsset(asset)
                 .build();
-    }
-
-    public String getMessageId() {
-        return messageId;
     }
 
     public String getName() {
@@ -59,5 +57,10 @@ public class FileAssetPreview implements IGeneric {
 
     public String getMimeType() {
         return mimeType;
+    }
+
+    @Override
+    public UUID getMessageId() {
+        return messageId;
     }
 }

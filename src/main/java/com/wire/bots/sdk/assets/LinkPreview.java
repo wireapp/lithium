@@ -26,7 +26,7 @@ public class LinkPreview implements IGeneric {
     private final String url;
     private final String title;
     private final Messages.Asset img;
-    private String messageId = UUID.randomUUID().toString();
+    private UUID messageId = UUID.randomUUID();
 
     public LinkPreview(String url, String title, Messages.Asset img) {
         this.url = url;
@@ -35,7 +35,7 @@ public class LinkPreview implements IGeneric {
     }
 
     @Override
-    public Messages.GenericMessage createGenericMsg() throws Exception {
+    public Messages.GenericMessage createGenericMsg() {
         // Legacy todo: remove it!
         Messages.Article article = Messages.Article.newBuilder()
                 .setTitle(title)
@@ -57,12 +57,13 @@ public class LinkPreview implements IGeneric {
                 .addLinkPreview(linkPreview);
 
         return Messages.GenericMessage.newBuilder()
-                .setMessageId(messageId)
+                .setMessageId(getMessageId().toString())
                 .setText(text.build())
                 .build();
     }
 
-    public void setMessageId(String messageId) {
-        this.messageId = messageId;
+    @Override
+    public UUID getMessageId() {
+        return messageId;
     }
 }

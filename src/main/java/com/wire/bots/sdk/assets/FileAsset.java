@@ -26,13 +26,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.util.UUID;
 
 public class FileAsset implements IGeneric, IAsset {
 
     static private final SecureRandom random = new SecureRandom();
 
     private final String mimeType;
-    private final String messageId;
+    private final UUID messageId;
     private final byte[] encBytes;
     private final byte[] otrKey = new byte[32];
     private final byte[] sha256;
@@ -40,7 +41,7 @@ public class FileAsset implements IGeneric, IAsset {
     private String assetKey;
     private String assetToken;
 
-    public FileAsset(File file, String mimeType, String messageId) throws Exception {
+    public FileAsset(File file, String mimeType, UUID messageId) throws Exception {
         this.mimeType = mimeType;
         this.messageId = messageId;
 
@@ -57,7 +58,7 @@ public class FileAsset implements IGeneric, IAsset {
         sha256 = MessageDigest.getInstance("SHA-256").digest(encBytes);
     }
 
-    public FileAsset(String assetKey, String assetToken, byte[] sha256, String messageId) {
+    public FileAsset(String assetKey, String assetToken, byte[] sha256, UUID messageId) {
         this.messageId = messageId;
         this.assetKey = assetKey;
         this.assetToken = assetToken;
@@ -79,7 +80,7 @@ public class FileAsset implements IGeneric, IAsset {
                 .setUploaded(remote);
 
         return Messages.GenericMessage.newBuilder()
-                .setMessageId(messageId)
+                .setMessageId(getMessageId().toString())
                 .setAsset(asset)
                 .build();
     }
@@ -110,5 +111,10 @@ public class FileAsset implements IGeneric, IAsset {
     @Override
     public boolean isPublic() {
         return false;
+    }
+
+    @Override
+    public UUID getMessageId() {
+        return messageId;
     }
 }

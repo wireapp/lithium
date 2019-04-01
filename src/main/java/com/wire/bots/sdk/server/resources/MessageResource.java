@@ -97,7 +97,7 @@ public class MessageResource extends MessageResourceBase {
 
     private void respondWithError(String botId, String message) {
         try (WireClient client = repo.getClient(botId)) {
-            client.sendReaction(UUID.randomUUID().toString(), message);
+            client.sendReaction(UUID.randomUUID(), message);
         } catch (Exception e1) {
             Logger.error("MessageResource::newMessage: bot: %s %s", botId, e1);
         }

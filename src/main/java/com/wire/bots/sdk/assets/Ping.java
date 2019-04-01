@@ -23,15 +23,21 @@ import com.waz.model.Messages;
 import java.util.UUID;
 
 public class Ping implements IGeneric {
+    private final UUID messageId = UUID.randomUUID();
 
     @Override
-    public Messages.GenericMessage createGenericMsg() throws Exception {
+    public Messages.GenericMessage createGenericMsg() {
         Messages.Knock.Builder knock = Messages.Knock.newBuilder()
                 .setHotKnock(false);
 
         return Messages.GenericMessage.newBuilder()
-                .setMessageId(UUID.randomUUID().toString())
+                .setMessageId(getMessageId().toString())
                 .setKnock(knock)
                 .build();
+    }
+
+    @Override
+    public UUID getMessageId() {
+        return messageId;
     }
 }

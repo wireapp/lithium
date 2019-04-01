@@ -49,7 +49,7 @@ public class UserMessageResource extends MessageResourceBase {
 
     private void respondWithError(UUID userId, UUID convId) {
         try (WireClient client = userClientRepo.getWireClient(userId, convId)) {
-            client.sendReaction(UUID.randomUUID().toString(), "");
+            client.sendReaction(UUID.randomUUID(), "");
         } catch (Exception e) {
             Logger.error("MessageResource::respondWithError: user: %s, conv: %s, %s", userId, convId, e);
         }

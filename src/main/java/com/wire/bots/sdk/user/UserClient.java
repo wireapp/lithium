@@ -50,41 +50,40 @@ public class UserClient implements WireClient {
         this.conv = conv;
     }
 
-    public void sendText(String txt) throws Exception {
+    public UUID sendText(String txt) throws Exception {
         Text generic = new Text(txt);
         postGenericMessage(generic);
+        return generic.getMessageId();
     }
 
     @Override
-    public void sendText(String txt, long expires) throws Exception {
-        postGenericMessage(new Text(txt, expires));
+    public UUID sendText(String txt, long expires) throws Exception {
+        Text generic = new Text(txt, expires);
+        postGenericMessage(generic);
+        return generic.getMessageId();
     }
 
     @Override
-    public void sendDirectText(String txt, String userId) throws Exception {
-        sendText(txt); //todo implement direct messaging
+    public UUID sendDirectText(String txt, String userId) throws Exception {
+        return sendText(txt); //todo implement direct messaging
     }
 
     @Override
-    public void sendLinkPreview(String url, String title, IGeneric image) throws Exception {
-        postGenericMessage(new LinkPreview(url, title, image.createGenericMsg().getAsset()));
+    public UUID sendLinkPreview(String url, String title, IGeneric image) throws Exception {
+        LinkPreview generic = new LinkPreview(url, title, image.createGenericMsg().getAsset());
+        postGenericMessage(generic);
+        return generic.getMessageId();
     }
 
     @Override
-    public void sendDirectLinkPreview(String url, String title, IGeneric image, String userId) throws Exception {
-        LinkPreview msg = new LinkPreview(url, title, image.createGenericMsg().getAsset());
-        postGenericMessage(msg); //todo implement direct messaging
+    public UUID sendDirectLinkPreview(String url, String title, IGeneric image, String userId) throws Exception {
+        LinkPreview generic = new LinkPreview(url, title, image.createGenericMsg().getAsset());
+        postGenericMessage(generic); //todo implement direct messaging
+        return generic.getMessageId();
     }
 
     @Override
-    public void sendText(String txt, long expires, String messageId) throws Exception {
-        Text text = new Text(txt, expires);
-        text.setMessageId(messageId);
-        postGenericMessage(text);
-    }
-
-    @Override
-    public void sendPicture(byte[] bytes, String mimeType) throws Exception {
+    public UUID sendPicture(byte[] bytes, String mimeType) throws Exception {
         Picture image = new Picture(bytes, mimeType);
 
         AssetKey assetKey = uploadAsset(image);
@@ -92,16 +91,18 @@ public class UserClient implements WireClient {
         image.setAssetToken(assetKey.token);
 
         postGenericMessage(image);
+        return image.getMessageId();
     }
 
     @Override
-    public void sendDirectPicture(byte[] bytes, String mimeType, String userId) throws Exception {
-        sendPicture(bytes, mimeType);
+    public UUID sendDirectPicture(byte[] bytes, String mimeType, String userId) throws Exception {
+        return sendPicture(bytes, mimeType);
     }
 
     @Override
-    public void sendDirectPicture(IGeneric image, String userId) throws Exception {
+    public UUID sendDirectPicture(IGeneric image, String userId) throws Exception {
         postGenericMessage(image);
+        return image.getMessageId();
     }
 
     @Override
@@ -110,12 +111,13 @@ public class UserClient implements WireClient {
     }
 
     @Override
-    public void sendPicture(IGeneric image) throws Exception {
+    public UUID sendPicture(IGeneric image) throws Exception {
         postGenericMessage(image);
+        return image.getMessageId();
     }
 
     @Override
-    public void sendAudio(byte[] bytes, String name, String mimeType, long duration) throws Exception {
+    public UUID sendAudio(byte[] bytes, String name, String mimeType, long duration) throws Exception {
         AudioPreview preview = new AudioPreview(bytes, name, mimeType, duration);
         AudioAsset audioAsset = new AudioAsset(bytes, preview);
 
@@ -127,12 +129,13 @@ public class UserClient implements WireClient {
 
         // post original + remote asset message
         postGenericMessage(audioAsset);
+        return audioAsset.getMessageId();
     }
 
     @Override
-    public void sendVideo(byte[] bytes, String name, String mimeType, long duration, int h, int w)
+    public UUID sendVideo(byte[] bytes, String name, String mimeType, long duration, int h, int w)
             throws Exception {
-        String messageId = UUID.randomUUID().toString();
+        UUID messageId = UUID.randomUUID();
         VideoPreview preview = new VideoPreview(name, mimeType, duration, h, w, bytes.length, messageId);
         VideoAsset asset = new VideoAsset(bytes, mimeType, messageId);
 
@@ -144,11 +147,12 @@ public class UserClient implements WireClient {
 
         // post original + remote asset message
         postGenericMessage(asset);
+        return asset.getMessageId();
     }
 
     @Override
-    public void sendFile(File f, String mime) throws Exception {
-        String messageId = UUID.randomUUID().toString();
+    public UUID sendFile(File f, String mime) throws Exception {
+        UUID messageId = UUID.randomUUID();
         FileAssetPreview preview = new FileAssetPreview(f.getName(), mime, f.length(), messageId);
         FileAsset asset = new FileAsset(f, mime, messageId);
 
@@ -161,31 +165,37 @@ public class UserClient implements WireClient {
 
         // post original + remote asset message
         postGenericMessage(asset);
+        return asset.getMessageId();
     }
 
     @Override
-    public void sendDirectFile(IGeneric preview, IGeneric asset, String userId) throws Exception {
+    public UUID sendDirectFile(IGeneric preview, IGeneric asset, String userId) throws Exception {
         postGenericMessage(preview);
         postGenericMessage(asset);
+        return asset.getMessageId();
     }
 
     @Override
-    public void sendDirectFile(File f, String mime, String userId) throws Exception {
-        sendFile(f, mime);
+    public UUID sendDirectFile(File f, String mime, String userId) throws Exception {
+        return sendFile(f, mime);
     }
 
     @Override
-    public void ping() throws Exception {
-        postGenericMessage(new Ping());
+    public UUID ping() throws Exception {
+        Ping generic = new Ping();
+        postGenericMessage(generic);
+        return generic.getMessageId();
     }
 
     @Override
-    public void sendReaction(String msgId, String emoji) throws Exception {
-        postGenericMessage(new Reaction(msgId, emoji));
+    public UUID sendReaction(UUID msgId, String emoji) throws Exception {
+        Reaction generic = new Reaction(msgId, emoji);
+        postGenericMessage(generic);
+        return generic.getMessageId();
     }
 
     @Override
-    public void deleteMessage(String msgId) throws Exception {
+    public void deleteMessage(UUID msgId) throws Exception {
         postGenericMessage(new Delete(msgId));
     }
 

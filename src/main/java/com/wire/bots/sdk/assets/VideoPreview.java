@@ -20,16 +20,18 @@ package com.wire.bots.sdk.assets;
 
 import com.waz.model.Messages;
 
+import java.util.UUID;
+
 public class VideoPreview implements IGeneric {
     private final String name;
     private final String mimeType;
     private final int h;
     private final int w;
-    private final String messageId;
+    private final UUID messageId;
     private final long duration;
     private final int size;
 
-    public VideoPreview(String name, String mimeType, long duration, int h, int w, int size, String messageId) throws Exception {
+    public VideoPreview(String name, String mimeType, long duration, int h, int w, int size, UUID messageId) {
         this.name = name;
         this.mimeType = mimeType;
         this.h = h;
@@ -40,7 +42,7 @@ public class VideoPreview implements IGeneric {
     }
 
     @Override
-    public Messages.GenericMessage createGenericMsg() throws Exception {
+    public Messages.GenericMessage createGenericMsg() {
 
         Messages.Asset.VideoMetaData.Builder audio = Messages.Asset.VideoMetaData.newBuilder()
                 .setDurationInMillis(duration)
@@ -58,7 +60,7 @@ public class VideoPreview implements IGeneric {
                 .build();
 
         return Messages.GenericMessage.newBuilder()
-                .setMessageId(messageId)
+                .setMessageId(getMessageId().toString())
                 .setAsset(asset)
                 .build();
     }
@@ -67,15 +69,16 @@ public class VideoPreview implements IGeneric {
         return name;
     }
 
-    public String getMessageId() {
-        return messageId;
-    }
-
     public int getSize() {
         return size;
     }
 
     public String getMimeType() {
         return mimeType;
+    }
+
+    @Override
+    public UUID getMessageId() {
+        return messageId;
     }
 }
