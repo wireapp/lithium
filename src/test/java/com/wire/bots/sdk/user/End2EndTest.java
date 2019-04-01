@@ -4,11 +4,14 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.waz.model.Messages;
 import com.wire.bots.sdk.crypto.CryptoDatabase;
 import com.wire.bots.sdk.helpers.MemStorage;
+import com.wire.bots.sdk.helpers.Util;
 import com.wire.bots.sdk.models.otr.OtrMessage;
 import com.wire.bots.sdk.server.model.NewBot;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.Base64;
 
 public class End2EndTest {
@@ -32,6 +35,14 @@ public class End2EndTest {
         aliceState = new NewBot();
         aliceState.id = aliceId;
         aliceState.client = "alice";
+    }
+
+    @AfterClass
+    public static void clean() throws IOException {
+        aliceCrypto.close();
+        bobCrypto1.close();
+        bobCrypto2.close();
+        Util.deleteDir("data");
     }
 
     @Test

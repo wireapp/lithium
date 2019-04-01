@@ -36,7 +36,7 @@ class DummyAPI extends API {
             HashMap<String, PreKey> devs = new HashMap<>();
             for (String client : missing.toClients(userId)) {
                 String key = key(userId, client);
-                devs.put(key, lastPreKeys.get(userId));
+                devs.put(client, lastPreKeys.get(key));
             }
             ret.put(userId, devs);
         }
