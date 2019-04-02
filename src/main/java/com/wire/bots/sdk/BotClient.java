@@ -52,21 +52,21 @@ public class BotClient implements WireClient {
 
     @Override
     public UUID sendText(String txt) throws Exception {
-        Text generic = new Text(txt);
+        MessageText generic = new MessageText(txt);
         postGenericMessage(generic);
         return generic.getMessageId();
     }
 
     @Override
     public UUID sendText(String txt, long expires) throws Exception {
-        Text generic = new Text(txt, expires);
+        MessageText generic = new MessageText(txt, expires);
         postGenericMessage(generic);
         return generic.getMessageId();
     }
 
     @Override
     public UUID sendDirectText(String txt, String userId) throws Exception {
-        Text generic = new Text(txt);
+        MessageText generic = new MessageText(txt);
         postGenericMessage(generic, userId);
         return generic.getMessageId();
     }
@@ -228,8 +228,17 @@ public class BotClient implements WireClient {
     }
 
     @Override
-    public void deleteMessage(UUID msgId) throws Exception {
-        postGenericMessage(new Delete(msgId));
+    public UUID deleteMessage(UUID msgId) throws Exception {
+        MessageDelete generic = new MessageDelete(msgId);
+        postGenericMessage(generic);
+        return generic.getMessageId();
+    }
+
+    @Override
+    public UUID editMessage(UUID replacingMessageId, String text) throws Exception {
+        MessageEdit generic = new MessageEdit(replacingMessageId, text);
+        postGenericMessage(generic);
+        return generic.getMessageId();
     }
 
     @Override

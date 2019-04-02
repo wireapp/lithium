@@ -4,11 +4,11 @@ import com.waz.model.Messages;
 
 import java.util.UUID;
 
-public class Delete implements IGeneric {
+public class MessageDelete implements IGeneric {
     private final UUID delMessageId;
     private final UUID messageId = UUID.randomUUID();
 
-    public Delete(UUID delMessageId) {
+    public MessageDelete(UUID delMessageId) {
         this.delMessageId = delMessageId;
     }
 

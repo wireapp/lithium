@@ -163,7 +163,17 @@ public interface WireClient extends Closeable {
      * @param msgId Message ID
      * @throws Exception
      */
-    void deleteMessage(UUID msgId) throws Exception;
+    UUID deleteMessage(UUID msgId) throws Exception;
+
+    /**
+     * Post Like for a message
+     *
+     * @param replacingMessageId Message ID that is being edited
+     * @param text               New text
+     * @return MessageId
+     * @throws Exception
+     */
+    UUID editMessage(UUID replacingMessageId, String text) throws Exception;
 
     /**
      * This method downloads asset from the Backend.

@@ -22,17 +22,17 @@ import com.waz.model.Messages;
 
 import java.util.UUID;
 
-public class Text implements IGeneric {
+public class MessageText implements IGeneric {
     private final String text;
     private final long expires;
     private UUID messageId = UUID.randomUUID();
 
-    public Text(String text) {
+    public MessageText(String text) {
         this.text = text;
         this.expires = 0;
     }
 
-    public Text(String text, long expires) {
+    public MessageText(String text, long expires) {
         this.text = text;
         this.expires = expires;
     }
