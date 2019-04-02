@@ -32,6 +32,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.Base64;
 
 public class LoginClient {
@@ -80,9 +81,10 @@ public class LoginClient {
         return ret;
     }
 
-    public String registerClient(PreKey key, String token, String password) throws HttpException {
+    public String registerClient(String token, String password, ArrayList<PreKey> preKeys, PreKey lastKey) throws HttpException {
         NewClient newClient = new NewClient();
-        newClient.lastPreKey = key;
+        newClient.lastPreKey = lastKey;
+        newClient.preKeys = preKeys;
         newClient.sigkeys.enckey = Base64.getEncoder().encodeToString(new byte[32]);
         newClient.sigkeys.mackey = Base64.getEncoder().encodeToString(new byte[32]);
 

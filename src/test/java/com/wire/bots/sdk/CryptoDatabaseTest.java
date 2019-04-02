@@ -54,10 +54,10 @@ public class CryptoDatabaseTest {
         alice = new CryptoDatabase(aliceId, storage);
         bob = new CryptoDatabase(bobId, storage);
 
-        ArrayList<PreKey> preKeys = bob.newPreKeys(0, 1);
+        ArrayList<PreKey> preKeys = bob.newPreKeys(0, 10);
         bobKeys = new PreKeys(preKeys, bobId, bobId);
 
-        preKeys = alice.newPreKeys(0, 1);
+        preKeys = alice.newPreKeys(0, 10);
         aliceKeys = new PreKeys(preKeys, aliceId, aliceId);
     }
 

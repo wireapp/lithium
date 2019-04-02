@@ -34,4 +34,11 @@ public class PreKeys extends HashMap<String, HashMap<String, PreKey>> {
         }
         put(userId, devs);
     }
+
+    public int count() {
+        int ret = 0;
+        for (HashMap<String, PreKey> cls : values())
+            ret += cls.size();
+        return ret;
+    }
 }

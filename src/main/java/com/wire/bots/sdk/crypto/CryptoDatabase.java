@@ -39,11 +39,20 @@ public class CryptoDatabase extends CryptoBase {
      * overlapping directories. Doing so results in undefined behaviour.
      *
      * @param botId Bot id
+     * @param storage Instance of a IStorage class
      * @throws Exception
      */
     public CryptoDatabase(String botId, IStorage storage) throws CryptoException {
         try {
             box = new CryptoDb(botId, storage);
+        } catch (IOException e) {
+            throw new CryptoException(e);
+        }
+    }
+
+    public CryptoDatabase(String botId, IStorage storage, String dir) throws CryptoException {
+        try {
+            box = new CryptoDb(botId, storage, dir);
         } catch (IOException e) {
             throw new CryptoException(e);
         }

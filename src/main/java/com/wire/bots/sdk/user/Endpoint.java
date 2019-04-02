@@ -24,6 +24,7 @@ import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.factories.CryptoFactory;
 import com.wire.bots.sdk.factories.StorageFactory;
+import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.server.model.Payload;
 import com.wire.bots.sdk.state.State;
@@ -39,6 +40,7 @@ import javax.ws.rs.client.Client;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -172,7 +174,9 @@ public class Endpoint {
 
                 state = new NewBot();
                 state.id = botId;
-                state.client = loginClient.registerClient(crypto.newLastPreKey(), token, password);
+                ArrayList<PreKey> preKeys = crypto.newPreKeys(0, 20);
+                PreKey lastKey = crypto.newLastPreKey();
+                state.client = loginClient.registerClient(token, password, preKeys, lastKey);
 
                 Logger.info("initDevice: New ClientID: %s", state.client);
             }
