@@ -318,7 +318,6 @@ check_tools
 zident=$(whoami)
 zcmd=""
 zenv="prod"
-zdomain="wire.com"
 while [ $# -gt 0 ]; do
     case "$1" in
     -h|--help)
@@ -341,6 +340,12 @@ while [ $# -gt 0 ]; do
     esac
     shift
 done
+
+if [ $zenv = prod ]; then
+   zdomain=wire.com
+else
+   zdomain=zinfra.io
+fi
 
 if [ -z "$zcmd" ] ; then
     usage "Not enough arguments"
