@@ -76,7 +76,7 @@ public class API extends LoginClient {
         selfPath = target.path("self");
     }
 
-    Access renewAccessToken(String cookie) throws HttpException, IOException {
+    public Access renewAccessToken(String cookie) throws HttpException, IOException {
         Response response = accessPath.
                 request(MediaType.APPLICATION_JSON).
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).

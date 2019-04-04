@@ -145,13 +145,13 @@ public abstract class MessageResourceBase {
         }
     }
 
-    private Messages.GenericMessage decrypt(WireClient client, Payload inbound)
+    private Messages.GenericMessage decrypt(WireClient client, Payload payload)
             throws CryptoException, InvalidProtocolBufferException {
-        String userId = inbound.from.toString();
-        String clientId = inbound.data.sender;
-        String cypher = inbound.data.text;
+        String from = payload.from.toString();
+        String sender = payload.data.sender;
+        String cipher = payload.data.text;
 
-        String encoded = client.decrypt(userId, clientId, cypher);
+        String encoded = client.decrypt(from, sender, cipher);
         byte[] decoded = Base64.getDecoder().decode(encoded);
         return Messages.GenericMessage.parseFrom(decoded);
     }

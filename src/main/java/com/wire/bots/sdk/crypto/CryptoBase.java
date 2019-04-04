@@ -85,7 +85,7 @@ abstract class CryptoBase implements Crypto {
      * For each prekey encrypt the content that is in the OtrMessage
      *
      * @param preKeys Prekeys
-     * @param content Plain plain text content
+     * @param content Plain text content
      * @throws Exception throws Exception
      */
     @Override

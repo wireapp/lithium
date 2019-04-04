@@ -46,11 +46,11 @@ public class BotsResource {
     private final CryptoFactory cryptoF;
     private final AuthValidator validator;
 
-    public BotsResource(MessageHandlerBase handler, StorageFactory storageF, CryptoFactory cryptoF, AuthValidator validator) {
+    public BotsResource(MessageHandlerBase handler, StorageFactory storageF, CryptoFactory cryptoF, AuthValidator val) {
         this.handler = handler;
         this.storageF = storageF;
         this.cryptoF = cryptoF;
-        this.validator = validator;
+        this.validator = val;
     }
 
     @POST
@@ -96,9 +96,10 @@ public class BotsResource {
             ret.addAsset(profileBig, "complete");
         }
 
-        Crypto crypto = cryptoF.create(botId);
-        ret.lastPreKey = crypto.newLastPreKey();
-        ret.preKeys = crypto.newPreKeys(0, newBot.conversation.members.size() * 8);
+        try (Crypto crypto = cryptoF.create(botId)) {
+            ret.lastPreKey = crypto.newLastPreKey();
+            ret.preKeys = crypto.newPreKeys(0, 50);
+        }
 
         return Response.
                 ok(ret).

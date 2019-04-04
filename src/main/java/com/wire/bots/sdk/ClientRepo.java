@@ -23,10 +23,7 @@ public class ClientRepo {
     @Deprecated
     public WireClient getWireClient(String botId) {
         try {
-            NewBot state = sf.create(botId).getState();
-            Crypto crypto = cf.create(botId);
-            API api = new API(httpClient, state.token);
-            return new BotClient(state, crypto, api);
+            return getClient(botId);
         } catch (Exception e) {
             return null;
         }

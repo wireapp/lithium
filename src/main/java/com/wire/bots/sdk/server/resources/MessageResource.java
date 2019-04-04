@@ -69,20 +69,20 @@ public class MessageResource extends MessageResourceBase {
         try (WireClient client = repo.getClient(botId)) {
             handleMessage(inbound, client);
         } catch (CryptoException e) {
-            Logger.error("MessageResource::newMessage: bot: %s %s", botId, e);
-            respondWithError(botId, "Something went wrong");
+            Logger.error("newMessage: %s %s", botId, e);
+            //respondWithError(botId, "Something went wrong");
             return Response.
                     status(503).
                     entity(new ErrorMessage(e.getMessage())).
                     build();
         } catch (MissingStateException e) {
-            Logger.error("MessageResource::newMessage: bot: %s %s", botId, e);
+            Logger.error("newMessage: %s %s", botId, e);
             return Response.
                     status(410).
                     entity(new ErrorMessage(e.getMessage())).
                     build();
         } catch (Exception e) {
-            Logger.error("MessageResource::newMessage: bot: %s %s", botId, e);
+            Logger.error("newMessage: %s %s", botId, e);
             return Response.
                     status(400).
                     entity(new ErrorMessage(e.getMessage())).

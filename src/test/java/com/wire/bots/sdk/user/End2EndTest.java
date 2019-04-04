@@ -22,6 +22,41 @@ public class End2EndTest {
     }
 
     @Test
+    public void testAliceToAlice() throws Exception {
+        String aliceId = "alice";
+        String client1 = "alice1";
+
+        NewBot state = new NewBot();
+        state.id = aliceId;
+        state.client = "alice";
+
+        MemStorage storage = new MemStorage();
+
+        CryptoDatabase aliceCrypto = new CryptoDatabase(aliceId, storage, "data/testAliceToAlice");
+        CryptoDatabase aliceCrypto1 = new CryptoDatabase(aliceId, storage, "data/testAliceToAlice");
+
+        DummyAPI api = new DummyAPI();
+        api.addDevice(aliceId, client1);
+
+        api.addLastKey(aliceId, state.client, aliceCrypto.box().newLastPreKey());
+        api.addLastKey(aliceId, client1, aliceCrypto1.box().newLastPreKey());
+
+        UserClient aliceClient = new UserClient(state, null, aliceCrypto, api);
+
+        for (int i = 0; i < 10; i++) {
+            String text = "Hello Alice, This is Alice!";
+            aliceClient.sendText(text);
+
+            OtrMessage msg = api.getMsg();
+
+            String cipher1 = msg.get(aliceId, client1);
+            String decrypt = aliceCrypto1.decrypt(aliceId, msg.getSender(), cipher1);
+            String s1 = getText(decrypt);
+            assert text.equals(s1);
+        }
+    }
+
+    @Test
     public void testAliceToBob() throws Exception {
         String bobId = "bob";
         String aliceId = "alice";
