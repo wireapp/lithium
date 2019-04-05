@@ -59,9 +59,8 @@ public class GenericMessageProcessor {
         originals.remove(messageId);
     }
 
-    public boolean process(String userId, String sender, Messages.GenericMessage generic) {
+    public boolean process(String from, String sender, UUID convId, Messages.GenericMessage generic) {
         String messageId = generic.getMessageId();
-        UUID convId = client.getConversationId();
 
         Messages.Text text = null;
         Messages.Asset asset = null;
@@ -95,7 +94,7 @@ public class GenericMessageProcessor {
         // Edit message
         if (generic.hasEdited() && generic.getEdited().hasText()) {
             Messages.MessageEdit edited = generic.getEdited();
-            TextMessage msg = new TextMessage(edited.getReplacingMessageId(), convId.toString(), sender, userId);
+            TextMessage msg = new TextMessage(edited.getReplacingMessageId(), convId.toString(), sender, from);
             msg.setText(edited.getText().getContent());
 
             handler.onEditText(client, msg);
@@ -104,7 +103,7 @@ public class GenericMessageProcessor {
 
         // Text
         if (text != null && text.hasContent() && text.getLinkPreviewList().isEmpty()) {
-            TextMessage msg = new TextMessage(messageId, convId.toString(), sender, userId);
+            TextMessage msg = new TextMessage(messageId, convId.toString(), sender, from);
             msg.setText(text.getContent());
 
             handler.onText(client, msg);
@@ -115,14 +114,14 @@ public class GenericMessageProcessor {
             Messages.Calling calling = generic.getCalling();
             if (calling.hasContent()) {
                 String content = calling.getContent();
-                handler.onCalling(client, userId, sender, content);
+                handler.onCalling(client, from, sender, content);
             }
             return true;
         }
 
         if (generic.hasDeleted()) {
             String delMsgId = generic.getDeleted().getMessageId();
-            TextMessage msg = new TextMessage(delMsgId, convId.toString(), sender, userId);
+            TextMessage msg = new TextMessage(delMsgId, convId.toString(), sender, from);
 
             handler.onDelete(client, msg);
             return true;
@@ -154,7 +153,7 @@ public class GenericMessageProcessor {
                         original.hasVideo(),
                         original.hasImage());
 
-                MessageAssetBase base = new MessageAssetBase(messageId, convId.toString(), sender, userId);
+                MessageAssetBase base = new MessageAssetBase(messageId, convId.toString(), sender, from);
                 origin(base, original);
                 uploaded(base, remoteData);
 

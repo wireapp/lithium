@@ -23,23 +23,21 @@ public class End2EndTest {
 
     @Test
     public void testAliceToAlice() throws Exception {
-        String aliceId = "alice";
-        String client1 = "alice1";
+        Random rnd = new Random();
+        String aliceId = "alice_" + rnd.nextInt();
+        String client1 = "alice1_" + rnd.nextInt();
 
         NewBot state = new NewBot();
         state.id = aliceId;
-        state.client = "alice";
+        state.client = aliceId;
 
-        MemStorage storage = new MemStorage();
+        RedisStorage storage = new RedisStorage("localhost");
 
-        CryptoDatabase aliceCrypto = new CryptoDatabase(aliceId, storage, "data/testAliceToAlice");
-        CryptoDatabase aliceCrypto1 = new CryptoDatabase(aliceId, storage, "data/testAliceToAlice");
+        CryptoDatabase aliceCrypto = new CryptoDatabase(aliceId, storage, "data/testAliceToAlice/1");
+        CryptoDatabase aliceCrypto1 = new CryptoDatabase(aliceId, storage, "data/testAliceToAlice/2");
 
         DummyAPI api = new DummyAPI();
-        api.addDevice(aliceId, client1);
-
-        api.addLastKey(aliceId, state.client, aliceCrypto.box().newLastPreKey());
-        api.addLastKey(aliceId, client1, aliceCrypto1.box().newLastPreKey());
+        api.addDevice(aliceId, client1, aliceCrypto1.box().newLastPreKey());
 
         UserClient aliceClient = new UserClient(state, null, aliceCrypto, api);
 
@@ -72,9 +70,7 @@ public class End2EndTest {
         CryptoDatabase bobCrypto = new CryptoDatabase(bobId, storage, "data/testAliceToBob");
 
         DummyAPI api = new DummyAPI();
-        api.addDevice(bobId, client1);
-
-        api.addLastKey(bobId, client1, bobCrypto.box().newLastPreKey());
+        api.addDevice(bobId, client1, bobCrypto.box().newLastPreKey());
 
         UserClient aliceClient = new UserClient(state, null, aliceCrypto, api);
 
@@ -112,16 +108,11 @@ public class End2EndTest {
         CryptoDatabase bobCrypto2 = new CryptoDatabase(bobId, storage, "data/testMultiDevice/bob/2");
 
         DummyAPI api = new DummyAPI();
-        api.addDevice(bobId, client1);
-        api.addDevice(bobId, client2);
-        api.addDevice(aliceId, client3);
-
-        api.addLastKey(bobId, client1, bobCrypto1.box().newLastPreKey());
-        api.addLastKey(bobId, client2, bobCrypto2.box().newLastPreKey());
-        api.addLastKey(aliceId, client3, aliceCrypto1.box().newLastPreKey());
+        api.addDevice(bobId, client1, bobCrypto1.box().newLastPreKey());
+        api.addDevice(bobId, client2, bobCrypto2.box().newLastPreKey());
+        api.addDevice(aliceId, client3, aliceCrypto1.box().newLastPreKey());
 
         CryptoDatabase aliceCrypto = new CryptoDatabase(aliceId, storage, "data/testMultiDevice/alice");
-        api.addLastKey(aliceId, aliceCl, aliceCrypto.box().newLastPreKey());
 
         UserClient aliceClient = new UserClient(state, null, aliceCrypto, api);
 

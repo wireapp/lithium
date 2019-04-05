@@ -39,7 +39,7 @@ public abstract class MessageResourceBase {
 
                 handler.onEvent(client, payload.from.toString(), message);
 
-                boolean process = processor.process(payload.from.toString(), data.sender, message);
+                boolean process = processor.process(payload.from.toString(), data.sender, payload.convId, message);
                 if (process)
                     processor.cleanUp(message.getMessageId());
             }

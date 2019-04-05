@@ -52,11 +52,12 @@ class DummyAPI extends API {
         return preKey;
     }
 
-    void addDevice(String userId, String client) {
+    void addDevice(String userId, String client, com.wire.bots.cryptobox.PreKey lastKey) {
         devices.missing.add(userId, client);
+        addLastKey(userId, client, lastKey);
     }
 
-    void addLastKey(String userId, String clientId, com.wire.bots.cryptobox.PreKey lastKey) {
+    private void addLastKey(String userId, String clientId, com.wire.bots.cryptobox.PreKey lastKey) {
         String key = key(userId, clientId);
         PreKey preKey = convert(lastKey);
         lastPreKeys.put(key, preKey);
