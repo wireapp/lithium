@@ -5,10 +5,13 @@ import com.wire.bots.cryptobox.IStorage;
 import com.wire.bots.cryptobox.PreKey;
 import com.wire.bots.cryptobox.StorageException;
 import com.wire.bots.sdk.tools.Logger;
+import com.wire.bots.sdk.tools.Util;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 
 public class RedisStorage implements IStorage {
@@ -23,7 +26,7 @@ public class RedisStorage implements IStorage {
         this.host = host;
         this.port = port;
         this.password = password;
-        this.timeout = timeout;
+        RedisStorage.timeout = timeout;
     }
 
     public RedisStorage(String host, Integer port, String password) {
@@ -78,64 +81,66 @@ public class RedisStorage implements IStorage {
         String key = key(id, sid);
         byte[] data = jedis.getSet(key.getBytes(), EMPTY);
         if (data == null) {
-            Logger.debug("redis: fetch key: %s size: null", key);
-            return new Record(key, null, jedis);
+            Logger.debug("fetchSession: %s missing", sid);
+            return new Record(id, sid, null, jedis);
         }
 
-        for (int i = 0; i < 1000 && data.length == 0; i++) {
-            sleep(5);
+        for (int i = 0; i < 200 && data.length == 0; i++) {
+            sleep(10);
             data = jedis.getSet(key.getBytes(), EMPTY);
-            if (data == null)
-                break;
         }
 
-        if (data == null || data.length == 0) {
-            Logger.warning("redis: fetch key: %s size: %d", key, 0);
+        if (data.length == 0) {
+            Logger.warning("fetchSession: WARNING %s timeout", sid);
             jedis.del(key);
-            throw new StorageException("Redis Timeout when fetching Session with key: " + key);
+            throw new StorageException("Redis Timeout when fetching Session: " + sid);
         }
 
-        Logger.debug("redis: fetch key: %s size: %d", key, data.length);
-        return new Record(key, data, jedis);
+        Logger.debug("fetchSession: %s size: %d", sid, data.length);
+        return new Record(id, sid, data, jedis);
     }
+
+//    @Override
+//    public PreKey[] fetchPrekeys(String id) {
+//        try (Jedis jedis = getConnection()) {
+//            String key = String.format("pk_%s", id);
+//            Long llen = jedis.llen(key);
+//            PreKey[] ret = new PreKey[llen.intValue()];
+//            for (int i = 0; i < llen.intValue(); i++) {
+//                byte[] data = jedis.lindex(key.getBytes(), i);
+//                ret[i] = new PreKey(i, data);
+//            }
+//            return ret;
+//        }
+//    }
 
     @Override
     public byte[] fetchIdentity(String id) {
+        byte[] bytes = null;
         try (Jedis jedis = getConnection()) {
             String key = String.format("id_%s", id);
-            byte[] bytes = jedis.get(key.getBytes());
-            Logger.debug("fetchIdentity: %s, is NULL: %s", key, bytes == null);
-            return bytes;
+            Boolean exists = jedis.exists(key.getBytes());
+            if (!exists) {
+                Logger.debug("fetchIdentity: %s, missing", key);
+                return null;
+            }
+            bytes = jedis.get(key.getBytes());
+            MessageDigest md = MessageDigest.getInstance("SHA1");
+            Logger.debug("fetchIdentity: %s hash: %s", key, Util.digest(md, bytes));
+        } catch (NoSuchAlgorithmException ignore) {
+
         }
+        return bytes;
     }
 
     @Override
     public void insertIdentity(String id, byte[] data) {
         try (Jedis jedis = getConnection()) {
             String key = String.format("id_%s", id);
-            jedis.set(key.getBytes(), data);
-        }
-    }
-
-    @Override
-    public PreKey[] fetchPrekeys(String id) {
-        try (Jedis jedis = getConnection()) {
-            String key = String.format("pk_%s", id);
-            Long llen = jedis.llen(key);
-            PreKey[] ret = new PreKey[llen.intValue()];
-            for (int i = 0; i < llen.intValue(); i++) {
-                byte[] data = jedis.lindex(key.getBytes(), i);
-                ret[i] = new PreKey(i, data);
-            }
-            return ret;
-        }
-    }
-
-    @Override
-    public void insertPrekey(String id, int kid, byte[] data) {
-        try (Jedis jedis = getConnection()) {
-            String key = String.format("pk_%s", id);
-            jedis.lpush(key.getBytes(), data);
+            Boolean exists = jedis.exists(key.getBytes());
+            if (!exists)
+                jedis.set(key.getBytes(), data);
+            Logger.debug("insertIdentity: %s len: %d", id, data.length);
         }
     }
 
@@ -154,15 +159,39 @@ public class RedisStorage implements IStorage {
         return pool(host, port, password).getResource();
     }
 
-    private class Record implements IRecord {
-        private final String key;
-        private final byte[] data;
-        private final Jedis jedis;
+    @Override
+    public PreKey[] fetchPrekeys(String id) {
+        try (Jedis jedis = getConnection()) {
+            String key = String.format("pk_%s", id);
+            PreKey[] ret = new PreKey[1];
+            byte[] data = jedis.get(key.getBytes());
+            if (data == null)
+                return null;
+            ret[0] = new PreKey(65535, data);
+            return ret;
+        }
+    }
 
-        Record(String key, byte[] data, Jedis jedis) {
-            this.key = key;
+    @Override
+    public void insertPrekey(String id, int kid, byte[] data) {
+        try (Jedis jedis = getConnection()) {
+            String key = String.format("pk_%s", id);
+            if (!jedis.exists(key))
+                jedis.set(key.getBytes(), data);
+        }
+    }
+
+    private class Record implements IRecord {
+        private final byte[] data;
+        private final Jedis connection;
+        private final String id;
+        private final String sid;
+
+        Record(String id, String sid, byte[] data, Jedis connection) {
+            this.id = id;
+            this.sid = sid;
             this.data = data;
-            this.jedis = jedis;
+            this.connection = connection;
         }
 
         @Override
@@ -172,14 +201,15 @@ public class RedisStorage implements IStorage {
 
         @Override
         public void persist(byte[] data) {
+            String key = key(id, sid);
             if (data != null) {
-                jedis.set(key.getBytes(), data);
-                Logger.debug("redis: persist key: %s size: %d", key, data.length);
+                connection.set(key.getBytes(), data);
+                Logger.debug("persistSession: %s size: %d", sid, data.length);
             } else {
-                jedis.del(key);
-                Logger.debug("redis: deleted key: %s", key);
+                connection.del(key);
+                Logger.debug("persistSession: %s deleted", sid);
             }
-            jedis.close();
+            connection.close();
         }
     }
 }

@@ -3,6 +3,8 @@ package com.wire.bots.sdk.crypto.storage;
 import com.wire.bots.cryptobox.IRecord;
 import com.wire.bots.cryptobox.IStorage;
 import com.wire.bots.cryptobox.PreKey;
+import com.wire.bots.cryptobox.StorageException;
+import com.wire.bots.sdk.tools.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.sql.*;
@@ -24,26 +26,26 @@ public class PgStorage implements IStorage {
     }
 
     @Override
-    public IRecord fetchSession(String id, String sid) {
-        String key = key(id, sid);
+    public IRecord fetchSession(String id, String sid) throws StorageException {
         try {
             Connection c = newConnection();
             PreparedStatement stmt = c.prepareStatement("SELECT data FROM sessions WHERE id = ? FOR UPDATE");
+
+            String key = key(id, sid);
             stmt.setString(1, key);
             ResultSet rs = stmt.executeQuery();
             byte[] data = null;
             if (rs.next()) {
                 data = rs.getBytes("data");
             }
-            return new Record(data, c, key);
+            return new Record(id, sid, data, c);
         } catch (Exception e) {
-            System.out.println(e.getClass().getName() + ": " + e.getMessage());
-            return null;
+            throw new StorageException(String.format("fetchSession: %s %s", sid, e));
         }
     }
 
     @Override
-    public byte[] fetchIdentity(String id) {
+    public byte[] fetchIdentity(String id) throws StorageException {
         try (Connection c = newConnection()) {
             PreparedStatement stmt = c.prepareStatement("SELECT data FROM identities WHERE id = ?");
             stmt.setString(1, id);
@@ -52,13 +54,13 @@ public class PgStorage implements IStorage {
                 return rs.getBytes("data");
             }
         } catch (Exception e) {
-            System.out.println(e.getClass().getName() + ": " + e.getMessage());
+            throw new StorageException(String.format("fetchIdentity: %s %s", id, e));
         }
         return null;
     }
 
     @Override
-    public void insertIdentity(String id, byte[] data) {
+    public void insertIdentity(String id, byte[] data) throws StorageException {
         String sql = "INSERT INTO identities (id, data) VALUES (?, ?) ON CONFLICT (id) DO NOTHING";
         Connection c = null;
         try {
@@ -70,21 +72,14 @@ public class PgStorage implements IStorage {
             }
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getClass().getName() + ": " + e.getMessage());
+            throw new StorageException(String.format("insertIdentity: %s %s", id, e));
         } finally {
-            try {
-                if (c != null) {
-                    c.commit();
-                    c.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            commit(c);
         }
     }
 
     @Override
-    public PreKey[] fetchPrekeys(String id) {
+    public PreKey[] fetchPrekeys(String id) throws StorageException {
         ArrayList<PreKey> ret = null;
         try (Connection c = newConnection()) {
             PreparedStatement stmt = c.prepareStatement("SELECT kid, data FROM prekeys WHERE id = ?");
@@ -100,13 +95,13 @@ public class PgStorage implements IStorage {
                 ret.add(preKey);
             }
         } catch (Exception e) {
-            System.out.println(e.getClass().getName() + ": " + e.getMessage());
+            throw new StorageException(String.format("fetchPrekeys: %s %s", id, e));
         }
         return ret == null ? null : ret.toArray(new PreKey[0]);
     }
 
     @Override
-    public void insertPrekey(String id, int kid, byte[] data) {
+    public void insertPrekey(String id, int kid, byte[] data) throws StorageException {
         String sql = "INSERT INTO prekeys (id, kid, data) VALUES (?, ?, ?) ON CONFLICT (id, kid) DO NOTHING";
         Connection c = null;
         try {
@@ -119,16 +114,9 @@ public class PgStorage implements IStorage {
             }
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getClass().getName() + ": " + e.getMessage());
+            throw new StorageException(String.format("insertPrekey: %s key: %d %s", id, kid, e));
         } finally {
-            try {
-                if (c != null) {
-                    c.commit();
-                    c.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            commit(c);
         }
     }
 
@@ -149,15 +137,28 @@ public class PgStorage implements IStorage {
         return String.format("%s-%s", id, sid);
     }
 
+    private void commit(Connection c) {
+        try {
+            if (c != null) {
+                c.commit();
+                c.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     class Record implements IRecord {
+        private final String id;
+        private final String sid;
         private final byte[] data;
         private final Connection connection;
-        private final String sid;
 
-        Record(byte[] data, Connection connection, String sid) {
+        Record(String id, String sid, byte[] data, Connection connection) {
+            this.id = id;
+            this.sid = sid;
             this.data = data;
             this.connection = connection;
-            this.sid = sid;
         }
 
         @Override
@@ -167,25 +168,21 @@ public class PgStorage implements IStorage {
 
         @Override
         public void persist(byte[] data) {
-            if (data == null)
-                return;
-
-            String sql = "INSERT INTO sessions (id, data) VALUES (?, ?) ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data";
+            final String sql = "INSERT INTO sessions (id, data) VALUES (?, ?) " +
+                    "ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setString(1, sid);
-                try (ByteArrayInputStream stream = new ByteArrayInputStream(data)) {
-                    stmt.setBinaryStream(2, stream);
+                if (data != null) {
+                    String key = key(id, sid);
+                    stmt.setString(1, key);
+                    try (ByteArrayInputStream stream = new ByteArrayInputStream(data)) {
+                        stmt.setBinaryStream(2, stream);
+                    }
+                    stmt.executeUpdate();
                 }
-                stmt.executeUpdate();
             } catch (Exception e) {
-                System.out.println(e.getClass().getName() + ": " + e.getMessage());
+                Logger.error("persist: %s %s", sid, e);
             } finally {
-                try {
-                    connection.commit();
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                commit(connection);
             }
         }
     }

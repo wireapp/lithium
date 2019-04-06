@@ -24,8 +24,8 @@ public class End2EndTest {
     @Test
     public void testAliceToAlice() throws Exception {
         Random rnd = new Random();
-        String aliceId = "alice_" + rnd.nextInt();
-        String client1 = "alice1_" + rnd.nextInt();
+        String aliceId = "alice_" + Math.abs(rnd.nextInt());
+        String client1 = "alice1_" + Math.abs(rnd.nextInt());
 
         NewBot state = new NewBot();
         state.id = aliceId;

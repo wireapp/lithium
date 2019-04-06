@@ -24,8 +24,6 @@ public class CryptoRedisTest {
     private static String aliceId;
     private static CryptoDb alice;
     private static CryptoDb bob;
-    private static PreKey[] bobKeys;
-    private static PreKey[] aliceKeys;
     private static RedisStorage storage;
 
     @BeforeClass
@@ -36,9 +34,6 @@ public class CryptoRedisTest {
         storage = new RedisStorage("localhost", 6379);
         alice = new CryptoDb(aliceId, storage);
         bob = new CryptoDb(bobId, storage);
-
-        bobKeys = bob.newPreKeys(0, 1);
-        aliceKeys = alice.newPreKeys(0, 1);
     }
 
     @AfterClass
@@ -61,10 +56,17 @@ public class CryptoRedisTest {
         String text = "Hello Bob, This is Alice!";
 
         // Encrypt using prekeys
-        byte[] cipher = alice.encryptFromPreKeys(bobId, bobKeys[0], text.getBytes());
+        byte[] cipher = alice.encryptFromPreKeys(bobId, bob.newLastPreKey(), text.getBytes());
 
         // Decrypt using initSessionFromMessage
         byte[] decrypt = bob.decrypt(aliceId, cipher);
+
+        assert Arrays.equals(decrypt, text.getBytes());
+        assert text.equals(new String(decrypt));
+
+        cipher = bob.encryptFromSession(aliceId, text.getBytes());
+
+        decrypt = alice.decrypt(bobId, cipher);
 
         assert Arrays.equals(decrypt, text.getBytes());
         assert text.equals(new String(decrypt));
@@ -107,7 +109,7 @@ public class CryptoRedisTest {
     public void testBobToAlice() throws Exception {
         String text = "Hello Alice, This is Bob!";
 
-        byte[] cipher = bob.encryptFromPreKeys(aliceId, aliceKeys[0], text.getBytes());
+        byte[] cipher = bob.encryptFromPreKeys(aliceId, alice.newLastPreKey(), text.getBytes());
 
         // Decrypt using initSessionFromMessage
         byte[] decrypt = alice.decrypt(bobId, cipher);
@@ -122,9 +124,12 @@ public class CryptoRedisTest {
 
         byte[] cipher = bob.encryptFromSession(aliceId, text.getBytes());
 
+        assert cipher != null;
+
         // Decrypt using session
         byte[] decrypt = alice.decrypt(bobId, cipher);
 
+        assert decrypt != null;
         assert Arrays.equals(decrypt, text.getBytes());
         assert text.equals(new String(decrypt));
     }
@@ -174,10 +179,12 @@ public class CryptoRedisTest {
             String text = "Hello Alice, This is Bob, again! " + i;
 
             byte[] cipher = bob.encryptFromSession(aliceId, text.getBytes());
+            assert cipher != null;
 
             // Decrypt using session
             byte[] decrypt = alice.decrypt(bobId, cipher);
 
+            assert decrypt != null;
             assert Arrays.equals(decrypt, text.getBytes());
             assert text.equals(new String(decrypt));
 
@@ -201,7 +208,7 @@ public class CryptoRedisTest {
     public void testConcurrentSingleSession() throws Exception {
         final String text = "Hello Alice, This is Bob, again! ";
 
-        bob.encryptFromPreKeys(aliceId, aliceKeys[0], text.getBytes());
+        bob.encryptFromPreKeys(aliceId, alice.newLastPreKey(), text.getBytes());
 
         ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(4);
         final AtomicInteger counter = new AtomicInteger(0);

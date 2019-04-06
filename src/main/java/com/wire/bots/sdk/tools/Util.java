@@ -95,9 +95,16 @@ public class Util {
         }
     }
 
-    public static String calcMd5(byte[] encryptedData) throws NoSuchAlgorithmException {
+    public static String calcMd5(byte[] bytes) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("MD5");
-        md.update(encryptedData, 0, encryptedData.length);
+        md.update(bytes, 0, bytes.length);
+        byte[] hash = md.digest();
+        byte[] byteArray = Base64.getEncoder().encode(hash);
+        return new String(byteArray);
+    }
+
+    public static String digest(MessageDigest md, byte[] bytes) {
+        md.update(bytes, 0, bytes.length);
         byte[] hash = md.digest();
         byte[] byteArray = Base64.getEncoder().encode(hash);
         return new String(byteArray);
