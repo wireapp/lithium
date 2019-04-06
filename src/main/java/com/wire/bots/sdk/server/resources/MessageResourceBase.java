@@ -55,7 +55,7 @@ public abstract class MessageResourceBase {
                 int minAvailable = 8 * data.userIds.size();
                 if (minAvailable > 0) {
                     ArrayList<Integer> availablePrekeys = client.getAvailablePrekeys();
-                    availablePrekeys.remove(new Integer(65535));  //remove last prekey
+                    availablePrekeys.remove(new Integer(65535));  //remove the last prekey
                     if (!availablePrekeys.isEmpty() && availablePrekeys.size() < minAvailable) {
                         Integer lastKeyOffset = Collections.max(availablePrekeys);
                         ArrayList<PreKey> keys = client.newPreKeys(lastKeyOffset + 1, minAvailable);
@@ -64,9 +64,6 @@ public abstract class MessageResourceBase {
                     }
                     handler.onMemberJoin(client, data.userIds);
                 }
-
-                // Send dummy message just initialize the session for the new member
-                //client.sendReaction(UUID.randomUUID().toString(), "");   //todo hack
             }
             break;
             case "conversation.member-leave": {
@@ -94,7 +91,6 @@ public abstract class MessageResourceBase {
             case "conversation.create": {
                 Logger.debug("conversation.create: bot: %s", botId);
 
-                //client.sendReaction(UUID.randomUUID().toString(), ""); //todo hack
                 handler.onNewConversation(client);
             }
             break;
@@ -114,8 +110,6 @@ public abstract class MessageResourceBase {
 
                 boolean accepted = handler.onConnectRequest(client, connection.from, connection.to, connection.status);
                 if (accepted) {
-                    // Send dummy message just initialize the session for the new member
-                    //client.sendReaction(UUID.randomUUID().toString(), ""); //todo hack
                     handler.onNewConversation(client);
                 }
             }
