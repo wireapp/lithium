@@ -25,6 +25,7 @@ abstract class MessageBase {
     protected final String clientId;
     protected final String conversationId;
     protected final String messageId;
+    protected String time;
 
     MessageBase(String msgId, String convId, String clientId, String userId) {
         this.messageId = msgId;
@@ -47,5 +48,13 @@ abstract class MessageBase {
 
     public String getMessageId() {
         return messageId;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }

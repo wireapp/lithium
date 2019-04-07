@@ -29,7 +29,8 @@ public class PostgresState implements State {
             jsonObject.setType("json");
             jsonObject.setValue(mapper.writeValueAsString(newBot));
 
-            PreparedStatement stmt = c.prepareStatement("INSERT INTO states (botId, bot) VALUES (?, ?)");
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO states (botId, bot) VALUES (?, ?)" +
+                    " ON CONFLICT (botId) DO UPDATE SET bot = EXCLUDED.bot");
             stmt.setObject(1, botId);
             stmt.setObject(2, jsonObject);
             return stmt.executeUpdate() == 1;

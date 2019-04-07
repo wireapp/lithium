@@ -28,18 +28,24 @@ public abstract class MessageResourceBase {
     protected void handleMessage(Payload payload, WireClient client) throws Exception {
         Payload.Data data = payload.data;
         String botId = client.getId();
+        String from = payload.from.toString();
 
         switch (payload.type) {
             case "conversation.otr-message-add": {
-                Logger.debug("conversation.otr-message-add: bot: %s from: %s:%s", botId, payload.from, data.sender);
+                Logger.debug("conversation.otr-message-add: bot: %s from: %s:%s", botId, from, data.sender);
 
                 GenericMessageProcessor processor = new GenericMessageProcessor(client, handler);
 
                 Messages.GenericMessage message = decrypt(client, payload);
 
-                handler.onEvent(client, payload.from.toString(), message);
+                handler.onEvent(client, from, message);
 
-                boolean process = processor.process(payload.from.toString(), data.sender, payload.convId, message);
+                boolean process = processor.process(from,
+                        data.sender,
+                        payload.convId,
+                        payload.time,
+                        message);
+
                 if (process)
                     processor.cleanUp(message.getMessageId());
             }

@@ -59,7 +59,7 @@ public class GenericMessageProcessor {
         originals.remove(messageId);
     }
 
-    public boolean process(String from, String sender, UUID convId, Messages.GenericMessage generic) {
+    public boolean process(String from, String sender, UUID convId, String time, Messages.GenericMessage generic) {
         String messageId = generic.getMessageId();
 
         Messages.Text text = null;
@@ -96,6 +96,7 @@ public class GenericMessageProcessor {
             Messages.MessageEdit edited = generic.getEdited();
             TextMessage msg = new TextMessage(edited.getReplacingMessageId(), convId.toString(), sender, from);
             msg.setText(edited.getText().getContent());
+            msg.setTime(time);
 
             handler.onEditText(client, msg);
             return true;
@@ -105,6 +106,7 @@ public class GenericMessageProcessor {
         if (text != null && text.hasContent() && text.getLinkPreviewList().isEmpty()) {
             TextMessage msg = new TextMessage(messageId, convId.toString(), sender, from);
             msg.setText(text.getContent());
+            msg.setTime(time);
 
             handler.onText(client, msg);
             return true;
@@ -146,7 +148,6 @@ public class GenericMessageProcessor {
             Messages.Asset.RemoteData remoteData = remotes.get(messageId);
 
             if (original != null && remoteData != null) {
-
                 Logger.debug("Original: msgId: %s hasAudio: %s, hasVideo: %s, hasImage: %s",
                         messageId,
                         original.hasAudio(),
