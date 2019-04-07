@@ -8,22 +8,41 @@
 
 - Lithium is Wire Services SDK written in Java
 
-## Documentation
+## How to use it to build your bots?
+- In your `pom.xml`:
+```
+<repositories>
+    <repository>
+        <id>lithium</id>
+        <url>https://packagecloud.io/dkovacevic/lithium/maven2</url>
+        <releases>
+            <enabled>true</enabled>
+        </releases>
+    </repository>
+</repositories>
+<dependencies>
+    <dependency>
+        <groupId>com.wire.bots</groupId>
+        <artifactId>lithium</artifactId>
+        <version>2.22.1</version>
+    </dependency>
+<dependencies>
+```
+
+### Tutorial:
+- [Echo Bot](https://github.com/wireapp/echo-bot)
+
+## Bot API Documentation
 
 - [API Documentation](https://github.com/wireapp/bot-sdk/wiki).
-
-## Other implementations
-
-- [Node.js](https://github.com/wireapp/bot-sdk-node) Wire Services SDK in Node.js
-- [Beryllium](https://github.com/OmnijarBots/beryllium) Wire Services SDK in Rust
 
 ## How to build the project
 
 Requirements:
 
-- Java >1.8 (http://www.oracle.com)
-- Maven (https://maven.apache.org)
-- Cryptobox4j (https://github.com/wireapp/cryptobox4j)
+- [Java >1.8](http://www.oracle.com)
+- [Maven](https://maven.apache.org)
+- [Cryptobox4j](https://github.com/wireapp/cryptobox4j)
 
 To build the library, run:
 
@@ -37,9 +56,9 @@ The `manage.sh` script helps you register as a service provider, create a certif
 
 ### Script requirements
 
-- Bash (https://www.gnu.org/software/bash)
-- jq (https://stedolan.github.io/jq/)
-- cURL (https://curl.haxx.se/)
+- [Bash](https://www.gnu.org/software/bash)
+- [jq](https://stedolan.github.io/jq/)
+- [cURL](https://curl.haxx.se/)
 
 ### How to use the script
 
@@ -65,8 +84,14 @@ Using the `manage.sh` script:
 
 - [Hello World](https://github.com/wireapp/echo-bot)
 - [GitHub-bot](https://github.com/wearezeta/github-bot)
+- [GitLab-bot](https://github.com/wireapp/gitlab)
 - [Alert-bot](https://github.com/wireapp/alert-bot)
 - [Texas Holdem](https://github.com/dkovacevic/holdem)
-- [Broadcast bot](https://github.com/wireapp/broadcast-bot)
+- [Broadcast-bot](https://github.com/wireapp/broadcast-bot)
 - [Channel-bot](https://github.com/dkovacevic/channel-bot)
 - [Don](https://github.com/wireapp/don-bot)
+
+## Other implementations of Bot API
+
+- [Node.js](https://github.com/wireapp/bot-sdk-node) Wire Services SDK in Node.js
+- [Beryllium](https://github.com/OmnijarBots/beryllium) Wire Services SDK in Rust
