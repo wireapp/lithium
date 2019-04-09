@@ -6,6 +6,7 @@ import com.wire.bots.cryptobox.StorageException;
 import com.wire.bots.sdk.crypto.storage.RedisStorage;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -51,7 +52,6 @@ public class RedisStorageTest {
         assert Arrays.equals(identity, control);
     }
 
-    @Deprecated
     @Test
     public void testFetchLastPrekey() {
         RedisStorage storage = new RedisStorage("localhost");
@@ -63,7 +63,7 @@ public class RedisStorageTest {
 
         byte[] data = new byte[1024];
         random.nextBytes(data);
-        PreKey preKey = new PreKey(0, data);
+        PreKey preKey = new PreKey(0xFFFF, data);
 
         storage.insertPrekey(id, preKey.id, preKey.data);
 
@@ -71,7 +71,43 @@ public class RedisStorageTest {
 
         assert control != null;
         assert control.length == 1;
-        assert preKey.id == control[0].id;
-        assert Arrays.equals(preKey.data, control[0].data);
+
+        PreKey controlKey = control[0];
+
+        assert preKey.id == controlKey.id;
+        assert Arrays.equals(preKey.data, controlKey.data);
+    }
+
+    @Test
+    public void testFetchPrekeys() {
+        int SIZE = 10;
+        RedisStorage storage = new RedisStorage("localhost");
+        Random random = new Random();
+        String id = "" + random.nextInt();
+
+        PreKey[] preKeys = storage.fetchPrekeys(id);
+        assert preKeys == null;
+
+        ArrayList<PreKey> prekeys = new ArrayList<>();
+        for (int i = 0; i < SIZE; i++) {
+            byte[] data = new byte[1024];
+            random.nextBytes(data);
+            PreKey preKey = new PreKey(i, data);
+            prekeys.add(preKey);
+
+            storage.insertPrekey(id, preKey.id, preKey.data);
+        }
+
+        PreKey[] control = storage.fetchPrekeys(id);
+
+        assert control != null;
+        assert control.length == SIZE;
+        for (int i = 0; i < SIZE; i++) {
+            PreKey preKey = prekeys.get(i);
+            PreKey controlKey = control[SIZE - i - 1];//redis storage returns keys in reverse order
+
+            assert preKey.id == controlKey.id;
+            assert Arrays.equals(preKey.data, controlKey.data);
+        }
     }
 }

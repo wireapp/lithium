@@ -10,14 +10,13 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
-import java.util.ArrayList;
 
 public class RedisStorage implements IStorage {
     private static final byte[] EMPTY = new byte[0];
-    private static final int LAST_PREKEY_ID = 1024;
     private static int timeout = 5000;
     private static JedisPool pool;
     private final String host;
@@ -132,34 +131,6 @@ public class RedisStorage implements IStorage {
         }
     }
 
-    @Deprecated
-    @Override
-    public PreKey[] fetchPrekeys(String id) {
-        try (Jedis jedis = getConnection()) {
-            ArrayList<PreKey> ret = new ArrayList<>();
-            for (int i = 0; i <= LAST_PREKEY_ID; i++) {
-                String key = String.format("pk_%d_%s", i, id);
-                byte[] data = jedis.get(key.getBytes());
-                if (data != null) {
-                    PreKey preKey = new PreKey(i, data);
-                    ret.add(preKey);
-                }
-            }
-            if (ret.isEmpty())
-                return null;
-            return ret.toArray(new PreKey[0]);
-        }
-    }
-
-    @Deprecated
-    @Override
-    public void insertPrekey(String id, int kid, byte[] data) {
-        try (Jedis jedis = getConnection()) {
-            String key = String.format("pk_%d_%s", kid, id);
-            jedis.set(key.getBytes(), data);
-        }
-    }
-
     private void sleep(int millis) {
         try {
             Thread.sleep(millis);
@@ -173,6 +144,47 @@ public class RedisStorage implements IStorage {
 
     private Jedis getConnection() {
         return pool(host, port, password).getResource();
+    }
+
+    @Override
+    public void insertPrekey(String id, int kid, byte[] data) {
+        try (Jedis jedis = getConnection()) {
+            String key = String.format("pk_%s", id);
+            PreKey preKey = new PreKey(kid, data);
+            ByteBuffer byteBuffer = toByteBuffer(preKey);
+            jedis.lpush(key.getBytes(), byteBuffer.array());
+        }
+    }
+
+    @Override
+    public PreKey[] fetchPrekeys(String id) {
+        try (Jedis jedis = getConnection()) {
+            String key = String.format("pk_%s", id);
+            Long llen = jedis.llen(key);
+            PreKey[] ret = new PreKey[llen.intValue()];
+            for (int i = 0; i < llen.intValue(); i++) {
+                byte[] raw = jedis.lindex(key.getBytes(), i);
+                ByteBuffer byteBuffer = ByteBuffer.wrap(raw);
+                PreKey preKey = toPreKey(byteBuffer);
+                ret[i] = preKey;
+            }
+            return ret.length == 0 ? null : ret;
+        }
+    }
+
+    private PreKey toPreKey(ByteBuffer byteBuffer) {
+        byte[] raw = byteBuffer.array();
+        int kid = byteBuffer.getInt();
+        byte[] data = new byte[raw.length - byteBuffer.position()];
+        System.arraycopy(raw, byteBuffer.position(), data, 0, data.length);
+        return new PreKey(kid, data);
+    }
+
+    private ByteBuffer toByteBuffer(PreKey preKey) {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(4 + preKey.data.length);
+        byteBuffer.putInt(preKey.id);
+        byteBuffer.put(preKey.data);
+        return byteBuffer;
     }
 
     private class Record implements IRecord {
