@@ -70,7 +70,7 @@ public class MessageResource extends MessageResourceBase {
             handleMessage(inbound, client);
         } catch (CryptoException e) {
             Logger.error("newMessage: %s %s", botId, e);
-            //respondWithError(botId, "Something went wrong");
+            respondWithError(botId);
             return Response.
                     status(503).
                     entity(new ErrorMessage(e.getMessage())).
@@ -95,11 +95,11 @@ public class MessageResource extends MessageResourceBase {
                 build();
     }
 
-    private void respondWithError(String botId, String message) {
+    private void respondWithError(String botId) {
         try (WireClient client = repo.getClient(botId)) {
-            client.sendReaction(UUID.randomUUID(), message);
+            client.sendReaction(UUID.randomUUID(), "");
         } catch (Exception e1) {
-            Logger.error("MessageResource::newMessage: bot: %s %s", botId, e1);
+            Logger.error("respondWithError: bot: %s %s", botId, e1);
         }
     }
 }

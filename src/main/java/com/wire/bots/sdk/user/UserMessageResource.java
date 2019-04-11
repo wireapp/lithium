@@ -39,7 +39,7 @@ public class UserMessageResource extends MessageResourceBase {
                     payload.data.sender,
                     e.code,
                     payload.type);
-            //respondWithError(userId, convId);
+            respondWithError(userId, convId);
         }
     }
 
@@ -51,7 +51,7 @@ public class UserMessageResource extends MessageResourceBase {
         try (WireClient client = userClientRepo.getWireClient(userId, convId)) {
             client.sendReaction(UUID.randomUUID(), "");
         } catch (Exception e) {
-            Logger.error("MessageResource::respondWithError: user: %s, conv: %s, %s", userId, convId, e);
+            Logger.error("respondWithError: user: %s, conv: %s, %s", userId, convId, e);
         }
     }
 }

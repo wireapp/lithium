@@ -119,7 +119,7 @@ public class Endpoint {
                     case "conversation.otr-message-add":
                     case "conversation.member-join":
                     case "conversation.create":
-                        userMessageResource.onNewMessage(payload.from, payload.convId, payload);
+                        userMessageResource.onNewMessage(user.getUserId(), payload.convId, payload);
                         break;
                     default:
                         Logger.info("Unknown type: %s, from: %s", payload.type, payload.from);
