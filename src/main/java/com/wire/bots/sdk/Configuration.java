@@ -48,18 +48,22 @@ public class Configuration extends io.dropwizard.Configuration {
     }
 
     /**
-     * Path to the directory that will hold the cryptoBox data.
-     */
-    public String data = "data";
-
-    /**
      * Authentication token
      */
+    @JsonProperty
     @NotNull
     public String auth;
 
+    /**
+     * The storage for the State and Cryptobox
+     */
+    @NotNull
+    @JsonProperty
     public DB db;
 
+    /**
+     * Set to True if you want to run the bot as the User. Requires email/password System properties set
+     */
     public boolean userMode = false;
 
     public static String propOrEnv(String prop, boolean strict) {
@@ -80,10 +84,6 @@ public class Configuration extends io.dropwizard.Configuration {
         }
     }
 
-    public String getData() {
-        return data;
-    }
-
     public String getAuth() {
         return auth;
     }
@@ -100,10 +100,10 @@ public class Configuration extends io.dropwizard.Configuration {
         public String host;
         public Integer port;
         public String database = "";
-        public String driver; // like postgresql
+        public String driver; // like: postgresql or fs
         public String user;
         public String password;
-        public String url;    // a database url of the form: ``` jdbc:`subprotocol`:`subname` ```
+        public String url; // a database url of the form: jdbc:`subprotocol`:`subname` or `file:///path/to/data/folder`
         public Integer timeout = 5000;
     }
 

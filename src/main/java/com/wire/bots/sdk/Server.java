@@ -21,7 +21,10 @@ package com.wire.bots.sdk;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.jmx.JmxReporter;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.wire.bots.sdk.crypto.CryptoDatabase;
 import com.wire.bots.sdk.crypto.CryptoFile;
+import com.wire.bots.sdk.crypto.storage.PgStorage;
+import com.wire.bots.sdk.crypto.storage.RedisStorage;
 import com.wire.bots.sdk.factories.CryptoFactory;
 import com.wire.bots.sdk.factories.StorageFactory;
 import com.wire.bots.sdk.healthchecks.Alice2Bob;
@@ -34,6 +37,8 @@ import com.wire.bots.sdk.server.resources.StatusResource;
 import com.wire.bots.sdk.server.tasks.AvailablePrekeysTask;
 import com.wire.bots.sdk.server.tasks.ConversationTask;
 import com.wire.bots.sdk.state.FileState;
+import com.wire.bots.sdk.state.PostgresState;
+import com.wire.bots.sdk.state.RedisState;
 import com.wire.bots.sdk.tools.AuthValidator;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
@@ -79,6 +84,17 @@ public abstract class Server<Config extends Configuration> extends Application<C
     protected abstract MessageHandlerBase createHandler(Config config, Environment env) throws Exception;
 
     /**
+     * Override this method to put your custom initialization
+     * NOTE: ClientRepo is not yet set at this stage. messageHandler is also not set
+     *
+     * @param config Configuration object (yaml)
+     * @param env    Environment object
+     */
+    protected void initialize(Config config, Environment env) throws Exception {
+
+    }
+
+    /**
      * Override this method in case you need to add custom Resource and/or Task
      * {@link #addResource(Object, io.dropwizard.setup.Environment)}
      * and {@link #addTask(io.dropwizard.servlets.tasks.Task, io.dropwizard.setup.Environment)}
@@ -87,6 +103,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
      * @param env    Environment object
      */
     protected void onRun(Config config, Environment env) throws Exception {
+
     }
 
     @Override
@@ -103,10 +120,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
                 return configuration.getSwagger();
             }
         });
-    }
-
-    protected void initialize(Config config, Environment env) throws Exception {
-
     }
 
     @Override
@@ -130,27 +143,69 @@ public abstract class Server<Config extends Configuration> extends Application<C
         messageHandler = createHandler(config, env);
 
         if (config.userMode) {
-            runInUserMode(config, messageHandler);
+            runInUserMode(messageHandler);
         }
 
-        repo = runInBotMode(config, env, messageHandler);
+        repo = runInBotMode(env, messageHandler);
 
         initTelemetry(env);
 
         onRun(config, env);
     }
 
-    protected StorageFactory getStorageFactory(Config config) {
-        return botId -> new FileState(config.data, botId);
+    public StorageFactory getStorageFactory() {
+        if (config.db.driver == null) {
+            return botId -> new RedisState(botId, config.db);
+        }
+        if (config.db.driver.equals("fs")) {
+            return botId -> new FileState(botId, config.db);
+        }
+        if (config.db.driver.equals("postgresql")) {
+            return botId -> new PostgresState(botId, config.db);
+        }
+        return botId -> new RedisState(botId, config.db);
     }
 
-    protected CryptoFactory getCryptoFactory(Config config) {
-        return (botId) -> new CryptoFile(config.data, botId);
+    public CryptoFactory getCryptoFactory() {
+        if (config.db.driver == null) {
+            return redisCryptoFactory();
+        }
+        if (config.db.driver.equals("fs")) {
+            return fileCryptoFactory();
+        }
+        if (config.db.driver.equals("postgresql")) {
+            return postgresCryptoFactory();
+        }
+        return redisCryptoFactory();
     }
 
-    private ClientRepo runInBotMode(Config config, Environment env, MessageHandlerBase handler) {
-        StorageFactory storageFactory = getStorageFactory(config);
-        CryptoFactory cryptoFactory = getCryptoFactory(config);
+    private CryptoFactory fileCryptoFactory() {
+        return (botId) -> new CryptoFile(botId, config.db);
+    }
+
+    private CryptoFactory postgresCryptoFactory() {
+        return (botId) -> {
+            PgStorage storage = new PgStorage(config.db.user,
+                    config.db.password,
+                    config.db.database,
+                    config.db.host,
+                    config.db.port);
+            return new CryptoDatabase(botId, storage);
+        };
+    }
+
+    private CryptoFactory redisCryptoFactory() {
+        return (botId) -> {
+            RedisStorage storage = new RedisStorage(config.db.host,
+                    config.db.port,
+                    config.db.password);
+            return new CryptoDatabase(botId, storage);
+        };
+    }
+
+    private ClientRepo runInBotMode(Environment env, MessageHandlerBase handler) {
+        StorageFactory storageFactory = getStorageFactory();
+        CryptoFactory cryptoFactory = getCryptoFactory();
 
         ClientRepo repo = new ClientRepo(client, cryptoFactory, storageFactory);
 
@@ -165,14 +220,14 @@ public abstract class Server<Config extends Configuration> extends Application<C
         return repo;
     }
 
-    private void runInUserMode(Config config, MessageHandlerBase handler) throws Exception {
+    private void runInUserMode(MessageHandlerBase handler) throws Exception {
         Logger.info("Starting in User Mode");
 
         String email = Configuration.propOrEnv("email", true);
         String password = Configuration.propOrEnv("password", true);
 
-        StorageFactory storageFactory = getStorageFactory(config);
-        CryptoFactory cryptoFactory = getCryptoFactory(config);
+        StorageFactory storageFactory = getStorageFactory();
+        CryptoFactory cryptoFactory = getCryptoFactory();
 
         UserClientRepo clientRepo = new UserClientRepo(client, cryptoFactory, storageFactory);
 
@@ -196,8 +251,8 @@ public abstract class Server<Config extends Configuration> extends Application<C
     }
 
     protected void botResource(Config config, Environment env, MessageHandlerBase handler) {
-        StorageFactory storageFactory = getStorageFactory(config);
-        CryptoFactory cryptoFactory = getCryptoFactory(config);
+        StorageFactory storageFactory = getStorageFactory();
+        CryptoFactory cryptoFactory = getCryptoFactory();
         AuthValidator authValidator = new AuthValidator(config.getAuth());
 
         addResource(new BotsResource(handler, storageFactory, cryptoFactory, authValidator), env);
@@ -212,8 +267,8 @@ public abstract class Server<Config extends Configuration> extends Application<C
     }
 
     private void initTelemetry(Environment env) {
-        final CryptoFactory cryptoFactory = getCryptoFactory(config);
-        final StorageFactory storageFactory = getStorageFactory(config);
+        final CryptoFactory cryptoFactory = getCryptoFactory();
+        final StorageFactory storageFactory = getStorageFactory();
 
         env.healthChecks().register("Storage", new StorageHealthCheck(storageFactory));
         env.healthChecks().register("Crypto", new CryptoHealthCheck(cryptoFactory));

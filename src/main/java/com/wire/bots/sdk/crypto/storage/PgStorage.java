@@ -17,6 +17,14 @@ public class PgStorage implements IStorage {
     private final String host;
     private final int port;
 
+    public PgStorage() {
+        this.user = null;
+        this.password = null;
+        this.db = "postgres";
+        this.host = "localhost";
+        this.port = 5432;
+    }
+
     public PgStorage(String user, String password, String db, String host, int port) {
         this.user = user;
         this.password = password;
@@ -124,7 +132,12 @@ public class PgStorage implements IStorage {
         while (true) {
             try {
                 String url = String.format("jdbc:postgresql://%s:%d/%s", host, port, db);
-                Connection connection = DriverManager.getConnection(url, user, password);
+                Connection connection;
+                if (user != null && password != null) {
+                    connection = DriverManager.getConnection(url, user, password);
+                } else {
+                    connection = DriverManager.getConnection(url);
+                }
                 connection.setAutoCommit(false);
                 return connection;
             } catch (Exception e) {
