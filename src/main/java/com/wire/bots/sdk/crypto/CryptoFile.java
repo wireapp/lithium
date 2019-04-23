@@ -21,6 +21,9 @@ package com.wire.bots.sdk.crypto;
 import com.wire.bots.cryptobox.CryptoBox;
 import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.cryptobox.ICryptobox;
+import com.wire.bots.sdk.Configuration;
+
+import java.net.URL;
 
 /**
  * Wrapper for the Crypto Box. This class is thread safe.
@@ -30,18 +33,41 @@ public class CryptoFile extends CryptoBase {
 
     /**
      * Opens the CryptoBox using given directory path
-     * The given directory must exist and be writable.
+     * The given directory must be writable.
      * <p/>
      * Note: Do not create multiple OtrManagers that operate on the same or
      * overlapping directories. Doing so results in undefined behaviour.
      *
-     * @param uri   The root storage directory of the box
+     * @param rootDir The root storage directory of the box
+     * @param botId   Bot id
+     * @throws Exception
+     */
+    public CryptoFile(String rootDir, String botId) throws CryptoException {
+        String dir = String.format("%s/%s", rootDir, botId);
+        box = CryptoBox.open(dir);
+    }
+
+    /**
+     * Opens the CryptoBox using given directory path
+     * The given directory must be writable.
+     * <p/>
+     * Note: Do not create multiple OtrManagers that operate on the same or
+     * overlapping directories. Doing so results in undefined behaviour.
+     *
+     * @param db    config
      * @param botId Bot id
      * @throws Exception
      */
-    public CryptoFile(String uri, String botId) throws CryptoException {
-        String path = String.format("%s/%s", uri, botId);
-        box = CryptoBox.open(path);
+    public CryptoFile(String botId, Configuration.DB db) throws CryptoException {
+        String path;
+        try {
+            URL root = new URL(db.url);
+            path = root.getPath();
+        } catch (Exception e) {
+            path = "data";
+        }
+        String dir = String.format("%s/%s", path, botId);
+        box = CryptoBox.open(dir);
     }
 
     @Override
