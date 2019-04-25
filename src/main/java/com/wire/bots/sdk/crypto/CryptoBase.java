@@ -51,6 +51,16 @@ abstract class CryptoBase implements Crypto {
 
     public abstract ICryptobox box();
 
+    @Override
+    public byte[] getIdentity() throws CryptoException {
+        return box().getIdentity();
+    }
+
+    @Override
+    public byte[] getLocalFingerprint() throws CryptoException {
+        return box().getLocalFingerprint();
+    }
+
     /**
      * Generate a new last prekey.
      */

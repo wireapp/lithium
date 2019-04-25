@@ -10,6 +10,10 @@ import java.io.Closeable;
 import java.util.ArrayList;
 
 public interface Crypto extends Closeable {
+    public byte[] getIdentity() throws CryptoException;
+
+    byte[] getLocalFingerprint() throws CryptoException;
+
     PreKey newLastPreKey() throws CryptoException;
 
     ArrayList<PreKey> newPreKeys(int from, int count) throws CryptoException;
