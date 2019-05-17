@@ -225,6 +225,11 @@ public class UserClient implements WireClient {
     }
 
     @Override
+    public User getSelf() {
+        return api.getSelf();
+    }
+
+    @Override
     public UUID getConversationId() {
         return conv;
     }

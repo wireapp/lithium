@@ -34,7 +34,7 @@ public class NewClient {
     public String password;
 
     @JsonProperty("class")
-    public String deviceType;
+    public String clazz;
 
     @JsonProperty
     public String type;

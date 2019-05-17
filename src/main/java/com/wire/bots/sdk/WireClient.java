@@ -193,6 +193,18 @@ public interface WireClient extends Closeable {
     String getId();
 
     /**
+     * Fetch the bot's own user profile information. A bot's profile has the following attributes:
+     * <p>
+     * id (String): The bot's user ID.
+     * name (String): The bot's name.
+     * accent_id (Number): The bot's accent colour.
+     * assets (Array): The bot's public profile assets (e.g. images).
+     *
+     * @return
+     */
+    User getSelf();
+
+    /**
      * @return Conversation ID as UUID
      */
     UUID getConversationId();

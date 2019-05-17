@@ -138,6 +138,14 @@ public class API {
                 });
     }
 
+    User getSelf() {
+        return bot
+                .path("self")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, bearer())
+                .get(User.class);
+    }
+
     Conversation getConversation() {
         return conversation
                 .request()

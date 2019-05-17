@@ -81,17 +81,36 @@ public class LoginClient {
         return ret;
     }
 
+    @Deprecated
     public String registerClient(String token, String password, ArrayList<PreKey> preKeys, PreKey lastKey) throws HttpException {
+        String deviceClass = "tablet";
+        String type = "permanent";
+        String label = "wbotz";
+        return registerClient(token, password, preKeys, lastKey, deviceClass, type, label);
+    }
+
+    /**
+     * @param token
+     * @param password Wire password
+     * @param preKeys
+     * @param lastKey
+     * @param clazz    "tablet" | "phone" | "desktop"
+     * @param type     "permanent" | "temporary"
+     * @param label    can be anything
+     * @return Client id
+     * @throws HttpException
+     */
+    public String registerClient(String token, String password, ArrayList<PreKey> preKeys, PreKey lastKey,
+                                 String clazz, String type, String label) throws HttpException {
         NewClient newClient = new NewClient();
+        newClient.password = password;
         newClient.lastPreKey = lastKey;
         newClient.preKeys = preKeys;
         newClient.sigkeys.enckey = Base64.getEncoder().encodeToString(new byte[32]);
         newClient.sigkeys.mackey = Base64.getEncoder().encodeToString(new byte[32]);
-
-        newClient.password = password;
-        newClient.deviceType = "tablet";
-        newClient.label = "wbotz";
-        newClient.type = "permanent";
+        newClient.clazz = clazz;
+        newClient.label = label;
+        newClient.type = type;
 
         Response response = clientsPath
                 .request(MediaType.APPLICATION_JSON)
