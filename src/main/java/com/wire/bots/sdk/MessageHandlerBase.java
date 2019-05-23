@@ -20,10 +20,12 @@ package com.wire.bots.sdk;
 
 import com.waz.model.Messages;
 import com.wire.bots.sdk.models.*;
+import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.tools.Logger;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.UUID;
 
 public abstract class MessageHandlerBase {
@@ -215,5 +217,23 @@ public abstract class MessageHandlerBase {
 
     public void onUserUpdate(UUID userId) {
 
+    }
+
+    public void validatePreKeys(WireClient client, int size) {
+        try {
+            int minAvailable = 8 * size;
+            if (minAvailable > 0) {
+                ArrayList<Integer> availablePrekeys = client.getAvailablePrekeys();
+                availablePrekeys.remove(new Integer(65535));  //remove the last prekey
+                if (!availablePrekeys.isEmpty() && availablePrekeys.size() < minAvailable) {
+                    Integer lastKeyOffset = Collections.max(availablePrekeys);
+                    ArrayList<PreKey> keys = client.newPreKeys(lastKeyOffset + 1, minAvailable);
+                    client.uploadPreKeys(keys);
+                    Logger.info("Uploaded " + keys.size() + " prekeys");
+                }
+            }
+        } catch (Exception e) {
+            Logger.error("validatePreKeys: bot: %s %s", client.getId(), e);
+        }
     }
 }

@@ -6,14 +6,12 @@ import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.sdk.ClientRepo;
 import com.wire.bots.sdk.MessageHandlerBase;
 import com.wire.bots.sdk.WireClient;
-import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.GenericMessageProcessor;
 import com.wire.bots.sdk.server.model.Payload;
 import com.wire.bots.sdk.tools.Logger;
 
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Collections;
 
 public abstract class MessageResourceBase {
 
@@ -55,35 +53,29 @@ public abstract class MessageResourceBase {
                 Logger.debug("conversation.member-join: bot: %s", botId);
 
                 // Check if this bot got added to the conversation
-                if (data.userIds.remove(botId)) {
+                ArrayList<String> participants = data.userIds;
+                if (participants.remove(botId)) {
                     handler.onNewConversation(client);
                 }
 
-                int minAvailable = 8 * data.userIds.size();
-                if (minAvailable > 0) {
-                    ArrayList<Integer> availablePrekeys = client.getAvailablePrekeys();
-                    availablePrekeys.remove(new Integer(65535));  //remove the last prekey
-                    if (!availablePrekeys.isEmpty() && availablePrekeys.size() < minAvailable) {
-                        Integer lastKeyOffset = Collections.max(availablePrekeys);
-                        ArrayList<PreKey> keys = client.newPreKeys(lastKeyOffset + 1, minAvailable);
-                        client.uploadPreKeys(keys);
-                        Logger.info("Uploaded " + keys.size() + " prekeys");
-                    }
-                    handler.onMemberJoin(client, data.userIds);
-                }
+                // Check if we still have some prekeys available. Upload new prekeys if needed
+                handler.validatePreKeys(client, participants.size());
+
+                handler.onMemberJoin(client, participants);
             }
             break;
             case "conversation.member-leave": {
                 Logger.debug("conversation.member-leave: bot: %s", botId);
 
                 // Check if this bot got removed from the conversation
-                if (data.userIds.remove(botId)) {
+                ArrayList<String> participants = data.userIds;
+                if (participants.remove(botId)) {
                     handler.onBotRemoved(botId);
                     repo.purgeBot(botId);
                 }
 
-                if (!data.userIds.isEmpty()) {
-                    handler.onMemberLeave(client, data.userIds);
+                if (!participants.isEmpty()) {
+                    handler.onMemberLeave(client, participants);
                 }
             }
             break;
