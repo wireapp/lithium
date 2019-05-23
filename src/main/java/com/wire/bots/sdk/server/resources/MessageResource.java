@@ -56,7 +56,7 @@ public class MessageResource extends MessageResourceBase {
             @ApiResponse(code = 200, message = "Alles gute")})
     public Response newMessage(@ApiParam("Service token") @HeaderParam("Authorization") @NotNull String auth,
                                @ApiParam("Bot instance id") @PathParam("bot") String botId,
-                               @ApiParam @Valid @NotNull Payload inbound) {
+                               @ApiParam @Valid @NotNull Payload payload) {
 
         if (!validator.validate(auth)) {
             Logger.warning("%s, Invalid auth. Got: '%s'", botId, auth);
@@ -66,11 +66,11 @@ public class MessageResource extends MessageResourceBase {
                     build();
         }
 
-        try (WireClient client = repo.getClient(botId)) {
-            handleMessage(inbound, client);
+        try (WireClient client = getWireClient(botId, payload)) {
+            handleMessage(payload, client);
         } catch (CryptoException e) {
             Logger.error("newMessage: %s %s", botId, e);
-            respondWithError(botId);
+            respondWithError(botId, payload);
             return Response.
                     status(503).
                     entity(new ErrorMessage(e.getMessage())).
@@ -95,8 +95,8 @@ public class MessageResource extends MessageResourceBase {
                 build();
     }
 
-    private void respondWithError(String botId) {
-        try (WireClient client = repo.getClient(botId)) {
+    private void respondWithError(String botId, Payload payload) {
+        try (WireClient client = getWireClient(botId, payload)) {
             client.sendReaction(UUID.randomUUID(), "");
         } catch (Exception e1) {
             Logger.error("respondWithError: bot: %s %s", botId, e1);

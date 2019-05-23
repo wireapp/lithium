@@ -10,12 +10,12 @@ import com.wire.bots.sdk.server.GenericMessageProcessor;
 import com.wire.bots.sdk.server.model.Payload;
 import com.wire.bots.sdk.tools.Logger;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 
 public abstract class MessageResourceBase {
-
-    final ClientRepo repo;
+    private final ClientRepo repo;
     private final MessageHandlerBase handler;
 
     public MessageResourceBase(MessageHandlerBase handler, ClientRepo repo) {
@@ -118,6 +118,10 @@ public abstract class MessageResourceBase {
                 Logger.debug("Unknown event: %s", payload.type);
                 break;
         }
+    }
+
+    protected WireClient getWireClient(String botId, Payload payload) throws IOException, CryptoException {
+        return repo.getClient(botId);
     }
 
     protected void handleUpdate(Payload payload) {
