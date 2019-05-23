@@ -90,6 +90,10 @@ public class Logger {
         return warningCount.get();
     }
 
+    public static Level getLevel() {
+        return LOGGER.getLevel();
+    }
+
     static class BotFormatter extends Formatter {
         private static final DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
