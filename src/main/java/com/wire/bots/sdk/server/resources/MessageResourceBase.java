@@ -8,6 +8,7 @@ import com.wire.bots.sdk.MessageHandlerBase;
 import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.server.GenericMessageProcessor;
 import com.wire.bots.sdk.server.model.Payload;
+import com.wire.bots.sdk.tools.AuthValidator;
 import com.wire.bots.sdk.tools.Logger;
 
 import java.io.IOException;
@@ -15,11 +16,13 @@ import java.util.ArrayList;
 import java.util.Base64;
 
 public abstract class MessageResourceBase {
+    private final AuthValidator validator;
     private final ClientRepo repo;
     private final MessageHandlerBase handler;
 
-    public MessageResourceBase(MessageHandlerBase handler, ClientRepo repo) {
+    public MessageResourceBase(MessageHandlerBase handler, AuthValidator validator, ClientRepo repo) {
         this.handler = handler;
+        this.validator = validator;
         this.repo = repo;
     }
 
@@ -122,6 +125,10 @@ public abstract class MessageResourceBase {
 
     protected WireClient getWireClient(String botId, Payload payload) throws IOException, CryptoException {
         return repo.getClient(botId);
+    }
+
+    protected boolean isValid(String auth) {
+        return validator.validate(auth);
     }
 
     protected void handleUpdate(Payload payload) {

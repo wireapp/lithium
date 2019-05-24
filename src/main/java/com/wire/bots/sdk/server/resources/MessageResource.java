@@ -41,11 +41,9 @@ import java.util.UUID;
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/bots/{bot}/messages")
 public class MessageResource extends MessageResourceBase {
-    private final AuthValidator validator;
 
     public MessageResource(MessageHandlerBase handler, AuthValidator validator, ClientRepo repo) {
-        super(handler, repo);
-        this.validator = validator;
+        super(handler, validator, repo);
     }
 
     @POST
@@ -58,7 +56,7 @@ public class MessageResource extends MessageResourceBase {
                                @ApiParam("Bot instance id") @PathParam("bot") String botId,
                                @ApiParam @Valid @NotNull Payload payload) {
 
-        if (!validator.validate(auth)) {
+        if (!isValid(auth)) {
             Logger.warning("%s, Invalid auth. Got: '%s'", botId, auth);
             return Response.
                     status(401).

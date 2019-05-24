@@ -14,9 +14,14 @@ public class UserMessageResource extends MessageResourceBase {
     private UserClientRepo userClientRepo;
 
     public UserMessageResource(UUID owner, MessageHandlerBase handler, UserClientRepo repo) {
-        super(handler, repo);
+        super(handler, null, repo);
         this.owner = owner;
         this.userClientRepo = repo;
+    }
+
+    @Override
+    protected boolean isValid(String auth) {
+        return true;
     }
 
     void onNewMessage(UUID userId, UUID convId, Payload payload) throws Exception {
