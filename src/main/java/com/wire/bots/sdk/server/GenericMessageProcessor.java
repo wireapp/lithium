@@ -161,24 +161,28 @@ public class GenericMessageProcessor {
 
                 if (original.hasImage()) {
                     ImageMessage msg = new ImageMessage(base, original.getImage());
+                    msg.setTime(time);
 
                     handler.onImage(client, msg);
                     return true;
                 }
                 if (original.hasAudio()) {
                     AudioMessage msg = new AudioMessage(base, original.getAudio());
+                    msg.setTime(time);
 
                     handler.onAudio(client, msg);
                     return true;
                 }
                 if (original.hasVideo()) {
                     VideoMessage msg = new VideoMessage(base, original.getVideo());
+                    msg.setTime(time);
 
                     handler.onVideo(client, msg);
                     return true;
                 }
                 {
                     AttachmentMessage msg = new AttachmentMessage(base);
+                    msg.setTime(time);
 
                     handler.onAttachment(client, msg);
                     return true;
