@@ -20,8 +20,8 @@ package com.wire.bots.sdk.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wire.bots.sdk.assets.IAsset;
+import com.wire.bots.sdk.exceptions.AuthenticationException;
 import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.AssetKey;
 import com.wire.bots.sdk.models.otr.*;
@@ -76,26 +76,29 @@ public class API extends LoginClient {
         selfPath = target.path("self");
     }
 
-    public Access renewAccessToken(String cookie) throws HttpException, IOException {
-        Response response = accessPath.
+    public Access renewAccessToken(String cookie) throws HttpException {
+        Invocation.Builder builder = accessPath.
                 request(MediaType.APPLICATION_JSON).
-                header(HttpHeaders.AUTHORIZATION, bearer(token)).
-                header(HttpHeaders.COOKIE, cookie).
+                header(HttpHeaders.COOKIE, cookie);
+
+        if (token != null)
+            builder.header(HttpHeaders.AUTHORIZATION, bearer(token));
+
+        Response response = builder.
                 post(Entity.entity(new Connection(), MediaType.APPLICATION_JSON));
 
-        String entity = response.readEntity(String.class);
-
-        //Logger.debug("renewAccessToken: cookie: %s, resp: %s, status: %s", cookie, entity, response.getStatus());
+        if (response.getStatus() == 403) {
+            String entity = response.readEntity(String.class);
+            throw new AuthenticationException(entity);
+        }
 
         if (response.getStatus() >= 400) {
+            String entity = response.readEntity(String.class);
             throw new HttpException(entity, response.getStatus());
         }
 
-        ObjectMapper mapper = new ObjectMapper();
-        Access access = mapper.readValue(entity, Access.class);
-
+        Access access = response.readEntity(Access.class);
         access.cookie = response.getStringHeaders().getFirst(HttpHeaders.SET_COOKIE);
-
         return access;
     }
 

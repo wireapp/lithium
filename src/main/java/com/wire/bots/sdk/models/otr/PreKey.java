@@ -18,7 +18,16 @@
 
 package com.wire.bots.sdk.models.otr;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.validation.constraints.NotNull;
+
 public class PreKey {
+    @JsonProperty
+    @NotNull
     public int id;
+
+    @JsonProperty
+    @NotNull
     public String key;   //base64 encoded data
 }

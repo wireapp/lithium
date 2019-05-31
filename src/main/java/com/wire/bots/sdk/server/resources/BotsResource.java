@@ -54,7 +54,7 @@ public class BotsResource {
     }
 
     @POST
-    @ApiOperation(value = "New Bot instance", response = NewBotResponseModel.class)
+    @ApiOperation(value = "New Bot instance", response = NewBotResponseModel.class, code = 201)
     @ApiResponses(value = {
             @ApiResponse(code = 403, message = "Invalid Authorization", response = ErrorMessage.class),
             @ApiResponse(code = 409, message = "Bot not accepted (whitelist?)", response = ErrorMessage.class),
