@@ -32,6 +32,7 @@ import com.wire.bots.sdk.healthchecks.CryptoHealthCheck;
 import com.wire.bots.sdk.healthchecks.Outbound;
 import com.wire.bots.sdk.healthchecks.StorageHealthCheck;
 import com.wire.bots.sdk.server.resources.BotsResource;
+import com.wire.bots.sdk.server.resources.EmptyStatusResource;
 import com.wire.bots.sdk.server.resources.MessageResource;
 import com.wire.bots.sdk.server.resources.StatusResource;
 import com.wire.bots.sdk.server.tasks.AvailablePrekeysTask;
@@ -210,6 +211,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
         ClientRepo repo = new ClientRepo(client, cryptoFactory, storageFactory);
 
         addResource(new StatusResource(), env);
+        addResource(new EmptyStatusResource(), env);
 
         botResource(config, env, handler);
         messageResource(config, env, handler, repo);
