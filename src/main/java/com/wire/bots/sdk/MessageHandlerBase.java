@@ -219,6 +219,10 @@ public abstract class MessageHandlerBase {
 
     }
 
+    public void onVideoPreview(WireClient client, ImageMessage msg) {
+
+    }
+
     public void validatePreKeys(WireClient client, int size) {
         try {
             int minAvailable = 8 * size;

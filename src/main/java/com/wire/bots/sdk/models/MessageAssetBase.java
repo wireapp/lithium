@@ -33,15 +33,15 @@ public class MessageAssetBase extends MessageBase {
         super(msgId, convId, clientId, userId);
     }
 
-    MessageAssetBase(MessageAssetBase msg) {
-        super(msg.messageId, msg.conversationId, msg.clientId, msg.userId);
-        assetKey = msg.assetKey;
-        assetToken = msg.assetToken;
-        otrKey = msg.otrKey;
-        mimeType = msg.mimeType;
-        size = msg.size;
-        sha256 = msg.sha256;
-        name = msg.name;
+    MessageAssetBase(MessageAssetBase base) {
+        super(base.messageId, base.conversationId, base.clientId, base.userId);
+        assetKey = base.assetKey;
+        assetToken = base.assetToken;
+        otrKey = base.otrKey;
+        mimeType = base.mimeType;
+        size = base.size;
+        sha256 = base.sha256;
+        name = base.name;
     }
 
     public void setSize(long size) {

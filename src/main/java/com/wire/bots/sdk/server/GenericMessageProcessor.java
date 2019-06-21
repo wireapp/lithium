@@ -149,15 +149,30 @@ public class GenericMessageProcessor {
             Messages.Asset.RemoteData remoteData = remotes.get(messageId);
 
             if (original != null && remoteData != null) {
-                Logger.debug("Original: msgId: %s hasAudio: %s, hasVideo: %s, hasImage: %s",
+                Logger.debug("Original: msgId: %s hasAudio: %s, hasVideo: %s, hasImage: %s, hasPreview %s",
                         messageId,
                         original.hasAudio(),
                         original.hasVideo(),
-                        original.hasImage());
+                        original.hasImage(),
+                        asset.hasPreview());
 
                 MessageAssetBase base = new MessageAssetBase(messageId, convId.toString(), sender, from);
                 origin(base, original);
                 uploaded(base, remoteData);
+
+                if (asset.hasPreview()) {
+                    Messages.Asset.Preview preview = asset.getPreview();
+                    if (preview.hasRemote()) {
+                        uploaded(base, preview.getRemote());
+
+                        ImageMessage msg = new ImageMessage(base, preview.getImage());
+                        msg.setTime(time);
+                        msg.setSize(preview.getSize());
+                        msg.setMimeType(preview.getMimeType());
+
+                        handler.onVideoPreview(client, msg);
+                    }
+                }
 
                 if (original.hasImage()) {
                     ImageMessage msg = new ImageMessage(base, original.getImage());
