@@ -21,23 +21,27 @@ package com.wire.bots.sdk.user;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.otr.PreKey;
+import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
+import com.wire.bots.sdk.user.model.Access;
 import com.wire.bots.sdk.user.model.NewClient;
 import com.wire.bots.sdk.user.model.User;
+import org.glassfish.jersey.logging.LoggingFeature;
 
 import javax.naming.AuthenticationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.logging.Level;
 
 public class LoginClient {
     final WebTarget clientsPath;
     private final WebTarget loginPath;
+    private final WebTarget accessPath;
 
     public LoginClient(Client client) {
         String host = host();
@@ -47,6 +51,12 @@ public class LoginClient {
         clientsPath = client
                 .target(host)
                 .path("clients");
+        accessPath = client
+                .target(host)
+                .path("access");
+
+        Feature feature = new LoggingFeature(Logger.getLOGGER(), Level.FINE, null, null);
+        accessPath.register(feature);
     }
 
     public static String host() {
@@ -121,6 +131,33 @@ public class LoginClient {
             throw new HttpException(response.readEntity(String.class), response.getStatus());
 
         return response.readEntity(_Client.class).id;
+    }
+
+    public Access renewAccessToken(Cookie cookie) throws HttpException {
+        Invocation.Builder builder = accessPath
+                .request(MediaType.APPLICATION_JSON)
+                .cookie(cookie);
+
+        Response response = builder.
+                post(Entity.entity(null, MediaType.APPLICATION_JSON));
+
+        if (response.getStatus() == 403) {
+            String entity = response.readEntity(String.class);
+            throw new com.wire.bots.sdk.exceptions.AuthenticationException(entity);
+        }
+
+        if (response.getStatus() >= 400) {
+            String entity = response.readEntity(String.class);
+            throw new HttpException(entity, response.getStatus());
+        }
+
+        Access access = response.readEntity(Access.class);
+
+        NewCookie zuid = response.getCookies().get("zuid");
+        if (zuid != null) {
+            access.cookie = zuid.getValue();
+        }
+        return access;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)

@@ -28,6 +28,10 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 public class Logger {
+    public static java.util.logging.Logger getLOGGER() {
+        return LOGGER;
+    }
+
     private final static java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger("com.wire.bots.logger");
     private static AtomicInteger errorCount = new AtomicInteger();
     private static AtomicInteger warningCount = new AtomicInteger();

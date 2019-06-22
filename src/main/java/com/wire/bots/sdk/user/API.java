@@ -76,13 +76,11 @@ public class API extends LoginClient {
         selfPath = target.path("self");
     }
 
+    @Deprecated
     public Access renewAccessToken(String cookie) throws HttpException {
         Invocation.Builder builder = accessPath.
                 request(MediaType.APPLICATION_JSON).
                 header(HttpHeaders.COOKIE, cookie);
-
-        if (token != null)
-            builder.header(HttpHeaders.AUTHORIZATION, bearer(token));
 
         Response response = builder.
                 post(Entity.entity(new Connection(), MediaType.APPLICATION_JSON));
