@@ -24,7 +24,7 @@
     <dependency>
         <groupId>com.wire.bots</groupId>
         <artifactId>lithium</artifactId>
-        <version>2.25.2</version>
+        <version>2.25.4</version>
     </dependency>
 <dependencies>
 ```
@@ -90,6 +90,7 @@ Using the `manage.sh` script:
 - [Broadcast-bot](https://github.com/wireapp/broadcast-bot)
 - [Channel-bot](https://github.com/dkovacevic/channel-bot)
 - [Don](https://github.com/wireapp/don-bot)
+- [Recording-bot](https://github.com/wireapp/recording-bot)
 
 ## Other implementations of Bot API
 
