@@ -22,6 +22,7 @@ import com.waz.model.Messages;
 import com.wire.bots.sdk.models.*;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.NewBot;
+import com.wire.bots.sdk.server.model.SystemMessage;
 import com.wire.bots.sdk.tools.Logger;
 
 import java.util.ArrayList;
@@ -46,11 +47,12 @@ public abstract class MessageHandlerBase {
     }
 
     /**
-     * This callback is invoked by the framework every time new participant joins this conversation
-     *
-     * @param client Thread safe wire client that can be used to post back to this conversation
+     * This callback is invoked by the framework when the bot is added into a conversation
+     * @param client       Thread safe wire client that can be used to post back to this conversation
+     * @param message SystemMessage object. message.conversation is never null
      */
-    public void onNewConversation(WireClient client) {
+    public void onNewConversation(WireClient client, SystemMessage message) {
+
     }
 
     /**
@@ -82,18 +84,17 @@ public abstract class MessageHandlerBase {
 
     /**
      * This callback is invoked by the framework every time new participant joins this conversation
-     *
      * @param client  Thread safe wire client that can be used to post back to this conversation
-     * @param userIds List of UserIds that just joined this conversation
+     * @param message System message object with message.users as List of UserIds that just joined this conversation
      */
-    public void onMemberJoin(WireClient client, ArrayList<String> userIds) {
+    public void onMemberJoin(WireClient client, SystemMessage message) {
     }
 
     /**
      * @param client  Thread safe wire client that can be used to post back to this conversation
-     * @param userIds List of UserIds that just left this conversation
+     * @param message System message object with message.users as List of UserIds that just joined this conversation
      */
-    public void onMemberLeave(WireClient client, ArrayList<String> userIds) {
+    public void onMemberLeave(WireClient client, SystemMessage message) {
     }
 
     /**
@@ -101,7 +102,7 @@ public abstract class MessageHandlerBase {
      *
      * @param botId Id of the Bot that got removed
      */
-    public void onBotRemoved(String botId) {
+    public void onBotRemoved(UUID botId) {
     }
 
     /**
@@ -181,12 +182,11 @@ public abstract class MessageHandlerBase {
 
     /**
      * This is generic method that is called every time something is posted to this conversation.
-     *
-     * @param client         Thread safe wire client that can be used to post back to this conversation
+     *  @param client         Thread safe wire client that can be used to post back to this conversation
      * @param userId         User Id for the sender
      * @param genericMessage Generic message as it comes from the BE
      */
-    public void onEvent(WireClient client, String userId, Messages.GenericMessage genericMessage) {
+    public void onEvent(WireClient client, UUID userId, Messages.GenericMessage genericMessage) {
     }
 
     /**
@@ -199,7 +199,7 @@ public abstract class MessageHandlerBase {
 
     }
 
-    public void onCalling(WireClient client, String userId, String clientId, String content) {
+    public void onCalling(WireClient client, UUID userId, String clientId, String content) {
 
     }
 
@@ -211,11 +211,11 @@ public abstract class MessageHandlerBase {
 
     }
 
-    public void onNewTeamMember(UUID teamId, UUID userId) {
+    public void onNewTeamMember(UUID id, UUID teamId, UUID userId) {
 
     }
 
-    public void onUserUpdate(UUID userId) {
+    public void onUserUpdate(UUID id, UUID userId) {
 
     }
 

@@ -111,15 +111,15 @@ public class Endpoint {
                 switch (payload.type) {
                     case "team.member-join":
                     case "user.update":
-                        userMessageResource.onUpdate(payload);
+                        userMessageResource.onUpdate(message.id, payload);
                         break;
                     case "user.connection":
-                        userMessageResource.onNewMessage(payload.connection.from, payload.connection.convId, payload);
+                        userMessageResource.onNewMessage(message.id, payload.connection.from, payload.connection.convId, payload);
                         break;
                     case "conversation.otr-message-add":
                     case "conversation.member-join":
                     case "conversation.create":
-                        userMessageResource.onNewMessage(user.getUserId(), payload.convId, payload);
+                        userMessageResource.onNewMessage(message.id, user.getUserId(), payload.convId, payload);
                         break;
                     default:
                         Logger.info("Unknown type: %s, from: %s", payload.type, payload.from);

@@ -53,7 +53,8 @@ public class MessageResource extends MessageResourceBase {
             @ApiResponse(code = 503, message = "Missing bot's state object", response = ErrorMessage.class),
             @ApiResponse(code = 200, message = "Alles gute")})
     public Response newMessage(@ApiParam("Service token") @HeaderParam("Authorization") @NotNull String auth,
-                               @ApiParam("Bot instance id") @PathParam("bot") String botId,
+                               @ApiParam("UUID Bot instance id") @PathParam("bot") UUID botId,
+                               @ApiParam("UUID Unique message id") @QueryParam("id") UUID id,
                                @ApiParam @Valid @NotNull Payload payload) {
 
         if (!isValid(auth)) {
@@ -65,7 +66,7 @@ public class MessageResource extends MessageResourceBase {
         }
 
         try (WireClient client = getWireClient(botId, payload)) {
-            handleMessage(payload, client);
+            handleMessage(id, payload, client);
         } catch (CryptoException e) {
             Logger.error("newMessage: %s %s", botId, e);
             respondWithError(botId, payload);
@@ -80,6 +81,7 @@ public class MessageResource extends MessageResourceBase {
                     entity(new ErrorMessage(e.getMessage())).
                     build();
         } catch (Exception e) {
+            e.printStackTrace();
             Logger.error("newMessage: %s %s", botId, e);
             return Response.
                     status(400).
@@ -93,7 +95,7 @@ public class MessageResource extends MessageResourceBase {
                 build();
     }
 
-    private void respondWithError(String botId, Payload payload) {
+    private void respondWithError(UUID botId, Payload payload) {
         try (WireClient client = getWireClient(botId, payload)) {
             client.sendReaction(UUID.randomUUID(), "");
         } catch (Exception e1) {

@@ -8,6 +8,7 @@ import com.wire.bots.sdk.server.model.NewBot;
 
 import javax.ws.rs.client.Client;
 import java.io.IOException;
+import java.util.UUID;
 
 public class ClientRepo {
     protected final Client httpClient;
@@ -21,7 +22,7 @@ public class ClientRepo {
     }
 
     @Deprecated
-    public WireClient getWireClient(String botId) {
+    public WireClient getWireClient(UUID botId) {
         try {
             return getClient(botId);
         } catch (Exception e) {
@@ -29,20 +30,20 @@ public class ClientRepo {
         }
     }
 
-    public WireClient getClient(String botId) throws IOException, CryptoException {
-        NewBot state = sf.create(botId).getState();
-        Crypto crypto = cf.create(botId);
+    public WireClient getClient(UUID botId) throws IOException, CryptoException {
+        NewBot state = sf.create(botId.toString()).getState();
+        Crypto crypto = cf.create(botId.toString());
         API api = new API(httpClient, state.token);
         return new BotClient(state, crypto, api);
     }
 
     @Deprecated
-    public void removeClient(String botId) {
+    public void removeClient(UUID botId) {
 
     }
 
-    public void purgeBot(String botId) throws IOException {
-        boolean purged = sf.create(botId).removeState();
+    public void purgeBot(UUID botId) throws IOException {
+        boolean purged = sf.create(botId.toString()).removeState();
         if (!purged)
             throw new IOException("Failed to purge Bot: " + botId);
     }

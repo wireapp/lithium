@@ -20,15 +20,15 @@ package com.wire.bots.sdk.models;
 
 import com.waz.model.Messages;
 
-/**
- */
+import java.util.UUID;
+
 public class VideoMessage extends MessageAssetBase {
     private long duration;
     private int width;
     private int height;
 
-    public VideoMessage(String msgId, String convId, String clientId, String userId) {
-        super(msgId, convId, clientId, userId);
+    public VideoMessage(UUID messageId, UUID convId, String clientId, UUID userId) {
+        super(messageId, convId, clientId, userId);
     }
 
     public VideoMessage(MessageAssetBase base, Messages.Asset.VideoMetaData video) {

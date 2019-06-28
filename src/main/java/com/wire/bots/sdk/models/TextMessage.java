@@ -18,12 +18,14 @@
 
 package com.wire.bots.sdk.models;
 
+import java.util.UUID;
+
 /**
  */
 public class TextMessage extends MessageBase {
     private String text;
 
-    public TextMessage(String messageId, String convId, String clientId, String userId) {
+    public TextMessage(UUID messageId, UUID convId, String clientId, UUID userId) {
         super(messageId, convId, clientId, userId);
     }
 

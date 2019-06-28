@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -61,7 +61,7 @@ public class Payload {
         @JsonProperty
         public String text;
         @JsonProperty("user_ids")
-        public ArrayList<String> userIds;
+        public List<UUID> userIds;
         @JsonProperty
         public String name;
 
@@ -72,6 +72,10 @@ public class Payload {
         public String key;
         @JsonProperty
         public UUID user;
+        @JsonProperty
+        public UUID creator;
+        @JsonProperty
+        public Members members;
     }
 
     // User Mode
@@ -107,5 +111,12 @@ public class Payload {
 
         @JsonProperty
         public String email;
+    }
+
+    // User Mode
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Members {
+        @JsonProperty
+        public List<Member> others;
     }
 }

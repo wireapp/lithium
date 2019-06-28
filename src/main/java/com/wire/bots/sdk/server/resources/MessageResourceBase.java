@@ -7,13 +7,16 @@ import com.wire.bots.sdk.ClientRepo;
 import com.wire.bots.sdk.MessageHandlerBase;
 import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.server.GenericMessageProcessor;
+import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.Payload;
+import com.wire.bots.sdk.server.model.SystemMessage;
 import com.wire.bots.sdk.tools.AuthValidator;
 import com.wire.bots.sdk.tools.Logger;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
+import java.util.UUID;
 
 public abstract class MessageResourceBase {
     private final AuthValidator validator;
@@ -26,13 +29,13 @@ public abstract class MessageResourceBase {
         this.repo = repo;
     }
 
-    protected void handleMessage(Payload payload, WireClient client) throws Exception {
+    protected void handleMessage(UUID id, Payload payload, WireClient client) throws Exception {
         Payload.Data data = payload.data;
-        String botId = client.getId();
+        UUID botId = UUID.fromString(client.getId());
 
         switch (payload.type) {
             case "conversation.otr-message-add": {
-                String from = payload.from.toString();
+                UUID from = payload.from;
 
                 Logger.debug("conversation.otr-message-add: bot: %s from: %s:%s", botId, from, data.sender);
 
@@ -40,7 +43,7 @@ public abstract class MessageResourceBase {
 
                 Messages.GenericMessage message = decrypt(client, payload);
 
-                handler.onEvent(client, from, message);
+                handler.onEvent(client, payload.from, message);
 
                 boolean process = processor.process(from,
                         data.sender,
@@ -48,37 +51,59 @@ public abstract class MessageResourceBase {
                         payload.time,
                         message);
 
-                if (process)
-                    processor.cleanUp(message.getMessageId());
+                if (process) {
+                    UUID messageId = UUID.fromString(message.getMessageId());
+                    processor.cleanUp(messageId);
+                }
             }
             break;
             case "conversation.member-join": {
                 Logger.debug("conversation.member-join: bot: %s", botId);
+                Conversation conversation = new Conversation();
+                conversation.id = payload.convId;
+
+                SystemMessage systemMessage = new SystemMessage();
+                systemMessage.id = id;
+                systemMessage.from = payload.from;
+                systemMessage.time = payload.time;
+                systemMessage.type = payload.type;
+                systemMessage.users = data.userIds;
+                systemMessage.conversation = conversation;
 
                 // Check if this bot got added to the conversation
-                ArrayList<String> participants = data.userIds;
+                List<UUID> participants = data.userIds;
                 if (participants.remove(botId)) {
-                    handler.onNewConversation(client);
+                    handler.onNewConversation(client, systemMessage);
                 }
 
                 // Check if we still have some prekeys available. Upload new prekeys if needed
                 handler.validatePreKeys(client, participants.size());
 
-                handler.onMemberJoin(client, participants);
+                handler.onMemberJoin(client, systemMessage);
             }
             break;
             case "conversation.member-leave": {
                 Logger.debug("conversation.member-leave: bot: %s", botId);
+                Conversation conversation = new Conversation();
+                conversation.id = payload.convId;
+
+                SystemMessage systemMessage = new SystemMessage();
+                systemMessage.id = id;
+                systemMessage.from = payload.from;
+                systemMessage.time = payload.time;
+                systemMessage.type = payload.type;
+                systemMessage.users = data.userIds;
+                systemMessage.conversation = conversation;
 
                 // Check if this bot got removed from the conversation
-                ArrayList<String> participants = data.userIds;
+                List<UUID> participants = data.userIds;
                 if (participants.remove(botId)) {
                     handler.onBotRemoved(botId);
                     repo.purgeBot(botId);
                 }
 
                 if (!participants.isEmpty()) {
-                    handler.onMemberLeave(client, participants);
+                    handler.onMemberLeave(client, systemMessage);
                 }
             }
             break;
@@ -93,7 +118,19 @@ public abstract class MessageResourceBase {
             case "conversation.create": {
                 Logger.debug("conversation.create: bot: %s", botId);
 
-                handler.onNewConversation(client);
+                Conversation conversation = new Conversation();
+                conversation.id = payload.convId;
+                conversation.creator = data.creator;
+                conversation.name = data.name;
+                conversation.members = data.members.others;
+                SystemMessage systemMessage = new SystemMessage();
+                systemMessage.id = id;
+                systemMessage.from = payload.from;
+                systemMessage.time = payload.time;
+                systemMessage.type = payload.type;
+                systemMessage.conversation = conversation;
+
+                handler.onNewConversation(client, systemMessage);
             }
             break;
             case "conversation.rename": {
@@ -112,7 +149,15 @@ public abstract class MessageResourceBase {
 
                 boolean accepted = handler.onConnectRequest(client, connection.from, connection.to, connection.status);
                 if (accepted) {
-                    handler.onNewConversation(client);
+                    Conversation conversation = new Conversation();
+                    conversation.id = connection.convId;
+                    SystemMessage systemMessage = new SystemMessage();
+                    systemMessage.id = id;
+                    systemMessage.from = connection.from;
+                    systemMessage.type = payload.type;
+                    systemMessage.conversation = conversation;
+
+                    handler.onNewConversation(client, systemMessage);
                 }
             }
             break;
@@ -123,7 +168,7 @@ public abstract class MessageResourceBase {
         }
     }
 
-    protected WireClient getWireClient(String botId, Payload payload) throws IOException, CryptoException {
+    protected WireClient getWireClient(UUID botId, Payload payload) throws IOException, CryptoException {
         return repo.getClient(botId);
     }
 
@@ -131,16 +176,16 @@ public abstract class MessageResourceBase {
         return validator.validate(auth);
     }
 
-    protected void handleUpdate(Payload payload) {
+    protected void handleUpdate(UUID id, Payload payload) {
         switch (payload.type) {
             case "team.member-join": {
                 Logger.debug("%s: team: %s, user: %s", payload.type, payload.team, payload.data.user);
-                handler.onNewTeamMember(payload.team, payload.data.user);
+                handler.onNewTeamMember(id, payload.team, payload.data.user);
             }
             break;
             case "user.update": {
                 Logger.debug("%s: id: %s", payload.type, payload.user.id);
-                handler.onUserUpdate(payload.user.id);
+                handler.onUserUpdate(id, payload.user.id);
             }
             break;
             default:

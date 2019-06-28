@@ -28,7 +28,7 @@ public class UserClientRepo extends ClientRepo {
     We dont want to purge the state when running in UserMode
      */
     @Override
-    public void purgeBot(String botId) {
+    public void purgeBot(UUID botId) {
 
     }
 }

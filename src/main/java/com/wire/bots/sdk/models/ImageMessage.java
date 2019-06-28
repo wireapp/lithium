@@ -20,14 +20,14 @@ package com.wire.bots.sdk.models;
 
 import com.waz.model.Messages;
 
-/**
- */
+import java.util.UUID;
+
 public class ImageMessage extends MessageAssetBase {
     private int height;
     private int width;
     private String tag;
 
-    public ImageMessage(String messageId, String convId, String clientId, String userId) {
+    public ImageMessage(UUID messageId, UUID convId, String clientId, UUID userId) {
         super(messageId, convId, clientId, userId);
     }
 
