@@ -8,6 +8,7 @@ import com.wire.bots.sdk.MessageHandlerBase;
 import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.server.GenericMessageProcessor;
 import com.wire.bots.sdk.server.model.Conversation;
+import com.wire.bots.sdk.server.model.Member;
 import com.wire.bots.sdk.server.model.Payload;
 import com.wire.bots.sdk.server.model.SystemMessage;
 import com.wire.bots.sdk.tools.AuthValidator;
@@ -123,6 +124,9 @@ public abstract class MessageResourceBase {
                 conversation.creator = data.creator;
                 conversation.name = data.name;
                 conversation.members = data.members.others;
+                Member self = new Member();
+                self.id = botId;
+                conversation.members.add(self);
                 SystemMessage systemMessage = new SystemMessage();
                 systemMessage.id = id;
                 systemMessage.from = payload.from;
