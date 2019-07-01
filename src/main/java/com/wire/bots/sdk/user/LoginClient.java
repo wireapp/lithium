@@ -19,6 +19,7 @@
 package com.wire.bots.sdk.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.wire.bots.sdk.exceptions.AuthException;
 import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.tools.Logger;
@@ -141,14 +142,15 @@ public class LoginClient {
         Response response = builder.
                 post(Entity.entity(null, MediaType.APPLICATION_JSON));
 
-        if (response.getStatus() == 403) {
+        int status = response.getStatus();
+        if (status == 403) {
             String entity = response.readEntity(String.class);
-            throw new com.wire.bots.sdk.exceptions.AuthenticationException(entity);
+            throw new AuthException(entity, status);
         }
 
-        if (response.getStatus() >= 400) {
+        if (status >= 400) {
             String entity = response.readEntity(String.class);
-            throw new HttpException(entity, response.getStatus());
+            throw new HttpException(entity, status);
         }
 
         Access access = response.readEntity(Access.class);

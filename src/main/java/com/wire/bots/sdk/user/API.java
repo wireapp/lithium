@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wire.bots.sdk.Backend;
 import com.wire.bots.sdk.assets.IAsset;
-import com.wire.bots.sdk.exceptions.AuthenticationException;
+import com.wire.bots.sdk.exceptions.AuthException;
 import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.AssetKey;
 import com.wire.bots.sdk.models.otr.*;
@@ -434,14 +434,15 @@ public class API extends LoginClient implements Backend {
         Response response = builder.
                 post(Entity.entity(new Connection(), MediaType.APPLICATION_JSON));
 
-        if (response.getStatus() == 403) {
+        int status = response.getStatus();
+        if (status == 403) {
             String entity = response.readEntity(String.class);
-            throw new AuthenticationException(entity);
+            throw new AuthException(entity, status);
         }
 
-        if (response.getStatus() >= 400) {
+        if (status >= 400) {
             String entity = response.readEntity(String.class);
-            throw new HttpException(entity, response.getStatus());
+            throw new HttpException(entity, status);
         }
 
         Access access = response.readEntity(Access.class);
