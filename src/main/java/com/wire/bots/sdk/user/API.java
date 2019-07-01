@@ -20,6 +20,7 @@ package com.wire.bots.sdk.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wire.bots.sdk.Backend;
 import com.wire.bots.sdk.assets.IAsset;
 import com.wire.bots.sdk.exceptions.AuthenticationException;
 import com.wire.bots.sdk.exceptions.HttpException;
@@ -46,7 +47,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
 
-public class API extends LoginClient {
+public class API extends LoginClient implements Backend {
     private final WebTarget conversationsPath;
     private final WebTarget usersPath;
     private final WebTarget accessPath;
@@ -76,31 +77,8 @@ public class API extends LoginClient {
         selfPath = target.path("self");
     }
 
-    @Deprecated
-    public Access renewAccessToken(String cookie) throws HttpException {
-        Invocation.Builder builder = accessPath.
-                request(MediaType.APPLICATION_JSON).
-                header(HttpHeaders.COOKIE, cookie);
-
-        Response response = builder.
-                post(Entity.entity(new Connection(), MediaType.APPLICATION_JSON));
-
-        if (response.getStatus() == 403) {
-            String entity = response.readEntity(String.class);
-            throw new AuthenticationException(entity);
-        }
-
-        if (response.getStatus() >= 400) {
-            String entity = response.readEntity(String.class);
-            throw new HttpException(entity, response.getStatus());
-        }
-
-        Access access = response.readEntity(Access.class);
-        access.cookie = response.getStringHeaders().getFirst(HttpHeaders.SET_COOKIE);
-        return access;
-    }
-
-    Devices sendMessage(OtrMessage msg, boolean ignoreMissing) throws HttpException {
+    @Override
+    public Devices sendMessage(OtrMessage msg, Object... ignoreMissing) throws HttpException {
         Response response = conversationsPath.
                 path(convId).
                 path("otr/messages").
@@ -120,7 +98,29 @@ public class API extends LoginClient {
         return new Devices();
     }
 
-    PreKeys getPreKeys(Missing missing) {
+    @Override
+    public Devices sendPartialMessage(OtrMessage msg, String userId) throws HttpException {
+        Response response = conversationsPath.
+                path(convId).
+                path("otr/messages").
+                queryParam("report_missing", userId).
+                request(MediaType.APPLICATION_JSON).
+                header(HttpHeaders.AUTHORIZATION, bearer(token)).
+                post(Entity.entity(msg, MediaType.APPLICATION_JSON));
+
+        int statusCode = response.getStatus();
+        if (statusCode == 412) {
+            return response.readEntity(Devices.class);
+        }
+
+        if (statusCode >= 400)
+            throw new HttpException(response.getStatusInfo().getReasonPhrase(), response.getStatus());
+
+        return new Devices();
+    }
+
+    @Override
+    public PreKeys getPreKeys(Missing missing) {
         if (missing.isEmpty())
             return new PreKeys();
 
@@ -423,6 +423,30 @@ public class API extends LoginClient {
             return null;
 
         return res.teams.get(0).id;
+    }
+
+    @Deprecated
+    public Access renewAccessToken(String cookie) throws HttpException {
+        Invocation.Builder builder = accessPath.
+                request(MediaType.APPLICATION_JSON).
+                header(HttpHeaders.COOKIE, cookie);
+
+        Response response = builder.
+                post(Entity.entity(new Connection(), MediaType.APPLICATION_JSON));
+
+        if (response.getStatus() == 403) {
+            String entity = response.readEntity(String.class);
+            throw new AuthenticationException(entity);
+        }
+
+        if (response.getStatus() >= 400) {
+            String entity = response.readEntity(String.class);
+            throw new HttpException(entity, response.getStatus());
+        }
+
+        Access access = response.readEntity(Access.class);
+        access.cookie = response.getStringHeaders().getFirst(HttpHeaders.SET_COOKIE);
+        return access;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)

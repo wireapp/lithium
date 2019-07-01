@@ -18,6 +18,8 @@
 
 package com.wire.bots.sdk.models;
 
+import java.util.UUID;
+
 /**
  */
 public class MessageAssetBase extends MessageBase {
@@ -29,7 +31,7 @@ public class MessageAssetBase extends MessageBase {
     private byte[] sha256;
     private String name;
 
-    public MessageAssetBase(String msgId, String convId, String clientId, String userId) {
+    public MessageAssetBase(UUID msgId, UUID convId, String clientId, UUID userId) {
         super(msgId, convId, clientId, userId);
     }
 

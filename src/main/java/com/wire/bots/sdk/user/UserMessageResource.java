@@ -24,7 +24,7 @@ public class UserMessageResource extends MessageResourceBase {
         return true;
     }
 
-    void onNewMessage(UUID userId, UUID convId, Payload payload) throws Exception {
+    void onNewMessage(UUID id, UUID userId, UUID convId, Payload payload) throws Exception {
         if (userId == null) {
             Logger.warning("onNewMessage: %s userId is null", payload.type);
             return;
@@ -35,7 +35,7 @@ public class UserMessageResource extends MessageResourceBase {
         }
 
         try (WireClient client = userClientRepo.getWireClient(userId, convId)) {
-            handleMessage(payload, client);
+            handleMessage(id, payload, client);
         } catch (CryptoException e) {
             Logger.error("onNewMessage:(%s:%s) from: %s:%s %s %s",
                     owner,
@@ -48,8 +48,8 @@ public class UserMessageResource extends MessageResourceBase {
         }
     }
 
-    void onUpdate(Payload payload) {
-        handleUpdate(payload);
+    void onUpdate(UUID id, Payload payload) {
+        handleUpdate(id, payload);
     }
 
     private void respondWithError(UUID userId, UUID convId) {

@@ -20,13 +20,15 @@ package com.wire.bots.sdk.models;
 
 import com.waz.model.Messages;
 
+import java.util.UUID;
+
 /**
  */
 public class AudioMessage extends MessageAssetBase {
     private long duration;
 
-    public AudioMessage(String msgId, String convId, String clientId, String userId) {
-        super(msgId, convId, clientId, userId);
+    public AudioMessage(UUID messageId, UUID convId, String clientId, UUID userId) {
+        super(messageId, convId, clientId, userId);
     }
 
     public AudioMessage(MessageAssetBase base, Messages.Asset.AudioMetaData audio) {

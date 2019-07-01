@@ -30,8 +30,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  */
 public class GenericMessageProcessor {
-    private final static ConcurrentHashMap<String, Messages.Asset.Original> originals = new ConcurrentHashMap<>();
-    private final static ConcurrentHashMap<String, Messages.Asset.RemoteData> remotes = new ConcurrentHashMap<>();
+    private final static ConcurrentHashMap<UUID, Messages.Asset.Original> originals = new ConcurrentHashMap<>();
+    private final static ConcurrentHashMap<UUID, Messages.Asset.RemoteData> remotes = new ConcurrentHashMap<>();
 
     private final WireClient client;
     private final MessageHandlerBase handler;
@@ -54,13 +54,13 @@ public class GenericMessageProcessor {
         msg.setName(original.hasName() ? original.getName() : null);
     }
 
-    public void cleanUp(String messageId) {
+    public void cleanUp(UUID messageId) {
         remotes.remove(messageId);
         originals.remove(messageId);
     }
 
-    public boolean process(String from, String sender, UUID convId, String time, Messages.GenericMessage generic) {
-        String messageId = generic.getMessageId();
+    public boolean process(UUID from, String sender, UUID convId, String time, Messages.GenericMessage generic) {
+        UUID messageId = UUID.fromString(generic.getMessageId());
 
         Messages.Text text = null;
         Messages.Asset asset = null;
@@ -94,7 +94,8 @@ public class GenericMessageProcessor {
         // Edit message
         if (generic.hasEdited() && generic.getEdited().hasText()) {
             Messages.MessageEdit edited = generic.getEdited();
-            TextMessage msg = new TextMessage(edited.getReplacingMessageId(), convId.toString(), sender, from);
+            UUID replacingMessageId = UUID.fromString(edited.getReplacingMessageId());
+            TextMessage msg = new TextMessage(replacingMessageId, convId, sender, from);
             msg.setText(edited.getText().getContent());
             msg.setTime(time);
 
@@ -104,7 +105,7 @@ public class GenericMessageProcessor {
 
         // Text
         if (text != null && text.hasContent() && text.getLinkPreviewList().isEmpty()) {
-            TextMessage msg = new TextMessage(messageId, convId.toString(), sender, from);
+            TextMessage msg = new TextMessage(messageId, convId, sender, from);
             msg.setText(text.getContent());
             msg.setTime(time);
 
@@ -122,8 +123,8 @@ public class GenericMessageProcessor {
         }
 
         if (generic.hasDeleted()) {
-            String delMsgId = generic.getDeleted().getMessageId();
-            TextMessage msg = new TextMessage(delMsgId, convId.toString(), sender, from);
+            UUID delMsgId = UUID.fromString(generic.getDeleted().getMessageId());
+            TextMessage msg = new TextMessage(delMsgId, convId, sender, from);
             msg.setTime(time);
 
             handler.onDelete(client, msg);
@@ -156,7 +157,7 @@ public class GenericMessageProcessor {
                         original.hasImage(),
                         asset.hasPreview());
 
-                MessageAssetBase base = new MessageAssetBase(messageId, convId.toString(), sender, from);
+                MessageAssetBase base = new MessageAssetBase(messageId, convId, sender, from);
                 origin(base, original);
                 uploaded(base, remoteData);
 

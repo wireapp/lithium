@@ -18,12 +18,11 @@
 
 package com.wire.bots.sdk.models;
 
-/**
- *
- */
+import java.util.UUID;
+
 public class AttachmentMessage extends MessageAssetBase {
-    public AttachmentMessage(String msgId, String convId, String clientId, String userId) {
-        super(msgId, convId, clientId, userId);
+    public AttachmentMessage(UUID messageId, UUID convId, String clientId, UUID userId) {
+        super(messageId, convId, clientId, userId);
     }
 
     public AttachmentMessage(MessageAssetBase base) {

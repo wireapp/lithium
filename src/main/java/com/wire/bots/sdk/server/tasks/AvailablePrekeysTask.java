@@ -9,6 +9,7 @@ import com.wire.bots.sdk.tools.Logger;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class AvailablePrekeysTask extends TaskBase {
     private final ClientRepo repo;
@@ -19,12 +20,8 @@ public class AvailablePrekeysTask extends TaskBase {
     }
 
     @Override
-    public void execute(ImmutableMultimap<String, String> parameters, PrintWriter output) throws Exception {
-        String botId = extractString(parameters, "bot");
-        if (botId.isEmpty()) {
-            output.println("Missing bot parameter");
-            return;
-        }
+    public void execute(ImmutableMultimap<String, String> parameters, PrintWriter output) {
+        UUID botId = UUID.fromString(extractString(parameters, "bot"));
 
         try {
             WireClient client = repo.getWireClient(botId);
