@@ -38,8 +38,6 @@ public class PgStorage implements IStorage {
         try {
             Connection c = newConnection();
             PreparedStatement stmt = c.prepareStatement("SELECT data FROM sessions WHERE id = ? AND sid = ? FOR UPDATE");
-
-            //String key = key(id, sid);
             stmt.setString(1, id);
             stmt.setString(2, sid);
             ResultSet rs = stmt.executeQuery();
@@ -70,7 +68,7 @@ public class PgStorage implements IStorage {
 
     @Override
     public void insertIdentity(String id, byte[] data) throws StorageException {
-        String sql = "INSERT INTO identities (id, data) VALUES (?, ?) ON CONFLICT (id) DO NOTHING";
+        String sql = "INSERT INTO identities (id, data) VALUES (?, ?) ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data";
         Connection c = null;
         try {
             c = newConnection();
@@ -111,7 +109,7 @@ public class PgStorage implements IStorage {
 
     @Override
     public void insertPrekey(String id, int kid, byte[] data) throws StorageException {
-        String sql = "INSERT INTO prekeys (id, kid, data) VALUES (?, ?, ?) ON CONFLICT (id, kid) DO NOTHING";
+        String sql = "INSERT INTO prekeys (id, kid, data) VALUES (?, ?, ?) ON CONFLICT (id, kid) DO UPDATE SET data = EXCLUDED.data";
         Connection c = null;
         try {
             c = newConnection();
@@ -168,10 +166,6 @@ public class PgStorage implements IStorage {
         }
     }
 
-    private String key(String id, String sid) {
-        return String.format("%s-%s", id, sid);
-    }
-
     private void commit(Connection c) {
         try {
             if (c != null) {
@@ -207,7 +201,6 @@ public class PgStorage implements IStorage {
                     "ON CONFLICT (id, sid) DO UPDATE SET data = EXCLUDED.data";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 if (data != null) {
-                    //String key = key(id, sid);
                     stmt.setString(1, id);
                     stmt.setString(2, sid);
                     try (ByteArrayInputStream stream = new ByteArrayInputStream(data)) {
