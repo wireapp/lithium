@@ -62,4 +62,9 @@ public class CryptoDatabase extends CryptoBase {
     public ICryptobox box() {
         return box;
     }
+
+    @Override
+    public void purge() throws IOException {
+        box.purge();
+    }
 }

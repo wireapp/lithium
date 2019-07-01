@@ -37,10 +37,11 @@ public class PgStorage implements IStorage {
     public IRecord fetchSession(String id, String sid) throws StorageException {
         try {
             Connection c = newConnection();
-            PreparedStatement stmt = c.prepareStatement("SELECT data FROM sessions WHERE id = ? FOR UPDATE");
+            PreparedStatement stmt = c.prepareStatement("SELECT data FROM sessions WHERE id = ? AND sid = ? FOR UPDATE");
 
-            String key = key(id, sid);
-            stmt.setString(1, key);
+            //String key = key(id, sid);
+            stmt.setString(1, id);
+            stmt.setString(2, sid);
             ResultSet rs = stmt.executeQuery();
             byte[] data = null;
             if (rs.next()) {
@@ -128,6 +129,27 @@ public class PgStorage implements IStorage {
         }
     }
 
+    @Override
+    public void purge(String id) throws StorageException {
+        Connection c = null;
+        try {
+            c = newConnection();
+            PreparedStatement stmt = c.prepareStatement("DELETE FROM identities WHERE id = ?");
+            stmt.setString(1, id);
+            stmt.executeUpdate();
+            stmt = c.prepareStatement("DELETE FROM prekeys WHERE id = ?");
+            stmt.setString(1, id);
+            stmt.executeUpdate();
+            stmt = c.prepareStatement("DELETE FROM sessions WHERE id = ?");
+            stmt.setString(1, id);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            throw new StorageException(String.format("purge: %s %s", id, e));
+        } finally {
+            commit(c);
+        }
+    }
+
     private Connection newConnection() throws InterruptedException {
         while (true) {
             try {
@@ -181,14 +203,15 @@ public class PgStorage implements IStorage {
 
         @Override
         public void persist(byte[] data) {
-            final String sql = "INSERT INTO sessions (id, data) VALUES (?, ?) " +
-                    "ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data";
+            final String sql = "INSERT INTO sessions (id, sid, data) VALUES (?, ?, ?) " +
+                    "ON CONFLICT (id, sid) DO UPDATE SET data = EXCLUDED.data";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 if (data != null) {
-                    String key = key(id, sid);
-                    stmt.setString(1, key);
+                    //String key = key(id, sid);
+                    stmt.setString(1, id);
+                    stmt.setString(2, sid);
                     try (ByteArrayInputStream stream = new ByteArrayInputStream(data)) {
-                        stmt.setBinaryStream(2, stream);
+                        stmt.setBinaryStream(3, stream);
                     }
                     stmt.executeUpdate();
                 }
