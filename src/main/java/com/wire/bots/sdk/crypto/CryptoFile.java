@@ -23,13 +23,21 @@ import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.cryptobox.ICryptobox;
 import com.wire.bots.sdk.Configuration;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Comparator;
 
 /**
  * Wrapper for the Crypto Box. This class is thread safe.
  */
 public class CryptoFile extends CryptoBase {
     private final CryptoBox box;
+    private final String root;
 
     /**
      * Opens the CryptoBox using given directory path
@@ -43,8 +51,8 @@ public class CryptoFile extends CryptoBase {
      * @throws Exception
      */
     public CryptoFile(String rootDir, String botId) throws CryptoException {
-        String dir = String.format("%s/%s", rootDir, botId);
-        box = CryptoBox.open(dir);
+        root = String.format("%s/%s", rootDir, botId);
+        box = CryptoBox.open(root);
     }
 
     /**
@@ -66,12 +74,22 @@ public class CryptoFile extends CryptoBase {
         } catch (Exception e) {
             path = "data";
         }
-        String dir = String.format("%s/%s", path, botId);
-        box = CryptoBox.open(dir);
+        root = String.format("%s/%s", path, botId);
+        box = CryptoBox.open(root);
     }
 
     @Override
     public ICryptobox box() {
         return box;
+    }
+
+    @Override
+    public void purge() throws IOException {
+        box.close();
+        Path rootPath = Paths.get(root);
+        Files.walk(rootPath, FileVisitOption.FOLLOW_LINKS)
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
     }
 }

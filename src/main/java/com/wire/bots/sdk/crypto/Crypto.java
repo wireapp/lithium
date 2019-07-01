@@ -7,6 +7,7 @@ import com.wire.bots.sdk.models.otr.PreKeys;
 import com.wire.bots.sdk.models.otr.Recipients;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public interface Crypto extends Closeable {
@@ -41,4 +42,6 @@ public interface Crypto extends Closeable {
     String decrypt(String userId, String clientId, String cypher) throws CryptoException;
 
     boolean isClosed();
+
+    void purge() throws IOException;
 }

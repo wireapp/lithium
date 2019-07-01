@@ -51,6 +51,13 @@ public class MemStorage implements IStorage {
         list.add(preKey);
     }
 
+    @Override
+    public void purge(String id) {
+        sessions.remove(id);
+        prekeys.remove(id);
+        identities.remove(id);
+    }
+
     private void sleep(int millis) {
         try {
             Thread.sleep(millis);

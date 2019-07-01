@@ -157,6 +157,11 @@ public class RedisStorage implements IStorage {
     }
 
     @Override
+    public void purge(String id) {
+
+    }
+
+    @Override
     public PreKey[] fetchPrekeys(String id) {
         try (Jedis jedis = getConnection()) {
             String key = String.format("pk_%s", id);
