@@ -16,7 +16,7 @@ class DummyAPI extends API {
     }
 
     @Override
-    Devices sendMessage(OtrMessage msg, boolean ignoreMissing) {
+    public Devices sendMessage(OtrMessage msg, Object... ignoreMissing) {
         this.msg = msg;
         Devices missing = new Devices();
 
@@ -30,7 +30,7 @@ class DummyAPI extends API {
     }
 
     @Override
-    PreKeys getPreKeys(Missing missing) {
+    public PreKeys getPreKeys(Missing missing) {
         PreKeys ret = new PreKeys();
         for (String userId : missing.toUserIds()) {
             HashMap<String, PreKey> devs = new HashMap<>();

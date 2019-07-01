@@ -5,6 +5,7 @@ import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.factories.CryptoFactory;
 import com.wire.bots.sdk.factories.StorageFactory;
 import com.wire.bots.sdk.server.model.NewBot;
+import com.wire.bots.sdk.state.State;
 
 import javax.ws.rs.client.Client;
 import java.io.IOException;
@@ -43,7 +44,11 @@ public class ClientRepo {
     }
 
     public void purgeBot(UUID botId) throws IOException {
-        boolean purged = sf.create(botId.toString()).removeState();
+        State state = sf.create(botId.toString());
+        if (state == null)
+            return;
+
+        boolean purged = state.removeState();
         if (!purged)
             throw new IOException("Failed to purge Bot: " + botId);
     }

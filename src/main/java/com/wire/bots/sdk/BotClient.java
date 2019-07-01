@@ -18,16 +18,13 @@
 
 package com.wire.bots.sdk;
 
-import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.sdk.assets.*;
 import com.wire.bots.sdk.crypto.Crypto;
-import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.AssetKey;
-import com.wire.bots.sdk.models.otr.*;
+import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.server.model.User;
-import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
 
 import java.io.File;
@@ -38,16 +35,13 @@ import java.util.*;
 /**
  *
  */
-public class BotClient implements WireClient {
+public class BotClient extends WireClientBase implements WireClient {
+
     private final API api;
-    private final Crypto crypto;
-    private final NewBot state;
-    private Devices devices = null;
 
     BotClient(NewBot state, Crypto crypto, API api) {
-        this.state = state;
+        super(api, crypto, state);
         this.api = api;
-        this.crypto = crypto;
     }
 
     @Override
@@ -242,23 +236,8 @@ public class BotClient implements WireClient {
     }
 
     @Override
-    public String getId() {
-        return state.id;
-    }
-
-    @Override
     public User getSelf() {
         return api.getSelf();
-    }
-
-    @Override
-    public UUID getConversationId() {
-        return state.conversation.id;
-    }
-
-    @Override
-    public String getDeviceId() {
-        return state.client;
     }
 
     @Override
@@ -283,21 +262,6 @@ public class BotClient implements WireClient {
     }
 
     @Override
-    public String decrypt(String userId, String clientId, String cypher) throws CryptoException {
-        return crypto.decrypt(userId, clientId, cypher);
-    }
-
-    @Override
-    public PreKey newLastPreKey() throws CryptoException {
-        return crypto.newLastPreKey();
-    }
-
-    @Override
-    public ArrayList<PreKey> newPreKeys(int from, int count) throws CryptoException {
-        return crypto.newPreKeys(from, count);
-    }
-
-    @Override
     public void uploadPreKeys(ArrayList<PreKey> preKeys) throws IOException {
         api.uploadPreKeys((preKeys));
     }
@@ -308,18 +272,8 @@ public class BotClient implements WireClient {
     }
 
     @Override
-    public boolean isClosed() {
-        return crypto.isClosed();
-    }
-
-    @Override
     public byte[] downloadProfilePicture(String assetKey) throws IOException {
         return api.downloadAsset(assetKey, null);
-    }
-
-    @Override
-    public void close() throws IOException {
-        crypto.close();
     }
 
     @Override
@@ -330,100 +284,5 @@ public class BotClient implements WireClient {
     @Override
     public void call(String content) throws Exception {
         postGenericMessage(new Calling(content));
-    }
-
-    /**
-     * Encrypt whole message for participants in the conversation.
-     * Implements the fallback for the 412 error code and missing
-     * devices.
-     *
-     * @param generic generic message to be sent
-     * @throws Exception CryptoBox exception
-     */
-    private void postGenericMessage(IGeneric generic) throws Exception {
-        byte[] content = generic.createGenericMsg().toByteArray();
-
-        // Try to encrypt the msg for those devices that we have the session already
-        Recipients encrypt = crypto.encrypt(getAllDevices(), content);
-        OtrMessage msg = new OtrMessage(state.client, encrypt);
-
-        Devices res = api.sendMessage(msg, false);
-        if (!res.hasMissing()) {
-            // Fetch preKeys for the missing devices from the Backend
-            PreKeys preKeys = api.getPreKeys(res.missing);
-
-            Logger.debug("Fetched %d preKeys for %d devices. Bot: %s", preKeys.count(), res.size(), getId());
-
-            // Encrypt msg for those devices that were missing. This time using preKeys
-            encrypt = crypto.encrypt(preKeys, content);
-            msg.add(encrypt);
-
-            // reset devices so they could be pulled next time
-            devices = null;
-
-            res = api.sendMessage(msg, true);
-            if (!res.hasMissing()) {
-                Logger.error(String.format("Failed to send otr message to %d devices. Bot: %s",
-                        res.size(),
-                        getId()));
-            }
-        }
-    }
-
-    private void postGenericMessage(IGeneric generic, String userId) throws Exception {
-        byte[] content = generic.createGenericMsg().toByteArray();
-
-        // Try to encrypt the msg for those devices that we have the session already
-        Missing all = getAllDevices();
-        Missing user = new Missing();
-        for (String u : all.toUserIds()) {
-            if (userId.equals(u)) {
-                Collection<String> clients = all.toClients(u);
-                user.add(u, clients);
-            }
-        }
-
-        Recipients encrypt = crypto.encrypt(user, content);
-        OtrMessage msg = new OtrMessage(state.client, encrypt);
-
-        Devices res = api.sendPartialMessage(msg, userId);
-        if (!res.hasMissing()) {
-            // Fetch preKeys for the missing devices from the Backend
-            PreKeys preKeys = api.getPreKeys(res.missing);
-
-            Logger.debug("Fetched %d preKeys for %d devices. Bot: %s", preKeys.count(), res.size(), getId());
-
-            // Encrypt msg for those devices that were missing. This time using preKeys
-            encrypt = crypto.encrypt(preKeys, content);
-            msg.add(encrypt);
-
-            // reset devices so they could be pulled next time
-            devices = null;
-
-            res = api.sendMessage(msg, true);
-            if (!res.hasMissing()) {
-                Logger.error(String.format("Failed to send otr message to %d devices. Bot: %s",
-                        res.size(),
-                        getId()));
-            }
-        }
-    }
-
-    private Missing getAllDevices() throws HttpException {
-        return getDevices().missing;
-    }
-
-    /**
-     * This method will send an empty message to BE and collect the list of missing client ids
-     * When empty message is sent the Backend will respond with error 412 and a list of missing clients.
-     *
-     * @return List of all participants in this conversation and their clientIds
-     */
-    private Devices getDevices() throws HttpException {
-        if (devices == null || devices.hasMissing()) {
-            OtrMessage msg = new OtrMessage(state.client, new Recipients());
-            devices = api.sendMessage(msg, false);
-        }
-        return devices;
     }
 }

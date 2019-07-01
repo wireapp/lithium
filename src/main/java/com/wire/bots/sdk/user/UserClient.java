@@ -18,17 +18,14 @@
 
 package com.wire.bots.sdk.user;
 
-import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.sdk.WireClient;
+import com.wire.bots.sdk.WireClientBase;
 import com.wire.bots.sdk.assets.*;
 import com.wire.bots.sdk.crypto.Crypto;
-import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.AssetKey;
-import com.wire.bots.sdk.models.otr.*;
 import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.server.model.User;
-import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
 
 import java.io.File;
@@ -36,17 +33,13 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.util.*;
 
-public class UserClient implements WireClient {
+public class UserClient extends WireClientBase implements WireClient {
     private final API api;
-    private final Crypto crypto;
-    private final NewBot state;
     private final UUID conv;
-    private Devices devices = null;
 
     UserClient(NewBot state, UUID conv, Crypto crypto, API api) {
-        this.state = state;
+        super(api, crypto, state);
         this.api = api;
-        this.crypto = crypto;
         this.conv = conv;
     }
 
@@ -65,7 +58,9 @@ public class UserClient implements WireClient {
 
     @Override
     public UUID sendDirectText(String txt, String userId) throws Exception {
-        return sendText(txt); //todo implement direct messaging
+        MessageText generic = new MessageText(txt);
+        postGenericMessage(generic, userId);
+        return generic.getMessageId();
     }
 
     @Override
@@ -78,7 +73,7 @@ public class UserClient implements WireClient {
     @Override
     public UUID sendDirectLinkPreview(String url, String title, IGeneric image, String userId) throws Exception {
         LinkPreview generic = new LinkPreview(url, title, image.createGenericMsg().getAsset());
-        postGenericMessage(generic); //todo implement direct messaging
+        postGenericMessage(generic, userId);
         return generic.getMessageId();
     }
 
@@ -220,11 +215,6 @@ public class UserClient implements WireClient {
     }
 
     @Override
-    public String getId() {
-        return state.id;
-    }
-
-    @Override
     public User getSelf() {
         return api.getSelf();
     }
@@ -232,11 +222,6 @@ public class UserClient implements WireClient {
     @Override
     public UUID getConversationId() {
         return conv;
-    }
-
-    @Override
-    public String getDeviceId() {
-        return state.client;
     }
 
     @Override
@@ -260,59 +245,6 @@ public class UserClient implements WireClient {
         api.acceptConnection(user);
     }
 
-    private void postGenericMessage(IGeneric generic) throws Exception {
-        byte[] content = generic.createGenericMsg().toByteArray();
-
-        // Try to encrypt the msg for those devices that we have the session already
-        Recipients encrypt = crypto.encrypt(getDevices().missing, content);
-        OtrMessage msg = new OtrMessage(state.client, encrypt);
-
-        Devices res = api.sendMessage(msg, false);
-        if (!res.hasMissing()) {
-            // Fetch preKeys for the missing devices from the Backend
-            PreKeys preKeys = api.getPreKeys(res.missing);
-
-            Logger.debug("Fetched %d preKeys for %d devices. Bot: %s", preKeys.count(), res.size(), getId());
-
-            // Encrypt msg for those devices that were missing. This time using preKeys
-            encrypt = crypto.encrypt(preKeys, content);
-            msg.add(encrypt);
-
-            // reset devices so they could be pulled next time
-            devices = null;
-
-            res = api.sendMessage(msg, true);
-            if (!res.hasMissing()) {
-                Logger.error(String.format("Failed to send otr message to %d devices. Bot: %s",
-                        res.size(),
-                        getId()));
-            }
-        }
-    }
-
-    /*
-    This will close the Cryptobox and render this object useless
-     */
-    @Override
-    public void close() throws IOException {
-        crypto.close();
-    }
-
-    @Override
-    public String decrypt(String userId, String clientId, String cypher) throws CryptoException {
-        return crypto.decrypt(userId, clientId, cypher);
-    }
-
-    @Override
-    public PreKey newLastPreKey() throws CryptoException {
-        return crypto.newLastPreKey();
-    }
-
-    @Override
-    public ArrayList<com.wire.bots.sdk.models.otr.PreKey> newPreKeys(int from, int count) throws CryptoException {
-        return crypto.newPreKeys(from, count);
-    }
-
     @Override
     public void uploadPreKeys(ArrayList<com.wire.bots.sdk.models.otr.PreKey> preKeys) {
         api.uploadPreKeys(preKeys);
@@ -324,11 +256,6 @@ public class UserClient implements WireClient {
     }
 
     @Override
-    public boolean isClosed() {
-        return crypto.isClosed();
-    }
-
-    @Override
     public byte[] downloadProfilePicture(String assetKey) throws Exception {
         return api.downloadAsset(assetKey, null);
     }
@@ -336,13 +263,5 @@ public class UserClient implements WireClient {
     @Override
     public void call(String content) throws Exception {
         postGenericMessage(new Calling(content));
-    }
-
-    private Devices getDevices() throws HttpException {
-        if (devices == null || devices.hasMissing()) {
-            OtrMessage msg = new OtrMessage(state.client, new Recipients());
-            devices = api.sendMessage(msg, false);
-        }
-        return devices;
     }
 }

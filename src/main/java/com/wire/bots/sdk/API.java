@@ -42,7 +42,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class API {
+public class API implements Backend {
 
     private final WebTarget messages;
     private final WebTarget assets;
@@ -89,7 +89,8 @@ public class API {
      * @return List of missing devices in case of fail or an empty list.
      * @throws HttpException Http Exception is thrown when status >= 400
      */
-    Devices sendMessage(OtrMessage msg, Object... ignoreMissing) throws HttpException {
+    @Override
+    public Devices sendMessage(OtrMessage msg, Object... ignoreMissing) throws HttpException {
         Response response = messages
                 .queryParam("ignore_missing", ignoreMissing)
                 .request(MediaType.APPLICATION_JSON)
@@ -109,7 +110,8 @@ public class API {
         return response.readEntity(Devices.class);
     }
 
-    Devices sendPartialMessage(OtrMessage msg, String userId) throws HttpException {
+    @Override
+    public Devices sendPartialMessage(OtrMessage msg, String userId) throws HttpException {
         Response response = messages
                 .queryParam("report_missing", userId)
                 .request(MediaType.APPLICATION_JSON)
@@ -154,7 +156,7 @@ public class API {
                 .get(Conversation.class);
     }
 
-    PreKeys getPreKeys(Missing missing) {
+    public PreKeys getPreKeys(Missing missing) {
         return prekeys
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, bearer())
