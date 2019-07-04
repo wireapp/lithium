@@ -18,17 +18,34 @@
 
 package com.wire.bots.sdk.models;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.waz.model.Messages;
 
 import java.util.UUID;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ImageMessage extends MessageAssetBase {
     private int height;
     private int width;
     private String tag;
 
-    public ImageMessage(UUID messageId, UUID convId, String clientId, UUID userId) {
-        super(messageId, convId, clientId, userId);
+    @JsonCreator
+    public ImageMessage(@JsonProperty("messageId") UUID messageId,
+                        @JsonProperty("conversationId") UUID convId,
+                        @JsonProperty("clientId") String clientId,
+                        @JsonProperty("userId") UUID userId,
+                        @JsonProperty("assetKey") String assetKey,
+                        @JsonProperty("assetToken") String assetToken,
+                        @JsonProperty("otrKey") byte[] otrKey,
+                        @JsonProperty("mimeType") String mimeType,
+                        @JsonProperty("size") long size,
+                        @JsonProperty("sha256") byte[] sha256,
+                        @JsonProperty("name") String name) {
+        super(messageId, convId, clientId, userId, assetKey, assetToken, otrKey, mimeType, size, sha256, name);
     }
 
     public ImageMessage(MessageAssetBase base, Messages.Asset.ImageMetaData image) {

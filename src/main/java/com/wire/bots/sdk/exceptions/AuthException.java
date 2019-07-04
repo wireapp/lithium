@@ -8,9 +8,4 @@ public class AuthException extends HttpException {
     public AuthException(int code) {
         super(code);
     }
-
-    @Override
-    public String toString() {
-        return String.format("AuthException: %s, status: %s", getMessage(), getStatusCode());
-    }
 }

@@ -31,6 +31,19 @@ public class MessageAssetBase extends MessageBase {
     private byte[] sha256;
     private String name;
 
+    public MessageAssetBase(UUID msgId, UUID convId, String clientId, UUID userId,
+                            String assetKey, String assetToken, byte[] otrKey, String mimeType, long size,
+                            byte[] sha256, String name) {
+        super(msgId, convId, clientId, userId);
+        this.assetKey = assetKey;
+        this.assetToken = assetToken;
+        this.otrKey = otrKey;
+        this.mimeType = mimeType;
+        this.size = size;
+        this.sha256 = sha256;
+        this.name = name;
+    }
+
     public MessageAssetBase(UUID msgId, UUID convId, String clientId, UUID userId) {
         super(msgId, convId, clientId, userId);
     }

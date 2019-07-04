@@ -22,7 +22,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wire.bots.sdk.Backend;
 import com.wire.bots.sdk.assets.IAsset;
-import com.wire.bots.sdk.exceptions.AuthException;
 import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.AssetKey;
 import com.wire.bots.sdk.models.otr.*;
@@ -32,25 +31,22 @@ import com.wire.bots.sdk.server.model.Service;
 import com.wire.bots.sdk.server.model.User;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
-import com.wire.bots.sdk.user.model.Access;
 import com.wire.bots.sdk.user.model.Connection;
+import org.glassfish.jersey.logging.LoggingFeature;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
 
 public class API extends LoginClient implements Backend {
     private final WebTarget conversationsPath;
     private final WebTarget usersPath;
-    private final WebTarget accessPath;
     private final WebTarget assetsPath;
     private final WebTarget teamsPath;
     private final WebTarget connectionsPath;
@@ -70,11 +66,14 @@ public class API extends LoginClient implements Backend {
 
         conversationsPath = target.path("conversations");
         usersPath = target.path("users");
-        accessPath = target.path("access");
         assetsPath = target.path("assets/v3");
         teamsPath = target.path("teams");
         connectionsPath = target.path("connections");
         selfPath = target.path("self");
+
+        Feature feature = new LoggingFeature(Logger.getLOGGER(), Level.FINE, null, null);
+        assetsPath.register(feature);
+        usersPath.register(feature);
     }
 
     @Override
@@ -142,8 +141,8 @@ public class API extends LoginClient implements Backend {
 
         Response response = req.get();
 
-        if (response.getStatus() >= 300) {
-            String log = String.format("%s. AssetId: %s", response.getStatusInfo().getReasonPhrase(), assetKey);
+        if (response.getStatus() >= 400) {
+            String log = String.format("%s. AssetId: %s", response.readEntity(String.class), assetKey);
             throw new HttpException(log, response.getStatus());
         }
 
@@ -386,10 +385,10 @@ public class API extends LoginClient implements Backend {
 
     public Collection<User> getUsers(Collection<String> ids) {
         return usersPath.
-                queryParam("ids", ids).
+                queryParam("ids", String.join(",", ids)).
                 request(MediaType.APPLICATION_JSON).
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
-                get(new GenericType<ArrayList<User>>() {
+                get(new GenericType<Collection<User>>() {
                 });
     }
 
@@ -423,31 +422,6 @@ public class API extends LoginClient implements Backend {
             return null;
 
         return res.teams.get(0).id;
-    }
-
-    @Deprecated
-    public Access renewAccessToken(String cookie) throws HttpException {
-        Invocation.Builder builder = accessPath.
-                request(MediaType.APPLICATION_JSON).
-                header(HttpHeaders.COOKIE, cookie);
-
-        Response response = builder.
-                post(Entity.entity(new Connection(), MediaType.APPLICATION_JSON));
-
-        int status = response.getStatus();
-        if (status == 403) {
-            String entity = response.readEntity(String.class);
-            throw new AuthException(entity, status);
-        }
-
-        if (status >= 400) {
-            String entity = response.readEntity(String.class);
-            throw new HttpException(entity, status);
-        }
-
-        Access access = response.readEntity(Access.class);
-        access.cookie = response.getStringHeaders().getFirst(HttpHeaders.SET_COOKIE);
-        return access;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)

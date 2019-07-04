@@ -18,6 +18,7 @@ public class HttpException extends Exception {
 
     @Override
     public String toString() {
-        return String.format("HttpException: %s, status: %s", getMessage(), statusCode);
+        String clazz = getClass().getSimpleName();
+        return String.format("%s: %s, status: %d", clazz, getMessage(), getStatusCode());
     }
 }

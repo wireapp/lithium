@@ -18,14 +18,22 @@
 
 package com.wire.bots.sdk.models;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.UUID;
 
-/**
- */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TextMessage extends MessageBase {
+    @JsonProperty
     private String text;
 
-    public TextMessage(UUID messageId, UUID convId, String clientId, UUID userId) {
+    @JsonCreator
+    public TextMessage(@JsonProperty("messageId") UUID messageId,
+                       @JsonProperty("conversationId") UUID convId,
+                       @JsonProperty("clientId") String clientId,
+                       @JsonProperty("userId") UUID userId) {
         super(messageId, convId, clientId, userId);
     }
 

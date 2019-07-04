@@ -37,6 +37,7 @@ import org.glassfish.tyrus.client.ClientManager;
 
 import javax.websocket.*;
 import javax.ws.rs.client.Client;
+import javax.ws.rs.core.Cookie;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -191,23 +192,12 @@ public class Endpoint {
                 try {
                     Access access = getAccess();
 
-//                    Logger.debug("Old access user: %s token: %s, cookie: %s",
-//                            access.userId,
-//                            access.token,
-//                            access.cookie);
-
                     API api = new API(httpClient, null, access.token);
-                    Access newAccess = api.renewAccessToken(access.cookie);
+                    Access newAccess = api.renewAccessToken(new Cookie("zuid", access.cookie));
 
                     newAccess.cookie = newAccess.cookie != null ? newAccess.cookie : access.cookie;
 
-                    boolean persisted = persistAccess(newAccess);
-
-//                    Logger.debug("New access persisted: %s, user: %s token: %s, cookie: %s",
-//                            persisted,
-//                            newAccess.userId,
-//                            newAccess.token,
-//                            newAccess.cookie);
+                    persistAccess(newAccess);
 
                     if (session != null)
                         session.close();
