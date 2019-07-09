@@ -73,7 +73,7 @@ public class API extends LoginClient implements Backend {
 
         Feature feature = new LoggingFeature(Logger.getLOGGER(), Level.FINE, null, null);
         assetsPath.register(feature);
-        usersPath.register(feature);
+        //usersPath.register(feature);
     }
 
     @Override
@@ -133,8 +133,8 @@ public class API extends LoginClient implements Backend {
     public byte[] downloadAsset(String assetKey, String assetToken) throws HttpException {
         Invocation.Builder req = assetsPath
                 .path(assetKey)
-                .request()
-                .header(HttpHeaders.AUTHORIZATION, bearer(token));
+                .queryParam("access_token", token)
+                .request();
 
         if (assetToken != null)
             req.header("Asset-Token", assetToken);

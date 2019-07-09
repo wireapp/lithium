@@ -57,7 +57,7 @@ public class LoginClient {
                 .path("access");
 
         Feature feature = new LoggingFeature(Logger.getLOGGER(), Level.FINE, null, null);
-        accessPath.register(feature);
+        //accessPath.register(feature);
     }
 
     public static String host() {

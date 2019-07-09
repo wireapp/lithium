@@ -22,11 +22,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
     @JsonProperty
-    public String id;
+    public UUID id;
 
     @JsonProperty
     public String name;
