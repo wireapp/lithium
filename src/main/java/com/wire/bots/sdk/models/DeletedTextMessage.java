@@ -25,16 +25,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.UUID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AttachmentMessage extends MessageAssetBase {
+public class DeletedTextMessage extends MessageBase {
+    @JsonProperty
+    private UUID deletedMessageId;
+
     @JsonCreator
-    public AttachmentMessage(@JsonProperty("messageId") UUID messageId,
-                             @JsonProperty("conversationId") UUID convId,
-                             @JsonProperty("clientId") String clientId,
-                             @JsonProperty("userId") UUID userId) {
+    public DeletedTextMessage(@JsonProperty("messageId") UUID messageId,
+                              @JsonProperty("conversationId") UUID convId,
+                              @JsonProperty("clientId") String clientId,
+                              @JsonProperty("userId") UUID userId) {
         super(messageId, convId, clientId, userId);
     }
 
-    public AttachmentMessage(MessageAssetBase base) {
-        super(base);
+    public UUID getDeletedMessageId() {
+        return deletedMessageId;
+    }
+
+    public void setDeletedMessageId(UUID deletedMessageId) {
+        this.deletedMessageId = deletedMessageId;
     }
 }

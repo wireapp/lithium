@@ -25,16 +25,34 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.UUID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AttachmentMessage extends MessageAssetBase {
+public class ReactionMessage extends MessageBase {
+    @JsonProperty
+    private String emoji;
+
+    @JsonProperty
+    private UUID reactionMessageId;
+
     @JsonCreator
-    public AttachmentMessage(@JsonProperty("messageId") UUID messageId,
-                             @JsonProperty("conversationId") UUID convId,
-                             @JsonProperty("clientId") String clientId,
-                             @JsonProperty("userId") UUID userId) {
+    public ReactionMessage(@JsonProperty("messageId") UUID messageId,
+                           @JsonProperty("conversationId") UUID convId,
+                           @JsonProperty("clientId") String clientId,
+                           @JsonProperty("userId") UUID userId) {
         super(messageId, convId, clientId, userId);
     }
 
-    public AttachmentMessage(MessageAssetBase base) {
-        super(base);
+    public String getEmoji() {
+        return emoji;
+    }
+
+    public void setEmoji(String emoji) {
+        this.emoji = emoji;
+    }
+
+    public UUID getReactionMessageId() {
+        return reactionMessageId;
+    }
+
+    public void setReactionMessageId(UUID reactionMessageId) {
+        this.reactionMessageId = reactionMessageId;
     }
 }

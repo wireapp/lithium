@@ -48,7 +48,8 @@ public abstract class MessageHandlerBase {
 
     /**
      * This callback is invoked by the framework when the bot is added into a conversation
-     * @param client       Thread safe wire client that can be used to post back to this conversation
+     *
+     * @param client  Thread safe wire client that can be used to post back to this conversation
      * @param message SystemMessage object. message.conversation is never null
      */
     public void onNewConversation(WireClient client, SystemMessage message) {
@@ -84,6 +85,7 @@ public abstract class MessageHandlerBase {
 
     /**
      * This callback is invoked by the framework every time new participant joins this conversation
+     *
      * @param client  Thread safe wire client that can be used to post back to this conversation
      * @param message System message object with message.users as List of UserIds that just joined this conversation
      */
@@ -182,7 +184,8 @@ public abstract class MessageHandlerBase {
 
     /**
      * This is generic method that is called every time something is posted to this conversation.
-     *  @param client         Thread safe wire client that can be used to post back to this conversation
+     *
+     * @param client         Thread safe wire client that can be used to post back to this conversation
      * @param userId         User Id for the sender
      * @param genericMessage Generic message as it comes from the BE
      */
@@ -195,11 +198,11 @@ public abstract class MessageHandlerBase {
      * @param client Thread safe wire client that can be used to post back to this conversation
      * @param msg    New Message containing replacing messageId
      */
-    public void onEditText(WireClient client, TextMessage msg) {
+    public void onEditText(WireClient client, EditedTextMessage msg) {
 
     }
 
-    public void onCalling(WireClient client, UUID userId, String clientId, String content) {
+    public void onCalling(WireClient client, CallingMessage msg) {
 
     }
 
@@ -207,7 +210,11 @@ public abstract class MessageHandlerBase {
 
     }
 
-    public void onDelete(WireClient client, TextMessage msg) {
+    public void onDelete(WireClient client, DeletedTextMessage msg) {
+
+    }
+
+    public void onReaction(WireClient client, ReactionMessage msg) {
 
     }
 

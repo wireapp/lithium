@@ -95,7 +95,9 @@ public class GenericMessageProcessor {
         if (generic.hasEdited() && generic.getEdited().hasText()) {
             Messages.MessageEdit edited = generic.getEdited();
             UUID replacingMessageId = UUID.fromString(edited.getReplacingMessageId());
-            TextMessage msg = new TextMessage(replacingMessageId, convId, sender, from);
+
+            EditedTextMessage msg = new EditedTextMessage(messageId, convId, sender, from);
+            msg.setReplacingMessageId(replacingMessageId);
             msg.setText(edited.getText().getContent());
             msg.setTime(time);
 
@@ -116,21 +118,37 @@ public class GenericMessageProcessor {
         if (generic.hasCalling()) {
             Messages.Calling calling = generic.getCalling();
             if (calling.hasContent()) {
-                String content = calling.getContent();
-                handler.onCalling(client, from, sender, content);
+                CallingMessage message = new CallingMessage(messageId, convId, sender, from);
+                message.setContent(calling.getContent());
+                message.setTime(time);
+                handler.onCalling(client, message);
             }
             return true;
         }
 
         if (generic.hasDeleted()) {
+            DeletedTextMessage msg = new DeletedTextMessage(messageId, convId, sender, from);
             UUID delMsgId = UUID.fromString(generic.getDeleted().getMessageId());
-            TextMessage msg = new TextMessage(delMsgId, convId, sender, from);
+            msg.setDeletedMessageId(delMsgId);
             msg.setTime(time);
 
             handler.onDelete(client, msg);
             return true;
         }
 
+        if (generic.hasReaction()) {
+            Messages.Reaction reaction = generic.getReaction();
+            UUID reactionMessageId = UUID.fromString(reaction.getMessageId());
+            if (reaction.hasEmoji()) {
+                ReactionMessage msg = new ReactionMessage(messageId, convId, sender, from);
+                msg.setEmoji(reaction.getEmoji());
+                msg.setReactionMessageId(reactionMessageId);
+                msg.setTime(time);
+
+                handler.onReaction(client, msg);
+                return true;
+            }
+        }
         // Assets
         if (asset != null) {
             Logger.debug("Asset: msgId: %s hasOriginal: %s, hasUploaded: %s",

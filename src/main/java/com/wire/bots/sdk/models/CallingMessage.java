@@ -25,16 +25,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.UUID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AttachmentMessage extends MessageAssetBase {
+public class CallingMessage extends MessageBase {
+    @JsonProperty
+    private String content;
+
     @JsonCreator
-    public AttachmentMessage(@JsonProperty("messageId") UUID messageId,
-                             @JsonProperty("conversationId") UUID convId,
-                             @JsonProperty("clientId") String clientId,
-                             @JsonProperty("userId") UUID userId) {
+    public CallingMessage(@JsonProperty("messageId") UUID messageId,
+                          @JsonProperty("conversationId") UUID convId,
+                          @JsonProperty("clientId") String clientId,
+                          @JsonProperty("userId") UUID userId) {
         super(messageId, convId, clientId, userId);
     }
 
-    public AttachmentMessage(MessageAssetBase base) {
-        super(base);
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }
