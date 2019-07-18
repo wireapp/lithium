@@ -60,16 +60,9 @@ public abstract class MessageResourceBase {
             break;
             case "conversation.member-join": {
                 Logger.debug("conversation.member-join: bot: %s", botId);
-                Conversation conversation = new Conversation();
-                conversation.id = payload.convId;
 
-                SystemMessage systemMessage = new SystemMessage();
-                systemMessage.id = id;
-                systemMessage.from = payload.from;
-                systemMessage.time = payload.time;
-                systemMessage.type = payload.type;
+                SystemMessage systemMessage = getSystemMessage(id, payload);
                 systemMessage.users = data.userIds;
-                systemMessage.conversation = conversation;
 
                 // Check if this bot got added to the conversation
                 List<UUID> participants = data.userIds;
@@ -85,16 +78,9 @@ public abstract class MessageResourceBase {
             break;
             case "conversation.member-leave": {
                 Logger.debug("conversation.member-leave: bot: %s", botId);
-                Conversation conversation = new Conversation();
-                conversation.id = payload.convId;
 
-                SystemMessage systemMessage = new SystemMessage();
-                systemMessage.id = id;
-                systemMessage.from = payload.from;
-                systemMessage.time = payload.time;
-                systemMessage.type = payload.type;
+                SystemMessage systemMessage = getSystemMessage(id, payload);
                 systemMessage.users = data.userIds;
-                systemMessage.conversation = conversation;
 
                 // Check if this bot got removed from the conversation
                 List<UUID> participants = data.userIds;
@@ -119,27 +105,22 @@ public abstract class MessageResourceBase {
             case "conversation.create": {
                 Logger.debug("conversation.create: bot: %s", botId);
 
-                Conversation conversation = new Conversation();
-                conversation.id = payload.convId;
-                conversation.creator = data.creator;
-                conversation.name = data.name;
-                conversation.members = data.members.others;
-                Member self = new Member();
-                self.id = botId;
-                conversation.members.add(self);
-                SystemMessage systemMessage = new SystemMessage();
-                systemMessage.id = id;
-                systemMessage.from = payload.from;
-                systemMessage.time = payload.time;
-                systemMessage.type = payload.type;
-                systemMessage.conversation = conversation;
+                SystemMessage systemMessage = getSystemMessage(id, payload);
+                if (systemMessage.conversation.members != null) {
+                    Member self = new Member();
+                    self.id = botId;
+                    systemMessage.conversation.members.add(self);
+                }
 
                 handler.onNewConversation(client, systemMessage);
             }
             break;
             case "conversation.rename": {
                 Logger.debug("conversation.rename: bot: %s", botId);
-                handler.onConversationRename(client);
+
+                SystemMessage systemMessage = getSystemMessage(id, payload);
+
+                handler.onConversationRename(client, systemMessage);
             }
             break;
             // UserMode code starts here
@@ -170,6 +151,23 @@ public abstract class MessageResourceBase {
                 Logger.debug("Unknown event: %s", payload.type);
                 break;
         }
+    }
+
+    private SystemMessage getSystemMessage(UUID messageId, Payload payload) {
+        SystemMessage systemMessage = new SystemMessage();
+        systemMessage.id = messageId;
+        systemMessage.from = payload.from;
+        systemMessage.time = payload.time;
+        systemMessage.type = payload.type;
+
+        systemMessage.conversation = new Conversation();
+        systemMessage.conversation.id = payload.convId;
+        systemMessage.conversation.creator = payload.data.creator;
+        systemMessage.conversation.name = payload.data.name;
+        if (payload.data.members != null)
+            systemMessage.conversation.members = payload.data.members.others;
+
+        return systemMessage;
     }
 
     protected WireClient getWireClient(UUID botId, Payload payload) throws IOException, CryptoException {

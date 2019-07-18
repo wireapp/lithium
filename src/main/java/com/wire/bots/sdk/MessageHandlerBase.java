@@ -206,7 +206,7 @@ public abstract class MessageHandlerBase {
 
     }
 
-    public void onConversationRename(WireClient client) {
+    public void onConversationRename(WireClient client, SystemMessage systemMessage) {
 
     }
 
