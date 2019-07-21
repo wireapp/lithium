@@ -1,5 +1,6 @@
 package com.wire.bots.sdk.server.resources;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.waz.model.Messages;
 import com.wire.bots.cryptobox.CryptoException;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public abstract class MessageResourceBase {
     private final AuthValidator validator;
@@ -31,6 +33,11 @@ public abstract class MessageResourceBase {
     }
 
     protected void handleMessage(UUID id, Payload payload, WireClient client) throws Exception {
+        if (Logger.getLevel() == Level.FINE) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            Logger.debug(objectMapper.writeValueAsString(payload));
+        }
+
         Payload.Data data = payload.data;
         UUID botId = UUID.fromString(client.getId());
 
@@ -44,8 +51,6 @@ public abstract class MessageResourceBase {
 
                 Messages.GenericMessage message = decrypt(client, payload);
 
-                handler.onEvent(client, payload.from, message);
-
                 boolean process = processor.process(from,
                         data.sender,
                         payload.convId,
@@ -56,22 +61,29 @@ public abstract class MessageResourceBase {
                     UUID messageId = UUID.fromString(message.getMessageId());
                     processor.cleanUp(messageId);
                 }
+
+                handler.onEvent(client, payload.from, message);
             }
             break;
             case "conversation.member-join": {
                 Logger.debug("conversation.member-join: bot: %s", botId);
 
-                SystemMessage systemMessage = getSystemMessage(id, payload);
-                systemMessage.users = data.userIds;
-
                 // Check if this bot got added to the conversation
                 List<UUID> participants = data.userIds;
                 if (participants.remove(botId)) {
+                    SystemMessage systemMessage = getSystemMessage(id, payload);
+                    systemMessage.conversation = client.getConversation();
+                    systemMessage.type = "conversation.create"; //hack the type
+
                     handler.onNewConversation(client, systemMessage);
+                    return;
                 }
 
                 // Check if we still have some prekeys available. Upload new prekeys if needed
                 handler.validatePreKeys(client, participants.size());
+
+                SystemMessage systemMessage = getSystemMessage(id, payload);
+                systemMessage.users = data.userIds;
 
                 handler.onMemberJoin(client, systemMessage);
             }
