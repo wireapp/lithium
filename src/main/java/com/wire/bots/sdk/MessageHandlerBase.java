@@ -102,9 +102,10 @@ public abstract class MessageHandlerBase {
     /**
      * This callback is called when this bot gets removed from the conversation
      *
-     * @param botId Id of the Bot that got removed
+     * @param botId  Id of the Bot that got removed
+     * @param msg   System message
      */
-    public void onBotRemoved(UUID botId) {
+    public void onBotRemoved(UUID botId, SystemMessage msg) {
     }
 
     /**

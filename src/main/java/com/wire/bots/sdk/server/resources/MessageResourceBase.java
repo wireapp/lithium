@@ -97,8 +97,9 @@ public abstract class MessageResourceBase {
                 // Check if this bot got removed from the conversation
                 List<UUID> participants = data.userIds;
                 if (participants.remove(botId)) {
-                    handler.onBotRemoved(botId);
+                    handler.onBotRemoved(botId, systemMessage);
                     repo.purgeBot(botId);
+                    return;
                 }
 
                 if (!participants.isEmpty()) {
@@ -108,9 +109,10 @@ public abstract class MessageResourceBase {
             break;
             case "conversation.delete": {
                 Logger.debug("conversation.delete: bot: %s", botId);
+                SystemMessage systemMessage = getSystemMessage(id, payload);
 
                 // Cleanup
-                handler.onBotRemoved(botId);
+                handler.onBotRemoved(botId, systemMessage);
                 repo.purgeBot(botId);
             }
             break;
@@ -171,6 +173,7 @@ public abstract class MessageResourceBase {
         systemMessage.from = payload.from;
         systemMessage.time = payload.time;
         systemMessage.type = payload.type;
+        systemMessage.convId = payload.convId;
 
         systemMessage.conversation = new Conversation();
         systemMessage.conversation.id = payload.convId;
