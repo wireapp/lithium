@@ -82,8 +82,15 @@ public class GenericMessageProcessor {
         // Ephemeral messages
         if (generic.hasEphemeral()) {
             Messages.Ephemeral ephemeral = generic.getEphemeral();
-            if (ephemeral.hasText()) {
-                text = ephemeral.getText();
+
+            if (ephemeral.hasText() && ephemeral.getText().hasContent()) {
+                EphemeralTextMessage msg = new EphemeralTextMessage(messageId, convId, sender, from);
+                msg.setExpireAfterMillis(ephemeral.getExpireAfterMillis());
+                msg.setText(ephemeral.getText().getContent());
+                msg.setTime(time);
+
+                handler.onText(client, msg);
+                return true;
             }
 
             if (ephemeral.hasAsset()) {

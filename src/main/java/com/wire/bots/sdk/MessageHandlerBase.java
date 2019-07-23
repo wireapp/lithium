@@ -230,6 +230,15 @@ public abstract class MessageHandlerBase {
 
     }
 
+    /**
+     * This method is called when ephemeral text is posted into the conversation
+     *
+     * @param client Thread safe wire client that can be used to post back to this conversation
+     * @param msg    Message containing text and expiration time
+     */
+    public void onText(WireClient client, EphemeralTextMessage msg) {
+    }
+
     public void validatePreKeys(WireClient client, int size) {
         try {
             int minAvailable = 8 * size;
