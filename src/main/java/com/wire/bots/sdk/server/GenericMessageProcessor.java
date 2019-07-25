@@ -113,13 +113,23 @@ public class GenericMessageProcessor {
         }
 
         // Text
-        if (text != null && text.hasContent() && text.getLinkPreviewList().isEmpty()) {
-            TextMessage msg = new TextMessage(messageId, convId, sender, from);
-            msg.setText(text.getContent());
-            msg.setTime(time);
+        if (text != null) {
+            if (!text.getLinkPreviewList().isEmpty()) {
+                //todo
+                return false;
+            }
 
-            handler.onText(client, msg);
-            return true;
+            if (text.hasContent()) {
+                TextMessage msg = new TextMessage(messageId, convId, sender, from);
+                msg.setText(text.getContent());
+                msg.setTime(time);
+
+                if (text.hasQuote())
+                    msg.setQuotedMessageId(UUID.fromString(text.getQuote().getQuotedMessageId()));
+
+                handler.onText(client, msg);
+                return true;
+            }
         }
 
         if (generic.hasCalling()) {

@@ -39,7 +39,7 @@ message Ephemeral {
   required int64 expire_after_millis = 1;
   oneof content {
     Text text = 2;
-    ImageAsset image = 3;
+    ImageAsset image = 3; // deprecated in favour of Asset
     Knock knock = 4;
     Asset asset = 5;
     Location location = 6;
@@ -51,10 +51,15 @@ message Text {
   // reserved 2; // reserved keyword is not available in older protoc versions
   repeated LinkPreview link_preview = 3;
   repeated Mention mentions = 4;
+  optional Quote quote = 5; // if this Text is part of a MessageEdit, this field is ignored
+  optional bool expects_read_confirmation = 6 [default = false]; // whether the sender is expecting to receive a read confirmation
+  optional LegalHoldStatus legal_hold_status = 7 [default = UNKNOWN]; // whether this message was sent to legal hold
 }
 
 message Knock {
   required bool hot_knock = 1 [default = false];
+  optional bool expects_read_confirmation = 2 [default = false]; // whether the sender is expecting to receive a read confirmation
+  optional LegalHoldStatus legal_hold_status = 3 [default = UNKNOWN]; // whether this message was sent to legal hold
 }
 
 message LinkPreview {
@@ -62,7 +67,7 @@ message LinkPreview {
   required int32 url_offset = 2; // url offset from beginning of text message
 
   oneof preview {
-    Article article = 3;  // deprecated - use meta_data
+    Article article = 3; // deprecated - use meta_data
   }
 
   optional string permanent_url = 5;
@@ -119,7 +124,13 @@ message MessageEdit {
   required string replacing_message_id = 1;
   oneof content {
     Text text = 2;
+    // Reply can also be edited, but the edit will only affect the Text part
   }
+}
+
+message Quote {
+  required string quoted_message_id = 1;
+  optional bytes quoted_message_sha256 = 2;
 }
 
 message Confirmation {
@@ -128,7 +139,7 @@ message Confirmation {
     READ = 1;
   }
 
-  required Type   type = 2;
+  required Type type = 2;
   required string first_message_id = 1;
   repeated string more_message_ids = 3;
 }
@@ -137,10 +148,13 @@ message Location {
   required float longitude = 1;
   required float latitude = 2;
   optional string name = 3; // location description/name
-  optional int32 zoom = 4; // google maps zoom level (check maps api documentation)
+  optional int32 zoom = 4;  // google maps zoom level (check maps api documentation)
+  optional bool expects_read_confirmation = 5 [default = false]; // whether the sender is expecting to receive a read confirmation
+  optional LegalHoldStatus legal_hold_status = 6 [default = UNKNOWN]; // whether this message was sent to legal hold
 }
 
-message ImageAsset { // deprecated in favour of Asset.Original.ImageMetaData
+// deprecated in favour of Asset.Original.ImageMetaData
+message ImageAsset {
   required string tag = 1;
   required int32 width = 2;
   required int32 height = 3;
@@ -151,7 +165,7 @@ message ImageAsset { // deprecated in favour of Asset.Original.ImageMetaData
   optional bytes otr_key = 8;
   optional bytes mac_key = 9;    // deprecated - use sha256
   optional bytes mac = 10;       // deprecated - use sha256
-  optional bytes sha256 = 11;      // sha256 of ciphertext
+  optional bytes sha256 = 11;    // sha256 of ciphertext
 }
 
 message Asset {
@@ -164,7 +178,7 @@ message Asset {
       VideoMetaData video = 5;
       AudioMetaData audio = 6;
     }
-    optional string source = 7; // link to source e.g. http://giphy.com/234245
+    optional string source = 7;  // link to source e.g. http://giphy.com/234245
     optional string caption = 8; // caption of the asset, e.g. "dog" for a Giphy "dog" search result
   }
 
@@ -206,30 +220,33 @@ message Asset {
     required bytes otr_key = 1;
     required bytes sha256 = 2; // obsolete but required for backward compatibility
     optional string asset_id = 3;
-//    optional bytes asset_token = 4; // deprecated - changed type to string
+    // optional bytes asset_token = 4; // deprecated - changed type to string
     optional string asset_token = 5;
     optional EncryptionAlgorithm encryption = 6;
   }
 
   optional Original original = 1;
-//  optional Preview preview = 2;  // deprecated - preview was completely replaced
+  // optional Preview preview = 2;  // deprecated - preview was completely replaced
   oneof status {
     NotUploaded not_uploaded = 3;
     RemoteData uploaded = 4;
   }
   optional Preview preview = 5;
+  optional bool expects_read_confirmation = 6 [default = false]; // whether the sender is expecting to receive a read confirmation
+  optional LegalHoldStatus legal_hold_status = 7 [default = UNKNOWN]; // whether this message was sent to legal hold
 }
 
 // Actual message is encrypted with AES and sent as additional data
 message External {
   required bytes otr_key = 1;
-  optional bytes sha256 = 2;      // sha256 of ciphertext, obsolete but required for backward compatibility
+  optional bytes sha256 = 2; // sha256 of ciphertext, obsolete but required for backward compatibility
   optional EncryptionAlgorithm encryption = 3;
 }
 
 message Reaction {
   optional string emoji = 1; // some emoji reaction or the empty string to remove previous reaction(s)
   required string message_id = 2;
+  optional LegalHoldStatus legal_hold_status = 3 [default = UNKNOWN]; // whether this message was sent to legal hold
 }
 
 enum ClientAction {
@@ -243,4 +260,10 @@ message Calling {
 enum EncryptionAlgorithm {
   AES_CBC = 0;
   AES_GCM = 1;
+}
+
+enum LegalHoldStatus {
+  UNKNOWN = 0;
+  DISABLED = 1;
+  ENABLED = 2;
 }
