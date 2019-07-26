@@ -1,6 +1,5 @@
 package com.wire.bots.sdk.server.resources;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.waz.model.Messages;
 import com.wire.bots.cryptobox.CryptoException;
@@ -19,7 +18,6 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public abstract class MessageResourceBase {
     private final AuthValidator validator;
@@ -33,11 +31,6 @@ public abstract class MessageResourceBase {
     }
 
     protected void handleMessage(UUID id, Payload payload, WireClient client) throws Exception {
-        if (Logger.getLevel() == Level.FINE) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            Logger.debug(objectMapper.writeValueAsString(payload));
-        }
-
         Payload.Data data = payload.data;
         UUID botId = UUID.fromString(client.getId());
 

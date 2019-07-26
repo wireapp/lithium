@@ -18,6 +18,7 @@
 
 package com.wire.bots.sdk.server.resources;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.sdk.ClientRepo;
 import com.wire.bots.sdk.MessageHandlerBase;
@@ -29,18 +30,20 @@ import com.wire.bots.sdk.tools.AuthValidator;
 import com.wire.bots.sdk.tools.Logger;
 import io.swagger.annotations.*;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.util.UUID;
+import java.util.logging.Level;
 
 @Api
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/bots/{bot}/messages")
 public class MessageResource extends MessageResourceBase {
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public MessageResource(MessageHandlerBase handler, AuthValidator validator, ClientRepo repo) {
         super(handler, validator, repo);
@@ -54,8 +57,13 @@ public class MessageResource extends MessageResourceBase {
             @ApiResponse(code = 200, message = "Alles gute")})
     public Response newMessage(@ApiParam("Service token") @HeaderParam("Authorization") @NotNull String auth,
                                @ApiParam("UUID Bot instance id") @PathParam("bot") UUID botId,
-                               @ApiParam("UUID Unique message id") @QueryParam("id") UUID id,
-                               @ApiParam @Valid @NotNull Payload payload) {
+                               @ApiParam("UUID Unique message id") @QueryParam("id") UUID messageID,
+                               @ApiParam @NotNull Payload payload) throws IOException {
+
+        if (Logger.getLevel() == Level.FINE) {
+            String strPayload = objectMapper.writeValueAsString(payload);
+            Logger.debug("MessageResource: bot: %s, id: %s, %s", botId, messageID, strPayload);
+        }
 
         if (!isValid(auth)) {
             Logger.warning("%s, Invalid auth. Got: '%s'", botId, auth);
@@ -65,8 +73,12 @@ public class MessageResource extends MessageResourceBase {
                     build();
         }
 
+        if (messageID == null) {
+            messageID = UUID.randomUUID(); //todo fix this once Wire BE adds messageId into payload
+        }
+
         try (WireClient client = getWireClient(botId, payload)) {
-            handleMessage(id, payload, client);
+            handleMessage(messageID, payload, client);
         } catch (CryptoException e) {
             Logger.error("newMessage: %s %s", botId, e);
             respondWithError(botId, payload);
