@@ -115,8 +115,25 @@ public class GenericMessageProcessor {
         // Text
         if (text != null) {
             if (!text.getLinkPreviewList().isEmpty()) {
-                //todo
-                return false;
+                for (Messages.LinkPreview link : text.getLinkPreviewList()) {
+                    Messages.Asset image = link.getImage();
+
+                    MessageAssetBase base = new MessageAssetBase(messageId, convId, sender, from);
+                    origin(base, image.getOriginal());
+                    uploaded(base, image.getUploaded());
+
+                    LinkPreviewMessage msg = new LinkPreviewMessage(base, image.getOriginal().getImage());
+                    msg.setTime(time);
+
+                    msg.setSummary(link.getSummary());
+                    msg.setTitle(link.getTitle());
+                    msg.setUrl(link.getUrl());
+                    msg.setUrlOffset(link.getUrlOffset());
+
+                    msg.setText(text.getContent());
+                    handler.onLinkPreview(client, msg);
+                }
+                return true;
             }
 
             if (text.hasContent()) {

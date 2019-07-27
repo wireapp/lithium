@@ -29,8 +29,11 @@ import java.util.UUID;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ImageMessage extends MessageAssetBase {
+    @JsonProperty
     private int height;
+    @JsonProperty
     private int width;
+    @JsonProperty
     private String tag;
 
     @JsonCreator
@@ -53,6 +56,10 @@ public class ImageMessage extends MessageAssetBase {
         setHeight(image.getHeight());
         setWidth(image.getWidth());
         setTag(image.hasTag() ? image.getTag() : null);
+    }
+
+    public ImageMessage(UUID msgId, UUID convId, String clientId, UUID userId) {
+        super(msgId, convId, clientId, userId);
     }
 
     public int getHeight() {

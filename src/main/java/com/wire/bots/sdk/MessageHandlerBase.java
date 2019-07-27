@@ -231,6 +231,10 @@ public abstract class MessageHandlerBase {
 
     }
 
+    public void onLinkPreview(WireClient client, LinkPreviewMessage msg) {
+
+    }
+
     /**
      * This method is called when ephemeral text is posted into the conversation
      *

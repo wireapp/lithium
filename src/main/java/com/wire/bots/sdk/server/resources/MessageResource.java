@@ -30,6 +30,7 @@ import com.wire.bots.sdk.tools.AuthValidator;
 import com.wire.bots.sdk.tools.Logger;
 import io.swagger.annotations.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -58,7 +59,7 @@ public class MessageResource extends MessageResourceBase {
     public Response newMessage(@ApiParam("Service token") @HeaderParam("Authorization") @NotNull String auth,
                                @ApiParam("UUID Bot instance id") @PathParam("bot") UUID botId,
                                @ApiParam("UUID Unique message id") @QueryParam("id") UUID messageID,
-                               @ApiParam @NotNull Payload payload) throws IOException {
+                               @ApiParam @Valid @NotNull Payload payload) throws IOException {
 
         if (Logger.getLevel() == Level.FINE) {
             String strPayload = objectMapper.writeValueAsString(payload);
