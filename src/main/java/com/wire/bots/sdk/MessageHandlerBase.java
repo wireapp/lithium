@@ -235,6 +235,10 @@ public abstract class MessageHandlerBase {
 
     }
 
+    public void onPing(WireClient client, PingMessage msg) {
+
+    }
+    
     /**
      * This method is called when ephemeral text is posted into the conversation
      *

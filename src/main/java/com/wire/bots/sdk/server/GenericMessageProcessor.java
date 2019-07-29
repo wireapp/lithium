@@ -183,6 +183,15 @@ public class GenericMessageProcessor {
                 return true;
             }
         }
+
+        if (generic.hasKnock()) {
+            PingMessage msg = new PingMessage(messageId, convId, sender, from);
+            msg.setTime(time);
+
+            handler.onPing(client, msg);
+            return true;
+        }
+
         // Assets
         if (asset != null) {
             Logger.debug("Asset: msgId: %s hasOriginal: %s, hasUploaded: %s",
