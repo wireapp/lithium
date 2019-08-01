@@ -112,6 +112,22 @@ public class GenericMessageProcessor {
             return true;
         }
 
+        if (generic.hasConfirmation()) {
+            Messages.Confirmation confirmation = generic.getConfirmation();
+            String firstMessageId = confirmation.getFirstMessageId();
+            Messages.Confirmation.Type type = confirmation.getType();
+
+            ConfirmationMessage msg = new ConfirmationMessage(messageId, convId, sender, from);
+            msg.setConfirmationMessageId(UUID.fromString(firstMessageId));
+            msg.setType(type.getNumber() == Messages.Confirmation.Type.DELIVERED_VALUE
+                    ? ConfirmationMessage.Type.DELIVERED
+                    : ConfirmationMessage.Type.READ);
+            msg.setTime(time);
+
+            handler.onConfirmation(client, msg);
+            return true;
+        }
+
         // Text
         if (text != null) {
             if (!text.getLinkPreviewList().isEmpty()) {

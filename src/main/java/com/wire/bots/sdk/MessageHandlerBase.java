@@ -248,6 +248,10 @@ public abstract class MessageHandlerBase {
     public void onText(WireClient client, EphemeralTextMessage msg) {
     }
 
+    public void onConfirmation(WireClient client, ConfirmationMessage msg) {
+
+    }
+
     public void validatePreKeys(WireClient client, int size) {
         try {
             int minAvailable = 8 * size;
