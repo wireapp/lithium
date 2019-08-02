@@ -24,16 +24,25 @@ import java.util.UUID;
 
 public class MessageText implements IGeneric {
     private final String text;
+    private final UUID mentionUser;
+    private final int offset;
+    private final int len;
     private final long expires;
     private UUID messageId = UUID.randomUUID();
 
     public MessageText(String text) {
-        this.text = text;
-        this.expires = 0;
+        this(text, 0, null, 0, 0);
     }
 
     public MessageText(String text, long expires) {
+        this(text, expires, null, 0, 0);
+    }
+
+    public MessageText(String text, long expires, UUID mentionUser, int offset, int len) {
         this.text = text;
+        this.mentionUser = mentionUser;
+        this.offset = offset;
+        this.len = len;
         this.expires = expires;
     }
 
@@ -43,7 +52,17 @@ public class MessageText implements IGeneric {
                 .setMessageId(getMessageId().toString());
 
         Messages.Text.Builder text = Messages.Text.newBuilder()
-                .setContent(this.text);
+                .setContent(this.text)
+                .setExpectsReadConfirmation(true);
+
+        if (mentionUser != null) {
+            Messages.Mention.Builder mention = Messages.Mention.newBuilder()
+                    .setUserId(mentionUser.toString())
+                    .setLength(len)
+                    .setStart(offset);
+
+            text.addMentions(mention);
+        }
 
         if (expires > 0) {
             Messages.Ephemeral.Builder ephemeral = Messages.Ephemeral.newBuilder()

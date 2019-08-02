@@ -47,15 +47,6 @@ public interface WireClient extends Closeable {
     UUID sendText(String txt) throws Exception;
 
     /**
-     * Post text to specific user
-     *
-     * @param txt Plain text to be posted into this conversation
-     * @return MessageId
-     * @throws Exception
-     */
-    UUID sendDirectText(String txt, String userId) throws Exception;
-
-    /**
      * Post text into the conversation
      *
      * @param txt     Plain text to be posted into this conversation
@@ -64,6 +55,26 @@ public interface WireClient extends Closeable {
      * @throws Exception
      */
     UUID sendText(String txt, long expires) throws Exception;
+
+    /**
+     * Send text containing a mention to a user that is a participant of this conv
+     *
+     * @param txt     Plain text to be posted into this conversation
+     * @param mention UserId of another participant
+     * @return MessageId
+     * @throws Exception
+     */
+    UUID sendText(String txt, UUID mention) throws Exception;
+
+    /**
+     * Post text to specific user
+     *
+     * @param txt    Plain text to be posted into this conversation
+     * @param userId UserId of participant that should read this msg
+     * @return MessageId
+     * @throws Exception
+     */
+    UUID sendDirectText(String txt, UUID userId) throws Exception;
 
     /**
      * Post url with preview into the conversation

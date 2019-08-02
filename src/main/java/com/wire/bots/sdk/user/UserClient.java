@@ -57,9 +57,16 @@ public class UserClient extends WireClientBase implements WireClient {
     }
 
     @Override
-    public UUID sendDirectText(String txt, String userId) throws Exception {
+    public UUID sendText(String txt, UUID mention) throws Exception {
+        MessageText generic = new MessageText(txt, 0, mention, 0, 0);
+        postGenericMessage(generic);
+        return generic.getMessageId();
+    }
+
+    @Override
+    public UUID sendDirectText(String txt, UUID userId) throws Exception {
         MessageText generic = new MessageText(txt);
-        postGenericMessage(generic, userId);
+        postGenericMessage(generic, userId.toString());
         return generic.getMessageId();
     }
 
