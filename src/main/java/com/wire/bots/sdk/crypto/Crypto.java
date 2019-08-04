@@ -9,6 +9,7 @@ import com.wire.bots.sdk.models.otr.Recipients;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public interface Crypto extends Closeable {
     public byte[] getIdentity() throws CryptoException;
@@ -39,7 +40,7 @@ public interface Crypto extends Closeable {
      * @return Decrypted Base64 encoded string
      * @throws CryptoException throws CryptoException
      */
-    String decrypt(String userId, String clientId, String cypher) throws CryptoException;
+    String decrypt(UUID userId, String clientId, String cypher) throws CryptoException;
 
     boolean isClosed();
 

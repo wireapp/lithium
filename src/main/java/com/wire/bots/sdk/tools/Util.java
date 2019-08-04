@@ -37,9 +37,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Base64;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Util {
-
+    private static Pattern pattern = Pattern.compile("(?<=@)([a-zA-Z0-9\\_]{3,})");
     private static final String HMAC_SHA_1 = "HmacSHA1";
 
     public static byte[] encrypt(byte[] key, byte[] dataToSend, byte[] iv) throws Exception {
@@ -172,5 +174,21 @@ public class Util {
         try (InputStream resourceAsStream = classLoader.getResourceAsStream(name)) {
             return toByteArray(resourceAsStream);
         }
+    }
+
+    public static int mentionLen(String txt) {
+        Matcher matcher = pattern.matcher(txt);
+        if (matcher.find()) {
+            return matcher.group().length() + 1;
+        }
+        return 0;
+    }
+
+    public static int mentionStart(String txt) {
+        Matcher matcher = pattern.matcher(txt);
+        if (matcher.find()) {
+            return matcher.start() - 1;
+        }
+        return 0;
     }
 }

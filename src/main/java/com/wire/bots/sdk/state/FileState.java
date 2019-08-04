@@ -16,16 +16,16 @@ public class FileState implements State {
 
     private static final String STATE_FILENAME = "state.json";
     private final String path;
-    private final String botId;
+    private final UUID botId;
 
-    public FileState(String path, String botId) {
+    public FileState(String path, UUID botId) {
         this.path = path;
         this.botId = botId;
         File dir = new File(String.format("%s/%s", path, botId));
         dir.mkdirs();
     }
 
-    public FileState(String botId, Configuration.DB db) {
+    public FileState(UUID botId, Configuration.DB db) {
         this.botId = botId;
 
         String path;
@@ -53,7 +53,7 @@ public class FileState implements State {
     public NewBot getState() throws IOException {
         File file = getStateFile();
         if (!file.exists())
-            throw new MissingStateException(UUID.fromString(botId));
+            throw new MissingStateException(botId);
 
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(file, NewBot.class);

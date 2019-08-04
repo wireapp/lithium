@@ -142,7 +142,7 @@ public class Endpoint {
     }
 
     private NewBot getState(UUID userId) throws IOException {
-        return storageFactory.create(userId.toString()).getState();
+        return storageFactory.create(userId).getState();
     }
 
     /**
@@ -156,25 +156,24 @@ public class Endpoint {
         state.token = token;
 
         // save the state with new token
-        State storage = storageFactory.create(userId.toString());
+        State storage = storageFactory.create(userId);
         storage.saveState(state);
         return state.client;
     }
 
     private NewBot initState(UUID userId, String password, String token)
             throws IOException, HttpException, CryptoException {
-        String botId = userId.toString();
         NewBot state;
         try {
             state = getState(userId);
             Logger.info("initDevice: Existing ClientID: %s", state.client);
         } catch (IOException ex) {
             // register new device
-            try (Crypto crypto = cryptoFactory.create(botId)) {
+            try (Crypto crypto = cryptoFactory.create(userId)) {
                 LoginClient loginClient = new LoginClient(httpClient);
 
                 state = new NewBot();
-                state.id = botId;
+                state.id = userId;
                 ArrayList<PreKey> preKeys = crypto.newPreKeys(0, 20);
                 PreKey lastKey = crypto.newLastPreKey();
                 state.client = loginClient.registerClient(token, password, preKeys, lastKey);
@@ -210,7 +209,7 @@ public class Endpoint {
 
     protected Access getAccess() throws IOException {
         UUID userId = user.getUserId();
-        State storage = storageFactory.create(userId.toString());
+        State storage = storageFactory.create(userId);
         NewBot state = storage.getState();
 
         Access access = new Access();
@@ -224,7 +223,7 @@ public class Endpoint {
 
     protected boolean persistAccess(Access access) throws IOException {
         UUID userId = access.userId;
-        State storage = storageFactory.create(userId.toString());
+        State storage = storageFactory.create(userId);
         NewBot state = storage.getState();
         state.token = access.token;
         return storage.saveState(state);

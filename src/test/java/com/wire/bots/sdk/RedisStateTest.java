@@ -15,7 +15,7 @@ public class RedisStateTest {
         conf.host = "localhost";
         conf.port = 6379;
 
-        String botId = UUID.randomUUID().toString();
+        UUID botId = UUID.randomUUID();
 
         RedisState storage = new RedisState(botId, conf);
         NewBot bot = new NewBot();

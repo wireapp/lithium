@@ -18,7 +18,7 @@ public class PostgresStateTest {
         conf.user = "dejankovacevic";
         conf.password = "password";
 
-        String botId = UUID.randomUUID().toString();
+        UUID botId = UUID.randomUUID();
 
         PostgresState storage = new PostgresState(botId, conf);
         NewBot bot = new NewBot();

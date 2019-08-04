@@ -32,7 +32,7 @@ public abstract class MessageResourceBase {
 
     protected void handleMessage(UUID id, Payload payload, WireClient client) throws Exception {
         Payload.Data data = payload.data;
-        UUID botId = UUID.fromString(client.getId());
+        UUID botId = client.getId();
 
         switch (payload.type) {
             case "conversation.otr-message-add": {
@@ -206,7 +206,7 @@ public abstract class MessageResourceBase {
 
     private Messages.GenericMessage decrypt(WireClient client, Payload payload)
             throws CryptoException, InvalidProtocolBufferException {
-        String from = payload.from.toString();
+        UUID from = payload.from;
         String sender = payload.data.sender;
         String cipher = payload.data.text;
 

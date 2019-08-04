@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.UUID;
 
 public class API implements Backend {
 
@@ -111,7 +112,7 @@ public class API implements Backend {
     }
 
     @Override
-    public Devices sendPartialMessage(OtrMessage msg, String userId) throws HttpException {
+    public Devices sendPartialMessage(OtrMessage msg, UUID userId) throws HttpException {
         Response response = messages
                 .queryParam("report_missing", userId)
                 .request(MediaType.APPLICATION_JSON)
@@ -131,9 +132,9 @@ public class API implements Backend {
         return response.readEntity(Devices.class);
     }
 
-    Collection<User> getUsers(Collection<String> ids) {
+    Collection<User> getUsers(Collection<UUID> ids) {
         return users
-                .queryParam("ids", String.join(",", ids))
+                .queryParam("ids", ids.toArray())
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, bearer())
                 .get(new GenericType<ArrayList<User>>() {

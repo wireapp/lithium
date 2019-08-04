@@ -21,8 +21,8 @@ public class RedisState implements State {
     private final UUID botId;
     private final Configuration.DB conf;
 
-    public RedisState(String botId, Configuration.DB conf) {
-        this.botId = UUID.fromString(botId);
+    public RedisState(UUID botId, Configuration.DB conf) {
+        this.botId = botId;
         this.conf = conf;
     }
 

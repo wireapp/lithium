@@ -19,7 +19,7 @@ public class CryptoHealthCheck extends HealthCheck {
         try {
             Logger.debug("Starting CryptoHealthCheck healthcheck");
 
-            try (Crypto crypto = cryptoFactory.create(UUID.randomUUID().toString())) {
+            try (Crypto crypto = cryptoFactory.create(UUID.randomUUID())) {
                 crypto.newLastPreKey();
                 crypto.newPreKeys(0, 8);
                 return Result.healthy();
