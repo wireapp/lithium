@@ -31,6 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
+import java.util.UUID;
 
 /**
  * Wrapper for the Crypto Box. This class is thread safe.
@@ -50,7 +51,7 @@ public class CryptoFile extends CryptoBase {
      * @param botId   Bot id
      * @throws Exception
      */
-    public CryptoFile(String rootDir, String botId) throws CryptoException {
+    public CryptoFile(String rootDir, UUID botId) throws CryptoException {
         root = String.format("%s/%s", rootDir, botId);
         box = CryptoBox.open(root);
     }
@@ -66,7 +67,7 @@ public class CryptoFile extends CryptoBase {
      * @param botId Bot id
      * @throws Exception
      */
-    public CryptoFile(String botId, Configuration.DB db) throws CryptoException {
+    public CryptoFile(UUID botId, Configuration.DB db) throws CryptoException {
         String path;
         try {
             URL root = new URL(db.url);

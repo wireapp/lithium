@@ -31,21 +31,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.Random;
+import java.util.UUID;
 
 public class CryptoDatabaseTest {
 
-    private final static String bobId;
-    private final static String aliceId;
+    private final static UUID bobId;
+    private final static UUID aliceId;
     private static CryptoDatabase alice;
     private static CryptoDatabase bob;
     private static PreKeys bobKeys;
     private static PreKeys aliceKeys;
 
     static {
-        Random rnd = new Random();
-        aliceId = "" + rnd.nextInt();
-        bobId = "" + rnd.nextInt();
+        aliceId = UUID.randomUUID();
+        bobId = UUID.randomUUID();
     }
     
     @BeforeClass
@@ -55,10 +54,10 @@ public class CryptoDatabaseTest {
         bob = new CryptoDatabase(bobId, storage);
 
         ArrayList<PreKey> preKeys = bob.newPreKeys(0, 10);
-        bobKeys = new PreKeys(preKeys, bobId, bobId);
+        bobKeys = new PreKeys(preKeys, "bob", bobId);
 
         preKeys = alice.newPreKeys(0, 10);
-        aliceKeys = new PreKeys(preKeys, aliceId, aliceId);
+        aliceKeys = new PreKeys(preKeys, "alice", aliceId);
     }
 
     @AfterClass
@@ -76,10 +75,10 @@ public class CryptoDatabaseTest {
         // Encrypt using prekeys
         Recipients encrypt = alice.encrypt(bobKeys, textBytes);
 
-        String base64Encoded = encrypt.get(bobId, bobId);
+        String base64Encoded = encrypt.get(bobId, "bob");
 
         // Decrypt using initSessionFromMessage
-        String decrypt = bob.decrypt(aliceId, aliceId, base64Encoded);
+        String decrypt = bob.decrypt(aliceId, "alice", base64Encoded);
         byte[] decode = Base64.getDecoder().decode(decrypt);
 
         assert Arrays.equals(decode, textBytes);
@@ -93,10 +92,10 @@ public class CryptoDatabaseTest {
 
         Recipients encrypt = bob.encrypt(aliceKeys, textBytes);
 
-        String base64Encoded = encrypt.get(aliceId, aliceId);
+        String base64Encoded = encrypt.get(aliceId, "alice");
 
         // Decrypt using initSessionFromMessage
-        String decrypt = alice.decrypt(bobId, bobId, base64Encoded);
+        String decrypt = alice.decrypt(bobId, "bob", base64Encoded);
         byte[] decode = Base64.getDecoder().decode(decrypt);
 
         assert Arrays.equals(decode, textBytes);
@@ -109,13 +108,13 @@ public class CryptoDatabaseTest {
         byte[] textBytes = text.getBytes();
 
         Missing devices = new Missing();
-        devices.add(aliceId, aliceId);
+        devices.add(aliceId, "alice");
         Recipients encrypt = bob.encrypt(devices, textBytes);
 
-        String base64Encoded = encrypt.get(aliceId, aliceId);
+        String base64Encoded = encrypt.get(aliceId, "alice");
 
         // Decrypt using session
-        String decrypt = alice.decrypt(bobId, bobId, base64Encoded);
+        String decrypt = alice.decrypt(bobId, "bob", base64Encoded);
         byte[] decode = Base64.getDecoder().decode(decrypt);
 
         assert Arrays.equals(decode, textBytes);

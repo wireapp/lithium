@@ -28,6 +28,7 @@ import com.wire.bots.sdk.models.otr.Recipients;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Wrapper for the Crypto Box. This class is thread safe.
@@ -45,7 +46,7 @@ abstract class CryptoBase implements Crypto {
         return ret;
     }
 
-    private static String createId(String userId, String clientId) {
+    private static String createId(UUID userId, String clientId) {
         return String.format("%s_%s", userId, clientId);
     }
 
@@ -101,7 +102,7 @@ abstract class CryptoBase implements Crypto {
     @Override
     public Recipients encrypt(PreKeys preKeys, byte[] content) throws CryptoException {
         Recipients recipients = new Recipients();
-        for (String userId : preKeys.keySet()) {
+        for (UUID userId : preKeys.keySet()) {
             HashMap<String, PreKey> clients = preKeys.get(userId);
             for (String clientId : clients.keySet()) {
                 PreKey pk = clients.get(clientId);
@@ -126,7 +127,7 @@ abstract class CryptoBase implements Crypto {
     @Override
     public Recipients encrypt(Missing missing, byte[] content) throws CryptoException {
         Recipients recipients = new Recipients();
-        for (String userId : missing.toUserIds()) {
+        for (UUID userId : missing.toUserIds()) {
             for (String clientId : missing.toClients(userId)) {
                 String id = createId(userId, clientId);
                 byte[] cipher = box().encryptFromSession(id, content);
@@ -149,7 +150,7 @@ abstract class CryptoBase implements Crypto {
      * @throws Exception throws Exception
      */
     @Override
-    public String decrypt(String userId, String clientId, String cypher) throws CryptoException {
+    public String decrypt(UUID userId, String clientId, String cypher) throws CryptoException {
         byte[] decode = Base64.getDecoder().decode(cypher);
         String id = createId(userId, clientId);
 

@@ -17,8 +17,8 @@ public class PostgresState implements State {
     private final UUID botId;
     private final Configuration.DB conf;
 
-    public PostgresState(String botId, Configuration.DB conf) {
-        this.botId = UUID.fromString(botId);
+    public PostgresState(UUID botId, Configuration.DB conf) {
+        this.botId = botId;
         this.conf = conf;
     }
 

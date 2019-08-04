@@ -98,7 +98,7 @@ public class API extends LoginClient implements Backend {
     }
 
     @Override
-    public Devices sendPartialMessage(OtrMessage msg, String userId) throws HttpException {
+    public Devices sendPartialMessage(OtrMessage msg, UUID userId) throws HttpException {
         Response response = conversationsPath.
                 path(convId).
                 path("otr/messages").
@@ -383,9 +383,9 @@ public class API extends LoginClient implements Backend {
                 });
     }
 
-    public Collection<User> getUsers(Collection<String> ids) {
+    public Collection<User> getUsers(Collection<UUID> ids) {
         return usersPath.
-                queryParam("ids", String.join(",", ids)).
+                queryParam("ids", ids.toArray()).
                 request(MediaType.APPLICATION_JSON).
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
                 get(new GenericType<Collection<User>>() {

@@ -18,8 +18,8 @@ public class UserClientRepo extends ClientRepo {
     }
 
     public WireClient getWireClient(UUID userId, UUID conv) throws CryptoException, IOException {
-        Crypto crypto = cf.create(userId.toString());
-        NewBot state = sf.create(userId.toString()).getState();
+        Crypto crypto = cf.create(userId);
+        NewBot state = sf.create(userId).getState();
         API api = new API(httpClient, conv, state.token);
         return new UserClient(state, conv, crypto, api);
     }

@@ -63,13 +63,13 @@ public class WireClientBase {
         }
     }
 
-    protected void postGenericMessage(IGeneric generic, String userId) throws Exception {
+    protected void postGenericMessage(IGeneric generic, UUID userId) throws Exception {
         byte[] content = generic.createGenericMsg().toByteArray();
 
         // Try to encrypt the msg for those devices that we have the session already
         Missing all = getAllDevices();
         Missing user = new Missing();
-        for (String u : all.toUserIds()) {
+        for (UUID u : all.toUserIds()) {
             if (userId.equals(u)) {
                 Collection<String> clients = all.toClients(u);
                 user.add(u, clients);
@@ -102,7 +102,7 @@ public class WireClientBase {
         }
     }
 
-    public String getId() {
+    public UUID getId() {
         return state.id;
     }
 
@@ -122,7 +122,7 @@ public class WireClientBase {
         return crypto.isClosed();
     }
 
-    public String decrypt(String userId, String clientId, String cypher) throws CryptoException {
+    public String decrypt(UUID userId, String clientId, String cypher) throws CryptoException {
         return crypto.decrypt(userId, clientId, cypher);
     }
 

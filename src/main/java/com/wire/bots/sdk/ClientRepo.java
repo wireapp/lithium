@@ -32,8 +32,8 @@ public class ClientRepo {
     }
 
     public WireClient getClient(UUID botId) throws IOException, CryptoException {
-        NewBot state = sf.create(botId.toString()).getState();
-        Crypto crypto = cf.create(botId.toString());
+        NewBot state = sf.create(botId).getState();
+        Crypto crypto = cf.create(botId);
         API api = new API(httpClient, state.token);
         return new BotClient(state, crypto, api);
     }
@@ -44,7 +44,7 @@ public class ClientRepo {
     }
 
     public void purgeBot(UUID botId) throws IOException {
-        State state = sf.create(botId.toString());
+        State state = sf.create(botId);
         if (state == null)
             return;
 

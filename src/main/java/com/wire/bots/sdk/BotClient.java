@@ -60,9 +60,9 @@ public class BotClient extends WireClientBase implements WireClient {
 
     @Override
     public UUID sendText(String txt, UUID mention) throws Exception {
-        int offset = txt.indexOf('@');
-        int end = txt.indexOf(' ', offset);
-        MessageText generic = new MessageText(txt, 0, mention, offset, end - offset);
+        int offset = Util.mentionStart(txt);
+        int len = Util.mentionLen(txt);
+        MessageText generic = new MessageText(txt, 0, mention, offset, len);
         postGenericMessage(generic);
         return generic.getMessageId();
     }
@@ -70,7 +70,7 @@ public class BotClient extends WireClientBase implements WireClient {
     @Override
     public UUID sendDirectText(String txt, UUID userId) throws Exception {
         MessageText generic = new MessageText(txt);
-        postGenericMessage(generic, userId.toString());
+        postGenericMessage(generic, userId);
         return generic.getMessageId();
     }
 
@@ -82,7 +82,7 @@ public class BotClient extends WireClientBase implements WireClient {
     }
 
     @Override
-    public UUID sendDirectLinkPreview(String url, String title, IGeneric image, String userId) throws Exception {
+    public UUID sendDirectLinkPreview(String url, String title, IGeneric image, UUID userId) throws Exception {
         LinkPreview msg = new LinkPreview(url, title, image.createGenericMsg().getAsset());
         postGenericMessage(msg, userId);
         return msg.getMessageId();
@@ -101,7 +101,7 @@ public class BotClient extends WireClientBase implements WireClient {
     }
 
     @Override
-    public UUID sendDirectPicture(byte[] bytes, String mimeType, String userId) throws Exception {
+    public UUID sendDirectPicture(byte[] bytes, String mimeType, UUID userId) throws Exception {
         Picture image = new Picture(bytes, mimeType);
 
         AssetKey assetKey = uploadAsset(image);
@@ -119,7 +119,7 @@ public class BotClient extends WireClientBase implements WireClient {
     }
 
     @Override
-    public UUID sendDirectPicture(IGeneric image, String userId) throws Exception {
+    public UUID sendDirectPicture(IGeneric image, UUID userId) throws Exception {
         postGenericMessage(image, userId);
         return image.getMessageId();
     }
@@ -177,7 +177,7 @@ public class BotClient extends WireClientBase implements WireClient {
     }
 
     @Override
-    public UUID sendDirectFile(File f, String mime, String userId) throws Exception {
+    public UUID sendDirectFile(File f, String mime, UUID userId) throws Exception {
         UUID messageId = UUID.randomUUID();
         FileAssetPreview preview = new FileAssetPreview(f.getName(), mime, f.length(), messageId);
         FileAsset asset = new FileAsset(f, mime, messageId);
@@ -196,7 +196,7 @@ public class BotClient extends WireClientBase implements WireClient {
     }
 
     @Override
-    public UUID sendDirectFile(IGeneric preview, IGeneric asset, String userId) throws Exception {
+    public UUID sendDirectFile(IGeneric preview, IGeneric asset, UUID userId) throws Exception {
         // post original
         postGenericMessage(preview, userId);
 
@@ -250,12 +250,12 @@ public class BotClient extends WireClientBase implements WireClient {
     }
 
     @Override
-    public Collection<User> getUsers(Collection<String> userIds) {
+    public Collection<User> getUsers(Collection<UUID> userIds) {
         return api.getUsers(userIds);
     }
 
     @Override
-    public User getUser(String userId) {
+    public User getUser(UUID userId) {
         Collection<User> users = api.getUsers(Collections.singleton(userId));
         return users.iterator().next();
     }

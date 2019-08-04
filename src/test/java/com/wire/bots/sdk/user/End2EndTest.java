@@ -15,6 +15,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.Random;
+import java.util.UUID;
 
 public class End2EndTest {
     @AfterClass
@@ -25,12 +26,12 @@ public class End2EndTest {
     @Test
     public void testAliceToAlice() throws Exception {
         Random rnd = new Random();
-        String aliceId = "alice_" + Math.abs(rnd.nextInt());
+        UUID aliceId = UUID.randomUUID();
         String client1 = "alice1_" + Math.abs(rnd.nextInt());
 
         NewBot state = new NewBot();
         state.id = aliceId;
-        state.client = aliceId;
+        state.client = aliceId.toString();
 
         RedisStorage storage = new RedisStorage("localhost");
 
@@ -57,8 +58,8 @@ public class End2EndTest {
 
     @Test
     public void testAliceToBob() throws Exception {
-        String bobId = "bob";
-        String aliceId = "alice";
+        UUID bobId = UUID.randomUUID();
+        UUID aliceId = UUID.randomUUID();
         String client1 = "bob1";
 
         NewBot state = new NewBot();
@@ -91,8 +92,8 @@ public class End2EndTest {
     @Test
     public void testMultiDeviceRedis() throws Exception {
         Random rnd = new Random();
-        String bobId = "bob_" + rnd.nextInt();
-        String aliceId = "alice_" + rnd.nextInt();
+        UUID bobId = UUID.randomUUID();
+        UUID aliceId = UUID.randomUUID();
         String client1 = "bob1_" + rnd.nextInt();
         String client2 = "bob2_" + rnd.nextInt();
         String client3 = "alice3_" + rnd.nextInt();
@@ -144,8 +145,8 @@ public class End2EndTest {
     @Test
     public void testMultiDevicePostgres() throws Exception {
         Random rnd = new Random();
-        String bobId = "bob_" + rnd.nextInt();
-        String aliceId = "alice_" + rnd.nextInt();
+        UUID bobId = UUID.randomUUID();
+        UUID aliceId = UUID.randomUUID();
         String client1 = "bob1_" + rnd.nextInt();
         String client2 = "bob2_" + rnd.nextInt();
         String client3 = "alice3_" + rnd.nextInt();

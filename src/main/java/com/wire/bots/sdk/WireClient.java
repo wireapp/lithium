@@ -87,7 +87,7 @@ public interface WireClient extends Closeable {
      */
     UUID sendLinkPreview(String url, String title, IGeneric image) throws Exception;
 
-    UUID sendDirectLinkPreview(String url, String title, IGeneric image, String userId) throws Exception;
+    UUID sendDirectLinkPreview(String url, String title, IGeneric image, UUID userId) throws Exception;
 
     /**
      * Post picture
@@ -99,7 +99,7 @@ public interface WireClient extends Closeable {
      */
     UUID sendPicture(byte[] bytes, String mimeType) throws Exception;
 
-    UUID sendDirectPicture(byte[] bytes, String mimeType, String userId) throws Exception;
+    UUID sendDirectPicture(byte[] bytes, String mimeType, UUID userId) throws Exception;
 
     /**
      * Post previously uploaded picture
@@ -110,7 +110,7 @@ public interface WireClient extends Closeable {
      */
     UUID sendPicture(IGeneric image) throws Exception;
 
-    UUID sendDirectPicture(IGeneric image, String userId) throws Exception;
+    UUID sendDirectPicture(IGeneric image, UUID userId) throws Exception;
 
     /**
      * Post audio file
@@ -146,9 +146,9 @@ public interface WireClient extends Closeable {
      */
     UUID sendFile(File file, String mime) throws Exception;
 
-    UUID sendDirectFile(File file, String mime, String userId) throws Exception;
+    UUID sendDirectFile(File file, String mime, UUID userId) throws Exception;
 
-    UUID sendDirectFile(IGeneric preview, IGeneric asset, String userId) throws Exception;
+    UUID sendDirectFile(IGeneric preview, IGeneric asset, UUID userId) throws Exception;
 
     /**
      * Sends ping into conversation
@@ -201,7 +201,7 @@ public interface WireClient extends Closeable {
     /**
      * @return Bot ID as UUID
      */
-    String getId();
+    UUID getId();
 
     /**
      * Fetch the bot's own user profile information. A bot's profile has the following attributes:
@@ -232,7 +232,7 @@ public interface WireClient extends Closeable {
      * @return Collection of user profiles (name, accent colour,...)
      * @throws IOException
      */
-    Collection<User> getUsers(Collection<String> userIds) throws IOException;
+    Collection<User> getUsers(Collection<UUID> userIds) throws IOException;
 
     /**
      * Fetch users' profiles from the Backend
@@ -241,7 +241,7 @@ public interface WireClient extends Closeable {
      * @return User profile (name, accent colour,...)
      * @throws IOException
      */
-    User getUser(String userId) throws IOException;
+    User getUser(UUID userId) throws IOException;
 
     /**
      * Fetch conversation details from the Backend
@@ -270,7 +270,7 @@ public interface WireClient extends Closeable {
      * @return Base64 encoded decrypted text
      * @throws Exception
      */
-    String decrypt(String userId, String clientId, String cypher) throws CryptoException;
+    String decrypt(UUID userId, String clientId, String cypher) throws CryptoException;
 
     /**
      * Invoked by the sdk. Called once when the conversation is created

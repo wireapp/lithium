@@ -20,12 +20,13 @@ package com.wire.bots.sdk.models.otr;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
-public class PreKeys extends HashMap<String, HashMap<String, PreKey>> {
+public class PreKeys extends HashMap<UUID, HashMap<String, PreKey>> {
     public PreKeys() {
     }
 
-    public PreKeys(ArrayList<PreKey> array, String clientId, String userId) {
+    public PreKeys(ArrayList<PreKey> array, String clientId, UUID userId) {
         super();
 
         HashMap<String, PreKey> devs = new HashMap<>();

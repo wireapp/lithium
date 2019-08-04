@@ -5,6 +5,7 @@ import org.glassfish.jersey.client.JerseyClientBuilder;
 
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.UUID;
 
 class DummyAPI extends API {
     private final Devices devices = new Devices();
@@ -20,7 +21,7 @@ class DummyAPI extends API {
         this.msg = msg;
         Devices missing = new Devices();
 
-        for (String userId : devices.missing.toUserIds()) {
+        for (UUID userId : devices.missing.toUserIds()) {
             for (String client : devices.missing.toClients(userId)) {
                 if (msg.get(userId, client) == null)
                     missing.missing.add(userId, client);
@@ -32,7 +33,7 @@ class DummyAPI extends API {
     @Override
     public PreKeys getPreKeys(Missing missing) {
         PreKeys ret = new PreKeys();
-        for (String userId : missing.toUserIds()) {
+        for (UUID userId : missing.toUserIds()) {
             HashMap<String, PreKey> devs = new HashMap<>();
             for (String client : missing.toClients(userId)) {
                 String key = key(userId, client);
@@ -52,18 +53,18 @@ class DummyAPI extends API {
         return preKey;
     }
 
-    void addDevice(String userId, String client, com.wire.bots.cryptobox.PreKey lastKey) {
+    void addDevice(UUID userId, String client, com.wire.bots.cryptobox.PreKey lastKey) {
         devices.missing.add(userId, client);
         addLastKey(userId, client, lastKey);
     }
 
-    private void addLastKey(String userId, String clientId, com.wire.bots.cryptobox.PreKey lastKey) {
+    private void addLastKey(UUID userId, String clientId, com.wire.bots.cryptobox.PreKey lastKey) {
         String key = key(userId, clientId);
         PreKey preKey = convert(lastKey);
         lastPreKeys.put(key, preKey);
     }
 
-    private String key(String userId, String clientId) {
+    private String key(UUID userId, String clientId) {
         return String.format("%s-%s", userId, clientId);
     }
 

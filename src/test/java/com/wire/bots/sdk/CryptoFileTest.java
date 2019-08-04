@@ -35,8 +35,8 @@ import java.util.*;
 
 public class CryptoFileTest {
 
-    private final static String bobId;
-    private final static String aliceId;
+    private final static UUID bobId;
+    private final static UUID aliceId;
     private final static String DATA = "data";
     private static CryptoFile alice;
     private static CryptoFile bob;
@@ -44,9 +44,8 @@ public class CryptoFileTest {
     private static PreKeys aliceKeys;
 
     static {
-        Random rnd = new Random();
-        aliceId = "" + rnd.nextInt();
-        bobId = "" + rnd.nextInt();
+        aliceId = UUID.randomUUID();
+        bobId = UUID.randomUUID();
     }
     
     @BeforeClass
@@ -55,10 +54,10 @@ public class CryptoFileTest {
         bob = new CryptoFile(DATA, bobId);
 
         ArrayList<PreKey> preKeys = bob.newPreKeys(0, 1);
-        bobKeys = new PreKeys(preKeys, bobId, bobId);
+        bobKeys = new PreKeys(preKeys, "bob", bobId);
 
         preKeys = alice.newPreKeys(0, 1);
-        aliceKeys = new PreKeys(preKeys, aliceId, aliceId);
+        aliceKeys = new PreKeys(preKeys, "alice", aliceId);
     }
 
     @AfterClass
@@ -80,10 +79,10 @@ public class CryptoFileTest {
         // Encrypt using prekeys
         Recipients encrypt = alice.encrypt(bobKeys, textBytes);
 
-        String base64Encoded = encrypt.get(bobId, bobId);
+        String base64Encoded = encrypt.get(bobId, "bob");
 
         // Decrypt using initSessionFromMessage
-        String decrypt = bob.decrypt(aliceId, aliceId, base64Encoded);
+        String decrypt = bob.decrypt(aliceId, "alice", base64Encoded);
         byte[] decode = Base64.getDecoder().decode(decrypt);
 
         assert Arrays.equals(decode, textBytes);
@@ -97,10 +96,10 @@ public class CryptoFileTest {
 
         Recipients encrypt = bob.encrypt(aliceKeys, textBytes);
 
-        String base64Encoded = encrypt.get(aliceId, aliceId);
+        String base64Encoded = encrypt.get(aliceId, "alice");
 
         // Decrypt using initSessionFromMessage
-        String decrypt = alice.decrypt(bobId, bobId, base64Encoded);
+        String decrypt = alice.decrypt(bobId, "bob", base64Encoded);
         byte[] decode = Base64.getDecoder().decode(decrypt);
 
         assert Arrays.equals(decode, textBytes);
@@ -113,13 +112,13 @@ public class CryptoFileTest {
         byte[] textBytes = text.getBytes();
 
         Missing devices = new Missing();
-        devices.add(aliceId, aliceId);
+        devices.add(aliceId, "alice");
         Recipients encrypt = bob.encrypt(devices, textBytes);
 
-        String base64Encoded = encrypt.get(aliceId, aliceId);
+        String base64Encoded = encrypt.get(aliceId, "alice");
 
         // Decrypt using session
-        String decrypt = alice.decrypt(bobId, bobId, base64Encoded);
+        String decrypt = alice.decrypt(bobId, "bob", base64Encoded);
         byte[] decode = Base64.getDecoder().decode(decrypt);
 
         assert Arrays.equals(decode, textBytes);

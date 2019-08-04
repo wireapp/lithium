@@ -34,6 +34,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.UUID;
 
 @Api
 @Produces(MediaType.APPLICATION_JSON)
@@ -77,7 +78,7 @@ public class BotsResource {
                     .entity(new ErrorMessage("User not whitelisted or service does not accept new instances atm"))
                     .build();
 
-        String botId = newBot.id;
+        UUID botId = newBot.id;
         boolean saveState = storageF.create(botId).saveState(newBot);
         if (!saveState) {
             Logger.warning("Failed to save the state. Bot: %s", botId);

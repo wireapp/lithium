@@ -24,6 +24,7 @@ import com.wire.bots.cryptobox.ICryptobox;
 import com.wire.bots.cryptobox.IStorage;
 
 import java.io.IOException;
+import java.util.UUID;
 
 /**
  * Wrapper for the Crypto Box. This class is thread safe.
@@ -42,17 +43,17 @@ public class CryptoDatabase extends CryptoBase {
      * @param storage Instance of a IStorage class
      * @throws Exception
      */
-    public CryptoDatabase(String botId, IStorage storage) throws CryptoException {
+    public CryptoDatabase(UUID botId, IStorage storage) throws CryptoException {
         try {
-            box = new CryptoDb(botId, storage);
+            box = new CryptoDb(botId.toString(), storage);
         } catch (IOException e) {
             throw new CryptoException(e);
         }
     }
 
-    public CryptoDatabase(String botId, IStorage storage, String dir) throws CryptoException {
+    public CryptoDatabase(UUID botId, IStorage storage, String dir) throws CryptoException {
         try {
-            box = new CryptoDb(botId, storage, dir);
+            box = new CryptoDb(botId.toString(), storage, dir);
         } catch (IOException e) {
             throw new CryptoException(e);
         }
