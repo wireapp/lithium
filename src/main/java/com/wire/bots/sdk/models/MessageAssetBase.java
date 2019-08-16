@@ -18,6 +18,8 @@
 
 package com.wire.bots.sdk.models;
 
+import com.waz.model.Messages;
+
 import java.util.UUID;
 
 /**
@@ -57,6 +59,7 @@ public class MessageAssetBase extends MessageBase {
         size = base.size;
         sha256 = base.sha256;
         name = base.name;
+        time = base.time;
     }
 
     public void setSize(long size) {
@@ -113,5 +116,22 @@ public class MessageAssetBase extends MessageBase {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void fromRemote(Messages.Asset.RemoteData remoteData) {
+        if (remoteData != null) {
+            setAssetKey(remoteData.getAssetId());
+            setAssetToken(remoteData.hasAssetToken() ? remoteData.getAssetToken() : null);
+            setOtrKey(remoteData.getOtrKey().toByteArray());
+            setSha256(remoteData.getSha256().toByteArray());
+        }
+    }
+
+    public void fromOrigin(Messages.Asset.Original original) {
+        if (original != null) {
+            setMimeType(original.getMimeType());
+            setSize(original.getSize());
+            setName(original.hasName() ? original.getName() : null);
+        }
     }
 }

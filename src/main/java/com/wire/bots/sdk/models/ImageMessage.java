@@ -33,8 +33,6 @@ public class ImageMessage extends MessageAssetBase {
     private int height;
     @JsonProperty
     private int width;
-    @JsonProperty
-    private String tag;
 
     @JsonCreator
     public ImageMessage(@JsonProperty("messageId") UUID messageId,
@@ -55,7 +53,6 @@ public class ImageMessage extends MessageAssetBase {
         super(base);
         setHeight(image.getHeight());
         setWidth(image.getWidth());
-        setTag(image.hasTag() ? image.getTag() : null);
     }
 
     public ImageMessage(UUID msgId, UUID convId, String clientId, UUID userId) {
@@ -70,19 +67,11 @@ public class ImageMessage extends MessageAssetBase {
         return width;
     }
 
-    public String getTag() {
-        return tag;
-    }
-
     public void setHeight(int height) {
         this.height = height;
     }
 
     public void setWidth(int width) {
         this.width = width;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
     }
 }

@@ -24,6 +24,7 @@ import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.models.*;
 import com.wire.bots.sdk.tools.Logger;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,53 +42,32 @@ public class GenericMessageProcessor {
         this.handler = handler;
     }
 
-    private static void uploaded(MessageAssetBase msg, Messages.Asset.RemoteData uploaded) {
-        msg.setAssetKey(uploaded.getAssetId());
-        msg.setAssetToken(uploaded.hasAssetToken() ? uploaded.getAssetToken() : null);
-        msg.setOtrKey(uploaded.getOtrKey().toByteArray());
-        msg.setSha256(uploaded.getSha256().toByteArray());
-    }
-
-    private static void origin(MessageAssetBase msg, Messages.Asset.Original original) {
-        msg.setMimeType(original.getMimeType());
-        msg.setSize(original.getSize());
-        msg.setName(original.hasName() ? original.getName() : null);
-    }
-
     public void cleanUp(UUID messageId) {
         remotes.remove(messageId);
         originals.remove(messageId);
     }
 
-    public boolean process(UUID from, String sender, UUID convId, String time, Messages.GenericMessage generic) {
+    public boolean process(UUID from, String clientId, UUID convId, String time, Messages.GenericMessage generic) {
         UUID messageId = UUID.fromString(generic.getMessageId());
 
-        Messages.Text text = null;
         Messages.Asset asset = null;
 
         Logger.debug("msgId: %s hasText: %s, hasAsset: %s",
                 messageId,
                 generic.hasText(),
                 generic.hasAsset());
-        // Text
-        if (generic.hasText()) {
-            text = generic.getText();
-        }
-
-        // Assets
-        if (generic.hasAsset()) {
-            asset = generic.getAsset();
-        }
 
         // Ephemeral messages
         if (generic.hasEphemeral()) {
             Messages.Ephemeral ephemeral = generic.getEphemeral();
 
             if (ephemeral.hasText() && ephemeral.getText().hasContent()) {
-                EphemeralTextMessage msg = new EphemeralTextMessage(messageId, convId, sender, from);
+                EphemeralTextMessage msg = new EphemeralTextMessage(messageId, convId, clientId, from);
+                msg.setTime(time);
                 msg.setExpireAfterMillis(ephemeral.getExpireAfterMillis());
                 msg.setText(ephemeral.getText().getContent());
-                msg.setTime(time);
+                if (ephemeral.getText().hasQuote())
+                    msg.setQuotedMessageId(UUID.fromString(ephemeral.getText().getQuote().getQuotedMessageId()));
 
                 handler.onText(client, msg);
                 return true;
@@ -101,10 +81,8 @@ public class GenericMessageProcessor {
         // Edit message
         if (generic.hasEdited() && generic.getEdited().hasText()) {
             Messages.MessageEdit edited = generic.getEdited();
-            UUID replacingMessageId = UUID.fromString(edited.getReplacingMessageId());
-
-            EditedTextMessage msg = new EditedTextMessage(messageId, convId, sender, from);
-            msg.setReplacingMessageId(replacingMessageId);
+            EditedTextMessage msg = new EditedTextMessage(messageId, convId, clientId, from);
+            msg.setReplacingMessageId(UUID.fromString(edited.getReplacingMessageId()));
             msg.setText(edited.getText().getContent());
             msg.setTime(time);
 
@@ -114,46 +92,25 @@ public class GenericMessageProcessor {
 
         if (generic.hasConfirmation()) {
             Messages.Confirmation confirmation = generic.getConfirmation();
-            String firstMessageId = confirmation.getFirstMessageId();
-            Messages.Confirmation.Type type = confirmation.getType();
+            ConfirmationMessage msg = new ConfirmationMessage(messageId, convId, clientId, from);
 
-            ConfirmationMessage msg = new ConfirmationMessage(messageId, convId, sender, from);
-            msg.setConfirmationMessageId(UUID.fromString(firstMessageId));
-            msg.setType(type.getNumber() == Messages.Confirmation.Type.DELIVERED_VALUE
-                    ? ConfirmationMessage.Type.DELIVERED
-                    : ConfirmationMessage.Type.READ);
-            msg.setTime(time);
-
-            handler.onConfirmation(client, msg);
-            return true;
+            return handleConfirmation(confirmation, msg, time);
         }
 
         // Text
-        if (text != null) {
-            if (!text.getLinkPreviewList().isEmpty()) {
-                for (Messages.LinkPreview link : text.getLinkPreviewList()) {
-                    Messages.Asset image = link.getImage();
+        if (generic.hasText()) {
+            Messages.Text text = generic.getText();
+            List<Messages.LinkPreview> linkPreviewList = text.getLinkPreviewList();
 
-                    MessageAssetBase base = new MessageAssetBase(messageId, convId, sender, from);
-                    origin(base, image.getOriginal());
-                    uploaded(base, image.getUploaded());
+            if (!linkPreviewList.isEmpty()) {
+                LinkPreviewMessage msg = new LinkPreviewMessage(messageId, convId, clientId, from);
+                String content = text.getContent();
 
-                    LinkPreviewMessage msg = new LinkPreviewMessage(base, image.getOriginal().getImage());
-                    msg.setTime(time);
-
-                    msg.setSummary(link.getSummary());
-                    msg.setTitle(link.getTitle());
-                    msg.setUrl(link.getUrl());
-                    msg.setUrlOffset(link.getUrlOffset());
-
-                    msg.setText(text.getContent());
-                    handler.onLinkPreview(client, msg);
-                }
-                return true;
+                return handleLinkPreview(linkPreviewList, content, msg, time);
             }
 
             if (text.hasContent()) {
-                TextMessage msg = new TextMessage(messageId, convId, sender, from);
+                TextMessage msg = new TextMessage(messageId, convId, clientId, from);
                 msg.setText(text.getContent());
                 msg.setTime(time);
 
@@ -168,7 +125,7 @@ public class GenericMessageProcessor {
         if (generic.hasCalling()) {
             Messages.Calling calling = generic.getCalling();
             if (calling.hasContent()) {
-                CallingMessage message = new CallingMessage(messageId, convId, sender, from);
+                CallingMessage message = new CallingMessage(messageId, convId, clientId, from);
                 message.setContent(calling.getContent());
                 message.setTime(time);
                 handler.onCalling(client, message);
@@ -177,7 +134,7 @@ public class GenericMessageProcessor {
         }
 
         if (generic.hasDeleted()) {
-            DeletedTextMessage msg = new DeletedTextMessage(messageId, convId, sender, from);
+            DeletedTextMessage msg = new DeletedTextMessage(messageId, convId, clientId, from);
             UUID delMsgId = UUID.fromString(generic.getDeleted().getMessageId());
             msg.setDeletedMessageId(delMsgId);
             msg.setTime(time);
@@ -188,20 +145,13 @@ public class GenericMessageProcessor {
 
         if (generic.hasReaction()) {
             Messages.Reaction reaction = generic.getReaction();
-            UUID reactionMessageId = UUID.fromString(reaction.getMessageId());
-            if (reaction.hasEmoji()) {
-                ReactionMessage msg = new ReactionMessage(messageId, convId, sender, from);
-                msg.setEmoji(reaction.getEmoji());
-                msg.setReactionMessageId(reactionMessageId);
-                msg.setTime(time);
+            ReactionMessage msg = new ReactionMessage(messageId, convId, clientId, from);
 
-                handler.onReaction(client, msg);
-                return true;
-            }
+            return handleReaction(reaction, msg, time);
         }
 
         if (generic.hasKnock()) {
-            PingMessage msg = new PingMessage(messageId, convId, sender, from);
+            PingMessage msg = new PingMessage(messageId, convId, clientId, from);
             msg.setTime(time);
 
             handler.onPing(client, msg);
@@ -209,11 +159,23 @@ public class GenericMessageProcessor {
         }
 
         // Assets
+        if (generic.hasAsset()) {
+            asset = generic.getAsset();
+        }
+
         if (asset != null) {
-            Logger.debug("Asset: msgId: %s hasOriginal: %s, hasUploaded: %s",
+            Logger.debug("Asset: msgId: %s hasOriginal: %s, hasUploaded: %s, hasPreview: %s",
                     messageId,
                     asset.hasOriginal(),
-                    asset.hasUploaded());
+                    asset.hasUploaded(),
+                    asset.hasPreview());
+
+            if (asset.hasPreview()) {
+                Messages.Asset.Preview preview = asset.getPreview();
+                ImageMessage msg = new ImageMessage(messageId, convId, clientId, from);
+
+                handleVideoPreview(preview, msg, time);
+            }
 
             if (asset.hasUploaded()) {
                 remotes.put(messageId, asset.getUploaded());
@@ -226,63 +188,93 @@ public class GenericMessageProcessor {
             Messages.Asset.Original original = originals.get(messageId);
             Messages.Asset.RemoteData remoteData = remotes.get(messageId);
 
-            if (original != null && remoteData != null) {
-                Logger.debug("Original: msgId: %s hasAudio: %s, hasVideo: %s, hasImage: %s, hasPreview %s",
-                        messageId,
-                        original.hasAudio(),
-                        original.hasVideo(),
-                        original.hasImage(),
-                        asset.hasPreview());
+            MessageAssetBase base = new MessageAssetBase(messageId, convId, clientId, from);
+            base.setTime(time);
+            base.fromOrigin(original);
+            base.fromRemote(remoteData);
 
-                MessageAssetBase base = new MessageAssetBase(messageId, convId, sender, from);
-                origin(base, original);
-                uploaded(base, remoteData);
-
-                if (asset.hasPreview()) {
-                    Messages.Asset.Preview preview = asset.getPreview();
-                    if (preview.hasRemote()) {
-                        uploaded(base, preview.getRemote());
-
-                        ImageMessage msg = new ImageMessage(base, preview.getImage());
-                        msg.setTime(time);
-                        msg.setSize(preview.getSize());
-                        msg.setMimeType(preview.getMimeType());
-
-                        handler.onVideoPreview(client, msg);
-                    }
-                }
-
+            if (base.getAssetKey() != null) {
                 if (original.hasImage()) {
-                    ImageMessage msg = new ImageMessage(base, original.getImage());
-                    msg.setTime(time);
-
-                    handler.onImage(client, msg);
+                    handler.onImage(client, new ImageMessage(base, original.getImage()));
                     return true;
                 }
                 if (original.hasAudio()) {
-                    AudioMessage msg = new AudioMessage(base, original.getAudio());
-                    msg.setTime(time);
-
-                    handler.onAudio(client, msg);
+                    handler.onAudio(client, new AudioMessage(base, original.getAudio()));
                     return true;
                 }
                 if (original.hasVideo()) {
-                    VideoMessage msg = new VideoMessage(base, original.getVideo());
-                    msg.setTime(time);
-
-                    handler.onVideo(client, msg);
+                    handler.onVideo(client, new VideoMessage(base, original.getVideo()));
                     return true;
                 }
                 {
-                    AttachmentMessage msg = new AttachmentMessage(base);
-                    msg.setTime(time);
-
-                    handler.onAttachment(client, msg);
+                    handler.onAttachment(client, new AttachmentMessage(base));
                     return true;
                 }
             }
         }
 
         return false;
+    }
+
+    private boolean handleConfirmation(Messages.Confirmation confirmation, ConfirmationMessage msg, String time) {
+        String firstMessageId = confirmation.getFirstMessageId();
+        Messages.Confirmation.Type type = confirmation.getType();
+
+        msg.setConfirmationMessageId(UUID.fromString(firstMessageId));
+        msg.setType(type.getNumber() == Messages.Confirmation.Type.DELIVERED_VALUE
+                ? ConfirmationMessage.Type.DELIVERED
+                : ConfirmationMessage.Type.READ);
+        msg.setTime(time);
+
+        handler.onConfirmation(client, msg);
+        return true;
+    }
+
+    private boolean handleLinkPreview(List<Messages.LinkPreview> linkPreviewList, String content, LinkPreviewMessage msg, String time) {
+        for (Messages.LinkPreview link : linkPreviewList) {
+            Messages.Asset image = link.getImage();
+
+            msg.fromOrigin(image.getOriginal());
+            msg.fromRemote(image.getUploaded());
+
+            msg.setTime(time);
+            msg.setHeight(image.getOriginal().getImage().getHeight());
+            msg.setWidth(image.getOriginal().getImage().getWidth());
+
+            msg.setSummary(link.getSummary());
+            msg.setTitle(link.getTitle());
+            msg.setUrl(link.getUrl());
+            msg.setUrlOffset(link.getUrlOffset());
+
+            msg.setText(content);
+            handler.onLinkPreview(client, msg);
+        }
+        return true;
+    }
+
+    private boolean handleReaction(Messages.Reaction reaction, ReactionMessage msg, String time) {
+        if (reaction.hasEmoji()) {
+            msg.setEmoji(reaction.getEmoji());
+            msg.setReactionMessageId(UUID.fromString(reaction.getMessageId()));
+            msg.setTime(time);
+
+            handler.onReaction(client, msg);
+        }
+        return true;
+    }
+
+    private void handleVideoPreview(Messages.Asset.Preview preview, ImageMessage msg, String time) {
+        if (preview.hasRemote()) {
+            msg.setTime(time);
+            msg.fromRemote(preview.getRemote());
+
+            msg.setHeight(preview.getImage().getHeight());
+            msg.setWidth(preview.getImage().getWidth());
+
+            msg.setSize(preview.getSize());
+            msg.setMimeType(preview.getMimeType());
+
+            handler.onVideoPreview(client, msg);
+        }
     }
 }

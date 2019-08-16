@@ -27,8 +27,11 @@ import java.util.UUID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VideoMessage extends MessageAssetBase {
+    @JsonProperty
     private long duration;
+    @JsonProperty
     private int width;
+    @JsonProperty
     private int height;
 
     @JsonCreator
