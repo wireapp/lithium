@@ -19,6 +19,7 @@
 package com.wire.bots.sdk.tools;
 
 import com.wire.bots.sdk.Configuration;
+import com.wire.bots.sdk.exceptions.AuthException;
 
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
@@ -37,6 +38,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Base64;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -121,13 +123,14 @@ public class Util {
     }
 
     public static byte[] toByteArray(InputStream input) throws IOException {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        int n;
-        byte[] buffer = new byte[1024 * 4];
-        while (-1 != (n = input.read(buffer))) {
-            output.write(buffer, 0, n);
+        try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            int n;
+            byte[] buffer = new byte[1024 * 4];
+            while (-1 != (n = input.read(buffer))) {
+                output.write(buffer, 0, n);
+            }
+            return output.toByteArray();
         }
-        return output.toByteArray();
     }
 
     public static boolean compareAuthorizations(String auth1, String auth2) {
@@ -190,5 +193,15 @@ public class Util {
             return matcher.start() - 1;
         }
         return 0;
+    }
+
+    public static UUID extractUserId(String token) throws AuthException {
+        String[] pairs = token.split("\\.");
+        for (String pair : pairs) {
+            String[] vals = pair.split("=");
+            if (vals.length == 2 && vals[0].equals("u"))
+                return UUID.fromString(vals[1]);
+        }
+        throw new AuthException("Error extracting userId from token", 403);
     }
 }

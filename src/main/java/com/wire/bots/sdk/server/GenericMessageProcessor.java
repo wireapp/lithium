@@ -171,10 +171,8 @@ public class GenericMessageProcessor {
                     asset.hasPreview());
 
             if (asset.hasPreview()) {
-                Messages.Asset.Preview preview = asset.getPreview();
                 ImageMessage msg = new ImageMessage(messageId, convId, clientId, from);
-
-                handleVideoPreview(preview, msg, time);
+                handleVideoPreview(asset.getPreview(), msg, time);
             }
 
             if (asset.hasUploaded()) {
