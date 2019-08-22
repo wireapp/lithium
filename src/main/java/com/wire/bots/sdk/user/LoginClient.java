@@ -26,10 +26,8 @@ import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
 import com.wire.bots.sdk.user.model.Access;
 import com.wire.bots.sdk.user.model.NewClient;
-import com.wire.bots.sdk.user.model.User;
 import org.glassfish.jersey.logging.LoggingFeature;
 
-import javax.naming.AuthenticationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
@@ -37,12 +35,17 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.*;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 
 public class LoginClient {
+    private static final String LABEL = "wbots";
+    private static final String COOKIE_NAME = "zuid";
     final WebTarget clientsPath;
     private final WebTarget loginPath;
     private final WebTarget accessPath;
+    private final WebTarget cookiesPath;
 
     public LoginClient(Client client) {
         String host = host();
@@ -56,6 +59,10 @@ public class LoginClient {
                 .target(host)
                 .path("access");
 
+        cookiesPath = client
+                .target(host)
+                .path("cookies");
+
         Feature feature = new LoggingFeature(Logger.getLOGGER(), Level.FINE, null, null);
         //accessPath.register(feature);
     }
@@ -68,36 +75,38 @@ public class LoginClient {
         return "Bearer " + token;
     }
 
-    public User login(String email, String password) throws HttpException, AuthenticationException {
+    public Access login(String email, String password) throws HttpException {
         return login(email, password, false);
     }
 
-    public User login(String email, String password, boolean persisted) throws HttpException, AuthenticationException {
-        User user = new User();
-        user.setEmail(email);
-        user.setPassword(password);
+    public Access login(String email, String password, boolean persisted) throws HttpException {
+        _Login login = new _Login();
+        login.email = email;
+        login.password = password;
+        login.label = LABEL;
 
         Response response = loginPath.
                 queryParam("persist", persisted).
                 request(MediaType.APPLICATION_JSON).
-                post(Entity.entity(user, MediaType.APPLICATION_JSON));
+                post(Entity.entity(login, MediaType.APPLICATION_JSON));
 
         if (response.getStatus() >= 400)
             throw new HttpException(response.readEntity(String.class), response.getStatus());
 
-        User ret = response.readEntity(User.class);
-        String cookie = response.getStringHeaders().getFirst(HttpHeaders.SET_COOKIE);
-        ret.setCookie(cookie);
-        ret.setUserId(User.extractUserId(ret.getToken()));
-        return ret;
+        Access access = response.readEntity(Access.class);
+
+        NewCookie zuid = response.getCookies().get(COOKIE_NAME);
+        if (zuid != null) {
+            access.setCookie(zuid);
+        }
+        return access;
     }
 
     @Deprecated
     public String registerClient(String token, String password, ArrayList<PreKey> preKeys, PreKey lastKey) throws HttpException {
         String deviceClass = "tablet";
         String type = "permanent";
-        String label = "wbotz";
-        return registerClient(token, password, preKeys, lastKey, deviceClass, type, label);
+        return registerClient(token, password, preKeys, lastKey, deviceClass, type, LABEL);
     }
 
     /**
@@ -155,15 +164,62 @@ public class LoginClient {
 
         Access access = response.readEntity(Access.class);
 
-        NewCookie zuid = response.getCookies().get("zuid");
+        NewCookie zuid = response.getCookies().get(COOKIE_NAME);
         if (zuid != null) {
-            access.cookie = zuid.getValue();
+            access.setCookie(zuid);
         }
         return access;
     }
 
+    public void logout(String token, Cookie cookie) throws HttpException {
+        Response response = accessPath
+                .path("logout")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, bearer(token))
+                .cookie(cookie)
+                .post(Entity.entity(null, MediaType.APPLICATION_JSON));
+
+        int status = response.getStatus();
+        if (status == 403) {
+            String entity = response.readEntity(String.class);
+            throw new AuthException(entity, status);
+        }
+
+        if (status >= 400) {
+            String entity = response.readEntity(String.class);
+            throw new HttpException(entity, status);
+        }
+    }
+
+    public void removeCookies(String token, String password) throws HttpException {
+        _RemoveCookies removeCookies = new _RemoveCookies();
+        removeCookies.password = password;
+        removeCookies.labels = Collections.singletonList(LABEL);
+
+        Response response = cookiesPath.
+                request(MediaType.APPLICATION_JSON).
+                header(HttpHeaders.AUTHORIZATION, bearer(token)).
+                post(Entity.entity(removeCookies, MediaType.APPLICATION_JSON));
+
+        if (response.getStatus() >= 400)
+            throw new HttpException(response.readEntity(String.class), response.getStatus());
+    }
+
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class _Client {
+    static class _Login {
+        public String email;
+        public String password;
+        public String label;
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class _Client {
         public String id;
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class _RemoveCookies {
+        public String password;
+        public List<String> labels;
     }
 }

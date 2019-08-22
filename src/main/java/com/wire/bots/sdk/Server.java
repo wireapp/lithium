@@ -46,7 +46,7 @@ import com.wire.bots.sdk.tools.Util;
 import com.wire.bots.sdk.user.Endpoint;
 import com.wire.bots.sdk.user.UserClientRepo;
 import com.wire.bots.sdk.user.UserMessageResource;
-import com.wire.bots.sdk.user.model.User;
+import com.wire.bots.sdk.user.model.Access;
 import io.dropwizard.Application;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.client.JerseyClientConfiguration;
@@ -234,15 +234,15 @@ public abstract class Server<Config extends Configuration> extends Application<C
         UserClientRepo clientRepo = new UserClientRepo(client, cryptoFactory, storageFactory);
 
         Endpoint ep = new Endpoint(client, cryptoFactory, storageFactory);
-        User user = ep.signIn(email, password, true);
+        Access access = ep.signIn(email, password, true);
         Logger.info("Logged in as: %s userId: %s:%s token: %s",
                 email,
-                user.getUserId(),
-                user.getClientId(),
-                user.getToken());
+                access.getUserId(),
+                access.getClientId(),
+                access.getToken());
 
-        UserMessageResource userMessageResource = new UserMessageResource(user.getUserId(), handler, clientRepo);
-        String wss = Util.getWss(user.getToken(), user.getClientId());
+        UserMessageResource userMessageResource = new UserMessageResource(access.getUserId(), handler, clientRepo);
+        String wss = Util.getWss(access.getToken(), access.getClientId());
 
         ep.connectWebSocket(userMessageResource, new URI(wss));
     }

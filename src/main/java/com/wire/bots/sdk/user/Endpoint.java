@@ -32,7 +32,6 @@ import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
 import com.wire.bots.sdk.user.model.Access;
 import com.wire.bots.sdk.user.model.Message;
-import com.wire.bots.sdk.user.model.User;
 import org.glassfish.tyrus.client.ClientManager;
 
 import javax.websocket.*;
@@ -58,7 +57,7 @@ public class Endpoint {
     protected final StorageFactory storageFactory;
     protected final CryptoFactory cryptoFactory;
     protected UserMessageResource userMessageResource;
-    protected User user;
+    protected Access access;
     protected ClientManager clientManager;
     protected Session session;
 
@@ -75,22 +74,25 @@ public class Endpoint {
      * @param email     Email address
      * @param password  Plain text password
      * @param persisted True if you want to renew token every 15 mins
-     * @return UserId
+     * @return Access object
      * @throws Exception
      */
-    public User signIn(String email, String password, boolean persisted) throws Exception {
+    public Access signIn(String email, String password, boolean persisted) throws Exception {
         LoginClient loginClient = new LoginClient(httpClient);
-        user = loginClient.login(email, password, persisted);
+        access = loginClient.login(email, password, persisted);
 
-        String accessToken = user.getToken();
-
-        String clientId = initDevice(user.getUserId(), password, accessToken);
-        user.setClientId(clientId);
+        String clientId = initDevice(access.getUserId(), password, access.getToken());
+        access.setClientId(clientId);
 
         if (persisted)
             initRenewal();
 
-        return user;
+        return access;
+    }
+
+    public void signout() throws Exception {
+        LoginClient loginClient = new LoginClient(httpClient);
+        loginClient.logout(access.getToken(), access.getCookie());
     }
 
     public void connectWebSocket(UserMessageResource userMessageResource, URI wss)
@@ -120,7 +122,7 @@ public class Endpoint {
                     case "conversation.otr-message-add":
                     case "conversation.member-join":
                     case "conversation.create":
-                        userMessageResource.onNewMessage(message.id, user.getUserId(), payload.convId, payload);
+                        userMessageResource.onNewMessage(message.id, access.userId, payload.convId, payload);
                         break;
                     default:
                         Logger.info("Unknown type: %s, from: %s", payload.type, payload.from);
@@ -136,7 +138,7 @@ public class Endpoint {
     public void onClose(Session closed, CloseReason reason) throws Exception {
         //Logger.debug("Session closed: %s, %s", closed.getId(), reason);
         Access access = getAccess();
-        String wss = Util.getWss(access.token, access.clientId);
+        String wss = Util.getWss(access.token, access.getClientId());
         session = clientManager.connectToServer(this, new URI(wss));
         //Logger.debug("New Session %s", this.session.getId());
     }
@@ -176,7 +178,7 @@ public class Endpoint {
                 state.id = userId;
                 ArrayList<PreKey> preKeys = crypto.newPreKeys(0, 20);
                 PreKey lastKey = crypto.newLastPreKey();
-                state.client = loginClient.registerClient(token, password, preKeys, lastKey);
+                state.client = loginClient.registerClient(token, password, preKeys, lastKey, "tablet", "permanent", "wbots");
 
                 Logger.info("initDevice: New ClientID: %s", state.client);
             }
@@ -192,11 +194,11 @@ public class Endpoint {
                     Access access = getAccess();
 
                     API api = new API(httpClient, null, access.token);
-                    Access newAccess = api.renewAccessToken(new Cookie("zuid", access.cookie));
+                    Access newAccess = api.renewAccessToken(access.getCookie());
 
-                    newAccess.cookie = newAccess.cookie != null ? newAccess.cookie : access.cookie;
+                    updateCookie(newAccess.getCookie());
 
-                    persistAccess(newAccess);
+                    persistToken(newAccess.userId, newAccess.token);
 
                     if (session != null)
                         session.close();
@@ -207,25 +209,29 @@ public class Endpoint {
         }, TimeUnit.MINUTES.toMillis(RENEW_PERIOD_MINUTES), TimeUnit.MINUTES.toMillis(RENEW_PERIOD_MINUTES));
     }
 
-    protected Access getAccess() throws IOException {
-        UUID userId = user.getUserId();
-        State storage = storageFactory.create(userId);
-        NewBot state = storage.getState();
-
-        Access access = new Access();
-        access.userId = userId;
-        access.token = state.token;
-        access.cookie = user.getCookie();
-        access.clientId = user.getClientId();
-
-        return access;
+    private void updateCookie(Cookie cookie) {
+        if (cookie != null) {
+            access.setCookie(cookie);
+        }
     }
 
-    protected boolean persistAccess(Access access) throws IOException {
-        UUID userId = access.userId;
+    protected Access getAccess() throws IOException {
+        State storage = storageFactory.create(access.userId);
+        NewBot state = storage.getState();
+
+        Access ret = new Access();
+        ret.userId = state.id;
+        ret.token = state.token;
+        ret.setCookie(access.getCookie());
+        ret.setClientId(access.getClientId());
+
+        return ret;
+    }
+
+    protected boolean persistToken(UUID userId, String token) throws IOException {
         State storage = storageFactory.create(userId);
         NewBot state = storage.getState();
-        state.token = access.token;
+        state.token = token;
         return storage.saveState(state);
     }
 }
