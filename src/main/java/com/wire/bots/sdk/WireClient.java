@@ -186,6 +186,8 @@ public interface WireClient extends Closeable {
      */
     UUID editMessage(UUID replacingMessageId, String text) throws Exception;
 
+    void send(IGeneric message) throws Exception;
+
     /**
      * This method downloads asset from the Backend.
      *

@@ -23,13 +23,17 @@ import com.waz.model.Messages;
 import java.util.UUID;
 
 public class MessageText implements IGeneric {
-    private final String text;
-    private final UUID mentionUser;
-    private final int offset;
-    private final int len;
-    private final long expires;
+    private String text;
+    private UUID mentionUser;
+    private int offset;
+    private int len;
+    private long expires;
     private UUID messageId = UUID.randomUUID();
 
+    private MessageText() {
+
+    }
+    
     public MessageText(String text) {
         this(text, 0, null, 0, 0);
     }
@@ -82,5 +86,40 @@ public class MessageText implements IGeneric {
     @Override
     public UUID getMessageId() {
         return messageId;
+    }
+
+    public static MessageText builder() {
+        return new MessageText();
+    }
+
+    public MessageText setMessageId(UUID messageId) {
+        this.messageId = messageId;
+        return this;
+    }
+
+    public MessageText setText(String text) {
+        this.text = text;
+        return this;
+    }
+
+    public MessageText setMentionUser(UUID mention) {
+        this.mentionUser = mention;
+        return this;
+    }
+
+    public MessageText setOffset(int offset) {
+        this.offset = offset;
+        return this;
+    }
+
+    public MessageText setLength(int length) {
+        this.len = length;
+        return this;
+
+    }
+
+    public MessageText setExpires(long expires) {
+        this.expires = expires;
+        return this;
     }
 }
