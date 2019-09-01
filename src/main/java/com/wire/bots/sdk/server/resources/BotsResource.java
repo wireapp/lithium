@@ -41,11 +41,11 @@ import java.util.UUID;
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/bots")
 public class BotsResource {
-    private final MessageHandlerBase handler;
+    protected final MessageHandlerBase handler;
 
-    private final StorageFactory storageF;
-    private final CryptoFactory cryptoF;
-    private final AuthValidator validator;
+    protected final StorageFactory storageF;
+    protected final CryptoFactory cryptoF;
+    protected final AuthValidator validator;
 
     public BotsResource(MessageHandlerBase handler, StorageFactory storageF, CryptoFactory cryptoF, AuthValidator val) {
         this.handler = handler;
@@ -64,7 +64,7 @@ public class BotsResource {
             @ApiParam("Service's auth Bearer token") @HeaderParam("Authorization") @NotNull String auth,
             @ApiParam @Valid @NotNull NewBot newBot) throws Exception {
 
-        if (!validator.validate(auth)) {
+        if (!isValid(auth)) {
             Logger.warning("Invalid auth '%s'", auth);
             return Response
                     .status(401)
@@ -72,7 +72,7 @@ public class BotsResource {
                     .build();
         }
 
-        if (!handler.onNewBot(newBot))
+        if (!onNewBot(newBot, auth))
             return Response
                     .status(409)
                     .entity(new ErrorMessage("User not whitelisted or service does not accept new instances atm"))
@@ -106,5 +106,13 @@ public class BotsResource {
                 ok(ret).
                 status(201).
                 build();
+    }
+
+    protected boolean onNewBot(NewBot newBot, String auth) {
+        return handler.onNewBot(newBot);
+    }
+
+    protected boolean isValid(String auth) {
+        return validator.validate(auth);
     }
 }
