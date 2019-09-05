@@ -208,6 +208,7 @@ update_service() {
     read -p "New service name [default: no change]: " new_name
     read -p "New service description [default: no change]: " new_descr
     read -p "New service tags [default: no change]: " new_tags
+    read -p "New service summary [default: no change]: " new_summary
     if [ -z "$new_name" ]; then
         new_name="null"
     else
@@ -217,6 +218,11 @@ update_service() {
         new_descr="null"
     else
         new_descr="\"$new_descr\""
+    fi
+    if [ -z "$new_summary" ]; then
+        new_summary="null"
+    else
+        new_summary="\"$new_summary\""
     fi
     if [ -z "$new_tags" ]; then
         new_tags="null"
@@ -229,7 +235,8 @@ update_service() {
         -H 'Content-Type: application/json' \
         -d '{"name": '"$new_name"',
              "description": '"$new_descr"',
-             "tags": '"$new_tags"'
+             "tags": '"$new_tags"',
+             "summary": '"$new_summary"'
             }' \
         -b ./.cookie
     echo "Done"
