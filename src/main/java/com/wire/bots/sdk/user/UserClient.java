@@ -22,6 +22,7 @@ import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.WireClientBase;
 import com.wire.bots.sdk.assets.*;
 import com.wire.bots.sdk.crypto.Crypto;
+import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.AssetKey;
 import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.NewBot;
@@ -224,7 +225,7 @@ public class UserClient extends WireClientBase implements WireClient {
     }
 
     @Override
-    public User getSelf() {
+    public User getSelf() throws HttpException {
         return api.getSelf();
     }
 
@@ -234,12 +235,12 @@ public class UserClient extends WireClientBase implements WireClient {
     }
 
     @Override
-    public Collection<User> getUsers(Collection<UUID> userIds) {
+    public Collection<User> getUsers(Collection<UUID> userIds) throws HttpException {
         return api.getUsers(userIds);
     }
 
     @Override
-    public User getUser(UUID userId) {
+    public User getUser(UUID userId) throws HttpException {
         Collection<User> users = api.getUsers(Collections.singleton(userId));
         return users.iterator().next();
     }

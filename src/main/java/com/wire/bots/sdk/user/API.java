@@ -383,33 +383,46 @@ public class API extends LoginClient implements Backend {
                 });
     }
 
-    public Collection<User> getUsers(Collection<UUID> ids) {
-        return usersPath.
+    public Collection<User> getUsers(Collection<UUID> ids) throws HttpException {
+        Response response = usersPath.
                 queryParam("ids", ids.toArray()).
                 request(MediaType.APPLICATION_JSON).
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
-                get(new GenericType<Collection<User>>() {
-                });
+                get();
+
+        if (response.getStatus() != 200) {
+            throw new HttpException(response.readEntity(String.class), response.getStatus());
+        }
+
+        return response.readEntity(new GenericType<Collection<User>>() {
+        });
     }
 
-    public User getUser(UUID userId) {
-        ArrayList<User> users = usersPath.
-                queryParam("ids", userId).
+    public User getUser(UUID userId) throws HttpException {
+        Response response = usersPath.
+                path(userId.toString()).
                 request(MediaType.APPLICATION_JSON).
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
-                get(new GenericType<ArrayList<User>>() {
-                });
-        if (users.isEmpty())
-            return null;
+                get();
 
-        return users.get(0);
+        if (response.getStatus() != 200) {
+            throw new HttpException(response.readEntity(String.class), response.getStatus());
+        }
+
+        return response.readEntity(User.class);
     }
 
-    public User getSelf() {
-        return selfPath.
+    public User getSelf() throws HttpException {
+        Response response = selfPath.
                 request(MediaType.APPLICATION_JSON).
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
-                get(User.class);
+                get();
+
+        if (response.getStatus() != 200) {
+            throw new HttpException(response.readEntity(String.class), response.getStatus());
+        }
+
+        return response.readEntity(User.class);
     }
 
     public UUID getTeam() {

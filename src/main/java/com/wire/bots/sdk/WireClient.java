@@ -21,6 +21,7 @@ package com.wire.bots.sdk;
 import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.sdk.assets.IAsset;
 import com.wire.bots.sdk.assets.IGeneric;
+import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.AssetKey;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.Conversation;
@@ -215,7 +216,7 @@ public interface WireClient extends Closeable {
      *
      * @return
      */
-    User getSelf();
+    User getSelf() throws HttpException;
 
     /**
      * @return Conversation ID as UUID
@@ -234,7 +235,7 @@ public interface WireClient extends Closeable {
      * @return Collection of user profiles (name, accent colour,...)
      * @throws IOException
      */
-    Collection<User> getUsers(Collection<UUID> userIds) throws IOException;
+    Collection<User> getUsers(Collection<UUID> userIds) throws HttpException;
 
     /**
      * Fetch users' profiles from the Backend
@@ -243,7 +244,7 @@ public interface WireClient extends Closeable {
      * @return User profile (name, accent colour,...)
      * @throws IOException
      */
-    User getUser(UUID userId) throws IOException;
+    User getUser(UUID userId) throws HttpException;
 
     /**
      * Fetch conversation details from the Backend

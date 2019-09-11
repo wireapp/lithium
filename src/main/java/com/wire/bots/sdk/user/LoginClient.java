@@ -64,7 +64,7 @@ public class LoginClient {
                 .path("cookies");
 
         Feature feature = new LoggingFeature(Logger.getLOGGER(), Level.FINE, null, null);
-        //accessPath.register(feature);
+        accessPath.register(feature);
     }
 
     public static String host() {
@@ -90,8 +90,20 @@ public class LoginClient {
                 request(MediaType.APPLICATION_JSON).
                 post(Entity.entity(login, MediaType.APPLICATION_JSON));
 
-        if (response.getStatus() >= 400)
-            throw new HttpException(response.readEntity(String.class), response.getStatus());
+        int status = response.getStatus();
+
+        if (status == 401) {   //todo nginx returns text/html for 401. Cannot deserialize as json
+            response.readEntity(String.class);
+            throw new AuthException(status);
+        }
+
+        if (status == 403) {
+            throw response.readEntity(AuthException.class);
+        }
+
+        if (status >= 400) {
+            throw response.readEntity(HttpException.class);
+        }
 
         Access access = response.readEntity(Access.class);
 
@@ -137,8 +149,15 @@ public class LoginClient {
                 .header(HttpHeaders.AUTHORIZATION, bearer(token))
                 .post(Entity.entity(newClient, MediaType.APPLICATION_JSON));
 
-        if (response.getStatus() >= 400)
-            throw new HttpException(response.readEntity(String.class), response.getStatus());
+        int status = response.getStatus();
+
+        if (status == 401) {   //todo nginx returns text/html for 401. Cannot deserialize as json
+            response.readEntity(String.class);
+            throw new AuthException(status);
+        }
+
+        if (status >= 400)
+            throw response.readEntity(HttpException.class);
 
         return response.readEntity(_Client.class).id;
     }
@@ -152,14 +171,18 @@ public class LoginClient {
                 post(Entity.entity(null, MediaType.APPLICATION_JSON));
 
         int status = response.getStatus();
+
+        if (status == 401) {   //todo nginx returns text/html for 401. Cannot deserialize as json
+            response.readEntity(String.class);
+            throw new AuthException(status);
+        }
+
         if (status == 403) {
-            String entity = response.readEntity(String.class);
-            throw new AuthException(entity, status);
+            throw response.readEntity(AuthException.class);
         }
 
         if (status >= 400) {
-            String entity = response.readEntity(String.class);
-            throw new HttpException(entity, status);
+            throw response.readEntity(HttpException.class);
         }
 
         Access access = response.readEntity(Access.class);
@@ -180,14 +203,17 @@ public class LoginClient {
                 .post(Entity.entity(null, MediaType.APPLICATION_JSON));
 
         int status = response.getStatus();
+        if (status == 401) {   //todo nginx returns text/html for 401. Cannot deserialize as json
+            response.readEntity(String.class);
+            throw new AuthException(status);
+        }
+
         if (status == 403) {
-            String entity = response.readEntity(String.class);
-            throw new AuthException(entity, status);
+            throw response.readEntity(AuthException.class);
         }
 
         if (status >= 400) {
-            String entity = response.readEntity(String.class);
-            throw new HttpException(entity, status);
+            throw response.readEntity(HttpException.class);
         }
     }
 
@@ -201,8 +227,15 @@ public class LoginClient {
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
                 post(Entity.entity(removeCookies, MediaType.APPLICATION_JSON));
 
-        if (response.getStatus() >= 400)
-            throw new HttpException(response.readEntity(String.class), response.getStatus());
+        int status = response.getStatus();
+
+        if (status == 401) {   //todo nginx returns text/html for 401. Cannot deserialize as json
+            response.readEntity(String.class);
+            throw new AuthException(status);
+        }
+
+        if (status >= 400)
+            throw response.readEntity(HttpException.class);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
