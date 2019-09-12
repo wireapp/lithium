@@ -412,6 +412,18 @@ public class API extends LoginClient implements Backend {
         return response.readEntity(User.class);
     }
 
+    public boolean hasDevice(UUID userId, String clientId) {
+        Response response = usersPath.
+                path(userId.toString()).
+                path("clients").
+                path(clientId).
+                request(MediaType.APPLICATION_JSON).
+                header(HttpHeaders.AUTHORIZATION, bearer(token)).
+                get();
+
+        return response.getStatus() == 200;
+    }
+
     public User getSelf() throws HttpException {
         Response response = selfPath.
                 request(MediaType.APPLICATION_JSON).
@@ -495,5 +507,13 @@ public class API extends LoginClient implements Backend {
 
         @JsonProperty
         public boolean managed;
+    }
+
+    static class _Device {
+        @JsonProperty("id")
+        public String clientId;
+
+        @JsonProperty("class")
+        public String type;
     }
 }
