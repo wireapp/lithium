@@ -43,6 +43,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class API extends LoginClient implements Backend {
     private final WebTarget conversationsPath;
@@ -246,7 +247,7 @@ public class API extends LoginClient implements Backend {
         return response.getStatus() == 200;
     }
 
-    public User addService(UUID serviceId, UUID providerId) throws IOException {
+    public User addService(UUID serviceId, UUID providerId) throws HttpException {
         _Service service = new _Service();
         service.service = serviceId;
         service.provider = providerId;
@@ -258,9 +259,9 @@ public class API extends LoginClient implements Backend {
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
                 post(Entity.entity(service, MediaType.APPLICATION_JSON));
 
-        if (response.getStatus() >= 300) {
-            Logger.warning(response.readEntity(String.class));
-            throw new IOException(response.getStatusInfo().getReasonPhrase());
+        if (response.getStatus() >= 400) {
+            String msg = response.readEntity(String.class);
+            throw new HttpException(msg, response.getStatus());
         }
 
         User user = response.readEntity(User.class);
@@ -270,7 +271,7 @@ public class API extends LoginClient implements Backend {
         return user;
     }
 
-    public User addParticipants(UUID... userIds) throws IOException {
+    public User addParticipants(UUID... userIds) throws HttpException {
         _NewConv newConv = new _NewConv();
         newConv.users = Arrays.asList(userIds);
 
@@ -281,9 +282,9 @@ public class API extends LoginClient implements Backend {
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
                 post(Entity.entity(newConv, MediaType.APPLICATION_JSON));
 
-        if (response.getStatus() >= 300) {
-            Logger.warning(response.readEntity(String.class));
-            throw new IOException(response.getStatusInfo().getReasonPhrase());
+        if (response.getStatus() >= 400) {
+            String msg = response.readEntity(String.class);
+            throw new HttpException(msg, response.getStatus());
         }
 
         return response.readEntity(User.class);
@@ -449,6 +450,18 @@ public class API extends LoginClient implements Backend {
         return res.teams.get(0).id;
     }
 
+    public Collection<UUID> getTeamMembers(UUID teamId) {
+        _Team team = teamsPath
+                .path(teamId.toString())
+                .path("members")
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, bearer(token))
+                .accept(MediaType.APPLICATION_JSON)
+                .get(_Team.class);
+
+        return team.members.stream().map(x -> x.user).collect(Collectors.toCollection(ArrayList::new));
+    }
+
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class _Conv {
         @JsonProperty
@@ -479,6 +492,14 @@ public class API extends LoginClient implements Backend {
         public UUID id;
         @JsonProperty
         public String name;
+        @JsonProperty
+        public List<_TeamMember> members;
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class _TeamMember {
+        @JsonProperty
+        public UUID user;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)

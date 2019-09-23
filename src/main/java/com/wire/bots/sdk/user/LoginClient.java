@@ -98,11 +98,13 @@ public class LoginClient {
         }
 
         if (status == 403) {
-            throw response.readEntity(AuthException.class);
+            String entity = response.readEntity(String.class);
+            throw new AuthException(entity, status);
         }
 
         if (status >= 400) {
-            throw response.readEntity(HttpException.class);
+            String entity = response.readEntity(String.class);
+            throw new HttpException(entity, status);
         }
 
         Access access = response.readEntity(Access.class);
