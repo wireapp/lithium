@@ -9,10 +9,12 @@ import com.wire.bots.sdk.tools.Logger;
 import java.io.ByteArrayInputStream;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Properties;
 
 public class PgStorage implements IStorage {
     private final String user;
     private final String password;
+    private final String url;
     private final String db;
     private final String host;
     private final int port;
@@ -23,6 +25,7 @@ public class PgStorage implements IStorage {
         this.db = "postgres";
         this.host = "localhost";
         this.port = 5432;
+        this.url = "jdbc:postgresql://localhost:5432/postgres";
     }
 
     public PgStorage(String user, String password, String db, String host, int port) {
@@ -31,6 +34,16 @@ public class PgStorage implements IStorage {
         this.db = db;
         this.host = host;
         this.port = port;
+        this.url = null;
+    }
+
+    public PgStorage(String user, String password, String url) {
+        this.user = user;
+        this.password = password;
+        this.url = url;
+        this.db = null;
+        this.host = null;
+        this.port = 0;
     }
 
     @Override
@@ -151,13 +164,18 @@ public class PgStorage implements IStorage {
     private Connection newConnection() throws InterruptedException {
         while (true) {
             try {
-                String url = String.format("jdbc:postgresql://%s:%d/%s", host, port, db);
+                String url = this.url != null
+                        ? this.url
+                        : String.format("jdbc:postgresql://%s:%d/%s", host, port, db);
                 Connection connection;
-                if (user != null && password != null) {
-                    connection = DriverManager.getConnection(url, user, password);
-                } else {
-                    connection = DriverManager.getConnection(url);
+                Properties info = new java.util.Properties();
+                if (user != null && !user.isEmpty()) {
+                    info.put("user", user);
                 }
+                if (password != null && !password.isEmpty()) {
+                    info.put("password", password);
+                }
+                connection = DriverManager.getConnection(url, info);
                 connection.setAutoCommit(false);
                 return connection;
             } catch (Exception e) {

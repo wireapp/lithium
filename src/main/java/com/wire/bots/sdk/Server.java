@@ -186,11 +186,17 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
     private CryptoFactory postgresCryptoFactory() {
         return (botId) -> {
-            PgStorage storage = new PgStorage(config.db.user,
-                    config.db.password,
-                    config.db.database,
-                    config.db.host,
-                    config.db.port);
+            PgStorage storage;
+            if (config.db.url != null && !config.db.url.isEmpty())
+                storage = new PgStorage(config.db.user,
+                        config.db.password,
+                        config.db.url);
+            else
+                storage = new PgStorage(config.db.user,
+                        config.db.password,
+                        config.db.database,
+                        config.db.host,
+                        config.db.port);
             return new CryptoDatabase(botId, storage);
         };
     }
