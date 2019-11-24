@@ -59,4 +59,12 @@ public class UserMessageResource extends MessageResourceBase {
             Logger.error("respondWithError: user: %s, conv: %s, %s", userId, convId, e);
         }
     }
+
+    public UUID getOwner() {
+        return owner;
+    }
+
+    public UserClientRepo getUserClientRepo() {
+        return userClientRepo;
+    }
 }

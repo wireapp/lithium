@@ -52,4 +52,16 @@ public class ClientRepo {
         if (!purged)
             throw new IOException("Failed to purge Bot: " + botId);
     }
+
+    public Client getHttpClient() {
+        return httpClient;
+    }
+
+    public CryptoFactory getCf() {
+        return cf;
+    }
+
+    public StorageFactory getSf() {
+        return sf;
+    }
 }

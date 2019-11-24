@@ -43,9 +43,7 @@ import com.wire.bots.sdk.state.RedisState;
 import com.wire.bots.sdk.tools.AuthValidator;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
-import com.wire.bots.sdk.user.Endpoint;
-import com.wire.bots.sdk.user.UserClientRepo;
-import com.wire.bots.sdk.user.UserMessageResource;
+import com.wire.bots.sdk.user.*;
 import com.wire.bots.sdk.user.model.Access;
 import io.dropwizard.Application;
 import io.dropwizard.client.JerseyClientBuilder;
@@ -58,6 +56,8 @@ import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.tyrus.client.ClientManager;
+import org.glassfish.tyrus.client.ClientProperties;
 
 import javax.ws.rs.client.Client;
 import java.net.URI;
@@ -237,20 +237,29 @@ public abstract class Server<Config extends Configuration> extends Application<C
         StorageFactory storageFactory = getStorageFactory();
         CryptoFactory cryptoFactory = getCryptoFactory();
 
-        UserClientRepo clientRepo = new UserClientRepo(client, cryptoFactory, storageFactory);
+        LoginClient loginClient = new LoginClient(client);
+        Access access = loginClient.login(email, password);
 
-        Endpoint ep = new Endpoint(client, cryptoFactory, storageFactory);
-        Access access = ep.signIn(email, password, true);
-        Logger.info("Logged in as: %s userId: %s:%s token: %s",
+        Logger.info("Logged in as: %s userId: %s token: %s",
                 email,
                 access.getUserId(),
-                access.getClientId(),
                 access.getToken());
 
-        UserMessageResource userMessageResource = new UserMessageResource(access.getUserId(), handler, clientRepo);
-        String wss = Util.getWss(access.getToken(), access.getClientId());
+        UserClientRepo clientRepo = new UserClientRepo(client, cryptoFactory, storageFactory);
 
-        ep.connectWebSocket(userMessageResource, new URI(wss));
+        UserMessageResource userMessageResource = new UserMessageResource(access.getUserId(), handler, clientRepo);
+
+        ClientManager container = ClientManager.createClient();
+
+        // Use this handler to automatically reconnect upon session.close() after 5sec
+        container.getProperties().put(ClientProperties.RECONNECT_HANDLER, new SocketReconnectHandler(5));
+
+        Endpoint ep = new Endpoint(client, userMessageResource);
+
+        String clientId = ep.initDevice(access.getUserId(), password, access.getToken());
+
+        String wss = Util.getWss(access.getToken(), clientId);
+        container.connectToServer(ep, URI.create(wss));
     }
 
     protected void messageResource(Config config, Environment env, MessageHandlerBase handler, ClientRepo repo) {

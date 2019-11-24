@@ -24,7 +24,7 @@ public class ConversationTask extends TaskBase {
         UUID botId = UUID.fromString(extractString(parameters, "bot"));
 
         try {
-            WireClient client = repo.getWireClient(botId);
+            WireClient client = repo.getClient(botId);
             Conversation conversation = client.getConversation();
             ObjectMapper mapper = new ObjectMapper();
             mapper.enable(SerializationFeature.INDENT_OUTPUT);

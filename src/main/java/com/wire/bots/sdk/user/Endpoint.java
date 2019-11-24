@@ -18,7 +18,6 @@
 
 package com.wire.bots.sdk.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.exceptions.HttpException;
@@ -29,86 +28,82 @@ import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.server.model.Payload;
 import com.wire.bots.sdk.state.State;
 import com.wire.bots.sdk.tools.Logger;
-import com.wire.bots.sdk.tools.Util;
 import com.wire.bots.sdk.user.model.Access;
 import com.wire.bots.sdk.user.model.Message;
-import org.glassfish.tyrus.client.ClientManager;
 
 import javax.websocket.*;
 import javax.ws.rs.client.Client;
-import javax.ws.rs.core.Cookie;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Web Socket when running the sdk as a regular user and not as a bot Service
  */
-@ClientEndpoint
+@ClientEndpoint(decoders = MessageDecoder.class)
 public class Endpoint {
     protected static final int RENEW_PERIOD_MINUTES = 5;
 
     protected final Client httpClient;
-    protected final StorageFactory storageFactory;
-    protected final CryptoFactory cryptoFactory;
     protected UserMessageResource userMessageResource;
-    protected Access access;
-    protected ClientManager clientManager;
-    protected Session session;
 
-    public Endpoint(Client httpClient, CryptoFactory cryptoFactory, StorageFactory storageFactory) {
+    public Endpoint(Client httpClient, UserMessageResource userMessageResource) {
         this.httpClient = httpClient;
-        this.storageFactory = storageFactory;
-        this.cryptoFactory = cryptoFactory;
-        this.clientManager = ClientManager.createClient();
+        this.userMessageResource = userMessageResource;
     }
+
+//    /**
+//     * Signin as a regular Wire user
+//     *
+//     * @param email     Email address
+//     * @param password  Plain text password
+//     * @param persisted True if you want to renew token every 15 mins
+//     * @return Access object
+//     * @throws Exception
+//     */
+//    public Access signIn(String email, String password, boolean persisted) throws Exception {
+//        LoginClient loginClient = new LoginClient(httpClient);
+//        Access access = loginClient.login(email, password, persisted);
+//
+//        String clientId = initDevice(access.getUserId(), password, access.getToken());
+//        access.setClientId(clientId);
+//
+////        if (persisted)
+////            initRenewal();
+//
+//        return access;
+//    }
 
     /**
-     * Signin as a regular Wire user
-     *
-     * @param email     Email address
-     * @param password  Plain text password
-     * @param persisted True if you want to renew token every 15 mins
-     * @return Access object
+     * @param password
+     * @param token
+     * @return ClientId
      * @throws Exception
      */
-    public Access signIn(String email, String password, boolean persisted) throws Exception {
-        LoginClient loginClient = new LoginClient(httpClient);
-        access = loginClient.login(email, password, persisted);
+    public String initDevice(UUID userId, String password, String token) throws Exception {
+        NewBot state = initState(userId, password, token);
+        state.token = token;
 
-        String clientId = initDevice(access.getUserId(), password, access.getToken());
-        access.setClientId(clientId);
-
-        if (persisted)
-            initRenewal();
-
-        return access;
+        // save the state with new token
+        StorageFactory storageFactory = userMessageResource.getUserClientRepo().getSf();
+        State storage = storageFactory.create(userId);
+        storage.saveState(state);
+        return state.client;
     }
 
-    public void signout() throws Exception {
+    public void signout(Access access) throws Exception {
         LoginClient loginClient = new LoginClient(httpClient);
         loginClient.logout(access.getToken(), access.getCookie());
     }
 
-    public void connectWebSocket(UserMessageResource userMessageResource, URI wss)
-            throws IOException, DeploymentException {
-        this.userMessageResource = userMessageResource;
-        this.session = clientManager.connectToServer(this, wss);
-    }
+//    public void connectWebSocket(UserMessageResource userMessageResource, URI wss)
+//            throws IOException, DeploymentException {
+//        this.userMessageResource = userMessageResource;
+//        this.session = clientManager.connectToServer(this, wss);
+//    }
 
     @OnMessage
-    public void onMessage(InputStream rawInput) throws Exception {
-        byte[] bytes = Util.toByteArray(rawInput);
-        Logger.debug("Endpoint:onMessage %s", new String(bytes));
-
-        ObjectMapper mapper = new ObjectMapper();
-        Message message = mapper.readValue(bytes, Message.class);
-
+    public void onMessage(Message message) {
         for (Payload payload : message.payload) {
             try {
                 switch (payload.type) {
@@ -122,7 +117,7 @@ public class Endpoint {
                     case "conversation.otr-message-add":
                     case "conversation.member-join":
                     case "conversation.create":
-                        userMessageResource.onNewMessage(message.id, access.userId, payload.convId, payload);
+                        userMessageResource.onNewMessage(message.id, userMessageResource.getOwner(), payload.convId, payload);
                         break;
                     default:
                         Logger.info("Unknown type: %s, from: %s", payload.type, payload.from);
@@ -136,31 +131,16 @@ public class Endpoint {
 
     @OnClose
     public void onClose(Session closed, CloseReason reason) throws Exception {
-        //Logger.debug("Session closed: %s, %s", closed.getId(), reason);
-        Access access = getAccess();
-        String wss = Util.getWss(access.token, access.getClientId());
-        session = clientManager.connectToServer(this, new URI(wss));
+        Logger.debug("Session closed: %s, %s", closed.getId(), reason);
+//        Access access = getAccess();
+//        String wss = Util.getWss(access.token, access.getClientId());
+//        session = clientManager.connectToServer(this, new URI(wss));
         //Logger.debug("New Session %s", this.session.getId());
     }
 
     private NewBot getState(UUID userId) throws IOException {
+        StorageFactory storageFactory = userMessageResource.getUserClientRepo().getSf();
         return storageFactory.create(userId).getState();
-    }
-
-    /**
-     * @param password
-     * @param token
-     * @return ClientId
-     * @throws Exception
-     */
-    private String initDevice(UUID userId, String password, String token) throws Exception {
-        NewBot state = initState(userId, password, token);
-        state.token = token;
-
-        // save the state with new token
-        State storage = storageFactory.create(userId);
-        storage.saveState(state);
-        return state.client;
     }
 
     private NewBot initState(UUID userId, String password, String token)
@@ -171,7 +151,8 @@ public class Endpoint {
             Logger.info("initDevice: Existing ClientID: %s", state.client);
         } catch (IOException ex) {
             // register new device
-            try (Crypto crypto = cryptoFactory.create(userId)) {
+            CryptoFactory cf = userMessageResource.getUserClientRepo().getCf();
+            try (Crypto crypto = cf.create(userId)) {
                 LoginClient loginClient = new LoginClient(httpClient);
 
                 state = new NewBot();
@@ -186,52 +167,52 @@ public class Endpoint {
         return state;
     }
 
-    public void initRenewal() {
-        Timer timer = new Timer("RenewToken");
-        timer.scheduleAtFixedRate(new TimerTask() {
-            public void run() {
-                try {
-                    Access access = getAccess();
+//    public void initRenewal() {
+//        Timer timer = new Timer("RenewToken");
+//        timer.scheduleAtFixedRate(new TimerTask() {
+//            public void run() {
+//                try {
+//                    Access access = getAccess();
+//
+//                    API api = new API(httpClient, null, access.token);
+//                    Access newAccess = api.renewAccessToken(access.getCookie());
+//
+//                    updateCookie(newAccess.getCookie());
+//
+//                    persistToken(newAccess.userId, newAccess.token);
+//
+//                    if (session != null)
+//                        session.close();
+//                } catch (Exception e) {
+//                    Logger.error("Failed periodic access_token renewal: %s", e);
+//                }
+//            }
+//        }, TimeUnit.MINUTES.toMillis(RENEW_PERIOD_MINUTES), TimeUnit.MINUTES.toMillis(RENEW_PERIOD_MINUTES));
+//    }
 
-                    API api = new API(httpClient, null, access.token);
-                    Access newAccess = api.renewAccessToken(access.getCookie());
-
-                    updateCookie(newAccess.getCookie());
-
-                    persistToken(newAccess.userId, newAccess.token);
-
-                    if (session != null)
-                        session.close();
-                } catch (Exception e) {
-                    Logger.error("Failed periodic access_token renewal: %s", e);
-                }
-            }
-        }, TimeUnit.MINUTES.toMillis(RENEW_PERIOD_MINUTES), TimeUnit.MINUTES.toMillis(RENEW_PERIOD_MINUTES));
-    }
-
-    private void updateCookie(Cookie cookie) {
-        if (cookie != null) {
-            access.setCookie(cookie);
-        }
-    }
-
-    protected Access getAccess() throws IOException {
-        State storage = storageFactory.create(access.userId);
-        NewBot state = storage.getState();
-
-        Access ret = new Access();
-        ret.userId = state.id;
-        ret.token = state.token;
-        ret.setCookie(access.getCookie());
-        ret.setClientId(access.getClientId());
-
-        return ret;
-    }
-
-    protected boolean persistToken(UUID userId, String token) throws IOException {
-        State storage = storageFactory.create(userId);
-        NewBot state = storage.getState();
-        state.token = token;
-        return storage.saveState(state);
-    }
+//    private void updateCookie(Cookie cookie) {
+//        if (cookie != null) {
+//            access.setCookie(cookie);
+//        }
+//    }
+//
+//    protected Access getAccess() throws IOException {
+//        State storage = storageFactory.create(access.userId);
+//        NewBot state = storage.getState();
+//
+//        Access ret = new Access();
+//        ret.userId = state.id;
+//        ret.token = state.token;
+//        ret.setCookie(access.getCookie());
+//        ret.setClientId(access.getClientId());
+//
+//        return ret;
+//    }
+//
+//    protected boolean persistToken(UUID userId, String token) throws IOException {
+//        State storage = storageFactory.create(userId);
+//        NewBot state = storage.getState();
+//        state.token = token;
+//        return storage.saveState(state);
+//    }
 }
