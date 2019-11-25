@@ -9,12 +9,15 @@ import com.wire.bots.sdk.factories.CryptoFactory;
 import com.wire.bots.sdk.factories.StorageFactory;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.NewBot;
+import com.wire.bots.sdk.server.model.Payload;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.user.model.Access;
+import com.wire.bots.sdk.user.model.Message;
 import io.dropwizard.setup.Environment;
 import org.glassfish.tyrus.client.ClientManager;
 import org.glassfish.tyrus.client.ClientProperties;
 
+import javax.websocket.*;
 import javax.ws.rs.client.Client;
 import java.io.IOException;
 import java.net.URI;
@@ -23,14 +26,19 @@ import java.util.UUID;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-
+@ClientEndpoint(decoders = MessageDecoder.class)
 public class UserApplication {
+    private final ScheduledExecutorService renewal;
+
     private StorageFactory storageFactory;
     private CryptoFactory cryptoFactory;
     private Client client;
     private MessageHandlerBase handler;
     private Configuration config;
-    private final ScheduledExecutorService renewal;
+    private UserMessageResource userMessageResource;
+    private ClientManager container;
+    private String clientId;
+    private UUID userId;
 
     public UserApplication(Environment env) {
         renewal = env.lifecycle().scheduledExecutorService("access renewal").build();
@@ -43,49 +51,99 @@ public class UserApplication {
         LoginClient loginClient = new LoginClient(client);
         Access access = loginClient.login(email, password);
 
-        UUID userId = access.getUserId();
+        userId = access.getUserId();
 
         Logger.info("Logged in as: %s userId: %s", email, userId);
 
-        String clientId = getDeviceId(userId);
+        clientId = getDeviceId(userId);
         if (clientId == null) {
             clientId = newDevice(userId, password, access.getToken());
-            saveDevice(userId, clientId, access.getToken());
             Logger.info("Created new device. clientId: %s", clientId);
         }
 
-        final String deviceId = clientId;
+        saveDevice(userId, clientId, access.getToken());
 
         renewal.scheduleAtFixedRate(() -> {
             try {
                 Access newAccess = loginClient.renewAccessToken(access.getCookie());
-                saveDevice(userId, deviceId, newAccess.getToken());
+                saveDevice(userId, clientId, newAccess.getToken());
                 Logger.debug("Updated access token");
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }, access.expire, access.expire, TimeUnit.SECONDS);
 
-        UserMessageResource userMessageResource = new UserMessageResource(handler)
-                .addClientId(clientId)
+        userMessageResource = new UserMessageResource(handler)
                 .addUserId(userId)
                 .addClient(client)
                 .addCryptoFactory(cryptoFactory)
                 .addStorageFactory(storageFactory);
 
-        ClientManager container = ClientManager.createClient();
+        container = ClientManager.createClient();
         container.getProperties().put(ClientProperties.RECONNECT_HANDLER, new SocketReconnectHandler(5));
+        container.setDefaultMaxSessionIdleTimeout(-1);
+
+        connectSocket();
+    }
+
+    @OnMessage
+    public void onMessage(Message message) {
+        for (Payload payload : message.payload) {
+            try {
+                switch (payload.type) {
+                    case "team.member-join":
+                    case "user.update":
+                        userMessageResource.onUpdate(message.id, payload);
+                        break;
+                    case "user.connection":
+                        userMessageResource.onNewMessage(
+                                message.id,
+                                /* payload.connection.from, */ //todo check this!!
+                                payload.connection.convId,
+                                payload);
+                        break;
+                    case "conversation.otr-message-add":
+                    case "conversation.member-join":
+                    case "conversation.create":
+                        userMessageResource.onNewMessage(
+                                message.id,
+                                payload.convId,
+                                payload);
+                        break;
+                    default:
+                        Logger.info("Unknown type: %s, from: %s", payload.type, payload.from);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Logger.error("Endpoint:onMessage: %s %s", payload.type, e);
+            }
+        }
+    }
+
+    @OnOpen
+    public void onOpen(Session session, EndpointConfig config) {
+        Logger.info("Session opened: %s", session.getId());
+    }
+
+    @OnClose
+    public void onClose(Session closed, CloseReason reason) throws IOException, DeploymentException {
+        Logger.warning("Session closed: %s, %s", closed.getId(), reason);
+        connectSocket();
+    }
+
+    private void connectSocket() throws IOException, DeploymentException {
+        NewBot newBot = storageFactory.create(userId).getState();
 
         URI wss = client
                 .target(config.wsHost)
                 .path("await")
-                .path(access.getToken())
+                .path(newBot.token)
                 .path(clientId)
                 .getUri();
 
-        Logger.info("Connecting websocket: %s", wss);
+        Logger.info("Connecting websocket: %s", config.wsHost);
 
-        container.connectToServer(new ClientSocket(userMessageResource), wss);
+        container.connectToServer(this, wss);
     }
 
     public String newDevice(UUID userId, String password, String token) throws CryptoException, HttpException {

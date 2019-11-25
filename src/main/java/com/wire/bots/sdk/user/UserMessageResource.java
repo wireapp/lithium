@@ -6,6 +6,7 @@ import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.factories.CryptoFactory;
 import com.wire.bots.sdk.factories.StorageFactory;
+import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.server.model.Payload;
 import com.wire.bots.sdk.server.resources.MessageResourceBase;
 import com.wire.bots.sdk.state.State;
@@ -17,7 +18,6 @@ import java.util.UUID;
 
 public class UserMessageResource extends MessageResourceBase {
     private UUID userId;
-    private String clientId;
     private StorageFactory storageFactory;
     private CryptoFactory cryptoFactory;
     private Client client;
@@ -41,7 +41,9 @@ public class UserMessageResource extends MessageResourceBase {
 
         try {
             Crypto crypto = getCrypto();
-            String token = getStorage().getState().token;
+            NewBot newBot = getStorage().getState();
+            String token = newBot.token;
+            String clientId = newBot.client;
             API api = new API(client, convId, token);
             WireClient client = new UserClient(userId, clientId, convId, crypto, api);
 
@@ -65,11 +67,6 @@ public class UserMessageResource extends MessageResourceBase {
 
     void onUpdate(UUID id, Payload payload) {
         handleUpdate(id, payload);
-    }
-
-    UserMessageResource addClientId(String clientId) {
-        this.clientId = clientId;
-        return this;
     }
 
     UserMessageResource addUserId(UUID userId) {
