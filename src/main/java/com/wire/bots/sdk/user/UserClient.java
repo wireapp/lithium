@@ -38,7 +38,7 @@ public class UserClient extends WireClientBase implements WireClient {
     private final API api;
     private final UUID conv;
 
-    UserClient(NewBot state, UUID conv, Crypto crypto, API api) {
+    public UserClient(NewBot state, UUID conv, Crypto crypto, API api) {
         super(api, crypto, state);
         this.api = api;
         this.conv = conv;

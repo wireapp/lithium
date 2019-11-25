@@ -27,11 +27,11 @@ import javax.websocket.*;
 /**
  * Web Socket when running the sdk as a regular user and not as a bot Service
  */
-@ClientEndpoint(decoders = MessageDecoder.class)
-public class Endpoint {
+@javax.websocket.ClientEndpoint(decoders = MessageDecoder.class)
+public class ClientEndpoint extends Endpoint {
     private UserMessageResource userMessageResource;
 
-    public Endpoint(UserMessageResource userMessageResource) {
+    public ClientEndpoint(UserMessageResource userMessageResource) {
         this.userMessageResource = userMessageResource;
     }
 
@@ -67,6 +67,11 @@ public class Endpoint {
                 Logger.error("Endpoint:onMessage: %s %s", payload.type, e);
             }
         }
+    }
+
+    @Override
+    public void onOpen(Session session, EndpointConfig config) {
+        Logger.info("Session opened: %s", session.getId());
     }
 
     @OnClose
