@@ -11,9 +11,9 @@ import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.user.model.Access;
+import org.glassfish.tyrus.client.ClientManager;
+import org.glassfish.tyrus.client.ClientProperties;
 
-import javax.websocket.ContainerProvider;
-import javax.websocket.WebSocketContainer;
 import javax.ws.rs.client.Client;
 import java.io.IOException;
 import java.net.URI;
@@ -52,7 +52,8 @@ public class UserApplication {
             Logger.info("Created new device. clientId: %s", clientId);
         }
 
-        WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+        ClientManager container = ClientManager.createClient();
+        container.getProperties().put(ClientProperties.RECONNECT_HANDLER, new SocketReconnectHandler(5));
 
         URI wss = client
                 .target(config.wsHost)
