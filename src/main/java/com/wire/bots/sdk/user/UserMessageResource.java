@@ -6,19 +6,23 @@ import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.factories.CryptoFactory;
 import com.wire.bots.sdk.factories.StorageFactory;
-import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.server.model.Payload;
 import com.wire.bots.sdk.server.resources.MessageResourceBase;
+import com.wire.bots.sdk.state.State;
 import com.wire.bots.sdk.tools.Logger;
 
 import javax.ws.rs.client.Client;
+import java.io.IOException;
 import java.util.UUID;
 
 public class UserMessageResource extends MessageResourceBase {
     private UUID userId;
+    private String clientId;
     private StorageFactory storageFactory;
     private CryptoFactory cryptoFactory;
     private Client client;
+    private Crypto crypto;
+    private State state;
 
     public UserMessageResource(MessageHandlerBase handler) {
         super(handler, null, null);
@@ -30,24 +34,16 @@ public class UserMessageResource extends MessageResourceBase {
     }
 
     void onNewMessage(UUID messageId, UUID convId, Payload payload) throws Exception {
-        onNewMessage(messageId, userId, convId, payload);
-    }
-
-    void onNewMessage(UUID messageId, UUID from, UUID convId, Payload payload) throws Exception {
-        if (from == null) {
-            Logger.warning("onNewMessage: %s userId is null", payload.type);
-            return;
-        }
         if (convId == null) {
             Logger.warning("onNewMessage: %s convId is null", payload.type);
             return;
         }
 
         try {
-            Crypto crypto = cryptoFactory.create(from);
-            NewBot state = storageFactory.create(from).getState();
-            API api = new API(client, convId, state.token);
-            WireClient client = new UserClient(state, convId, crypto, api);
+            Crypto crypto = getCrypto();
+            String token = getStorage().getState().token;
+            API api = new API(client, convId, token);
+            WireClient client = new UserClient(userId, clientId, convId, crypto, api);
 
             handleMessage(messageId, payload, client);
         } catch (CryptoException e) {
@@ -55,8 +51,25 @@ public class UserMessageResource extends MessageResourceBase {
         }
     }
 
+    private State getStorage() throws IOException {
+        if (state == null)
+            state = storageFactory.create(userId);
+        return state;
+    }
+
+    private Crypto getCrypto() throws CryptoException {
+        if (crypto == null)
+            crypto = cryptoFactory.create(userId);
+        return crypto;
+    }
+
     void onUpdate(UUID id, Payload payload) {
         handleUpdate(id, payload);
+    }
+
+    UserMessageResource addClientId(String clientId) {
+        this.clientId = clientId;
+        return this;
     }
 
     UserMessageResource addUserId(UUID userId) {

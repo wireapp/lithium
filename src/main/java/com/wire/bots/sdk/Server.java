@@ -226,7 +226,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
     private void runInUserMode() throws Exception {
         Logger.info("Starting in User Mode");
 
-        UserApplication app = new UserApplication()
+        UserApplication app = new UserApplication(environment)
                 .addClient(client)
                 .addConfig(config)
                 .addCryptoFactory(getCryptoFactory())

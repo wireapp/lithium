@@ -41,7 +41,7 @@ public class End2EndTest {
         DummyAPI api = new DummyAPI();
         api.addDevice(aliceId, client1, aliceCrypto1.box().newLastPreKey());
 
-        UserClient aliceClient = new UserClient(state, null, aliceCrypto, api);
+        UserClient aliceClient = new UserClient(aliceId, aliceId.toString(), null, aliceCrypto, api);
 
         for (int i = 0; i < 10; i++) {
             String text = "Hello Alice, This is Alice!";
@@ -62,10 +62,6 @@ public class End2EndTest {
         UUID aliceId = UUID.randomUUID();
         String client1 = "bob1";
 
-        NewBot state = new NewBot();
-        state.id = aliceId;
-        state.client = "alice1";
-
         MemStorage storage = new MemStorage();
 
         CryptoDatabase aliceCrypto = new CryptoDatabase(aliceId, storage, "data/testAliceToBob");
@@ -74,7 +70,7 @@ public class End2EndTest {
         DummyAPI api = new DummyAPI();
         api.addDevice(bobId, client1, bobCrypto.box().newLastPreKey());
 
-        UserClient aliceClient = new UserClient(state, null, aliceCrypto, api);
+        UserClient aliceClient = new UserClient(aliceId, "alice1", null, aliceCrypto, api);
 
         for (int i = 0; i < 10; i++) {
             String text = "Hello Bob, This is Alice!";
@@ -99,10 +95,6 @@ public class End2EndTest {
         String client3 = "alice3_" + rnd.nextInt();
         String aliceCl = "alice_" + rnd.nextInt();
 
-        NewBot state = new NewBot();
-        state.id = aliceId;
-        state.client = aliceCl;
-
         RedisStorage storage = new RedisStorage("localhost");
 
         CryptoDatabase aliceCrypto1 = new CryptoDatabase(aliceId, storage, "data/testMultiDevice/alice/1");
@@ -116,7 +108,7 @@ public class End2EndTest {
 
         CryptoDatabase aliceCrypto = new CryptoDatabase(aliceId, storage, "data/testMultiDevice/alice");
 
-        UserClient aliceClient = new UserClient(state, null, aliceCrypto, api);
+        UserClient aliceClient = new UserClient(aliceId, aliceCl, null, aliceCrypto, api);
 
         for (int i = 0; i < 10; i++) {
             String text = "Hello Bob, This is Alice!";
@@ -152,10 +144,6 @@ public class End2EndTest {
         String client3 = "alice3_" + rnd.nextInt();
         String aliceCl = "alice_" + rnd.nextInt();
 
-        NewBot state = new NewBot();
-        state.id = aliceId;
-        state.client = aliceCl;
-
         PgStorage storage = new PgStorage();
 
         CryptoDatabase aliceCrypto1 = new CryptoDatabase(aliceId, storage, "data/testMultiDevicePostgres/alice/1");
@@ -169,7 +157,7 @@ public class End2EndTest {
 
         CryptoDatabase aliceCrypto = new CryptoDatabase(aliceId, storage, "data/testMultiDevicePostgres/alice");
 
-        UserClient aliceClient = new UserClient(state, null, aliceCrypto, api);
+        UserClient aliceClient = new UserClient(aliceId, aliceCl, null, aliceCrypto, api);
 
         for (int i = 0; i < 10; i++) {
             String text = "Hello Bob, This is Alice!";

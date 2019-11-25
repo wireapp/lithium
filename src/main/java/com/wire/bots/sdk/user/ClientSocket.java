@@ -27,11 +27,11 @@ import javax.websocket.*;
 /**
  * Web Socket when running the sdk as a regular user and not as a bot Service
  */
-@javax.websocket.ClientEndpoint(decoders = MessageDecoder.class)
-public class ClientEndpoint {
+@ClientEndpoint(decoders = MessageDecoder.class)
+public class ClientSocket {
     private UserMessageResource userMessageResource;
 
-    ClientEndpoint(UserMessageResource userMessageResource) {
+    ClientSocket(UserMessageResource userMessageResource) {
         this.userMessageResource = userMessageResource;
     }
 
@@ -47,7 +47,7 @@ public class ClientEndpoint {
                     case "user.connection":
                         userMessageResource.onNewMessage(
                                 message.id,
-                                payload.connection.from,
+                                /* payload.connection.from, */ //todo check this!!
                                 payload.connection.convId,
                                 payload);
                         break;

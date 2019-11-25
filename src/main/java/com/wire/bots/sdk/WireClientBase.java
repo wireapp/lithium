@@ -38,14 +38,14 @@ public class WireClientBase {
 
         // Try to encrypt the msg for those devices that we have the session already
         Recipients encrypt = crypto.encrypt(getAllDevices(), content);
-        OtrMessage msg = new OtrMessage(state.client, encrypt);
+        OtrMessage msg = new OtrMessage(getDeviceId(), encrypt);
 
         Devices res = api.sendMessage(msg, false);
         if (!res.hasMissing()) {
             // Fetch preKeys for the missing devices from the Backend
             PreKeys preKeys = api.getPreKeys(res.missing);
 
-            Logger.debug("Fetched %d preKeys for %d devices. Bot: %s", preKeys.count(), res.size(), state.id);
+            Logger.debug("Fetched %d preKeys for %d devices. Bot: %s", preKeys.count(), res.size(), getId());
 
             // Encrypt msg for those devices that were missing. This time using preKeys
             encrypt = crypto.encrypt(preKeys, content);
@@ -58,7 +58,7 @@ public class WireClientBase {
             if (!res.hasMissing()) {
                 Logger.error(String.format("Failed to send otr message to %d devices. Bot: %s",
                         res.size(),
-                        state.id));
+                        getId()));
             }
         }
     }
@@ -77,7 +77,7 @@ public class WireClientBase {
         }
 
         Recipients encrypt = crypto.encrypt(user, content);
-        OtrMessage msg = new OtrMessage(state.client, encrypt);
+        OtrMessage msg = new OtrMessage(getDeviceId(), encrypt);
 
         Devices res = api.sendPartialMessage(msg, userId);
         if (!res.hasMissing()) {
@@ -150,7 +150,7 @@ public class WireClientBase {
      */
     private Devices getDevices() throws HttpException {
         if (devices == null || devices.hasMissing()) {
-            OtrMessage msg = new OtrMessage(state.client, new Recipients());
+            OtrMessage msg = new OtrMessage(getDeviceId(), new Recipients());
             devices = api.sendMessage(msg, false);
         }
         return devices;

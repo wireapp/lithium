@@ -11,6 +11,7 @@ import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.user.model.Access;
+import io.dropwizard.setup.Environment;
 import org.glassfish.tyrus.client.ClientManager;
 import org.glassfish.tyrus.client.ClientProperties;
 
@@ -19,6 +20,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 public class UserApplication {
@@ -27,6 +30,11 @@ public class UserApplication {
     private Client client;
     private MessageHandlerBase handler;
     private Configuration config;
+    private final ScheduledExecutorService renewal;
+
+    public UserApplication(Environment env) {
+        renewal = env.lifecycle().scheduledExecutorService("access renewal").build();
+    }
 
     public void run() throws Exception {
         String email = config.userMode.email;
@@ -39,18 +47,31 @@ public class UserApplication {
 
         Logger.info("Logged in as: %s userId: %s", email, userId);
 
+        String clientId = getDeviceId(userId);
+        if (clientId == null) {
+            clientId = newDevice(userId, password, access.getToken());
+            saveDevice(userId, clientId, access.getToken());
+            Logger.info("Created new device. clientId: %s", clientId);
+        }
+
+        final String deviceId = clientId;
+
+        renewal.scheduleAtFixedRate(() -> {
+            try {
+                Access newAccess = loginClient.renewAccessToken(access.getCookie());
+                saveDevice(userId, deviceId, newAccess.getToken());
+                Logger.debug("Updated access token");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, access.expire, access.expire, TimeUnit.SECONDS);
+
         UserMessageResource userMessageResource = new UserMessageResource(handler)
+                .addClientId(clientId)
                 .addUserId(userId)
                 .addClient(client)
                 .addCryptoFactory(cryptoFactory)
                 .addStorageFactory(storageFactory);
-
-        String clientId = getDeviceId(userId);
-        if (clientId == null) {
-            clientId = newDevice(userId, password, access.getToken());
-            saveDevice(userId, clientId);
-            Logger.info("Created new device. clientId: %s", clientId);
-        }
 
         ClientManager container = ClientManager.createClient();
         container.getProperties().put(ClientProperties.RECONNECT_HANDLER, new SocketReconnectHandler(5));
@@ -64,7 +85,7 @@ public class UserApplication {
 
         Logger.info("Connecting websocket: %s", wss);
 
-        container.connectToServer(new ClientEndpoint(userMessageResource), wss);
+        container.connectToServer(new ClientSocket(userMessageResource), wss);
     }
 
     public String newDevice(UUID userId, String password, String token) throws CryptoException, HttpException {
@@ -85,10 +106,11 @@ public class UserApplication {
         }
     }
 
-    public void saveDevice(UUID userId, String clientId) throws IOException {
+    public void saveDevice(UUID userId, String clientId, String token) throws IOException {
         NewBot state = new NewBot();
-        state.client = clientId;
         state.id = userId;
+        state.client = clientId;
+        state.token = token;
         storageFactory.create(userId).saveState(state);
     }
 

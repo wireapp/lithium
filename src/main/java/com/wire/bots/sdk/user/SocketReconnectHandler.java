@@ -15,7 +15,7 @@ public class SocketReconnectHandler extends ClientManager.ReconnectHandler {
 
     @Override
     public boolean onDisconnect(CloseReason closeReason) {
-        Logger.debug("Websocket onDisconnect: reason: %s", closeReason.getCloseCode());
+        Logger.warning("Websocket onDisconnect: reason: %s", closeReason.getCloseCode());
         return true;
     }
 
