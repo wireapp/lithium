@@ -3,20 +3,25 @@ package com.wire.bots.sdk.user;
 import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.sdk.MessageHandlerBase;
 import com.wire.bots.sdk.WireClient;
+import com.wire.bots.sdk.crypto.Crypto;
+import com.wire.bots.sdk.factories.CryptoFactory;
+import com.wire.bots.sdk.factories.StorageFactory;
+import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.server.model.Payload;
 import com.wire.bots.sdk.server.resources.MessageResourceBase;
 import com.wire.bots.sdk.tools.Logger;
 
+import javax.ws.rs.client.Client;
 import java.util.UUID;
 
 public class UserMessageResource extends MessageResourceBase {
-    private final UUID owner;
-    private UserClientRepo userClientRepo;
+    private UUID userId;
+    private StorageFactory storageFactory;
+    private CryptoFactory cryptoFactory;
+    private Client client;
 
-    public UserMessageResource(UUID owner, MessageHandlerBase handler, UserClientRepo repo) {
-        super(handler, null, repo);
-        this.owner = owner;
-        this.userClientRepo = repo;
+    public UserMessageResource(MessageHandlerBase handler) {
+        super(handler, null, null);
     }
 
     @Override
@@ -24,8 +29,12 @@ public class UserMessageResource extends MessageResourceBase {
         return true;
     }
 
-    void onNewMessage(UUID id, UUID userId, UUID convId, Payload payload) throws Exception {
-        if (userId == null) {
+    void onNewMessage(UUID messageId, UUID convId, Payload payload) throws Exception {
+        onNewMessage(messageId, userId, convId, payload);
+    }
+
+    void onNewMessage(UUID messageId, UUID from, UUID convId, Payload payload) throws Exception {
+        if (from == null) {
             Logger.warning("onNewMessage: %s userId is null", payload.type);
             return;
         }
@@ -34,17 +43,15 @@ public class UserMessageResource extends MessageResourceBase {
             return;
         }
 
-        try (WireClient client = userClientRepo.getWireClient(userId, convId)) {
-            handleMessage(id, payload, client);
+        try {
+            Crypto crypto = cryptoFactory.create(from);
+            NewBot state = storageFactory.create(from).getState();
+            API api = new API(client, convId, state.token);
+            WireClient client = new UserClient(state, convId, crypto, api);
+
+            handleMessage(messageId, payload, client);
         } catch (CryptoException e) {
-            Logger.error("onNewMessage:(%s:%s) from: %s:%s %s %s",
-                    owner,
-                    payload.data.recipient,
-                    userId,
-                    payload.data.sender,
-                    e.code,
-                    payload.type);
-            respondWithError(userId, convId);
+            Logger.error("onNewMessage: msg: %s, conv: %s, %s", messageId, convId, e);
         }
     }
 
@@ -52,19 +59,23 @@ public class UserMessageResource extends MessageResourceBase {
         handleUpdate(id, payload);
     }
 
-    private void respondWithError(UUID userId, UUID convId) {
-        try (WireClient client = userClientRepo.getWireClient(userId, convId)) {
-            client.sendReaction(UUID.randomUUID(), "");
-        } catch (Exception e) {
-            Logger.error("respondWithError: user: %s, conv: %s, %s", userId, convId, e);
-        }
+    UserMessageResource addUserId(UUID userId) {
+        this.userId = userId;
+        return this;
     }
 
-    public UUID getOwner() {
-        return owner;
+    UserMessageResource addStorageFactory(StorageFactory storageFactory) {
+        this.storageFactory = storageFactory;
+        return this;
     }
 
-    public UserClientRepo getUserClientRepo() {
-        return userClientRepo;
+    UserMessageResource addCryptoFactory(CryptoFactory cryptoFactory) {
+        this.cryptoFactory = cryptoFactory;
+        return this;
+    }
+
+    UserMessageResource addClient(Client client) {
+        this.client = client;
+        return this;
     }
 }

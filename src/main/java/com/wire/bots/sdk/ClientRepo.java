@@ -22,25 +22,11 @@ public class ClientRepo {
         this.sf = sf;
     }
 
-    @Deprecated
-    public WireClient getWireClient(UUID botId) {
-        try {
-            return getClient(botId);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
     public WireClient getClient(UUID botId) throws IOException, CryptoException {
         NewBot state = sf.create(botId).getState();
         Crypto crypto = cf.create(botId);
         API api = new API(httpClient, state.token);
         return new BotClient(state, crypto, api);
-    }
-
-    @Deprecated
-    public void removeClient(UUID botId) {
-
     }
 
     public void purgeBot(UUID botId) throws IOException {
