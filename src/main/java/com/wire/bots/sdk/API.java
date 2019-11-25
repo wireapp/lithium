@@ -59,7 +59,7 @@ public class API implements Backend {
         this.token = token;
 
         bot = httpClient
-                .target(Util.getHost())
+                .target(host())
                 .path("bot");
         messages = bot
                 .path("messages");
@@ -80,6 +80,11 @@ public class API implements Backend {
         return bot
                 .request()
                 .options();
+    }
+
+    public String host() {
+        String host = System.getenv("WIRE_API_HOST");
+        return host != null ? host : "https://prod-nginz-https.wire.com";
     }
 
     /**

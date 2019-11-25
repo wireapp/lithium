@@ -18,7 +18,6 @@
 
 package com.wire.bots.sdk.tools;
 
-import com.wire.bots.sdk.Configuration;
 import com.wire.bots.sdk.exceptions.AuthException;
 
 import javax.crypto.Cipher;
@@ -151,25 +150,6 @@ public class Util {
             String contentType = URLConnection.guessContentTypeFromStream(input);
             return contentType != null ? contentType : "image/xyz";
         }
-    }
-
-    public static String getDomain() {
-        String env = Configuration.propOrEnv("env", "prod");
-        return env.equals("prod") ? "wire.com" : "zinfra.io";
-    }
-
-    public static String getWss(String token, String clientId) {
-        String env = Configuration.propOrEnv("env", "prod");
-        return String.format("wss://%s-nginz-ssl.%s/await?access_token=%s&client=%s",
-                env,
-                getDomain(),
-                token,
-                clientId);
-    }
-
-    public static String getHost() {
-        String env = Configuration.propOrEnv("env", "prod");
-        return String.format("https://%s-nginz-https.%s", env, Util.getDomain());
     }
 
     public static byte[] getResource(String name) throws IOException {

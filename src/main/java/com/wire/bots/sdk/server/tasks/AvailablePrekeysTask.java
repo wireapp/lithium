@@ -24,7 +24,7 @@ public class AvailablePrekeysTask extends TaskBase {
         UUID botId = UUID.fromString(extractString(parameters, "bot"));
 
         try {
-            WireClient client = repo.getWireClient(botId);
+            WireClient client = repo.getClient(botId);
             ArrayList<Integer> availablePrekeys = client.getAvailablePrekeys();
             ObjectMapper mapper = new ObjectMapper();
             mapper.enable(SerializationFeature.INDENT_OUTPUT);

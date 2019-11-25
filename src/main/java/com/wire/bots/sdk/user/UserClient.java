@@ -25,7 +25,6 @@ import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.AssetKey;
 import com.wire.bots.sdk.server.model.Conversation;
-import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.server.model.User;
 import com.wire.bots.sdk.tools.Util;
 
@@ -35,13 +34,17 @@ import java.security.MessageDigest;
 import java.util.*;
 
 public class UserClient extends WireClientBase implements WireClient {
+    private final UUID userId;
+    private final String clientId;
     private final API api;
-    private final UUID conv;
+    private final UUID convId;
 
-    UserClient(NewBot state, UUID conv, Crypto crypto, API api) {
-        super(api, crypto, state);
+    public UserClient(UUID userId, String clientId, UUID convId, Crypto crypto, API api) {
+        super(api, crypto, null);
+        this.userId = userId;
+        this.clientId = clientId;
         this.api = api;
-        this.conv = conv;
+        this.convId = convId;
     }
 
     public UUID sendText(String txt) throws Exception {
@@ -231,7 +234,17 @@ public class UserClient extends WireClientBase implements WireClient {
 
     @Override
     public UUID getConversationId() {
-        return conv;
+        return convId;
+    }
+
+    @Override
+    public UUID getId() {
+        return userId;
+    }
+
+    @Override
+    public String getDeviceId() {
+        return clientId;
     }
 
     @Override

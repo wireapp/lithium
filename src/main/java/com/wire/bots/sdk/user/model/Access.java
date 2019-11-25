@@ -23,8 +23,6 @@ public class Access {
 
     @JsonIgnore
     private Cookie cookie;
-    @JsonIgnore
-    private String clientId;
 
     public Cookie getCookie() {
         return cookie;
@@ -32,14 +30,6 @@ public class Access {
 
     public void setCookie(Cookie cookie) {
         this.cookie = cookie;
-    }
-
-    public String getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
     }
 
     public UUID getUserId() {

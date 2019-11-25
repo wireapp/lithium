@@ -23,7 +23,6 @@ import com.wire.bots.sdk.exceptions.AuthException;
 import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.tools.Logger;
-import com.wire.bots.sdk.tools.Util;
 import com.wire.bots.sdk.user.model.Access;
 import com.wire.bots.sdk.user.model.NewClient;
 import org.glassfish.jersey.logging.LoggingFeature;
@@ -48,27 +47,27 @@ public class LoginClient {
     private final WebTarget cookiesPath;
 
     public LoginClient(Client client) {
-        String host = host();
         loginPath = client
-                .target(host)
+                .target(host())
                 .path("login");
         clientsPath = client
-                .target(host)
+                .target(host())
                 .path("clients");
         accessPath = client
-                .target(host)
+                .target(host())
                 .path("access");
 
         cookiesPath = client
-                .target(host)
+                .target(host())
                 .path("cookies");
 
         Feature feature = new LoggingFeature(Logger.getLOGGER(), Level.FINE, null, null);
         accessPath.register(feature);
     }
 
-    public static String host() {
-        return Util.getHost();
+    public String host() {
+        String host = System.getenv("WIRE_API_HOST");
+        return host != null ? host : "https://prod-nginz-https.wire.com";
     }
 
     static String bearer(String token) {

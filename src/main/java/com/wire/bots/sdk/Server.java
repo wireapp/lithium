@@ -42,11 +42,7 @@ import com.wire.bots.sdk.state.PostgresState;
 import com.wire.bots.sdk.state.RedisState;
 import com.wire.bots.sdk.tools.AuthValidator;
 import com.wire.bots.sdk.tools.Logger;
-import com.wire.bots.sdk.tools.Util;
-import com.wire.bots.sdk.user.Endpoint;
-import com.wire.bots.sdk.user.UserClientRepo;
-import com.wire.bots.sdk.user.UserMessageResource;
-import com.wire.bots.sdk.user.model.Access;
+import com.wire.bots.sdk.user.UserApplication;
 import io.dropwizard.Application;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.client.JerseyClientConfiguration;
@@ -60,7 +56,6 @@ import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 import javax.ws.rs.client.Client;
-import java.net.URI;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -143,11 +138,11 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
         messageHandler = createHandler(config, env);
 
-        if (config.userMode) {
-            runInUserMode(messageHandler);
+        if (config.userMode != null) {
+            runInUserMode();
         }
 
-        repo = runInBotMode(env, messageHandler);
+        repo = runInBotMode();
 
         initTelemetry(env);
 
@@ -210,47 +205,35 @@ public abstract class Server<Config extends Configuration> extends Application<C
         };
     }
 
-    private ClientRepo runInBotMode(Environment env, MessageHandlerBase handler) {
+    private ClientRepo runInBotMode() {
         StorageFactory storageFactory = getStorageFactory();
         CryptoFactory cryptoFactory = getCryptoFactory();
 
         ClientRepo repo = new ClientRepo(client, cryptoFactory, storageFactory);
 
-        addResource(new StatusResource(), env);
-        addResource(new EmptyStatusResource(), env);
+        addResource(new StatusResource(), environment);
+        addResource(new EmptyStatusResource(), environment);
 
-        botResource(config, env, handler);
-        messageResource(config, env, handler, repo);
+        botResource(config, environment, messageHandler);
+        messageResource(config, environment, messageHandler, repo);
 
-        addTask(new ConversationTask(repo), env);
-        addTask(new AvailablePrekeysTask(repo), env);
-
+        addTask(new ConversationTask(repo), environment);
+        addTask(new AvailablePrekeysTask(repo), environment);
+        
         return repo;
     }
 
-    private void runInUserMode(MessageHandlerBase handler) throws Exception {
+    private void runInUserMode() throws Exception {
         Logger.info("Starting in User Mode");
 
-        String email = Configuration.propOrEnv("email", true);
-        String password = Configuration.propOrEnv("password", true);
+        UserApplication app = new UserApplication(environment)
+                .addClient(client)
+                .addConfig(config)
+                .addCryptoFactory(getCryptoFactory())
+                .addStorageFactory(getStorageFactory())
+                .addHandler(messageHandler);
 
-        StorageFactory storageFactory = getStorageFactory();
-        CryptoFactory cryptoFactory = getCryptoFactory();
-
-        UserClientRepo clientRepo = new UserClientRepo(client, cryptoFactory, storageFactory);
-
-        Endpoint ep = new Endpoint(client, cryptoFactory, storageFactory);
-        Access access = ep.signIn(email, password, true);
-        Logger.info("Logged in as: %s userId: %s:%s token: %s",
-                email,
-                access.getUserId(),
-                access.getClientId(),
-                access.getToken());
-
-        UserMessageResource userMessageResource = new UserMessageResource(access.getUserId(), handler, clientRepo);
-        String wss = Util.getWss(access.getToken(), access.getClientId());
-
-        ep.connectWebSocket(userMessageResource, new URI(wss));
+        app.run();
     }
 
     protected void messageResource(Config config, Environment env, MessageHandlerBase handler, ClientRepo repo) {

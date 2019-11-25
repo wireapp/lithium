@@ -64,7 +64,14 @@ public class Configuration extends io.dropwizard.Configuration {
     /**
      * Set to True if you want to run the bot as the User. Requires email/password System properties set
      */
-    public boolean userMode = false;
+    @JsonProperty
+    public UserMode userMode;
+
+    @JsonProperty
+    public String apiHost = "https://prod-nginz-https.wire.com";
+
+    @JsonProperty
+    public String wsHost = "wss://prod-nginz-ssl.wire.com/await";
 
     public static String propOrEnv(String prop, boolean strict) {
         final String env = prop.replace('.', '_').toUpperCase();
@@ -111,5 +118,10 @@ public class Configuration extends io.dropwizard.Configuration {
         ConfigValueNotFoundException(String message) {
             super(message);
         }
+    }
+
+    public static class UserMode {
+        public String email;
+        public String password;
     }
 }
