@@ -25,6 +25,7 @@ import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.user.model.Access;
 import com.wire.bots.sdk.user.model.NewClient;
+import com.wire.bots.sdk.user.model.NotificationList;
 import org.glassfish.jersey.logging.LoggingFeature;
 
 import javax.ws.rs.client.Client;
@@ -32,10 +33,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.*;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 
 public class LoginClient {
@@ -45,6 +43,7 @@ public class LoginClient {
     private final WebTarget loginPath;
     private final WebTarget accessPath;
     private final WebTarget cookiesPath;
+    private final WebTarget notificationsPath;
 
     public LoginClient(Client client) {
         loginPath = client
@@ -60,6 +59,10 @@ public class LoginClient {
         cookiesPath = client
                 .target(host())
                 .path("cookies");
+
+        notificationsPath = client
+                .target(host())
+                .path("notifications");
 
         Feature feature = new LoggingFeature(Logger.getLOGGER(), Level.FINE, null, null);
         accessPath.register(feature);
@@ -237,6 +240,44 @@ public class LoginClient {
 
         if (status >= 400)
             throw response.readEntity(HttpException.class);
+    }
+
+    public NotificationList retrieveNotifications(String client, UUID since, String token, int size) throws HttpException {
+        WebTarget webTarget = notificationsPath
+                .queryParam("client", client)
+                .queryParam("size", size);
+
+        if (since != null) {
+            webTarget = webTarget
+                    .queryParam("since", since.toString());
+        }
+
+        Response response = webTarget
+                .request(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, bearer(token))
+                .get();
+
+        int status = response.getStatus();
+
+        if (status == 200) {
+            return response.readEntity(NotificationList.class);
+        }
+
+        if (status == 404) {  //todo what???
+            return response.readEntity(NotificationList.class);
+        }
+
+        if (status == 401) {   //todo nginx returns text/html for 401. Cannot deserialize as json
+            response.readEntity(String.class);
+            throw new AuthException(status);
+        }
+
+        if (status == 403) {
+            throw response.readEntity(AuthException.class);
+        }
+
+        throw response.readEntity(HttpException.class);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)

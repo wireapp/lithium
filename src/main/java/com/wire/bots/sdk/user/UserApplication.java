@@ -10,13 +10,16 @@ import com.wire.bots.sdk.factories.StorageFactory;
 import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.server.model.Payload;
+import com.wire.bots.sdk.state.State;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.user.model.Access;
-import com.wire.bots.sdk.user.model.Message;
+import com.wire.bots.sdk.user.model.Event;
+import com.wire.bots.sdk.user.model.NotificationList;
 import io.dropwizard.setup.Environment;
 import org.glassfish.tyrus.client.ClientManager;
 import org.glassfish.tyrus.client.ClientProperties;
 
+import javax.annotation.Nullable;
 import javax.websocket.*;
 import javax.ws.rs.client.Client;
 import java.io.IOException;
@@ -28,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 @ClientEndpoint(decoders = MessageDecoder.class)
 public class UserApplication {
+    private static final int SIZE = 30;
     private final ScheduledExecutorService renewal;
 
     private StorageFactory storageFactory;
@@ -37,7 +41,6 @@ public class UserApplication {
     private Configuration config;
     private UserMessageResource userMessageResource;
     private ClientManager container;
-    private String clientId;
     private UUID userId;
 
     public UserApplication(Environment env) {
@@ -53,25 +56,26 @@ public class UserApplication {
 
         userId = access.getUserId();
 
-        Logger.info("Logged in as: %s userId: %s", email, userId);
-
-        clientId = getDeviceId(userId);
+        String clientId = getDeviceId(userId);
         if (clientId == null) {
             clientId = newDevice(userId, password, access.getToken());
             Logger.info("Created new device. clientId: %s", clientId);
         }
 
-        saveDevice(userId, clientId, access.getToken());
+        NewBot state = updateState(userId, clientId, access.getToken(), null);
 
+        Logger.info("Logged in as: %s, userId: %s, clientId: %s", email, state.id, state.client);
+
+        final String deviceId = state.client;
         renewal.scheduleAtFixedRate(() -> {
             try {
                 Access newAccess = loginClient.renewAccessToken(access.getCookie());
-                saveDevice(userId, clientId, newAccess.getToken());
-                Logger.debug("Updated access token");
+                updateState(userId, deviceId, newAccess.getToken(), null);
+                Logger.info("Updated access token. Exp in: %d sec, cookie: %s", newAccess.expire, newAccess.getCookie() != null);
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger.warning("Token renewal error: %s", e);
             }
-        }, access.expire, access.expire, TimeUnit.SECONDS);
+        }, access.expire - 10, access.expire, TimeUnit.SECONDS);
 
         userMessageResource = new UserMessageResource(handler)
                 .addUserId(userId)
@@ -79,25 +83,42 @@ public class UserApplication {
                 .addCryptoFactory(cryptoFactory)
                 .addStorageFactory(storageFactory);
 
+        // Pull from notification stream
+        NotificationList notificationList = loginClient.retrieveNotifications(state.client, since(state), state.token, SIZE);
+        while (!notificationList.notifications.isEmpty()) {
+            for (Event notification : notificationList.notifications) {
+                onMessage(notification);
+                state = updateState(userId, state.client, state.token, notification.id);
+            }
+            notificationList = loginClient.retrieveNotifications(state.client, since(state), state.token, SIZE);
+        }
+
+        // connect the Websocket
         container = ClientManager.createClient();
         container.getProperties().put(ClientProperties.RECONNECT_HANDLER, new SocketReconnectHandler(5));
         container.setDefaultMaxSessionIdleTimeout(-1);
 
-        connectSocket();
+        Session session = connectSocket();
+        Logger.info("Websocket %s uri: %s", session.isOpen(), session.getRequestURI());
+    }
+
+    @Nullable
+    private UUID since(NewBot state) {
+        return state.locale != null ? UUID.fromString(state.locale) : null;
     }
 
     @OnMessage
-    public void onMessage(Message message) {
-        for (Payload payload : message.payload) {
+    public void onMessage(Event event) {
+        for (Payload payload : event.payload) {
             try {
                 switch (payload.type) {
                     case "team.member-join":
                     case "user.update":
-                        userMessageResource.onUpdate(message.id, payload);
+                        userMessageResource.onUpdate(event.id, payload);
                         break;
                     case "user.connection":
                         userMessageResource.onNewMessage(
-                                message.id,
+                                event.id,
                                 /* payload.connection.from, */ //todo check this!!
                                 payload.connection.convId,
                                 payload);
@@ -106,7 +127,7 @@ public class UserApplication {
                     case "conversation.member-join":
                     case "conversation.create":
                         userMessageResource.onNewMessage(
-                                message.id,
+                                event.id,
                                 payload.convId,
                                 payload);
                         break;
@@ -122,28 +143,28 @@ public class UserApplication {
 
     @OnOpen
     public void onOpen(Session session, EndpointConfig config) {
-        Logger.info("Session opened: %s", session.getId());
+        Logger.debug("Session opened: %s", session.getId());
     }
 
     @OnClose
     public void onClose(Session closed, CloseReason reason) throws IOException, DeploymentException {
-        Logger.warning("Session closed: %s, %s", closed.getId(), reason);
+        Logger.debug("Session closed: %s, %s", closed.getId(), reason);
         connectSocket();
     }
 
-    private void connectSocket() throws IOException, DeploymentException {
-        NewBot newBot = storageFactory.create(userId).getState();
+    private Session connectSocket() throws IOException, DeploymentException {
+        NewBot newBot = storageFactory
+                .create(userId)
+                .getState();
 
         URI wss = client
                 .target(config.wsHost)
                 .path("await")
-                .path(newBot.token)
-                .path(clientId)
+                .queryParam("client", newBot.client)
+                .queryParam("access_token", newBot.token)
                 .getUri();
 
-        Logger.info("Connecting websocket: %s", config.wsHost);
-
-        container.connectToServer(this, wss);
+        return container.connectToServer(this, wss);
     }
 
     public String newDevice(UUID userId, String password, String token) throws CryptoException, HttpException {
@@ -153,7 +174,7 @@ public class UserApplication {
         ArrayList<PreKey> preKeys = crypto.newPreKeys(0, 20);
         PreKey lastKey = crypto.newLastPreKey();
 
-        return loginClient.registerClient(token, password, preKeys, lastKey, "tablet", "permanent", "wbots");
+        return loginClient.registerClient(token, password, preKeys, lastKey, "tablet", "permanent", "lithium");
     }
 
     public String getDeviceId(UUID userId) {
@@ -164,12 +185,24 @@ public class UserApplication {
         }
     }
 
-    public void saveDevice(UUID userId, String clientId, String token) throws IOException {
-        NewBot state = new NewBot();
-        state.id = userId;
-        state.client = clientId;
-        state.token = token;
-        storageFactory.create(userId).saveState(state);
+    public NewBot updateState(UUID userId, String clientId, String token, @Nullable UUID last) throws IOException {
+        State state = storageFactory.create(userId);
+
+        NewBot newBot;
+        try {
+            newBot = state.getState();
+        } catch (IOException ex) {
+            newBot = new NewBot();
+            newBot.id = userId;
+            newBot.client = clientId;
+        }
+
+        newBot.token = token;
+        if (last != null)
+            newBot.locale = last.toString();
+
+        state.saveState(newBot);
+        return state.getState();
     }
 
     public UserApplication addConfig(Configuration config) {
@@ -196,4 +229,6 @@ public class UserApplication {
         this.handler = handler;
         return this;
     }
+
+
 }

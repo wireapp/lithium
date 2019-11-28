@@ -25,7 +25,7 @@ import com.wire.bots.sdk.server.model.Payload;
 import java.util.UUID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Message {
+public class Event {
     @JsonProperty
     public UUID id;
     @JsonProperty

@@ -21,6 +21,7 @@ package com.wire.bots.sdk;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.client.JerseyClientConfiguration;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -121,7 +122,11 @@ public class Configuration extends io.dropwizard.Configuration {
     }
 
     public static class UserMode {
+        @NotNull
+        @NotEmpty
         public String email;
+        @NotNull
+        @NotEmpty
         public String password;
     }
 }
