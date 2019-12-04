@@ -25,15 +25,10 @@ public class UserMessageResource extends MessageResourceBase {
     private State state;
 
     public UserMessageResource(MessageHandlerBase handler) {
-        super(handler, null, null);
+        super(handler, null);
     }
 
-    @Override
-    protected boolean isValid(String auth) {
-        return true;
-    }
-
-    void onNewMessage(UUID messageId, UUID convId, Payload payload) throws Exception {
+    void onNewMessage(UUID eventId, UUID convId, Payload payload) throws Exception {
         if (convId == null) {
             Logger.warning("onNewMessage: %s convId is null", payload.type);
             return;
@@ -47,9 +42,9 @@ public class UserMessageResource extends MessageResourceBase {
             API api = new API(client, convId, token);
             WireClient client = new UserClient(userId, clientId, convId, crypto, api);
 
-            handleMessage(messageId, payload, client);
+            handleMessage(eventId, payload, client);
         } catch (CryptoException e) {
-            Logger.error("onNewMessage: msg: %s, conv: %s, %s", messageId, convId, e);
+            Logger.error("onNewMessage: msg: %s, conv: %s, %s", eventId, convId, e);
         }
     }
 

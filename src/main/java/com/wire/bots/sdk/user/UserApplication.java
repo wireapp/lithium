@@ -24,12 +24,13 @@ import javax.websocket.*;
 import javax.ws.rs.client.Client;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-@ClientEndpoint(decoders = MessageDecoder.class)
+@ClientEndpoint(decoders = EventDecoder.class)
 public class UserApplication {
     private static final int SIZE = 30;
     private final ScheduledExecutorService renewal;
@@ -42,6 +43,7 @@ public class UserApplication {
     private UserMessageResource userMessageResource;
     private ClientManager container;
     private UUID userId;
+    private Session session;
 
     public UserApplication(Environment env) {
         renewal = env.lifecycle().scheduledExecutorService("access renewal").build();
@@ -77,6 +79,14 @@ public class UserApplication {
             }
         }, access.expire - 10, access.expire, TimeUnit.SECONDS);
 
+        renewal.scheduleAtFixedRate(() -> {
+            try {
+                session.getBasicRemote().sendBinary(ByteBuffer.wrap("ping".getBytes("UTF-8")));
+            } catch (Exception e) {
+                Logger.warning("Ping error: %s", e);
+            }
+        }, 10, 10, TimeUnit.SECONDS);
+
         userMessageResource = new UserMessageResource(handler)
                 .addUserId(userId)
                 .addClient(client)
@@ -98,7 +108,7 @@ public class UserApplication {
         container.getProperties().put(ClientProperties.RECONNECT_HANDLER, new SocketReconnectHandler(5));
         container.setDefaultMaxSessionIdleTimeout(-1);
 
-        Session session = connectSocket();
+        session = connectSocket();
         Logger.info("Websocket %s uri: %s", session.isOpen(), session.getRequestURI());
     }
 
@@ -109,6 +119,9 @@ public class UserApplication {
 
     @OnMessage
     public void onMessage(Event event) {
+        if (event == null)
+            return;
+
         for (Payload payload : event.payload) {
             try {
                 switch (payload.type) {
@@ -142,14 +155,14 @@ public class UserApplication {
     }
 
     @OnOpen
-    public void onOpen(Session session, EndpointConfig config) {
+    public void onOpen(Session session, EndpointConfig config) throws IOException {
         Logger.debug("Session opened: %s", session.getId());
     }
 
     @OnClose
     public void onClose(Session closed, CloseReason reason) throws IOException, DeploymentException {
         Logger.debug("Session closed: %s, %s", closed.getId(), reason);
-        connectSocket();
+        session = connectSocket();
     }
 
     private Session connectSocket() throws IOException, DeploymentException {

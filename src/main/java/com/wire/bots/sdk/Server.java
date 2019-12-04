@@ -31,6 +31,7 @@ import com.wire.bots.sdk.healthchecks.Alice2Bob;
 import com.wire.bots.sdk.healthchecks.CryptoHealthCheck;
 import com.wire.bots.sdk.healthchecks.Outbound;
 import com.wire.bots.sdk.healthchecks.StorageHealthCheck;
+import com.wire.bots.sdk.server.filters.AuthenticationFeature;
 import com.wire.bots.sdk.server.resources.BotsResource;
 import com.wire.bots.sdk.server.resources.EmptyStatusResource;
 import com.wire.bots.sdk.server.resources.MessageResource;
@@ -92,8 +93,8 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
     /**
      * Override this method in case you need to add custom Resource and/or Task
-     * {@link #addResource(Object, io.dropwizard.setup.Environment)}
-     * and {@link #addTask(io.dropwizard.servlets.tasks.Task, io.dropwizard.setup.Environment)}
+     * {@link #addResource(Object)}
+     * and {@link #addTask(io.dropwizard.servlets.tasks.Task)}
      *
      * @param config Configuration object (yaml)
      * @param env    Environment object
@@ -123,6 +124,11 @@ public abstract class Server<Config extends Configuration> extends Application<C
         this.config = config;
         this.environment = env;
 
+        StorageFactory storageFactory = getStorageFactory();
+        CryptoFactory cryptoFactory = getCryptoFactory();
+
+        repo = new ClientRepo(client, cryptoFactory, storageFactory);
+
         JerseyClientConfiguration jerseyCfg = config.getJerseyClientConfiguration();
         jerseyCfg.setChunkedEncodingEnabled(false);
         jerseyCfg.setGzipEnabled(false);
@@ -142,9 +148,9 @@ public abstract class Server<Config extends Configuration> extends Application<C
             runInUserMode();
         }
 
-        repo = runInBotMode();
+        runInBotMode();
 
-        initTelemetry(env);
+        initTelemetry();
 
         onRun(config, env);
     }
@@ -205,22 +211,15 @@ public abstract class Server<Config extends Configuration> extends Application<C
         };
     }
 
-    private ClientRepo runInBotMode() {
-        StorageFactory storageFactory = getStorageFactory();
-        CryptoFactory cryptoFactory = getCryptoFactory();
+    private void runInBotMode() {
+        addResource(new StatusResource());
+        addResource(new EmptyStatusResource());
 
-        ClientRepo repo = new ClientRepo(client, cryptoFactory, storageFactory);
+        botResource();
+        messageResource();
 
-        addResource(new StatusResource(), environment);
-        addResource(new EmptyStatusResource(), environment);
-
-        botResource(config, environment, messageHandler);
-        messageResource(config, environment, messageHandler, repo);
-
-        addTask(new ConversationTask(repo), environment);
-        addTask(new AvailablePrekeysTask(repo), environment);
-        
-        return repo;
+        addTask(new ConversationTask(repo));
+        addTask(new AvailablePrekeysTask(repo));
     }
 
     private void runInUserMode() throws Exception {
@@ -236,40 +235,41 @@ public abstract class Server<Config extends Configuration> extends Application<C
         app.run();
     }
 
-    protected void messageResource(Config config, Environment env, MessageHandlerBase handler, ClientRepo repo) {
-        AuthValidator validator = new AuthValidator(config.getAuth());
-        addResource(new MessageResource(handler, validator, repo), env);
+    protected void messageResource() {
+        addResource(new MessageResource(messageHandler, repo));
     }
 
-    protected void botResource(Config config, Environment env, MessageHandlerBase handler) {
+    protected void botResource() {
         StorageFactory storageFactory = getStorageFactory();
         CryptoFactory cryptoFactory = getCryptoFactory();
         AuthValidator authValidator = new AuthValidator(config.getAuth());
 
-        addResource(new BotsResource(handler, storageFactory, cryptoFactory, authValidator), env);
+        addResource(new BotsResource(messageHandler, storageFactory, cryptoFactory, authValidator));
     }
 
-    protected void addTask(Task task, Environment env) {
-        env.admin().addTask(task);
+    protected void addTask(Task task) {
+        environment.admin().addTask(task);
     }
 
-    protected void addResource(Object component, Environment env) {
-        env.jersey().register(component);
+    protected void addResource(Object component) {
+        environment.jersey().register(component);
     }
 
-    private void initTelemetry(Environment env) {
+    private void initTelemetry() {
         final CryptoFactory cryptoFactory = getCryptoFactory();
         final StorageFactory storageFactory = getStorageFactory();
 
-        env.healthChecks().register("Storage", new StorageHealthCheck(storageFactory));
-        env.healthChecks().register("Crypto", new CryptoHealthCheck(cryptoFactory));
-        env.healthChecks().register("Alice2Bob", new Alice2Bob(cryptoFactory));
-        env.healthChecks().register("Outbound", new Outbound(client));
+        this.environment.jersey().register(AuthenticationFeature.class);
 
-        env.metrics().register("logger.errors", (Gauge<Integer>) Logger::getErrorCount);
-        env.metrics().register("logger.warnings", (Gauge<Integer>) Logger::getWarningCount);
+        environment.healthChecks().register("Storage", new StorageHealthCheck(storageFactory));
+        environment.healthChecks().register("Crypto", new CryptoHealthCheck(cryptoFactory));
+        environment.healthChecks().register("Alice2Bob", new Alice2Bob(cryptoFactory));
+        environment.healthChecks().register("Outbound", new Outbound(client));
 
-        JmxReporter jmxReporter = JmxReporter.forRegistry(env.metrics())
+        environment.metrics().register("logger.errors", (Gauge<Integer>) Logger::getErrorCount);
+        environment.metrics().register("logger.warnings", (Gauge<Integer>) Logger::getWarningCount);
+
+        JmxReporter jmxReporter = JmxReporter.forRegistry(environment.metrics())
                 .convertRatesTo(TimeUnit.SECONDS)
                 .convertDurationsTo(TimeUnit.MILLISECONDS)
                 .build();

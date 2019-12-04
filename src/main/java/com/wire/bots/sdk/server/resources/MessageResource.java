@@ -26,7 +26,6 @@ import com.wire.bots.sdk.WireClient;
 import com.wire.bots.sdk.exceptions.MissingStateException;
 import com.wire.bots.sdk.server.model.ErrorMessage;
 import com.wire.bots.sdk.server.model.Payload;
-import com.wire.bots.sdk.tools.AuthValidator;
 import com.wire.bots.sdk.tools.Logger;
 import io.swagger.annotations.*;
 
@@ -46,8 +45,8 @@ import java.util.logging.Level;
 public class MessageResource extends MessageResourceBase {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public MessageResource(MessageHandlerBase handler, AuthValidator validator, ClientRepo repo) {
-        super(handler, validator, repo);
+    public MessageResource(MessageHandlerBase handler, ClientRepo repo) {
+        super(handler, repo);
     }
 
     @POST
@@ -56,22 +55,14 @@ public class MessageResource extends MessageResourceBase {
             @ApiResponse(code = 403, message = "Invalid Authorization", response = ErrorMessage.class),
             @ApiResponse(code = 503, message = "Missing bot's state object", response = ErrorMessage.class),
             @ApiResponse(code = 200, message = "Alles gute")})
-    public Response newMessage(@ApiParam("Service token") @HeaderParam("Authorization") @NotNull String auth,
-                               @ApiParam("UUID Bot instance id") @PathParam("bot") UUID botId,
+    @Authorization("Bearer")
+    public Response newMessage(@ApiParam("UUID Bot instance id") @PathParam("bot") UUID botId,
                                @ApiParam("UUID Unique message id") @QueryParam("id") UUID messageID,
                                @ApiParam @Valid @NotNull Payload payload) throws IOException {
 
         if (Logger.getLevel() == Level.FINE) {
             String strPayload = objectMapper.writeValueAsString(payload);
             Logger.debug("MessageResource: bot: %s, id: %s, %s", botId, messageID, strPayload);
-        }
-
-        if (!isValid(auth)) {
-            Logger.warning("%s, Invalid auth. Got: '%s'", botId, auth);
-            return Response.
-                    status(401).
-                    entity(new ErrorMessage("Invalid Authorization token")).
-                    build();
         }
 
         if (messageID == null) {
