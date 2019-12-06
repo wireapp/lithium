@@ -41,7 +41,6 @@ import com.wire.bots.sdk.server.tasks.ConversationTask;
 import com.wire.bots.sdk.state.FileState;
 import com.wire.bots.sdk.state.PostgresState;
 import com.wire.bots.sdk.state.RedisState;
-import com.wire.bots.sdk.tools.AuthValidator;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.user.UserApplication;
 import io.dropwizard.Application;
@@ -124,11 +123,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
         this.config = config;
         this.environment = env;
 
-        StorageFactory storageFactory = getStorageFactory();
-        CryptoFactory cryptoFactory = getCryptoFactory();
-
-        repo = new ClientRepo(client, cryptoFactory, storageFactory);
-
         JerseyClientConfiguration jerseyCfg = config.getJerseyClientConfiguration();
         jerseyCfg.setChunkedEncodingEnabled(false);
         jerseyCfg.setGzipEnabled(false);
@@ -139,6 +133,11 @@ public abstract class Server<Config extends Configuration> extends Application<C
                 .withProvider(MultiPartFeature.class)
                 .withProvider(JacksonJsonProvider.class)
                 .build(getName());
+
+        StorageFactory storageFactory = getStorageFactory();
+        CryptoFactory cryptoFactory = getCryptoFactory();
+
+        repo = new ClientRepo(client, cryptoFactory, storageFactory);
 
         initialize(config, env);
 
@@ -242,9 +241,8 @@ public abstract class Server<Config extends Configuration> extends Application<C
     protected void botResource() {
         StorageFactory storageFactory = getStorageFactory();
         CryptoFactory cryptoFactory = getCryptoFactory();
-        AuthValidator authValidator = new AuthValidator(config.getAuth());
 
-        addResource(new BotsResource(messageHandler, storageFactory, cryptoFactory, authValidator));
+        addResource(new BotsResource(messageHandler, storageFactory, cryptoFactory));
     }
 
     protected void addTask(Task task) {
@@ -259,7 +257,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
         final CryptoFactory cryptoFactory = getCryptoFactory();
         final StorageFactory storageFactory = getStorageFactory();
 
-        this.environment.jersey().register(AuthenticationFeature.class);
+        registerFeatures();
 
         environment.healthChecks().register("Storage", new StorageHealthCheck(storageFactory));
         environment.healthChecks().register("Crypto", new CryptoHealthCheck(cryptoFactory));
@@ -274,6 +272,10 @@ public abstract class Server<Config extends Configuration> extends Application<C
                 .convertDurationsTo(TimeUnit.MILLISECONDS)
                 .build();
         jmxReporter.start();
+    }
+
+    protected void registerFeatures() {
+        this.environment.jersey().register(AuthenticationFeature.class);
     }
 
     public ClientRepo getRepo() {

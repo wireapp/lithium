@@ -9,6 +9,7 @@ import javax.websocket.Decoder;
 import javax.websocket.EndpointConfig;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 public class EventDecoder implements Decoder.BinaryStream<Event> {
     private final static ObjectMapper mapper = new ObjectMapper();
@@ -26,7 +27,7 @@ public class EventDecoder implements Decoder.BinaryStream<Event> {
     @Override
     public Event decode(InputStream is) {
         try {
-            String str = new String(Util.toByteArray(is), "UTF-8");
+            String str = new String(Util.toByteArray(is), StandardCharsets.UTF_8);
             if (str.equalsIgnoreCase("pong")) {
                 Logger.debug("MessageDecoder: %s", str);
             } else {

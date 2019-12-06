@@ -25,7 +25,6 @@ import com.wire.bots.sdk.factories.StorageFactory;
 import com.wire.bots.sdk.server.model.ErrorMessage;
 import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.server.model.NewBotResponseModel;
-import com.wire.bots.sdk.tools.AuthValidator;
 import com.wire.bots.sdk.tools.Logger;
 import io.swagger.annotations.*;
 
@@ -50,13 +49,11 @@ public class BotsResource {
 
     protected final StorageFactory storageF;
     protected final CryptoFactory cryptoF;
-    protected final AuthValidator validator;
 
-    public BotsResource(MessageHandlerBase handler, StorageFactory storageF, CryptoFactory cryptoF, AuthValidator val) {
+    public BotsResource(MessageHandlerBase handler, StorageFactory storageF, CryptoFactory cryptoF) {
         this.handler = handler;
         this.storageF = storageF;
         this.cryptoF = cryptoF;
-        this.validator = val;
     }
 
     @POST
@@ -110,9 +107,5 @@ public class BotsResource {
 
     protected boolean onNewBot(NewBot newBot, String auth) {
         return handler.onNewBot(newBot, auth);
-    }
-
-    protected boolean isValid(String auth) {
-        return validator.validate(auth);
     }
 }
