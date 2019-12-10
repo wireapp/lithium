@@ -20,6 +20,7 @@ package com.wire.bots.sdk;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.client.JerseyClientConfiguration;
+import io.dropwizard.db.DataSourceFactory;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -30,12 +31,11 @@ import javax.validation.constraints.NotNull;
  * Application configuration class. Extend this class to add your custom configuration
  */
 public class Configuration extends io.dropwizard.Configuration {
-
+    @NotNull
     @JsonProperty("swagger")
     public SwaggerBundleConfiguration swagger;
 
     @Valid
-    @NotNull
     public JerseyClientConfiguration jerseyClient = new JerseyClientConfiguration();
 
     @JsonProperty("jerseyClient")
@@ -49,18 +49,15 @@ public class Configuration extends io.dropwizard.Configuration {
     }
 
     /**
-     * Authentication token
-     */
-    @JsonProperty
-    @NotNull
-    public String auth;
-
-    /**
      * The storage for the State and Cryptobox
      */
-    @NotNull
     @JsonProperty
+    @Deprecated
     public DB db;
+
+    @JsonProperty("database")
+    @NotNull
+    public DataSourceFactory dataSourceFactory;
 
     /**
      * Set to True if you want to run the bot as the User. Requires email/password System properties set
@@ -92,10 +89,6 @@ public class Configuration extends io.dropwizard.Configuration {
         }
     }
 
-    public String getAuth() {
-        return auth;
-    }
-
     public DB getDB() {
         return db;
     }
@@ -107,12 +100,11 @@ public class Configuration extends io.dropwizard.Configuration {
     public static class DB {
         public String host;
         public Integer port;
-        public String database = "";
-        public String driver; // like: postgresql or fs
         public String user;
         public String password;
-        public String url; // a database url of the form: jdbc:`subprotocol`:`subname` or `file:///path/to/data/folder`
         public Integer timeout = 5000;
+        public String url;
+        public String driver;
     }
 
     public final static class ConfigValueNotFoundException extends RuntimeException {

@@ -1,19 +1,47 @@
 package com.wire.bots.sdk;
 
+import com.codahale.metrics.MetricRegistry;
 import com.wire.bots.cryptobox.IRecord;
 import com.wire.bots.cryptobox.PreKey;
 import com.wire.bots.cryptobox.StorageException;
-import com.wire.bots.sdk.crypto.storage.PgStorage;
+import com.wire.bots.sdk.crypto.storage.JdbiStorage;
+import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.db.ManagedDataSource;
+import org.flywaydb.core.Flyway;
+import org.junit.Before;
 import org.junit.Test;
+import org.skife.jdbi.v2.DBI;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class PostgresStorageTest {
+public class PostgresCryptoStorageTest {
+    private DBI jdbi;
+
+    @Before
+    public void init() {
+        DataSourceFactory dataSourceFactory = new DataSourceFactory();
+        dataSourceFactory.setDriverClass("org.postgresql.Driver");
+        dataSourceFactory.setUrl("jdbc:postgresql://localhost/lithium");
+        dataSourceFactory.setUser("dejankovacevic");
+
+        // Migrate DB if needed
+        Flyway flyway = Flyway
+                .configure()
+                .dataSource(dataSourceFactory.getUrl(), dataSourceFactory.getUser(), dataSourceFactory.getPassword())
+                .baselineOnMigrate(true)
+                .load();
+        flyway.migrate();
+
+        ManagedDataSource dataSource = dataSourceFactory.build(new MetricRegistry(), "PostgresCryptoStorageTest");
+
+        jdbi = new DBI(dataSource);
+    }
     @Test
     public void testFetchSession() throws StorageException {
-        PgStorage storage = new PgStorage();
+        JdbiStorage storage = new JdbiStorage(jdbi);
+
         Random random = new Random();
         String id = "" + random.nextInt();
         String sid = "" + random.nextInt();
@@ -35,7 +63,8 @@ public class PostgresStorageTest {
 
     @Test
     public void testFetchIdentity() throws StorageException {
-        PgStorage storage = new PgStorage();
+        JdbiStorage storage = new JdbiStorage(jdbi);
+
         Random random = new Random();
         String id = "" + random.nextInt();
 
@@ -54,7 +83,8 @@ public class PostgresStorageTest {
 
     @Test
     public void testFetchLastPrekey() throws StorageException {
-        PgStorage storage = new PgStorage();
+        JdbiStorage storage = new JdbiStorage(jdbi);
+
         Random random = new Random();
         String id = "" + random.nextInt();
 
@@ -81,7 +111,8 @@ public class PostgresStorageTest {
     @Test
     public void testFetchPrekeys() throws StorageException {
         int SIZE = 10;
-        PgStorage storage = new PgStorage();
+        JdbiStorage storage = new JdbiStorage(jdbi);
+
         Random random = new Random();
         String id = "" + random.nextInt();
 
@@ -113,7 +144,8 @@ public class PostgresStorageTest {
 
     @Test
     public void testPurge() throws StorageException {
-        PgStorage storage = new PgStorage();
+        JdbiStorage storage = new JdbiStorage(jdbi);
+
         Random random = new Random();
         String id = "" + random.nextInt();
 
