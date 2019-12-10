@@ -25,6 +25,7 @@ import javax.ws.rs.client.Client;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ScheduledExecutorService;
@@ -81,7 +82,7 @@ public class UserApplication {
 
         renewal.scheduleAtFixedRate(() -> {
             try {
-                session.getBasicRemote().sendBinary(ByteBuffer.wrap("ping".getBytes("UTF-8")));
+                session.getBasicRemote().sendBinary(ByteBuffer.wrap("ping".getBytes(StandardCharsets.UTF_8)));
             } catch (Exception e) {
                 Logger.warning("Ping error: %s", e);
             }

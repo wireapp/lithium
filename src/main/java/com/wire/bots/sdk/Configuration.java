@@ -31,37 +31,21 @@ import javax.validation.constraints.NotNull;
  * Application configuration class. Extend this class to add your custom configuration
  */
 public class Configuration extends io.dropwizard.Configuration {
-    @NotNull
-    @JsonProperty("swagger")
-    public SwaggerBundleConfiguration swagger;
-
-    @Valid
-    public JerseyClientConfiguration jerseyClient = new JerseyClientConfiguration();
-
-    @JsonProperty("jerseyClient")
-    public JerseyClientConfiguration getJerseyClientConfiguration() {
-        return jerseyClient;
-    }
-
-    @JsonProperty("jerseyClient")
-    public void setJerseyClientConfiguration(JerseyClientConfiguration jerseyClient) {
-        this.jerseyClient = jerseyClient;
-    }
-
-    /**
-     * The storage for the State and Cryptobox
-     */
-    @JsonProperty
-    @Deprecated
-    public DB db;
-
     @JsonProperty("database")
     @NotNull
     public DataSourceFactory dataSourceFactory;
 
-    /**
-     * Set to True if you want to run the bot as the User. Requires email/password System properties set
-     */
+    @Valid
+    @JsonProperty("jerseyClient")
+    public JerseyClientConfiguration jerseyClient = new JerseyClientConfiguration();
+
+    @JsonProperty
+    @Deprecated
+    public DB db;
+
+    @JsonProperty("swagger")
+    public SwaggerBundleConfiguration swagger;
+    
     @JsonProperty
     public UserMode userMode;
 
@@ -71,32 +55,7 @@ public class Configuration extends io.dropwizard.Configuration {
     @JsonProperty
     public String wsHost = "wss://prod-nginz-ssl.wire.com/await";
 
-    public static String propOrEnv(String prop, boolean strict) {
-        final String env = prop.replace('.', '_').toUpperCase();
-        final String val = System.getProperty(prop, System.getenv(env));
-        if (val == null && strict) {
-            throw new ConfigValueNotFoundException(prop + " (" + env + ") not found");
-        }
-        return val;
-    }
-
-    public static String propOrEnv(String prop, String def) {
-        final String val = propOrEnv(prop, false);
-        if (val == null) {
-            return def;
-        } else {
-            return val;
-        }
-    }
-
-    public DB getDB() {
-        return db;
-    }
-
-    public SwaggerBundleConfiguration getSwagger() {
-        return swagger;
-    }
-
+    @Deprecated
     public static class DB {
         public String host;
         public Integer port;
@@ -105,12 +64,6 @@ public class Configuration extends io.dropwizard.Configuration {
         public Integer timeout = 5000;
         public String url;
         public String driver;
-    }
-
-    public final static class ConfigValueNotFoundException extends RuntimeException {
-        ConfigValueNotFoundException(String message) {
-            super(message);
-        }
     }
 
     public static class UserMode {

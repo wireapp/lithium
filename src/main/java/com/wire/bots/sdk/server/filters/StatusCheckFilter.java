@@ -6,14 +6,14 @@ import ch.qos.logback.core.spi.FilterReply;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.dropwizard.logging.filter.FilterFactory;
 
-@JsonTypeName("healthcheck-filter-factory")
-public class HealthCheckFilter implements FilterFactory<IAccessEvent> {
+@JsonTypeName("status-filter-factory")
+public class StatusCheckFilter implements FilterFactory<IAccessEvent> {
     @Override
     public Filter<IAccessEvent> build() {
         return new Filter<IAccessEvent>() {
             @Override
             public FilterReply decide(IAccessEvent event) {
-                if (event.getRequestURI().equals("/healthcheck")) {
+                if (event.getRequestURI().contains("/status")) {
                     return FilterReply.DENY;
                 } else {
                     return FilterReply.NEUTRAL;

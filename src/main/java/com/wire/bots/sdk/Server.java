@@ -158,7 +158,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
         onRun(config, env);
     }
 
-    private StorageFactory getStorageFactory() {
+    public StorageFactory getStorageFactory() {
         if (config.db != null) {
             if (config.db.driver.equals("redis"))
                 return (botId) -> new RedisState(botId, config.db);
@@ -171,7 +171,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
         return botId -> new JdbiState(botId, jdbi);
     }
 
-    private CryptoFactory getCryptoFactory() {
+    public CryptoFactory getCryptoFactory() {
         if (config.db != null) {
             if (config.db.driver.equals("redis"))
                 return (botId) -> new CryptoDatabase(botId, new RedisStorage(config.db.host, config.db.port, config.db.password));
