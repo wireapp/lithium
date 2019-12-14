@@ -19,6 +19,7 @@
 package com.wire.bots.sdk;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wire.bots.sdk.assets.IAsset;
 import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.AssetKey;
@@ -236,12 +237,15 @@ public class API implements Backend {
                 .header(HttpHeaders.AUTHORIZATION, bearer())
                 .post(Entity.entity(os.toByteArray(), "multipart/mixed; boundary=frontier"));
 
+        String entity = response.readEntity(String.class);
+
         if (response.getStatus() >= 300) {
-            Logger.warning(response.readEntity(String.class));
-            throw new IOException(response.getStatusInfo().getReasonPhrase());
+            throw new HttpException(entity, response.getStatus());
         }
 
-        return response.readEntity(AssetKey.class);
+        Logger.debug("uploadAsset: res: %s", entity);
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(entity, AssetKey.class);
     }
 
     private MultiPart getMultiPart(IAsset asset) throws NoSuchAlgorithmException {

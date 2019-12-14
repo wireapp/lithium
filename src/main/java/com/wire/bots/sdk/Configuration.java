@@ -44,8 +44,8 @@ public class Configuration extends io.dropwizard.Configuration {
     public DB db;
 
     @JsonProperty("swagger")
-    public SwaggerBundleConfiguration swagger;
-    
+    public SwaggerBundleConfiguration swagger = new _SwaggerBundleConfiguration();
+
     @JsonProperty
     public UserMode userMode;
 
@@ -73,5 +73,11 @@ public class Configuration extends io.dropwizard.Configuration {
         @NotNull
         @NotEmpty
         public String password;
+    }
+
+    private static class _SwaggerBundleConfiguration extends SwaggerBundleConfiguration {
+        _SwaggerBundleConfiguration() {
+            setResourcePackage("com.wire.bots.sdk.server.resources");
+        }
     }
 }

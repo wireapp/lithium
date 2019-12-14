@@ -20,6 +20,7 @@ package com.wire.bots.sdk.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wire.bots.sdk.Backend;
 import com.wire.bots.sdk.assets.IAsset;
 import com.wire.bots.sdk.exceptions.HttpException;
@@ -203,11 +204,15 @@ public class API extends LoginClient implements Backend {
                 .header(HttpHeaders.AUTHORIZATION, bearer(token))
                 .post(Entity.entity(os.toByteArray(), "multipart/mixed; boundary=frontier"));
 
+        String entity = response.readEntity(String.class);
+
         if (response.getStatus() >= 300) {
-            throw new HttpException(response.readEntity(String.class), response.getStatus());
+            throw new HttpException(entity, response.getStatus());
         }
 
-        return response.readEntity(AssetKey.class);
+        Logger.debug("uploadAsset: res: %s", entity);
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(entity, AssetKey.class);
     }
 
     Conversation getConversation() throws IOException {
