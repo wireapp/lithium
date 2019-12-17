@@ -47,12 +47,14 @@ import io.dropwizard.Application;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
+import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.jdbi.DBIFactory;
 import io.dropwizard.servlets.tasks.Task;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
+import org.flywaydb.core.Flyway;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.skife.jdbi.v2.DBI;
 
@@ -125,6 +127,8 @@ public abstract class Server<Config extends Configuration> extends Application<C
         this.config = config;
         this.environment = env;
 
+        migrateDBifNeeded(config.dataSourceFactory);
+        
         this.jdbi = new DBIFactory().build(environment, config.dataSourceFactory, "lithium");
 
         // Override these values for Jersey Client just in case
@@ -156,6 +160,14 @@ public abstract class Server<Config extends Configuration> extends Application<C
         initTelemetry();
 
         onRun(config, env);
+    }
+
+    protected void migrateDBifNeeded(DataSourceFactory database) {
+        Flyway flyway = Flyway
+                .configure()
+                .dataSource(database.getUrl(), database.getUser(), database.getPassword())
+                .load();
+        flyway.migrate();
     }
 
     public StorageFactory getStorageFactory() {

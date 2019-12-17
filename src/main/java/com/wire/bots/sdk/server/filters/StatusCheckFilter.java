@@ -15,9 +15,11 @@ public class StatusCheckFilter implements FilterFactory<IAccessEvent> {
             public FilterReply decide(IAccessEvent event) {
                 if (event.getRequestURI().contains("/status")) {
                     return FilterReply.DENY;
-                } else {
-                    return FilterReply.NEUTRAL;
                 }
+                if (event.getRequestURI().contains("/swagger")) {
+                    return FilterReply.DENY;
+                }
+                return FilterReply.NEUTRAL;
             }
         };
     }
