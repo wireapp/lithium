@@ -1,13 +1,19 @@
 package com.wire.bots.sdk;
 
+import com.codahale.metrics.MetricRegistry;
 import com.wire.bots.cryptobox.CryptoBox;
 import com.wire.bots.cryptobox.CryptoDb;
+import com.wire.bots.cryptobox.IStorage;
 import com.wire.bots.cryptobox.PreKey;
-import com.wire.bots.sdk.crypto.storage.PgStorage;
+import com.wire.bots.sdk.crypto.storage.JdbiStorage;
 import com.wire.bots.sdk.helpers.Util;
+import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.db.ManagedDataSource;
+import org.flywaydb.core.Flyway;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.skife.jdbi.v2.DBI;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,15 +32,33 @@ public class CryptoPostgresTest {
     private static CryptoDb bob;
     private static PreKey[] bobKeys;
     private static PreKey[] aliceKeys;
-    private static PgStorage storage;
+    private static IStorage storage;
 
     @BeforeClass
     public static void setUp() throws Exception {
+        DataSourceFactory dataSourceFactory = new DataSourceFactory();
+        dataSourceFactory.setDriverClass("org.postgresql.Driver");
+        dataSourceFactory.setUrl("jdbc:postgresql://localhost/lithium");
+        dataSourceFactory.setUser("dejankovacevic");
+
+        // Migrate DB if needed
+        Flyway flyway = Flyway
+                .configure()
+                .dataSource(dataSourceFactory.getUrl(), dataSourceFactory.getUser(), dataSourceFactory.getPassword())
+                .baselineOnMigrate(true)
+                .load();
+        flyway.migrate();
+
+        ManagedDataSource dataSource = dataSourceFactory.build(new MetricRegistry(), "CryptoPostgresTest");
+
+        DBI jdbi = new DBI(dataSource);
+
+        storage = new JdbiStorage(jdbi);
+
         Random random = new Random();
         aliceId = "" + random.nextInt();
         bobId = "" + random.nextInt();
 
-        storage = new PgStorage("dejankovacevic", "password", "postgres", "localhost", 5432);
         alice = new CryptoDb(aliceId, storage);
         bob = new CryptoDb(bobId, storage);
 

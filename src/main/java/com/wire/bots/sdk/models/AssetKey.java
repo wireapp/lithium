@@ -18,6 +18,9 @@
 
 package com.wire.bots.sdk.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AssetKey {
     public String key;
     public String token;

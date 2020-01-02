@@ -30,10 +30,7 @@ import io.swagger.annotations.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -64,12 +61,12 @@ public class BotsResource {
             @ApiResponse(code = 201, message = "Alles gute")})
     @Authorization("Bearer")
     public Response newBot(@Context ContainerRequestContext context,
+                           @ApiParam("Service token as Bearer") @NotNull @HeaderParam("Authorization") String auth,
                            @ApiParam @Valid @NotNull NewBot newBot) throws Exception {
 
+        String token = (String) context.getProperty("wire-auth");
 
-        String auth = (String) context.getProperty("wire-auth");
-
-        if (!onNewBot(newBot, auth))
+        if (!onNewBot(newBot, token))
             return Response
                     .status(409)
                     .entity(new ErrorMessage("User not whitelisted or service does not accept new instances atm"))

@@ -1,0 +1,4 @@
+CREATE TABLE States (
+ botId UUID NOT NULL PRIMARY KEY,
+ bot JSON NOT NULL
+);

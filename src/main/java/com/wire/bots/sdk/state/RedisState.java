@@ -10,7 +10,6 @@ import redis.clients.jedis.JedisPoolConfig;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.UUID;
 
 public class RedisState implements State {
@@ -79,41 +78,6 @@ public class RedisState implements State {
             jedis.del(botId.toString());
             return true;
         }
-    }
-
-    @Override
-    public ArrayList<NewBot> listAllStates() {
-        return null;
-    }
-
-    @Override
-    public boolean saveFile(String filename, String content) {
-        return false;
-    }
-
-    @Override
-    public String readFile(String filename) {
-        return null;
-    }
-
-    @Override
-    public boolean deleteFile(String filename) {
-        return false;
-    }
-
-    @Override
-    public boolean saveGlobalFile(String filename, String content) {
-        return false;
-    }
-
-    @Override
-    public String readGlobalFile(String filename) {
-        return null;
-    }
-
-    @Override
-    public boolean deleteGlobalFile(String filename) {
-        return false;
     }
 
     private Jedis getConnection() {

@@ -11,6 +11,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Properties;
 
+@Deprecated
 public class PgStorage implements IStorage {
     private final String user;
     private final String password;

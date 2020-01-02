@@ -23,7 +23,7 @@ import com.codahale.metrics.jmx.JmxReporter;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.wire.bots.sdk.crypto.CryptoDatabase;
 import com.wire.bots.sdk.crypto.CryptoFile;
-import com.wire.bots.sdk.crypto.storage.PgStorage;
+import com.wire.bots.sdk.crypto.storage.JdbiStorage;
 import com.wire.bots.sdk.crypto.storage.RedisStorage;
 import com.wire.bots.sdk.factories.CryptoFactory;
 import com.wire.bots.sdk.factories.StorageFactory;
@@ -39,21 +39,24 @@ import com.wire.bots.sdk.server.resources.StatusResource;
 import com.wire.bots.sdk.server.tasks.AvailablePrekeysTask;
 import com.wire.bots.sdk.server.tasks.ConversationTask;
 import com.wire.bots.sdk.state.FileState;
-import com.wire.bots.sdk.state.PostgresState;
+import com.wire.bots.sdk.state.JdbiState;
 import com.wire.bots.sdk.state.RedisState;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.user.UserApplication;
 import io.dropwizard.Application;
 import io.dropwizard.client.JerseyClientBuilder;
-import io.dropwizard.client.JerseyClientConfiguration;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
+import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.jdbi.DBIFactory;
 import io.dropwizard.servlets.tasks.Task;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
+import org.flywaydb.core.Flyway;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.skife.jdbi.v2.DBI;
 
 import javax.ws.rs.client.Client;
 import java.util.concurrent.TimeUnit;
@@ -69,6 +72,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
     protected Environment environment;
     protected Client client;
     protected MessageHandlerBase messageHandler;
+    protected DBI jdbi;
 
     /**
      * This method is called once by the sdk in order to create the main message handler
@@ -113,7 +117,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
         bootstrap.addBundle(new SwaggerBundle<Config>() {
             @Override
             protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(Config configuration) {
-                return configuration.getSwagger();
+                return configuration.swagger;
             }
         });
     }
@@ -123,13 +127,17 @@ public abstract class Server<Config extends Configuration> extends Application<C
         this.config = config;
         this.environment = env;
 
-        JerseyClientConfiguration jerseyCfg = config.getJerseyClientConfiguration();
-        jerseyCfg.setChunkedEncodingEnabled(false);
-        jerseyCfg.setGzipEnabled(false);
-        jerseyCfg.setGzipEnabledForRequests(false);
+        migrateDBifNeeded(config.dataSourceFactory);
+        
+        this.jdbi = new DBIFactory().build(environment, config.dataSourceFactory, "lithium");
+
+        // Override these values for Jersey Client just in case
+        config.jerseyClient.setChunkedEncodingEnabled(false);
+        config.jerseyClient.setGzipEnabled(false);
+        config.jerseyClient.setGzipEnabledForRequests(false);
 
         client = new JerseyClientBuilder(environment)
-                .using(jerseyCfg)
+                .using(config.jerseyClient)
                 .withProvider(MultiPartFeature.class)
                 .withProvider(JacksonJsonProvider.class)
                 .build(getName());
@@ -154,61 +162,40 @@ public abstract class Server<Config extends Configuration> extends Application<C
         onRun(config, env);
     }
 
+    protected void migrateDBifNeeded(DataSourceFactory database) {
+        Flyway flyway = Flyway
+                .configure()
+                .dataSource(database.getUrl(), database.getUser(), database.getPassword())
+                .load();
+        flyway.migrate();
+    }
+
     public StorageFactory getStorageFactory() {
-        if (config.db.driver == null) {
-            return botId -> new RedisState(botId, config.db);
+        if (config.db != null) {
+            if (config.db.driver.equals("redis"))
+                return (botId) -> new RedisState(botId, config.db);
+            if (config.db.driver.equals("fs"))
+                return botId -> new FileState(botId, config.db);
+
+            return botId -> new JdbiState(botId, jdbi);
         }
-        if (config.db.driver.equals("fs")) {
-            return botId -> new FileState(botId, config.db);
-        }
-        if (config.db.driver.equals("postgresql")) {
-            return botId -> new PostgresState(botId, config.db);
-        }
-        return botId -> new RedisState(botId, config.db);
+
+        return botId -> new JdbiState(botId, jdbi);
     }
 
     public CryptoFactory getCryptoFactory() {
-        if (config.db.driver == null) {
-            return redisCryptoFactory();
+        if (config.db != null) {
+            if (config.db.driver.equals("redis"))
+                return (botId) -> new CryptoDatabase(botId, new RedisStorage(config.db.host, config.db.port, config.db.password));
+            if (config.db.driver.equals("fs"))
+                return (botId) -> new CryptoFile(botId, config.db);
+
+            return (botId) -> new CryptoDatabase(botId, new JdbiStorage(jdbi));
         }
-        if (config.db.driver.equals("fs")) {
-            return fileCryptoFactory();
-        }
-        if (config.db.driver.equals("postgresql")) {
-            return postgresCryptoFactory();
-        }
-        return redisCryptoFactory();
+
+        return (botId) -> new CryptoDatabase(botId, new JdbiStorage(jdbi));
     }
 
-    private CryptoFactory fileCryptoFactory() {
-        return (botId) -> new CryptoFile(botId, config.db);
-    }
-
-    private CryptoFactory postgresCryptoFactory() {
-        return (botId) -> {
-            PgStorage storage;
-            if (config.db.url != null && !config.db.url.isEmpty())
-                storage = new PgStorage(config.db.user,
-                        config.db.password,
-                        config.db.url);
-            else
-                storage = new PgStorage(config.db.user,
-                        config.db.password,
-                        config.db.database,
-                        config.db.host,
-                        config.db.port);
-            return new CryptoDatabase(botId, storage);
-        };
-    }
-
-    private CryptoFactory redisCryptoFactory() {
-        return (botId) -> {
-            RedisStorage storage = new RedisStorage(config.db.host,
-                    config.db.port,
-                    config.db.password);
-            return new CryptoDatabase(botId, storage);
-        };
-    }
 
     private void runInBotMode() {
         addResource(new StatusResource());

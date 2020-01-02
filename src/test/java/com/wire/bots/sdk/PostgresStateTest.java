@@ -1,9 +1,14 @@
 package com.wire.bots.sdk;
 
+import com.codahale.metrics.MetricRegistry;
 import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.NewBot;
-import com.wire.bots.sdk.state.PostgresState;
+import com.wire.bots.sdk.state.JdbiState;
+import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.db.ManagedDataSource;
+import org.flywaydb.core.Flyway;
 import org.junit.Test;
+import org.skife.jdbi.v2.DBI;
 
 import java.util.UUID;
 
@@ -11,16 +16,27 @@ public class PostgresStateTest {
 
     @Test
     public void test() throws Exception {
-        Configuration.DB conf = new Configuration.DB();
-        conf.host = "localhost";
-        conf.port = 5432;
-        conf.database = "postgres";
-        conf.user = "dejankovacevic";
-        conf.password = "password";
+        DataSourceFactory dataSourceFactory = new DataSourceFactory();
+        dataSourceFactory.setDriverClass("org.postgresql.Driver");
+        dataSourceFactory.setUrl("jdbc:postgresql://localhost/lithium");
+        dataSourceFactory.setUser("dejankovacevic");
+
+        // Migrate DB if needed
+        Flyway flyway = Flyway
+                .configure()
+                .dataSource(dataSourceFactory.getUrl(), dataSourceFactory.getUser(), dataSourceFactory.getPassword())
+                .baselineOnMigrate(true)
+                .load();
+        flyway.migrate();
+
+        ManagedDataSource dataSource = dataSourceFactory.build(new MetricRegistry(), "PostgresStateTest");
+
+        DBI jdbi = new DBI(dataSource);
 
         UUID botId = UUID.randomUUID();
 
-        PostgresState storage = new PostgresState(botId, conf);
+        JdbiState storage = new JdbiState(botId, jdbi);
+
         NewBot bot = new NewBot();
         bot.id = botId;
         bot.client = "client";
