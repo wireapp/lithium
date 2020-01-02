@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 
 @ClientEndpoint(decoders = EventDecoder.class)
 public class UserApplication {
-    private static final int SIZE = 30;
+    private static final int SIZE = 100;
     private final ScheduledExecutorService renewal;
 
     private StorageFactory storageFactory;
