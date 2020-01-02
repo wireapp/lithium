@@ -27,6 +27,8 @@ public class JdbiState implements State {
     @Override
     public NewBot getState() throws IOException {
         String str = statesDAO.get(botId);
+        if (str == null)
+            throw new IOException("Missing State");
         return mapper.readValue(str, NewBot.class);
     }
 
