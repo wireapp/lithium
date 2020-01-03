@@ -82,7 +82,9 @@ public class UserApplication {
 
         renewal.scheduleAtFixedRate(() -> {
             try {
-                session.getBasicRemote().sendBinary(ByteBuffer.wrap("ping".getBytes(StandardCharsets.UTF_8)));
+                if (session != null) {
+                    session.getBasicRemote().sendBinary(ByteBuffer.wrap("ping".getBytes(StandardCharsets.UTF_8)));
+                }
             } catch (Exception e) {
                 Logger.warning("Ping error: %s", e);
             }
@@ -163,7 +165,6 @@ public class UserApplication {
     @OnClose
     public void onClose(Session closed, CloseReason reason) throws IOException, DeploymentException {
         Logger.debug("Session closed: %s, %s", closed.getId(), reason);
-        session = connectSocket();
     }
 
     private Session connectSocket() throws IOException, DeploymentException {
