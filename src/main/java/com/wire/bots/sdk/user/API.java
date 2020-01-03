@@ -42,6 +42,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -195,9 +196,9 @@ public class API extends LoginClient implements Backend {
 
         // Complete
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        os.write(sb.toString().getBytes("utf-8"));
+        os.write(sb.toString().getBytes(StandardCharsets.UTF_8));
         os.write(asset.getEncryptedData());
-        os.write("\r\n--frontier--\r\n".getBytes("utf-8"));
+        os.write("\r\n--frontier--\r\n".getBytes(StandardCharsets.UTF_8));
 
         Response response = assetsPath
                 .request(MediaType.APPLICATION_JSON_TYPE)
@@ -295,8 +296,7 @@ public class API extends LoginClient implements Backend {
         return response.readEntity(User.class);
     }
 
-    public Conversation createConversation(String name, UUID teamId, List<UUID> users, String token)
-            throws HttpException {
+    public Conversation createConversation(String name, UUID teamId, List<UUID> users) throws HttpException {
         _NewConv newConv = new _NewConv();
         newConv.name = name;
         newConv.users = users;
@@ -323,14 +323,10 @@ public class API extends LoginClient implements Backend {
         return ret;
     }
 
-    public Conversation createOne2One(UUID teamId, UUID serviceId, UUID providerId, String token)
-            throws HttpException {
-        _Service service = new _Service();
-        service.service = serviceId;
-        service.provider = providerId;
+    public Conversation createOne2One(UUID teamId, UUID userId) throws HttpException {
 
         _NewConv newConv = new _NewConv();
-        newConv.service = service;
+        newConv.users = Collections.singletonList(userId);
 
         if (teamId != null) {
             newConv.team = new _TeamInfo();
@@ -443,16 +439,22 @@ public class API extends LoginClient implements Backend {
         return response.readEntity(User.class);
     }
 
-    public UUID getTeam() {
-        _Teams res = teamsPath
+    public UUID getTeam() throws HttpException {
+        Response response = teamsPath
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, bearer(token))
                 .accept(MediaType.APPLICATION_JSON)
-                .get(_Teams.class);
-        if (res.teams.isEmpty())
+                .get();
+
+        if (response.getStatus() != 200) {
+            throw new HttpException(response.readEntity(String.class), response.getStatus());
+        }
+
+        _Teams teams = response.readEntity(_Teams.class);
+        if (teams.teams.isEmpty())
             return null;
 
-        return res.teams.get(0).id;
+        return teams.teams.get(0).id;
     }
 
     public Collection<UUID> getTeamMembers(UUID teamId) {

@@ -15,7 +15,10 @@ import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.user.model.Access;
 import com.wire.bots.sdk.user.model.Event;
 import com.wire.bots.sdk.user.model.NotificationList;
+import io.dropwizard.client.ssl.TlsConfiguration;
 import io.dropwizard.setup.Environment;
+import org.glassfish.grizzly.ssl.SSLContextConfigurator;
+import org.glassfish.grizzly.ssl.SSLEngineConfigurator;
 import org.glassfish.tyrus.client.ClientManager;
 import org.glassfish.tyrus.client.ClientProperties;
 
@@ -42,7 +45,6 @@ public class UserApplication {
     private MessageHandlerBase handler;
     private Configuration config;
     private UserMessageResource userMessageResource;
-    private ClientManager container;
     private UUID userId;
     private Session session;
 
@@ -106,11 +108,6 @@ public class UserApplication {
             notificationList = loginClient.retrieveNotifications(state.client, since(state), state.token, SIZE);
         }
 
-        // connect the Websocket
-        container = ClientManager.createClient();
-        container.getProperties().put(ClientProperties.RECONNECT_HANDLER, new SocketReconnectHandler(5));
-        container.setDefaultMaxSessionIdleTimeout(-1);
-
         session = connectSocket();
         Logger.info("Websocket %s uri: %s", session.isOpen(), session.getRequestURI());
     }
@@ -141,6 +138,7 @@ public class UserApplication {
                         break;
                     case "conversation.otr-message-add":
                     case "conversation.member-join":
+                    case "conversation.member-leave":
                     case "conversation.create":
                         userMessageResource.onNewMessage(
                                 event.id,
@@ -178,6 +176,19 @@ public class UserApplication {
                 .queryParam("client", newBot.client)
                 .queryParam("access_token", newBot.token)
                 .getUri();
+
+        // connect the Websocket
+        ClientManager container = ClientManager.createClient();
+        container.getProperties().put(ClientProperties.RECONNECT_HANDLER, new SocketReconnectHandler(5));
+        container.setDefaultMaxSessionIdleTimeout(-1);
+
+        TlsConfiguration tlsConfiguration = config.jerseyClient.getTlsConfiguration();
+        SSLContextConfigurator ssl = new SSLContextConfigurator();
+        if (tlsConfiguration != null) {
+            ssl.setSecurityProtocol(tlsConfiguration.getProtocol());
+        }
+        SSLEngineConfigurator sslEngineConfigurator = new SSLEngineConfigurator(ssl, true, false, false);
+        container.getProperties().put(ClientProperties.SSL_ENGINE_CONFIGURATOR, sslEngineConfigurator);
 
         return container.connectToServer(this, wss);
     }

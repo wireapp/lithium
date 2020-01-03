@@ -12,6 +12,7 @@ import com.wire.bots.sdk.server.model.Member;
 import com.wire.bots.sdk.server.model.Payload;
 import com.wire.bots.sdk.server.model.SystemMessage;
 import com.wire.bots.sdk.tools.Logger;
+import com.wire.bots.sdk.user.UserClient;
 
 import java.io.IOException;
 import java.util.Base64;
@@ -179,11 +180,11 @@ public abstract class MessageResourceBase {
         return repo.getClient(botId);
     }
 
-    protected void handleUpdate(UUID id, Payload payload) {
+    protected void handleUpdate(UUID id, Payload payload, UserClient userClient) {
         switch (payload.type) {
             case "team.member-join": {
                 Logger.debug("%s: team: %s, user: %s", payload.type, payload.team, payload.data.user);
-                handler.onNewTeamMember(id, payload.team, payload.data.user);
+                handler.onNewTeamMember(userClient, payload.data.user);
             }
             break;
             case "user.update": {

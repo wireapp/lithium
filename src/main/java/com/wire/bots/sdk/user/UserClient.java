@@ -254,8 +254,7 @@ public class UserClient extends WireClientBase implements WireClient {
 
     @Override
     public User getUser(UUID userId) throws HttpException {
-        Collection<User> users = api.getUsers(Collections.singleton(userId));
-        return users.iterator().next();
+        return api.getUser(userId);
     }
 
     @Override
@@ -286,5 +285,33 @@ public class UserClient extends WireClientBase implements WireClient {
     @Override
     public void call(String content) throws Exception {
         postGenericMessage(new Calling(content));
+    }
+
+    public UUID getTeam() throws HttpException {
+        return api.getTeam();
+    }
+
+    public Conversation createConversation(String name, UUID teamId, List<UUID> users) throws HttpException {
+        return api.createConversation(name, teamId, users);
+    }
+
+    public Conversation createOne2One(UUID teamId, UUID userId) throws HttpException {
+        return api.createOne2One(teamId, userId);
+    }
+
+    public void leaveConversation(UUID userId) throws HttpException {
+        api.leaveConversation(userId);
+    }
+
+    public User addParticipants(UUID... userIds) throws HttpException {
+        return api.addParticipants(userIds);
+    }
+
+    public User addService(UUID serviceId, UUID providerId) throws HttpException {
+        return api.addService(serviceId, providerId);
+    }
+
+    public boolean deleteConversation(UUID teamId) throws HttpException {
+        return api.deleteConversation(teamId);
     }
 }

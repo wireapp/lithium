@@ -24,6 +24,7 @@ import com.wire.bots.sdk.models.otr.PreKey;
 import com.wire.bots.sdk.server.model.NewBot;
 import com.wire.bots.sdk.server.model.SystemMessage;
 import com.wire.bots.sdk.tools.Logger;
+import com.wire.bots.sdk.user.UserClient;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -236,7 +237,7 @@ public abstract class MessageHandlerBase {
 
     }
 
-    public void onNewTeamMember(UUID id, UUID teamId, UUID userId) {
+    public void onNewTeamMember(UserClient userClient, UUID userId) {
 
     }
 
