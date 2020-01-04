@@ -16,6 +16,7 @@ import com.wire.bots.sdk.user.model.Access;
 import com.wire.bots.sdk.user.model.Event;
 import com.wire.bots.sdk.user.model.NotificationList;
 import io.dropwizard.client.ssl.TlsConfiguration;
+import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.setup.Environment;
 import org.glassfish.grizzly.ssl.SSLContextConfigurator;
 import org.glassfish.grizzly.ssl.SSLEngineConfigurator;
@@ -25,6 +26,7 @@ import org.glassfish.tyrus.client.ClientProperties;
 import javax.annotation.Nullable;
 import javax.websocket.*;
 import javax.ws.rs.client.Client;
+import javax.ws.rs.core.Cookie;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
@@ -35,7 +37,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @ClientEndpoint(decoders = EventDecoder.class)
-public class UserApplication {
+public class UserApplication implements Managed {
     private static final int SIZE = 100;
     private final ScheduledExecutorService renewal;
 
@@ -47,19 +49,29 @@ public class UserApplication {
     private UserMessageResource userMessageResource;
     private UUID userId;
     private Session session;
+    private LoginClient loginClient;
+    private Cookie cookie;
 
     public UserApplication(Environment env) {
         renewal = env.lifecycle().scheduledExecutorService("access renewal").build();
     }
 
-    public void run() throws Exception {
+    @Override
+    public void stop() throws Exception {
+        Logger.info("Logging out...");
+        loginClient.logout(cookie);
+    }
+
+    @Override
+    public void start() throws Exception {
         String email = config.userMode.email;
         String password = config.userMode.password;
 
-        LoginClient loginClient = new LoginClient(client);
+        loginClient = new LoginClient(client);
         Access access = loginClient.login(email, password);
 
         userId = access.getUserId();
+        cookie = access.getCookie();
 
         String clientId = getDeviceId(userId);
         if (clientId == null) {
@@ -74,7 +86,7 @@ public class UserApplication {
         final String deviceId = state.client;
         renewal.scheduleAtFixedRate(() -> {
             try {
-                Access newAccess = loginClient.renewAccessToken(access.getCookie());
+                Access newAccess = loginClient.renewAccessToken(cookie);
                 updateState(userId, deviceId, newAccess.getToken(), null);
                 Logger.info("Updated access token. Exp in: %d sec, cookie: %s", newAccess.expire, newAccess.getCookie() != null);
             } catch (Exception e) {
@@ -163,6 +175,7 @@ public class UserApplication {
     @OnClose
     public void onClose(Session closed, CloseReason reason) throws IOException, DeploymentException {
         Logger.debug("Session closed: %s, %s", closed.getId(), reason);
+        session = connectSocket();
     }
 
     private Session connectSocket() throws IOException, DeploymentException {
@@ -179,7 +192,7 @@ public class UserApplication {
 
         // connect the Websocket
         ClientManager container = ClientManager.createClient();
-        container.getProperties().put(ClientProperties.RECONNECT_HANDLER, new SocketReconnectHandler(5));
+        // container.getProperties().put(ClientProperties.RECONNECT_HANDLER, new SocketReconnectHandler(5));
         container.setDefaultMaxSessionIdleTimeout(-1);
 
         TlsConfiguration tlsConfiguration = config.jerseyClient.getTlsConfiguration();
@@ -255,6 +268,4 @@ public class UserApplication {
         this.handler = handler;
         return this;
     }
-
-
 }

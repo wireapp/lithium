@@ -18,6 +18,7 @@
 
 package com.wire.bots.sdk;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.client.JerseyClientConfiguration;
 import io.dropwizard.db.DataSourceFactory;
@@ -79,5 +80,10 @@ public class Configuration extends io.dropwizard.Configuration {
         _SwaggerBundleConfiguration() {
             setResourcePackage("com.wire.bots.sdk.server.resources");
         }
+    }
+
+    @JsonIgnore
+    public boolean isUserMode() {
+        return userMode != null && userMode.email != null && userMode.password != null;
     }
 }

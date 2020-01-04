@@ -128,7 +128,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
         this.environment = env;
 
         migrateDBifNeeded(config.dataSourceFactory);
-        
+
         this.jdbi = new DBIFactory().build(environment, config.dataSourceFactory, "lithium");
 
         // Override these values for Jersey Client just in case
@@ -151,7 +151,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
         messageHandler = createHandler(config, env);
 
-        if (config.userMode != null) {
+        if (config.isUserMode()) {
             runInUserMode();
         }
 
@@ -208,7 +208,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
         addTask(new AvailablePrekeysTask(repo));
     }
 
-    private void runInUserMode() throws Exception {
+    private void runInUserMode() {
         Logger.info("Starting in User Mode");
 
         UserApplication app = new UserApplication(environment)
@@ -218,7 +218,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
                 .addStorageFactory(getStorageFactory())
                 .addHandler(messageHandler);
 
-        app.run();
+        environment.lifecycle().manage(app);
     }
 
     protected void messageResource() {
