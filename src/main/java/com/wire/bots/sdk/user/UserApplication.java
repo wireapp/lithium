@@ -111,13 +111,15 @@ public class UserApplication implements Managed {
                 .addStorageFactory(storageFactory);
 
         // Pull from notification stream
-        NotificationList notificationList = loginClient.retrieveNotifications(state.client, since(state), state.token, SIZE);
-        while (!notificationList.notifications.isEmpty()) {
-            for (Event notification : notificationList.notifications) {
-                onMessage(notification);
-                state = updateState(userId, state.client, state.token, notification.id);
+        if (config.userMode.sync) {
+            NotificationList notificationList = loginClient.retrieveNotifications(state.client, since(state), state.token, SIZE);
+            while (!notificationList.notifications.isEmpty()) {
+                for (Event notification : notificationList.notifications) {
+                    onMessage(notification);
+                    state = updateState(userId, state.client, state.token, notification.id);
+                }
+                notificationList = loginClient.retrieveNotifications(state.client, since(state), state.token, SIZE);
             }
-            notificationList = loginClient.retrieveNotifications(state.client, since(state), state.token, SIZE);
         }
 
         session = connectSocket();

@@ -74,6 +74,8 @@ public class Configuration extends io.dropwizard.Configuration {
         @NotNull
         @NotEmpty
         public String password;
+        @JsonProperty
+        public boolean sync;
     }
 
     private static class _SwaggerBundleConfiguration extends SwaggerBundleConfiguration {
