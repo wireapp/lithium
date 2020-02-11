@@ -34,7 +34,7 @@ import javax.validation.constraints.NotNull;
 public class Configuration extends io.dropwizard.Configuration {
     @JsonProperty("database")
     @NotNull
-    public DataSourceFactory dataSourceFactory;
+    public Database database;
 
     @Valid
     @JsonProperty("jerseyClient")
@@ -77,6 +77,11 @@ public class Configuration extends io.dropwizard.Configuration {
         public String password;
         @JsonProperty
         public boolean sync = true;
+    }
+
+    public static class Database extends DataSourceFactory {
+        @JsonProperty
+        public boolean baseline;
     }
 
     private static class _SwaggerBundleConfiguration extends SwaggerBundleConfiguration {

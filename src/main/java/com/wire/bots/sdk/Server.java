@@ -47,7 +47,6 @@ import io.dropwizard.Application;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
-import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.jdbi.DBIFactory;
 import io.dropwizard.servlets.tasks.Task;
 import io.dropwizard.setup.Bootstrap;
@@ -127,9 +126,9 @@ public abstract class Server<Config extends Configuration> extends Application<C
         this.config = config;
         this.environment = env;
 
-        migrateDBifNeeded(config.dataSourceFactory);
+        migrateDBifNeeded(config.database);
 
-        this.jdbi = new DBIFactory().build(environment, config.dataSourceFactory, "lithium");
+        this.jdbi = new DBIFactory().build(environment, config.database, "lithium");
 
         // Override these values for Jersey Client just in case
         config.jerseyClient.setChunkedEncodingEnabled(false);
@@ -162,10 +161,11 @@ public abstract class Server<Config extends Configuration> extends Application<C
         onRun(config, env);
     }
 
-    protected void migrateDBifNeeded(DataSourceFactory database) {
+    protected void migrateDBifNeeded(Configuration.Database database) {
         Flyway flyway = Flyway
                 .configure()
                 .dataSource(database.getUrl(), database.getUser(), database.getPassword())
+                .baselineOnMigrate(database.baseline)
                 .load();
         flyway.migrate();
     }
