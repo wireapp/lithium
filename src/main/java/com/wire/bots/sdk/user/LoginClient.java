@@ -198,10 +198,11 @@ public class LoginClient {
         return access;
     }
 
-    public void logout(Cookie cookie) throws HttpException {
+    public void logout(Cookie cookie, String token) throws HttpException {
         Response response = accessPath
                 .path("logout")
                 .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, bearer(token))
                 .cookie(cookie)
                 .post(Entity.entity(null, MediaType.APPLICATION_JSON));
 

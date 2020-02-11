@@ -196,7 +196,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
         return (botId) -> new CryptoDatabase(botId, new JdbiStorage(jdbi));
     }
 
-
     private void runInBotMode() {
         addResource(new StatusResource());
         addResource(new EmptyStatusResource());
@@ -279,5 +278,9 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
     public Client getClient() {
         return client;
+    }
+
+    public DBI getJdbi() {
+        return jdbi;
     }
 }

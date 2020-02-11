@@ -59,7 +59,8 @@ public class UserApplication implements Managed {
     @Override
     public void stop() throws Exception {
         Logger.info("Logging out...");
-        loginClient.logout(cookie);
+        NewBot state = storageFactory.create(userId).getState();
+        loginClient.logout(cookie, state.token);
     }
 
     @Override

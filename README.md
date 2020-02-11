@@ -24,7 +24,7 @@
     <dependency>
         <groupId>com.wire.bots</groupId>
         <artifactId>lithium</artifactId>
-        <version>2.31.0</version>
+        <version>2.34.2</version>
     </dependency>
 <dependencies>
 ```
