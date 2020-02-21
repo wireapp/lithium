@@ -18,6 +18,7 @@
 
 package com.wire.bots.sdk.server.resources;
 
+import com.codahale.metrics.annotation.Metered;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.sdk.ClientRepo;
@@ -56,6 +57,7 @@ public class MessageResource extends MessageResourceBase {
             @ApiResponse(code = 503, message = "Missing bot's state object", response = ErrorMessage.class),
             @ApiResponse(code = 200, message = "Alles gute")})
     @Authorization("Bearer")
+    @Metered
     public Response newMessage(@ApiParam("Service token as Bearer") @NotNull @HeaderParam("Authorization") String auth,
                                @ApiParam("UUID Bot instance id") @PathParam("bot") UUID botId,
                                @ApiParam("UUID Unique message id") @QueryParam("id") UUID messageID,

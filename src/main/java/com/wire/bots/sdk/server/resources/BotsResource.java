@@ -18,6 +18,7 @@
 
 package com.wire.bots.sdk.server.resources;
 
+import com.codahale.metrics.annotation.Metered;
 import com.wire.bots.sdk.MessageHandlerBase;
 import com.wire.bots.sdk.crypto.Crypto;
 import com.wire.bots.sdk.factories.CryptoFactory;
@@ -60,6 +61,7 @@ public class BotsResource {
             @ApiResponse(code = 409, message = "Bot not accepted (whitelist?)", response = ErrorMessage.class),
             @ApiResponse(code = 201, message = "Alles gute")})
     @Authorization("Bearer")
+    @Metered
     public Response newBot(@Context ContainerRequestContext context,
                            @ApiParam("Service token as Bearer") @NotNull @HeaderParam("Authorization") String auth,
                            @ApiParam @Valid @NotNull NewBot newBot) throws Exception {
