@@ -21,6 +21,8 @@ message GenericMessage {
     Reaction reaction = 17;
     Ephemeral ephemeral = 18;
     Availability availability = 19;
+    Poll poll = 20;
+    PollAnswer pollAnswer = 21;
   }
 }
 
@@ -206,9 +208,9 @@ message Asset {
   message AudioMetaData {
     optional uint64 duration_in_millis = 1;
     // repeated float normalized_loudness = 2 [packed=true]; // deprecated - Switched to bytes instead
-    optional bytes normalized_loudness = 3;     // each byte represent one loudness value as a byte (char) value.
-                                                // e.g. a 100-bytes field here represents 100 loudness values.
-                                                // Values are in chronological order and range from 0 to 255.
+    optional bytes normalized_loudness = 3; // each byte represent one loudness value as a byte (char) value.
+    // e.g. a 100-bytes field here represents 100 loudness values.
+    // Values are in chronological order and range from 0 to 255.
   }
 
   enum NotUploaded {
@@ -247,6 +249,16 @@ message Reaction {
   optional string emoji = 1; // some emoji reaction or the empty string to remove previous reaction(s)
   required string message_id = 2;
   optional LegalHoldStatus legal_hold_status = 3 [default = UNKNOWN]; // whether this message was sent to legal hold
+}
+
+message Poll {
+  required string body = 1;
+  repeated string buttons = 2;
+}
+
+message PollAnswer {
+  required string poll_id = 1;
+  required int32 choice = 2; // button offeset starting from 0
 }
 
 enum ClientAction {

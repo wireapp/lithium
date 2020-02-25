@@ -6,7 +6,7 @@
 
     <groupId>com.wire.bots</groupId>
     <artifactId>lithium</artifactId>
-    <version>2.34.5</version>
+    <version>2.34.6</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -60,6 +60,11 @@
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-client</artifactId>
             <version>${dropwizard.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.dropwizard-bundles</groupId>
+            <artifactId>dropwizard-redirect-bundle</artifactId>
+            <version>1.0.5</version>
         </dependency>
         <dependency>
             <groupId>com.smoketurner</groupId>

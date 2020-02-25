@@ -35,7 +35,6 @@ import com.wire.bots.sdk.server.filters.AuthenticationFeature;
 import com.wire.bots.sdk.server.resources.BotsResource;
 import com.wire.bots.sdk.server.resources.EmptyStatusResource;
 import com.wire.bots.sdk.server.resources.MessageResource;
-import com.wire.bots.sdk.server.resources.StatusResource;
 import com.wire.bots.sdk.server.tasks.AvailablePrekeysTask;
 import com.wire.bots.sdk.server.tasks.ConversationTask;
 import com.wire.bots.sdk.state.FileState;
@@ -44,6 +43,8 @@ import com.wire.bots.sdk.state.RedisState;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.user.UserApplication;
 import io.dropwizard.Application;
+import io.dropwizard.bundles.redirect.PathRedirect;
+import io.dropwizard.bundles.redirect.RedirectBundle;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
@@ -107,18 +108,17 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
     @Override
     public void initialize(Bootstrap<Config> bootstrap) {
-        bootstrap.setConfigurationSourceProvider(
-                new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(),
-                        new EnvironmentVariableSubstitutor(false)
-                )
-        );
-
+        bootstrap.setConfigurationSourceProvider(new SubstitutingSourceProvider(
+                bootstrap.getConfigurationSourceProvider(), new EnvironmentVariableSubstitutor(false)));
         bootstrap.addBundle(new SwaggerBundle<Config>() {
             @Override
             protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(Config configuration) {
                 return configuration.swagger;
             }
         });
+        bootstrap.addBundle(new RedirectBundle(
+                new PathRedirect("/", "/status"),
+                new PathRedirect("/bots/status", "/status")));
     }
 
     @Override
@@ -197,7 +197,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
     }
 
     private void runInBotMode() {
-        addResource(new StatusResource());
         addResource(new EmptyStatusResource());
 
         botResource();
