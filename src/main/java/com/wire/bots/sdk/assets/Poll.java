@@ -20,34 +20,51 @@ package com.wire.bots.sdk.assets;
 
 import com.waz.model.Messages;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 
 public class Poll implements IGeneric {
-    private final UUID messageId = UUID.randomUUID();
-    private final String body;
-    private final ArrayList<String> buttons;
+    private final Messages.CompositeMessage.Builder poll = Messages.CompositeMessage.newBuilder();
+    private UUID messageId = UUID.randomUUID();
 
-    public Poll(String body, ArrayList<String> buttons) {
-        this.body = body;
-        this.buttons = buttons;
+    public Poll addText(String str) {
+        Messages.Text.Builder text = Messages.Text.newBuilder()
+                .setContent(str);
+
+        Messages.CompositeMessage.Item textItem = Messages.CompositeMessage.Item.newBuilder()
+                .setText(text)
+                .build();
+
+        poll.addItems(textItem);
+        return this;
+    }
+
+    public Poll addButton(String buttonId, String caption) {
+        Messages.Button.Builder button = Messages.Button.newBuilder()
+                .setText(caption)
+                .setId(buttonId);
+
+        Messages.CompositeMessage.Item.Builder buttonItem = Messages.CompositeMessage.Item.newBuilder()
+                .setButton(button);
+
+        poll.addItems(buttonItem);
+        return this;
     }
 
     @Override
     public Messages.GenericMessage createGenericMsg() {
-        Messages.Poll.Builder poll = Messages.Poll.newBuilder()
-                .setBody(body)
-                .addAllButtons(buttons);
-
         return Messages.GenericMessage.newBuilder()
                 .setMessageId(getMessageId().toString())
-                .setPoll(poll)
+                .setCompositeMessage(poll)
                 .build();
     }
 
     @Override
     public UUID getMessageId() {
         return messageId;
+    }
+
+    public void setMessageId(UUID messageId) {
+        this.messageId = messageId;
     }
 }
