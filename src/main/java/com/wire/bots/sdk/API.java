@@ -19,7 +19,6 @@
 package com.wire.bots.sdk;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wire.bots.sdk.assets.IAsset;
 import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.AssetKey;
@@ -27,7 +26,6 @@ import com.wire.bots.sdk.models.otr.*;
 import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.NewBotResponseModel;
 import com.wire.bots.sdk.server.model.User;
-import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
 import org.glassfish.jersey.media.multipart.BodyPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
@@ -39,6 +37,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -83,7 +82,7 @@ public class API implements Backend {
                 .options();
     }
 
-    public String host() {
+    private String host() {
         String host = System.getenv("WIRE_API_HOST");
         return host != null ? host : "https://prod-nginz-https.wire.com";
     }
@@ -191,11 +190,8 @@ public class API implements Backend {
                 .post(Entity.entity(model, MediaType.APPLICATION_JSON));
 
         int statusCode = res.getStatus();
-        if (statusCode >= 300) {
-            String log = String.format("uploadPreKeys: %s code: %d",
-                    res.readEntity(String.class),
-                    statusCode);
-            throw new IOException(log);
+        if (statusCode >= 400) {
+            throw new IOException(res.readEntity(String.class));
         }
     }
 
@@ -228,24 +224,20 @@ public class API implements Backend {
 
         // Complete
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        os.write(sb.toString().getBytes("utf-8"));
+        os.write(sb.toString().getBytes(StandardCharsets.UTF_8));
         os.write(asset.getEncryptedData());
-        os.write("\r\n--frontier--\r\n".getBytes("utf-8"));
+        os.write("\r\n--frontier--\r\n".getBytes(StandardCharsets.UTF_8));
 
         Response response = assets
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .header(HttpHeaders.AUTHORIZATION, bearer())
                 .post(Entity.entity(os.toByteArray(), "multipart/mixed; boundary=frontier"));
 
-        String entity = response.readEntity(String.class);
-
-        if (response.getStatus() >= 300) {
-            throw new HttpException(entity, response.getStatus());
+        if (response.getStatus() >= 400) {
+            throw new HttpException(response.readEntity(String.class), response.getStatus());
         }
 
-        Logger.debug("uploadAsset: res: %s", entity);
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(entity, AssetKey.class);
+        return response.readEntity(AssetKey.class);
     }
 
     private MultiPart getMultiPart(IAsset asset) throws NoSuchAlgorithmException {
@@ -265,7 +257,7 @@ public class API implements Backend {
                 .bodyPart(bodyPart2);
     }
 
-    byte[] downloadAsset(String assetKey, String assetToken) throws IOException {
+    byte[] downloadAsset(String assetKey, String assetToken) throws HttpException {
         Invocation.Builder req = assets
                 .path(assetKey)
                 .request()
@@ -276,9 +268,8 @@ public class API implements Backend {
 
         Response response = req.get();
 
-        if (response.getStatus() >= 300) {
-            Logger.warning(response.readEntity(String.class));
-            throw new IOException(response.getStatusInfo().getReasonPhrase());
+        if (response.getStatus() >= 400) {
+            throw new HttpException(response.readEntity(String.class), response.getStatus());
         }
 
         return response.readEntity(byte[].class);

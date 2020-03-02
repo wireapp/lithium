@@ -20,9 +20,7 @@ package com.wire.bots.sdk.models;
 
 import java.util.UUID;
 
-/**
- */
-abstract class MessageBase {
+public abstract class MessageBase {
     protected final UUID userId;
     protected final String clientId;
     protected final UUID conversationId;

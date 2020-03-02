@@ -192,99 +192,101 @@ public final class Messages {
               "ompositeMessage\030\024 \001(\0132\021.CompositeMessage" +
               "H\000\022%\n\014buttonAction\030\025 \001(\0132\r.ButtonActionH" +
               "\000\022=\n\030buttonActionConfirmation\030\026 \001(\0132\031.Bu" +
-              "ttonActionConfirmationH\000B\t\n\007content\"~\n\020C" +
-              "ompositeMessage\022%\n\005items\030\001 \003(\0132\026.Composi",
-            "teMessage.Item\032C\n\004Item\022\025\n\004text\030\001 \001(\0132\005.T" +
-                    "extH\000\022\031\n\006button\030\002 \001(\0132\007.ButtonH\000B\t\n\007cont" +
-                    "ent\"\"\n\006Button\022\014\n\004text\030\001 \002(\t\022\n\n\002id\030\002 \002(\t\"" +
-                    "?\n\014ButtonAction\022\021\n\tbutton_id\030\001 \002(\t\022\034\n\024re" +
-                    "ference_message_id\030\002 \002(\t\"K\n\030ButtonAction" +
-                    "Confirmation\022\034\n\024reference_message_id\030\001 \002" +
-                    "(\t\022\021\n\tbutton_id\030\002 \001(\t\"e\n\014Availability\022 \n" +
-                    "\004type\030\001 \002(\0162\022.Availability.Type\"3\n\004Type\022" +
-                    "\010\n\004NONE\020\000\022\r\n\tAVAILABLE\020\001\022\010\n\004AWAY\020\002\022\010\n\004BU" +
-                    "SY\020\003\"\271\001\n\tEphemeral\022\033\n\023expire_after_milli",
-            "s\030\001 \002(\003\022\025\n\004text\030\002 \001(\0132\005.TextH\000\022\034\n\005image\030" +
-                    "\003 \001(\0132\013.ImageAssetH\000\022\027\n\005knock\030\004 \001(\0132\006.Kn" +
-                    "ockH\000\022\027\n\005asset\030\005 \001(\0132\006.AssetH\000\022\035\n\010locati" +
-                    "on\030\006 \001(\0132\t.LocationH\000B\t\n\007content\"\316\001\n\004Tex" +
-                    "t\022\017\n\007content\030\001 \002(\t\022\"\n\014link_preview\030\003 \003(\013" +
-                    "2\014.LinkPreview\022\032\n\010mentions\030\004 \003(\0132\010.Menti" +
-                    "on\022\025\n\005quote\030\005 \001(\0132\006.Quote\022(\n\031expects_rea" +
-                    "d_confirmation\030\006 \001(\010:\005false\0224\n\021legal_hol" +
-                    "d_status\030\007 \001(\0162\020.LegalHoldStatus:\007UNKNOW" +
-                    "N\"\201\001\n\005Knock\022\030\n\thot_knock\030\001 \002(\010:\005false\022(\n",
-            "\031expects_read_confirmation\030\002 \001(\010:\005false\022" +
-                    "4\n\021legal_hold_status\030\003 \001(\0162\020.LegalHoldSt" +
-                    "atus:\007UNKNOWN\"\312\001\n\013LinkPreview\022\013\n\003url\030\001 \002" +
-                    "(\t\022\022\n\nurl_offset\030\002 \002(\005\022\033\n\007article\030\003 \001(\0132" +
-                    "\010.ArticleH\000\022\025\n\rpermanent_url\030\005 \001(\t\022\r\n\005ti" +
-                    "tle\030\006 \001(\t\022\017\n\007summary\030\007 \001(\t\022\025\n\005image\030\010 \001(" +
-                    "\0132\006.Asset\022\027\n\005tweet\030\t \001(\0132\006.TweetH\001B\t\n\007pr" +
-                    "eviewB\013\n\tmeta_data\")\n\005Tweet\022\016\n\006author\030\001 " +
-                    "\001(\t\022\020\n\010username\030\002 \001(\t\"W\n\007Article\022\025\n\rperm" +
-                    "anent_url\030\001 \002(\t\022\r\n\005title\030\002 \001(\t\022\017\n\007summar",
-            "y\030\003 \001(\t\022\025\n\005image\030\004 \001(\0132\006.Asset\"K\n\007Mentio" +
-                    "n\022\r\n\005start\030\001 \002(\005\022\016\n\006length\030\002 \002(\005\022\021\n\007user" +
-                    "_id\030\003 \001(\tH\000B\016\n\014mention_type\"@\n\010LastRead\022" +
-                    "\027\n\017conversation_id\030\001 \002(\t\022\033\n\023last_read_ti" +
-                    "mestamp\030\002 \002(\003\"=\n\007Cleared\022\027\n\017conversation" +
-                    "_id\030\001 \002(\t\022\031\n\021cleared_timestamp\030\002 \002(\003\":\n\013" +
-                    "MessageHide\022\027\n\017conversation_id\030\001 \002(\t\022\022\n\n" +
-                    "message_id\030\002 \002(\t\"#\n\rMessageDelete\022\022\n\nmes" +
-                    "sage_id\030\001 \002(\t\"|\n\013MessageEdit\022\034\n\024replacin" +
-                    "g_message_id\030\001 \002(\t\022\025\n\004text\030\002 \001(\0132\005.TextH",
-            "\000\022-\n\020compositeMessage\030\003 \001(\0132\021.CompositeM" +
-                    "essageH\000B\t\n\007content\"A\n\005Quote\022\031\n\021quoted_m" +
-                    "essage_id\030\001 \002(\t\022\035\n\025quoted_message_sha256" +
-                    "\030\002 \001(\014\"\205\001\n\014Confirmation\022 \n\004type\030\002 \002(\0162\022." +
-                    "Confirmation.Type\022\030\n\020first_message_id\030\001 " +
-                    "\002(\t\022\030\n\020more_message_ids\030\003 \003(\t\"\037\n\004Type\022\r\n" +
-                    "\tDELIVERED\020\000\022\010\n\004READ\020\001\"\253\001\n\010Location\022\021\n\tl" +
-                    "ongitude\030\001 \002(\002\022\020\n\010latitude\030\002 \002(\002\022\014\n\004name" +
-                    "\030\003 \001(\t\022\014\n\004zoom\030\004 \001(\005\022(\n\031expects_read_con" +
-                    "firmation\030\005 \001(\010:\005false\0224\n\021legal_hold_sta",
-            "tus\030\006 \001(\0162\020.LegalHoldStatus:\007UNKNOWN\"\311\001\n" +
-                    "\nImageAsset\022\013\n\003tag\030\001 \002(\t\022\r\n\005width\030\002 \002(\005\022" +
-                    "\016\n\006height\030\003 \002(\005\022\026\n\016original_width\030\004 \002(\005\022" +
-                    "\027\n\017original_height\030\005 \002(\005\022\021\n\tmime_type\030\006 " +
-                    "\002(\t\022\014\n\004size\030\007 \002(\005\022\017\n\007otr_key\030\010 \001(\014\022\017\n\007ma" +
-                    "c_key\030\t \001(\014\022\013\n\003mac\030\n \001(\014\022\016\n\006sha256\030\013 \001(\014" +
-                    "\"\350\007\n\005Asset\022!\n\010original\030\001 \001(\0132\017.Asset.Ori" +
-                    "ginal\022*\n\014not_uploaded\030\003 \001(\0162\022.Asset.NotU" +
-                    "ploadedH\000\022%\n\010uploaded\030\004 \001(\0132\021.Asset.Remo" +
-                    "teDataH\000\022\037\n\007preview\030\005 \001(\0132\016.Asset.Previe",
-            "w\022(\n\031expects_read_confirmation\030\006 \001(\010:\005fa" +
-                    "lse\0224\n\021legal_hold_status\030\007 \001(\0162\020.LegalHo" +
-                    "ldStatus:\007UNKNOWN\032\334\001\n\010Original\022\021\n\tmime_t" +
-                    "ype\030\001 \002(\t\022\014\n\004size\030\002 \002(\004\022\014\n\004name\030\003 \001(\t\022%\n" +
-                    "\005image\030\004 \001(\0132\024.Asset.ImageMetaDataH\000\022%\n\005" +
-                    "video\030\005 \001(\0132\024.Asset.VideoMetaDataH\000\022%\n\005a" +
-                    "udio\030\006 \001(\0132\024.Asset.AudioMetaDataH\000\022\016\n\006so" +
-                    "urce\030\007 \001(\t\022\017\n\007caption\030\010 \001(\tB\013\n\tmeta_data" +
-                    "\032\201\001\n\007Preview\022\021\n\tmime_type\030\001 \002(\t\022\014\n\004size\030" +
-                    "\002 \002(\004\022!\n\006remote\030\003 \001(\0132\021.Asset.RemoteData",
-            "\022%\n\005image\030\004 \001(\0132\024.Asset.ImageMetaDataH\000B" +
-                    "\013\n\tmeta_data\032;\n\rImageMetaData\022\r\n\005width\030\001" +
-                    " \002(\005\022\016\n\006height\030\002 \002(\005\022\013\n\003tag\030\003 \001(\t\032J\n\rVid" +
-                    "eoMetaData\022\r\n\005width\030\001 \001(\005\022\016\n\006height\030\002 \001(" +
-                    "\005\022\032\n\022duration_in_millis\030\003 \001(\004\032H\n\rAudioMe" +
-                    "taData\022\032\n\022duration_in_millis\030\001 \001(\004\022\033\n\023no" +
-                    "rmalized_loudness\030\003 \001(\014\032~\n\nRemoteData\022\017\n" +
-                    "\007otr_key\030\001 \002(\014\022\016\n\006sha256\030\002 \002(\014\022\020\n\010asset_" +
-                    "id\030\003 \001(\t\022\023\n\013asset_token\030\005 \001(\t\022(\n\nencrypt" +
-                    "ion\030\006 \001(\0162\024.EncryptionAlgorithm\"(\n\013NotUp",
-            "loaded\022\r\n\tCANCELLED\020\000\022\n\n\006FAILED\020\001B\010\n\006sta" +
-                    "tus\"U\n\010External\022\017\n\007otr_key\030\001 \002(\014\022\016\n\006sha2" +
-                    "56\030\002 \001(\014\022(\n\nencryption\030\003 \001(\0162\024.Encryptio" +
-                    "nAlgorithm\"c\n\010Reaction\022\r\n\005emoji\030\001 \001(\t\022\022\n" +
-                    "\nmessage_id\030\002 \002(\t\0224\n\021legal_hold_status\030\003" +
-                    " \001(\0162\020.LegalHoldStatus:\007UNKNOWN\"\032\n\007Calli" +
-                    "ng\022\017\n\007content\030\001 \002(\t*!\n\014ClientAction\022\021\n\rR" +
-                    "ESET_SESSION\020\000*/\n\023EncryptionAlgorithm\022\013\n" +
-                    "\007AES_CBC\020\000\022\013\n\007AES_GCM\020\001*9\n\017LegalHoldStat" +
-                    "us\022\013\n\007UNKNOWN\020\000\022\014\n\010DISABLED\020\001\022\013\n\007ENABLED",
-            "\020\002B\017\n\rcom.waz.model"
+              "ttonActionConfirmationH\000B\t\n\007content\"\336\001\n\020" +
+              "CompositeMessage\022%\n\005items\030\001 \003(\0132\026.Compos",
+            "iteMessage.Item\022(\n\031expects_read_confirma" +
+                    "tion\030\002 \001(\010:\005false\0224\n\021legal_hold_status\030\003" +
+                    " \001(\0162\020.LegalHoldStatus:\007UNKNOWN\032C\n\004Item\022" +
+                    "\025\n\004text\030\001 \001(\0132\005.TextH\000\022\031\n\006button\030\002 \001(\0132\007" +
+                    ".ButtonH\000B\t\n\007content\"\"\n\006Button\022\014\n\004text\030\001" +
+                    " \002(\t\022\n\n\002id\030\002 \002(\t\"?\n\014ButtonAction\022\021\n\tbutt" +
+                    "on_id\030\001 \002(\t\022\034\n\024reference_message_id\030\002 \002(" +
+                    "\t\"K\n\030ButtonActionConfirmation\022\034\n\024referen" +
+                    "ce_message_id\030\001 \002(\t\022\021\n\tbutton_id\030\002 \001(\t\"e" +
+                    "\n\014Availability\022 \n\004type\030\001 \002(\0162\022.Availabil",
+            "ity.Type\"3\n\004Type\022\010\n\004NONE\020\000\022\r\n\tAVAILABLE\020" +
+                    "\001\022\010\n\004AWAY\020\002\022\010\n\004BUSY\020\003\"\271\001\n\tEphemeral\022\033\n\023e" +
+                    "xpire_after_millis\030\001 \002(\003\022\025\n\004text\030\002 \001(\0132\005" +
+                    ".TextH\000\022\034\n\005image\030\003 \001(\0132\013.ImageAssetH\000\022\027\n" +
+                    "\005knock\030\004 \001(\0132\006.KnockH\000\022\027\n\005asset\030\005 \001(\0132\006." +
+                    "AssetH\000\022\035\n\010location\030\006 \001(\0132\t.LocationH\000B\t" +
+                    "\n\007content\"\316\001\n\004Text\022\017\n\007content\030\001 \002(\t\022\"\n\014l" +
+                    "ink_preview\030\003 \003(\0132\014.LinkPreview\022\032\n\010menti" +
+                    "ons\030\004 \003(\0132\010.Mention\022\025\n\005quote\030\005 \001(\0132\006.Quo" +
+                    "te\022(\n\031expects_read_confirmation\030\006 \001(\010:\005f",
+            "alse\0224\n\021legal_hold_status\030\007 \001(\0162\020.LegalH" +
+                    "oldStatus:\007UNKNOWN\"\201\001\n\005Knock\022\030\n\thot_knoc" +
+                    "k\030\001 \002(\010:\005false\022(\n\031expects_read_confirmat" +
+                    "ion\030\002 \001(\010:\005false\0224\n\021legal_hold_status\030\003 " +
+                    "\001(\0162\020.LegalHoldStatus:\007UNKNOWN\"\312\001\n\013LinkP" +
+                    "review\022\013\n\003url\030\001 \002(\t\022\022\n\nurl_offset\030\002 \002(\005\022" +
+                    "\033\n\007article\030\003 \001(\0132\010.ArticleH\000\022\025\n\rpermanen" +
+                    "t_url\030\005 \001(\t\022\r\n\005title\030\006 \001(\t\022\017\n\007summary\030\007 " +
+                    "\001(\t\022\025\n\005image\030\010 \001(\0132\006.Asset\022\027\n\005tweet\030\t \001(" +
+                    "\0132\006.TweetH\001B\t\n\007previewB\013\n\tmeta_data\")\n\005T",
+            "weet\022\016\n\006author\030\001 \001(\t\022\020\n\010username\030\002 \001(\t\"W" +
+                    "\n\007Article\022\025\n\rpermanent_url\030\001 \002(\t\022\r\n\005titl" +
+                    "e\030\002 \001(\t\022\017\n\007summary\030\003 \001(\t\022\025\n\005image\030\004 \001(\0132" +
+                    "\006.Asset\"K\n\007Mention\022\r\n\005start\030\001 \002(\005\022\016\n\006len" +
+                    "gth\030\002 \002(\005\022\021\n\007user_id\030\003 \001(\tH\000B\016\n\014mention_" +
+                    "type\"@\n\010LastRead\022\027\n\017conversation_id\030\001 \002(" +
+                    "\t\022\033\n\023last_read_timestamp\030\002 \002(\003\"=\n\007Cleare" +
+                    "d\022\027\n\017conversation_id\030\001 \002(\t\022\031\n\021cleared_ti" +
+                    "mestamp\030\002 \002(\003\":\n\013MessageHide\022\027\n\017conversa" +
+                    "tion_id\030\001 \002(\t\022\022\n\nmessage_id\030\002 \002(\t\"#\n\rMes",
+            "sageDelete\022\022\n\nmessage_id\030\001 \002(\t\"|\n\013Messag" +
+                    "eEdit\022\034\n\024replacing_message_id\030\001 \002(\t\022\025\n\004t" +
+                    "ext\030\002 \001(\0132\005.TextH\000\022-\n\020compositeMessage\030\003" +
+                    " \001(\0132\021.CompositeMessageH\000B\t\n\007content\"A\n\005" +
+                    "Quote\022\031\n\021quoted_message_id\030\001 \002(\t\022\035\n\025quot" +
+                    "ed_message_sha256\030\002 \001(\014\"\205\001\n\014Confirmation" +
+                    "\022 \n\004type\030\002 \002(\0162\022.Confirmation.Type\022\030\n\020fi" +
+                    "rst_message_id\030\001 \002(\t\022\030\n\020more_message_ids" +
+                    "\030\003 \003(\t\"\037\n\004Type\022\r\n\tDELIVERED\020\000\022\010\n\004READ\020\001\"" +
+                    "\253\001\n\010Location\022\021\n\tlongitude\030\001 \002(\002\022\020\n\010latit",
+            "ude\030\002 \002(\002\022\014\n\004name\030\003 \001(\t\022\014\n\004zoom\030\004 \001(\005\022(\n" +
+                    "\031expects_read_confirmation\030\005 \001(\010:\005false\022" +
+                    "4\n\021legal_hold_status\030\006 \001(\0162\020.LegalHoldSt" +
+                    "atus:\007UNKNOWN\"\311\001\n\nImageAsset\022\013\n\003tag\030\001 \002(" +
+                    "\t\022\r\n\005width\030\002 \002(\005\022\016\n\006height\030\003 \002(\005\022\026\n\016orig" +
+                    "inal_width\030\004 \002(\005\022\027\n\017original_height\030\005 \002(" +
+                    "\005\022\021\n\tmime_type\030\006 \002(\t\022\014\n\004size\030\007 \002(\005\022\017\n\007ot" +
+                    "r_key\030\010 \001(\014\022\017\n\007mac_key\030\t \001(\014\022\013\n\003mac\030\n \001(" +
+                    "\014\022\016\n\006sha256\030\013 \001(\014\"\350\007\n\005Asset\022!\n\010original\030" +
+                    "\001 \001(\0132\017.Asset.Original\022*\n\014not_uploaded\030\003",
+            " \001(\0162\022.Asset.NotUploadedH\000\022%\n\010uploaded\030\004" +
+                    " \001(\0132\021.Asset.RemoteDataH\000\022\037\n\007preview\030\005 \001" +
+                    "(\0132\016.Asset.Preview\022(\n\031expects_read_confi" +
+                    "rmation\030\006 \001(\010:\005false\0224\n\021legal_hold_statu" +
+                    "s\030\007 \001(\0162\020.LegalHoldStatus:\007UNKNOWN\032\334\001\n\010O" +
+                    "riginal\022\021\n\tmime_type\030\001 \002(\t\022\014\n\004size\030\002 \002(\004" +
+                    "\022\014\n\004name\030\003 \001(\t\022%\n\005image\030\004 \001(\0132\024.Asset.Im" +
+                    "ageMetaDataH\000\022%\n\005video\030\005 \001(\0132\024.Asset.Vid" +
+                    "eoMetaDataH\000\022%\n\005audio\030\006 \001(\0132\024.Asset.Audi" +
+                    "oMetaDataH\000\022\016\n\006source\030\007 \001(\t\022\017\n\007caption\030\010",
+            " \001(\tB\013\n\tmeta_data\032\201\001\n\007Preview\022\021\n\tmime_ty" +
+                    "pe\030\001 \002(\t\022\014\n\004size\030\002 \002(\004\022!\n\006remote\030\003 \001(\0132\021" +
+                    ".Asset.RemoteData\022%\n\005image\030\004 \001(\0132\024.Asset" +
+                    ".ImageMetaDataH\000B\013\n\tmeta_data\032;\n\rImageMe" +
+                    "taData\022\r\n\005width\030\001 \002(\005\022\016\n\006height\030\002 \002(\005\022\013\n" +
+                    "\003tag\030\003 \001(\t\032J\n\rVideoMetaData\022\r\n\005width\030\001 \001" +
+                    "(\005\022\016\n\006height\030\002 \001(\005\022\032\n\022duration_in_millis" +
+                    "\030\003 \001(\004\032H\n\rAudioMetaData\022\032\n\022duration_in_m" +
+                    "illis\030\001 \001(\004\022\033\n\023normalized_loudness\030\003 \001(\014" +
+                    "\032~\n\nRemoteData\022\017\n\007otr_key\030\001 \002(\014\022\016\n\006sha25",
+            "6\030\002 \002(\014\022\020\n\010asset_id\030\003 \001(\t\022\023\n\013asset_token" +
+                    "\030\005 \001(\t\022(\n\nencryption\030\006 \001(\0162\024.EncryptionA" +
+                    "lgorithm\"(\n\013NotUploaded\022\r\n\tCANCELLED\020\000\022\n" +
+                    "\n\006FAILED\020\001B\010\n\006status\"U\n\010External\022\017\n\007otr_" +
+                    "key\030\001 \002(\014\022\016\n\006sha256\030\002 \001(\014\022(\n\nencryption\030" +
+                    "\003 \001(\0162\024.EncryptionAlgorithm\"c\n\010Reaction\022" +
+                    "\r\n\005emoji\030\001 \001(\t\022\022\n\nmessage_id\030\002 \002(\t\0224\n\021le" +
+                    "gal_hold_status\030\003 \001(\0162\020.LegalHoldStatus:" +
+                    "\007UNKNOWN\"\032\n\007Calling\022\017\n\007content\030\001 \002(\t*!\n\014" +
+                    "ClientAction\022\021\n\rRESET_SESSION\020\000*/\n\023Encry",
+            "ptionAlgorithm\022\013\n\007AES_CBC\020\000\022\013\n\007AES_GCM\020\001" +
+                    "*9\n\017LegalHoldStatus\022\013\n\007UNKNOWN\020\000\022\014\n\010DISA" +
+                    "BLED\020\001\022\013\n\007ENABLED\020\002B\017\n\rcom.waz.model"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -309,7 +311,7 @@ public final class Messages {
       internal_static_CompositeMessage_fieldAccessorTable = new
               com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_CompositeMessage_descriptor,
-              new java.lang.String[]{"Items",});
+              new java.lang.String[]{"Items", "ExpectsReadConfirmation", "LegalHoldStatus",});
       internal_static_CompositeMessage_Item_descriptor =
               internal_static_CompositeMessage_descriptor.getNestedTypes().get(0);
       internal_static_CompositeMessage_Item_fieldAccessorTable = new
@@ -522,9 +524,9 @@ public final class Messages {
 
       /**
        * <code>RESET_SESSION = 0;</code>
-       */
-      public static final int RESET_SESSION_VALUE = 0;
-      private static final ClientAction[] VALUES = values();
+     */
+    public static final int RESET_SESSION_VALUE = 0;
+    private static final ClientAction[] VALUES = values();
     private static com.google.protobuf.Internal.EnumLiteMap<ClientAction>
             internalValueMap =
             new com.google.protobuf.Internal.EnumLiteMap<ClientAction>() {
@@ -606,9 +608,9 @@ public final class Messages {
        */
       public static final int AES_GCM_VALUE = 1;
       private static final EncryptionAlgorithm[] VALUES = values();
-    private static com.google.protobuf.Internal.EnumLiteMap<EncryptionAlgorithm>
-            internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<EncryptionAlgorithm>() {
+      private static com.google.protobuf.Internal.EnumLiteMap<EncryptionAlgorithm>
+              internalValueMap =
+              new com.google.protobuf.Internal.EnumLiteMap<EncryptionAlgorithm>() {
             public EncryptionAlgorithm findValueByNumber(int number) {
               return EncryptionAlgorithm.valueOf(number);
             }
@@ -1133,6 +1135,26 @@ public final class Messages {
          */
         com.waz.model.Messages.CompositeMessage.ItemOrBuilder getItemsOrBuilder(
                 int index);
+
+        /**
+         * <code>optional bool expects_read_confirmation = 2 [default = false];</code>
+         */
+        boolean hasExpectsReadConfirmation();
+
+        /**
+         * <code>optional bool expects_read_confirmation = 2 [default = false];</code>
+         */
+        boolean getExpectsReadConfirmation();
+
+        /**
+         * <code>optional .LegalHoldStatus legal_hold_status = 3 [default = UNKNOWN];</code>
+         */
+        boolean hasLegalHoldStatus();
+
+        /**
+         * <code>optional .LegalHoldStatus legal_hold_status = 3 [default = UNKNOWN];</code>
+         */
+        com.waz.model.Messages.LegalHoldStatus getLegalHoldStatus();
     }
 
     public interface ButtonOrBuilder extends
@@ -1365,8 +1387,8 @@ public final class Messages {
             // @@protoc_insertion_point(interface_extends:Text)
             com.google.protobuf.MessageOrBuilder {
 
-    /**
-     * <code>required string content = 1;</code>
+        /**
+         * <code>required string content = 1;</code>
      */
     boolean hasContent();
     /**
@@ -1490,8 +1512,9 @@ public final class Messages {
          * </pre>
          */
         boolean hasExpectsReadConfirmation();
-    /**
-     * <code>optional bool expects_read_confirmation = 6 [default = false];</code>
+
+        /**
+         * <code>optional bool expects_read_confirmation = 6 [default = false];</code>
      *
      * <pre>
      * whether the sender is expecting to receive a read confirmation
@@ -1695,8 +1718,9 @@ public final class Messages {
        */
       com.waz.model.Messages.TweetOrBuilder getTweetOrBuilder();
   }
-  public interface TweetOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Tweet)
+
+    public interface TweetOrBuilder extends
+            // @@protoc_insertion_point(interface_extends:Tweet)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -1868,7 +1892,7 @@ public final class Messages {
 
       /**
        * <code>required string conversation_id = 1;</code>
-     */
+       */
     java.lang.String getConversationId();
     /**
      * <code>required string conversation_id = 1;</code>
@@ -1914,7 +1938,7 @@ public final class Messages {
 
         /**
          * <code>required string message_id = 2;</code>
-     */
+         */
     java.lang.String getMessageId();
     /**
      * <code>required string message_id = 2;</code>
@@ -1935,7 +1959,7 @@ public final class Messages {
         /**
          * <code>required string message_id = 1;</code>
          */
-    java.lang.String getMessageId();
+        java.lang.String getMessageId();
     /**
      * <code>required string message_id = 1;</code>
      */
@@ -2289,11 +2313,12 @@ public final class Messages {
        *
        * <pre>
        * deprecated - use sha256
-     * </pre>
-     */
-    boolean hasMac();
-    /**
-     * <code>optional bytes mac = 10;</code>
+       * </pre>
+       */
+      boolean hasMac();
+
+      /**
+       * <code>optional bytes mac = 10;</code>
      *
      * <pre>
      * deprecated - use sha256
@@ -2379,8 +2404,9 @@ public final class Messages {
        * </pre>
        */
       boolean hasExpectsReadConfirmation();
-    /**
-     * <code>optional bool expects_read_confirmation = 6 [default = false];</code>
+
+      /**
+       * <code>optional bool expects_read_confirmation = 6 [default = false];</code>
      *
      * <pre>
      * whether the sender is expecting to receive a read confirmation
@@ -2393,7 +2419,7 @@ public final class Messages {
        *
        * <pre>
        * whether this message was sent to legal hold
-     * </pre>
+       * </pre>
      */
     boolean hasLegalHoldStatus();
     /**
@@ -2542,58 +2568,32 @@ public final class Messages {
             com.google.protobuf.GeneratedMessage implements
             // @@protoc_insertion_point(message_implements:GenericMessage)
             GenericMessageOrBuilder {
-        // Use GenericMessage.newBuilder() to construct.
-        private GenericMessage(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-            super(builder);
-            this.unknownFields = builder.getUnknownFields();
-        }
-
-        private GenericMessage(boolean noInit) {
-            this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
-        }
-
         public static final int MESSAGE_ID_FIELD_NUMBER = 1;
         public static final int TEXT_FIELD_NUMBER = 2;
+
+        private static final GenericMessage defaultInstance;
         public static final int IMAGE_FIELD_NUMBER = 3;
         public static final int KNOCK_FIELD_NUMBER = 4;
-    public static final int LASTREAD_FIELD_NUMBER = 6;
+
+        private final com.google.protobuf.UnknownFieldSet unknownFields;
+        public static final int LASTREAD_FIELD_NUMBER = 6;
     public static final int CLEARED_FIELD_NUMBER = 7;
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.waz.model.Messages.internal_static_GenericMessage_descriptor;
-    }
     public static final int EXTERNAL_FIELD_NUMBER = 8;
     public static final int CLIENTACTION_FIELD_NUMBER = 9;
     public static final int CALLING_FIELD_NUMBER = 10;
     public static final int ASSET_FIELD_NUMBER = 11;
     public static final int HIDDEN_FIELD_NUMBER = 12;
     public static final int LOCATION_FIELD_NUMBER = 13;
-        public static final int DELETED_FIELD_NUMBER = 14;;
-
-    public ContentCase
-    getContentCase() {
-      return ContentCase.valueOf(
-          contentCase_);
-    }
-    public static final int EDITED_FIELD_NUMBER = 15;
-    public static final int CONFIRMATION_FIELD_NUMBER = 16;
-    /**
-     * <code>required string message_id = 1;</code>
-     *
-     * <pre>
-     * client generated random id, preferably UUID
-     * </pre>
-     */
-    public boolean hasMessageId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
+        public static final int DELETED_FIELD_NUMBER = 14;
+        public static final int EDITED_FIELD_NUMBER = 15;
+        ;
+        public static final int CONFIRMATION_FIELD_NUMBER = 16;
     public static final int REACTION_FIELD_NUMBER = 17;
     public static final int EPHEMERAL_FIELD_NUMBER = 18;
     public static final int AVAILABILITY_FIELD_NUMBER = 19;
     public static final int COMPOSITEMESSAGE_FIELD_NUMBER = 20;
     public static final int BUTTONACTION_FIELD_NUMBER = 21;
     public static final int BUTTONACTIONCONFIRMATION_FIELD_NUMBER = 22;
-    private static final GenericMessage defaultInstance;
     private static final long serialVersionUID = 0L;
     public static com.google.protobuf.Parser<GenericMessage> PARSER =
         new com.google.protobuf.AbstractParser<GenericMessage>() {
@@ -2610,13 +2610,23 @@ public final class Messages {
       defaultInstance.initFields();
     }
 
-    private final com.google.protobuf.UnknownFieldSet unknownFields;
     private int bitField0_;
     private int contentCase_ = 0;
     private java.lang.Object content_;
     private java.lang.Object messageId_;
     private byte memoizedIsInitialized = -1;
     private int memoizedSerializedSize = -1;
+
+        // Use GenericMessage.newBuilder() to construct.
+        private GenericMessage(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+            super(builder);
+            this.unknownFields = builder.getUnknownFields();
+        }
+
+        private GenericMessage(boolean noInit) {
+            this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+        }
+
     private GenericMessage(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -2921,6 +2931,11 @@ public final class Messages {
         return defaultInstance;
     }
 
+        public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+            return com.waz.model.Messages.internal_static_GenericMessage_descriptor;
+        }
+
         public static com.waz.model.Messages.GenericMessage parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -3011,6 +3026,23 @@ public final class Messages {
         @java.lang.Override
         public com.google.protobuf.Parser<GenericMessage> getParserForType() {
             return PARSER;
+        }
+
+        public ContentCase
+        getContentCase() {
+            return ContentCase.valueOf(
+                    contentCase_);
+        }
+
+        /**
+         * <code>required string message_id = 1;</code>
+         *
+         * <pre>
+         * client generated random id, preferably UUID
+         * </pre>
+         */
+        public boolean hasMessageId() {
+            return ((bitField0_ & 0x00000001) == 0x00000001);
         }
 
         /**
@@ -3463,6 +3495,10 @@ public final class Messages {
             return com.waz.model.Messages.Reaction.getDefaultInstance();
         }
 
+        private void initFields() {
+            messageId_ = "";
+        }
+
         /**
          * <code>optional .Ephemeral ephemeral = 18;</code>
          */
@@ -3485,7 +3521,7 @@ public final class Messages {
          */
         public com.waz.model.Messages.EphemeralOrBuilder getEphemeralOrBuilder() {
             if (contentCase_ == 18) {
-         return (com.waz.model.Messages.Ephemeral) content_;
+                return (com.waz.model.Messages.Ephemeral) content_;
             }
             return com.waz.model.Messages.Ephemeral.getDefaultInstance();
         }
@@ -3515,6 +3551,12 @@ public final class Messages {
                 return (com.waz.model.Messages.Availability) content_;
             }
             return com.waz.model.Messages.Availability.getDefaultInstance();
+        }
+
+        @java.lang.Override
+        protected java.lang.Object writeReplace()
+                throws java.io.ObjectStreamException {
+            return super.writeReplace();
         }
 
         /**
@@ -3582,8 +3624,8 @@ public final class Messages {
          * <code>optional .ButtonActionConfirmation buttonActionConfirmation = 22;</code>
          */
         public com.waz.model.Messages.ButtonActionConfirmation getButtonActionConfirmation() {
-      if (contentCase_ == 22) {
-         return (com.waz.model.Messages.ButtonActionConfirmation) content_;
+            if (contentCase_ == 22) {
+                return (com.waz.model.Messages.ButtonActionConfirmation) content_;
       }
       return com.waz.model.Messages.ButtonActionConfirmation.getDefaultInstance();
     }
@@ -3596,10 +3638,6 @@ public final class Messages {
             return (com.waz.model.Messages.ButtonActionConfirmation) content_;
       }
       return com.waz.model.Messages.ButtonActionConfirmation.getDefaultInstance();
-    }
-
-    private void initFields() {
-      messageId_ = "";
     }
 
     public final boolean isInitialized() {
@@ -3798,6 +3836,10 @@ public final class Messages {
       getUnknownFields().writeTo(output);
     }
 
+        public Builder newBuilderForType() {
+            return newBuilder();
+        }
+
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
@@ -3891,14 +3933,6 @@ public final class Messages {
       memoizedSerializedSize = size;
       return size;
     }
-
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-
-    public Builder newBuilderForType() { return newBuilder(); }
     public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
@@ -3999,8 +4033,26 @@ public final class Messages {
                 com.google.protobuf.GeneratedMessage.Builder<Builder> implements
                 // @@protoc_insertion_point(builder_implements:GenericMessage)
                 com.waz.model.Messages.GenericMessageOrBuilder {
+            public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+                return com.waz.model.Messages.internal_static_GenericMessage_descriptor;
+            }
+
+            protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+                return com.waz.model.Messages.internal_static_GenericMessage_fieldAccessorTable
+                        .ensureFieldAccessorsInitialized(
+                                com.waz.model.Messages.GenericMessage.class, com.waz.model.Messages.GenericMessage.Builder.class);
+            }
+
             private int contentCase_ = 0;
             private java.lang.Object content_;
+
+            private void maybeForceBuilderInitialization() {
+                if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+                }
+            }
+
             private int bitField0_;
             private java.lang.Object messageId_ = "";
             private com.google.protobuf.SingleFieldBuilder<
@@ -4051,25 +4103,8 @@ public final class Messages {
         maybeForceBuilderInitialization();
       }
 
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.waz.model.Messages.internal_static_GenericMessage_descriptor;
-      }
-
       private static Builder create() {
         return new Builder();
-      }
-
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.waz.model.Messages.internal_static_GenericMessage_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.waz.model.Messages.GenericMessage.class, com.waz.model.Messages.GenericMessage.Builder.class);
-      }
-
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-        }
       }
 
             public Builder clear() {
@@ -4250,13 +4285,6 @@ public final class Messages {
                 result.contentCase_ = contentCase_;
                 onBuilt();
         return result;
-            }
-
-            /**
-             * <code>optional .Text text = 2;</code>
-             */
-            public com.waz.model.Messages.Text.Builder getTextBuilder() {
-                return getTextFieldBuilder().getBuilder();
             }
 
             public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -4635,8 +4663,8 @@ public final class Messages {
                 if (textBuilder_ == null) {
                     if (contentCase_ == 2) {
                         return (com.waz.model.Messages.Text) content_;
-          }
-          return com.waz.model.Messages.Text.getDefaultInstance();
+                    }
+                    return com.waz.model.Messages.Text.getDefaultInstance();
         } else {
           if (contentCase_ == 2) {
               return textBuilder_.getMessage();
@@ -4667,7 +4695,7 @@ public final class Messages {
              */
             public Builder setText(
                     com.waz.model.Messages.Text.Builder builderForValue) {
-        if (textBuilder_ == null) {
+                if (textBuilder_ == null) {
           content_ = builderForValue.build();
           onChanged();
         } else {
@@ -4718,6 +4746,13 @@ public final class Messages {
                     textBuilder_.clear();
                 }
                 return this;
+            }
+
+            /**
+             * <code>optional .Text text = 2;</code>
+             */
+            public com.waz.model.Messages.Text.Builder getTextBuilder() {
+                return getTextFieldBuilder().getBuilder();
             }
 
             /**
@@ -4923,7 +4958,7 @@ public final class Messages {
                     }
                     imageBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                             com.waz.model.Messages.ImageAsset, com.waz.model.Messages.ImageAsset.Builder, com.waz.model.Messages.ImageAssetOrBuilder>(
-                  (com.waz.model.Messages.ImageAsset) content_,
+                            (com.waz.model.Messages.ImageAsset) content_,
                             getParentForChildren(),
                             isClean());
                     content_ = null;
@@ -5064,13 +5099,13 @@ public final class Messages {
                     }
                     knockBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                             com.waz.model.Messages.Knock, com.waz.model.Messages.Knock.Builder, com.waz.model.Messages.KnockOrBuilder>(
-                  (com.waz.model.Messages.Knock) content_,
-                  getParentForChildren(),
-                  isClean());
-          content_ = null;
+                            (com.waz.model.Messages.Knock) content_,
+                            getParentForChildren(),
+                            isClean());
+                    content_ = null;
                 }
                 contentCase_ = 4;
-        return knockBuilder_;
+                return knockBuilder_;
             }
 
             /**
@@ -5174,9 +5209,9 @@ public final class Messages {
 
             /**
              * <code>optional .LastRead lastRead = 6;</code>
-       */
-      public com.waz.model.Messages.LastRead.Builder getLastReadBuilder() {
-          return getLastReadFieldBuilder().getBuilder();
+             */
+            public com.waz.model.Messages.LastRead.Builder getLastReadBuilder() {
+                return getLastReadFieldBuilder().getBuilder();
       }
 
             /**
@@ -5240,20 +5275,20 @@ public final class Messages {
 
             /**
              * <code>optional .Cleared cleared = 7;</code>
-       */
-      public Builder setCleared(com.waz.model.Messages.Cleared value) {
-          if (clearedBuilder_ == null) {
-              if (value == null) {
-                  throw new NullPointerException();
-              }
-              content_ = value;
-              onChanged();
-          } else {
-              clearedBuilder_.setMessage(value);
-          }
-          contentCase_ = 7;
-          return this;
-      }
+             */
+            public Builder setCleared(com.waz.model.Messages.Cleared value) {
+                if (clearedBuilder_ == null) {
+                    if (value == null) {
+                        throw new NullPointerException();
+                    }
+                    content_ = value;
+                    onChanged();
+                } else {
+                    clearedBuilder_.setMessage(value);
+                }
+                contentCase_ = 7;
+                return this;
+            }
 
             /**
              * <code>optional .Cleared cleared = 7;</code>
@@ -5279,8 +5314,8 @@ public final class Messages {
                             content_ != com.waz.model.Messages.Cleared.getDefaultInstance()) {
                         content_ = com.waz.model.Messages.Cleared.newBuilder((com.waz.model.Messages.Cleared) content_)
                                 .mergeFrom(value).buildPartial();
-          } else {
-            content_ = value;
+                    } else {
+                        content_ = value;
           }
           onChanged();
                 } else {
@@ -5327,7 +5362,7 @@ public final class Messages {
                 if ((contentCase_ == 7) && (clearedBuilder_ != null)) {
                     return clearedBuilder_.getMessageOrBuilder();
                 } else {
-          if (contentCase_ == 7) {
+                    if (contentCase_ == 7) {
             return (com.waz.model.Messages.Cleared) content_;
           }
           return com.waz.model.Messages.Cleared.getDefaultInstance();
@@ -5362,8 +5397,8 @@ public final class Messages {
                 return contentCase_ == 8;
             }
 
-      /**
-       * <code>optional .External external = 8;</code>
+            /**
+             * <code>optional .External external = 8;</code>
        */
       public com.waz.model.Messages.External getExternal() {
         if (externalBuilder_ == null) {
@@ -5441,7 +5476,7 @@ public final class Messages {
                 if (externalBuilder_ == null) {
                     if (contentCase_ == 8) {
                         contentCase_ = 0;
-            content_ = null;
+                        content_ = null;
                         onChanged();
                     }
                 } else {
@@ -5472,11 +5507,11 @@ public final class Messages {
                         return (com.waz.model.Messages.External) content_;
                     }
                     return com.waz.model.Messages.External.getDefaultInstance();
-        }
-      }
+                }
+            }
 
-      /**
-       * <code>optional .External external = 8;</code>
+            /**
+             * <code>optional .External external = 8;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           com.waz.model.Messages.External, com.waz.model.Messages.External.Builder, com.waz.model.Messages.ExternalOrBuilder>
@@ -5602,7 +5637,7 @@ public final class Messages {
                     if (contentCase_ == 10 &&
                             content_ != com.waz.model.Messages.Calling.getDefaultInstance()) {
                         content_ = com.waz.model.Messages.Calling.newBuilder((com.waz.model.Messages.Calling) content_)
-                .mergeFrom(value).buildPartial();
+                                .mergeFrom(value).buildPartial();
                     } else {
                         content_ = value;
                     }
@@ -5612,8 +5647,8 @@ public final class Messages {
                         callingBuilder_.mergeFrom(value);
                     }
                     callingBuilder_.setMessage(value);
-        }
-        contentCase_ = 10;
+                }
+                contentCase_ = 10;
         return this;
       }
 
@@ -5729,7 +5764,7 @@ public final class Messages {
                     content_ = builderForValue.build();
                     onChanged();
                 } else {
-          assetBuilder_.setMessage(builderForValue.build());
+                    assetBuilder_.setMessage(builderForValue.build());
                 }
                 contentCase_ = 11;
                 return this;
@@ -5738,19 +5773,19 @@ public final class Messages {
             /**
              * <code>optional .Asset asset = 11;</code>
              */
-      public Builder mergeAsset(com.waz.model.Messages.Asset value) {
-          if (assetBuilder_ == null) {
-              if (contentCase_ == 11 &&
-                      content_ != com.waz.model.Messages.Asset.getDefaultInstance()) {
+            public Builder mergeAsset(com.waz.model.Messages.Asset value) {
+                if (assetBuilder_ == null) {
+                    if (contentCase_ == 11 &&
+                            content_ != com.waz.model.Messages.Asset.getDefaultInstance()) {
             content_ = com.waz.model.Messages.Asset.newBuilder((com.waz.model.Messages.Asset) content_)
                 .mergeFrom(value).buildPartial();
           } else {
             content_ = value;
-              }
-              onChanged();
-          } else {
-              if (contentCase_ == 11) {
-                  assetBuilder_.mergeFrom(value);
+                    }
+                    onChanged();
+                } else {
+                    if (contentCase_ == 11) {
+                        assetBuilder_.mergeFrom(value);
           }
           assetBuilder_.setMessage(value);
         }
@@ -5787,16 +5822,16 @@ public final class Messages {
 
             /**
              * <code>optional .Asset asset = 11;</code>
-       */
-      public com.waz.model.Messages.AssetOrBuilder getAssetOrBuilder() {
-          if ((contentCase_ == 11) && (assetBuilder_ != null)) {
-              return assetBuilder_.getMessageOrBuilder();
-          } else {
-              if (contentCase_ == 11) {
-                  return (com.waz.model.Messages.Asset) content_;
-              }
-              return com.waz.model.Messages.Asset.getDefaultInstance();
-          }
+             */
+            public com.waz.model.Messages.AssetOrBuilder getAssetOrBuilder() {
+                if ((contentCase_ == 11) && (assetBuilder_ != null)) {
+                    return assetBuilder_.getMessageOrBuilder();
+                } else {
+                    if (contentCase_ == 11) {
+                        return (com.waz.model.Messages.Asset) content_;
+                    }
+                    return com.waz.model.Messages.Asset.getDefaultInstance();
+                }
       }
 
             /**
@@ -5887,10 +5922,10 @@ public final class Messages {
                                 .mergeFrom(value).buildPartial();
                     } else {
                         content_ = value;
-          }
-          onChanged();
-        } else {
-          if (contentCase_ == 12) {
+                    }
+                    onChanged();
+                } else {
+                    if (contentCase_ == 12) {
             hiddenBuilder_.mergeFrom(value);
           }
           hiddenBuilder_.setMessage(value);
@@ -5944,7 +5979,7 @@ public final class Messages {
              * <code>optional .MessageHide hidden = 12;</code>
              */
             private com.google.protobuf.SingleFieldBuilder<
-          com.waz.model.Messages.MessageHide, com.waz.model.Messages.MessageHide.Builder, com.waz.model.Messages.MessageHideOrBuilder>
+                    com.waz.model.Messages.MessageHide, com.waz.model.Messages.MessageHide.Builder, com.waz.model.Messages.MessageHideOrBuilder>
           getHiddenFieldBuilder() {
         if (hiddenBuilder_ == null) {
           if (!(contentCase_ == 12)) {
@@ -6003,36 +6038,19 @@ public final class Messages {
             }
 
             /**
-             * <code>optional .MessageDelete deleted = 14;</code>
+             * <code>optional .Location location = 13;</code>
              */
-            public Builder setDeleted(com.waz.model.Messages.MessageDelete value) {
-                if (deletedBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
-                    }
-                    content_ = value;
+            public Builder setLocation(
+          com.waz.model.Messages.Location.Builder builderForValue) {
+                if (locationBuilder_ == null) {
+                    content_ = builderForValue.build();
                     onChanged();
                 } else {
-                    deletedBuilder_.setMessage(value);
+                    locationBuilder_.setMessage(builderForValue.build());
                 }
-                contentCase_ = 14;
+                contentCase_ = 13;
                 return this;
             }
-
-            /**
-             * <code>optional .Location location = 13;</code>
-       */
-      public Builder setLocation(
-          com.waz.model.Messages.Location.Builder builderForValue) {
-          if (locationBuilder_ == null) {
-              content_ = builderForValue.build();
-              onChanged();
-          } else {
-              locationBuilder_.setMessage(builderForValue.build());
-          }
-          contentCase_ = 13;
-          return this;
-      }
 
             /**
              * <code>optional .Location location = 13;</code>
@@ -6041,7 +6059,7 @@ public final class Messages {
                 if (locationBuilder_ == null) {
                     if (contentCase_ == 13 &&
                             content_ != com.waz.model.Messages.Location.getDefaultInstance()) {
-            content_ = com.waz.model.Messages.Location.newBuilder((com.waz.model.Messages.Location) content_)
+                        content_ = com.waz.model.Messages.Location.newBuilder((com.waz.model.Messages.Location) content_)
                 .mergeFrom(value).buildPartial();
           } else {
             content_ = value;
@@ -6090,7 +6108,7 @@ public final class Messages {
             public com.waz.model.Messages.LocationOrBuilder getLocationOrBuilder() {
                 if ((contentCase_ == 13) && (locationBuilder_ != null)) {
                     return locationBuilder_.getMessageOrBuilder();
-        } else {
+                } else {
                     if (contentCase_ == 13) {
                         return (com.waz.model.Messages.Location) content_;
                     }
@@ -6108,7 +6126,7 @@ public final class Messages {
                     if (!(contentCase_ == 13)) {
                         content_ = com.waz.model.Messages.Location.getDefaultInstance();
                     }
-          locationBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+                    locationBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.waz.model.Messages.Location, com.waz.model.Messages.Location.Builder, com.waz.model.Messages.LocationOrBuilder>(
                   (com.waz.model.Messages.Location) content_,
                   getParentForChildren(),
@@ -6145,8 +6163,25 @@ public final class Messages {
 
             /**
              * <code>optional .MessageDelete deleted = 14;</code>
-       */
-      public Builder setDeleted(
+             */
+            public Builder setDeleted(com.waz.model.Messages.MessageDelete value) {
+                if (deletedBuilder_ == null) {
+                    if (value == null) {
+                        throw new NullPointerException();
+                    }
+                    content_ = value;
+                    onChanged();
+                } else {
+                    deletedBuilder_.setMessage(value);
+                }
+                contentCase_ = 14;
+                return this;
+            }
+
+            /**
+             * <code>optional .MessageDelete deleted = 14;</code>
+             */
+            public Builder setDeleted(
           com.waz.model.Messages.MessageDelete.Builder builderForValue) {
         if (deletedBuilder_ == null) {
           content_ = builderForValue.build();
@@ -6154,26 +6189,9 @@ public final class Messages {
         } else {
           deletedBuilder_.setMessage(builderForValue.build());
         }
-          contentCase_ = 14;
-          return this;
-      }
-
-            /**
-             * <code>optional .MessageEdit edited = 15;</code>
-             */
-            public Builder setEdited(com.waz.model.Messages.MessageEdit value) {
-                if (editedBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
-                    }
-                    content_ = value;
-                    onChanged();
-                } else {
-                    editedBuilder_.setMessage(value);
-                }
-                contentCase_ = 15;
+                contentCase_ = 14;
                 return this;
-            }
+      }
 
             /**
              * <code>optional .MessageDelete deleted = 14;</code>
@@ -6182,7 +6200,7 @@ public final class Messages {
                 if (deletedBuilder_ == null) {
                     if (contentCase_ == 14 &&
                             content_ != com.waz.model.Messages.MessageDelete.getDefaultInstance()) {
-            content_ = com.waz.model.Messages.MessageDelete.newBuilder((com.waz.model.Messages.MessageDelete) content_)
+                        content_ = com.waz.model.Messages.MessageDelete.newBuilder((com.waz.model.Messages.MessageDelete) content_)
                 .mergeFrom(value).buildPartial();
           } else {
             content_ = value;
@@ -6287,6 +6305,23 @@ public final class Messages {
             /**
              * <code>optional .MessageEdit edited = 15;</code>
              */
+            public Builder setEdited(com.waz.model.Messages.MessageEdit value) {
+                if (editedBuilder_ == null) {
+                    if (value == null) {
+                        throw new NullPointerException();
+                    }
+                    content_ = value;
+                    onChanged();
+                } else {
+                    editedBuilder_.setMessage(value);
+                }
+                contentCase_ = 15;
+                return this;
+            }
+
+            /**
+             * <code>optional .MessageEdit edited = 15;</code>
+             */
             public Builder setEdited(
                     com.waz.model.Messages.MessageEdit.Builder builderForValue) {
                 if (editedBuilder_ == null) {
@@ -6315,29 +6350,12 @@ public final class Messages {
                 } else {
                     if (contentCase_ == 15) {
                         editedBuilder_.mergeFrom(value);
-          }
-          editedBuilder_.setMessage(value);
-        }
-        contentCase_ = 15;
-        return this;
-      }
-
-            /**
-             * <code>optional .Confirmation confirmation = 16;</code>
-             */
-            public Builder setConfirmation(com.waz.model.Messages.Confirmation value) {
-                if (confirmationBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
                     }
-                    content_ = value;
-                    onChanged();
-                } else {
-                    confirmationBuilder_.setMessage(value);
+                    editedBuilder_.setMessage(value);
                 }
-                contentCase_ = 16;
+                contentCase_ = 15;
                 return this;
-            }
+      }
 
             /**
              * <code>optional .MessageEdit edited = 15;</code>
@@ -6428,6 +6446,23 @@ public final class Messages {
             /**
              * <code>optional .Confirmation confirmation = 16;</code>
              */
+            public Builder setConfirmation(com.waz.model.Messages.Confirmation value) {
+                if (confirmationBuilder_ == null) {
+                    if (value == null) {
+                        throw new NullPointerException();
+                    }
+                    content_ = value;
+                    onChanged();
+                } else {
+                    confirmationBuilder_.setMessage(value);
+                }
+                contentCase_ = 16;
+                return this;
+            }
+
+            /**
+             * <code>optional .Confirmation confirmation = 16;</code>
+             */
             public Builder setConfirmation(
                     com.waz.model.Messages.Confirmation.Builder builderForValue) {
                 if (confirmationBuilder_ == null) {
@@ -6441,21 +6476,14 @@ public final class Messages {
             }
 
             /**
-             * <code>optional .Reaction reaction = 17;</code>
-             */
-            public boolean hasReaction() {
-                return contentCase_ == 17;
-            }
-
-      /**
-       * <code>optional .Confirmation confirmation = 16;</code>
+             * <code>optional .Confirmation confirmation = 16;</code>
        */
       public Builder mergeConfirmation(com.waz.model.Messages.Confirmation value) {
           if (confirmationBuilder_ == null) {
               if (contentCase_ == 16 &&
                       content_ != com.waz.model.Messages.Confirmation.getDefaultInstance()) {
                   content_ = com.waz.model.Messages.Confirmation.newBuilder((com.waz.model.Messages.Confirmation) content_)
-                .mergeFrom(value).buildPartial();
+                          .mergeFrom(value).buildPartial();
           } else {
             content_ = value;
           }
@@ -6468,22 +6496,6 @@ public final class Messages {
         }
         contentCase_ = 16;
         return this;
-      }
-      /**
-       * <code>optional .Reaction reaction = 17;</code>
-       */
-      public Builder setReaction(com.waz.model.Messages.Reaction value) {
-        if (reactionBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-            content_ = value;
-            onChanged();
-        } else {
-            reactionBuilder_.setMessage(value);
-        }
-          contentCase_ = 17;
-          return this;
       }
 
             /**
@@ -6551,6 +6563,13 @@ public final class Messages {
             /**
              * <code>optional .Reaction reaction = 17;</code>
              */
+            public boolean hasReaction() {
+                return contentCase_ == 17;
+            }
+
+            /**
+             * <code>optional .Reaction reaction = 17;</code>
+             */
             public com.waz.model.Messages.Reaction getReaction() {
                 if (reactionBuilder_ == null) {
                     if (contentCase_ == 17) {
@@ -6567,9 +6586,26 @@ public final class Messages {
 
             /**
              * <code>optional .Reaction reaction = 17;</code>
-       */
-      public Builder setReaction(
-          com.waz.model.Messages.Reaction.Builder builderForValue) {
+             */
+            public Builder setReaction(com.waz.model.Messages.Reaction value) {
+                if (reactionBuilder_ == null) {
+                    if (value == null) {
+                        throw new NullPointerException();
+                    }
+                    content_ = value;
+                    onChanged();
+                } else {
+                    reactionBuilder_.setMessage(value);
+                }
+                contentCase_ = 17;
+                return this;
+            }
+
+            /**
+             * <code>optional .Reaction reaction = 17;</code>
+             */
+            public Builder setReaction(
+                    com.waz.model.Messages.Reaction.Builder builderForValue) {
         if (reactionBuilder_ == null) {
           content_ = builderForValue.build();
           onChanged();
@@ -6631,38 +6667,6 @@ public final class Messages {
             }
 
             /**
-             * <code>optional .Ephemeral ephemeral = 18;</code>
-             */
-            public Builder setEphemeral(com.waz.model.Messages.Ephemeral value) {
-                if (ephemeralBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
-                    }
-                    content_ = value;
-                    onChanged();
-                } else {
-                    ephemeralBuilder_.setMessage(value);
-                }
-                contentCase_ = 18;
-                return this;
-            }
-
-            /**
-             * <code>optional .Ephemeral ephemeral = 18;</code>
-             */
-            public Builder setEphemeral(
-                    com.waz.model.Messages.Ephemeral.Builder builderForValue) {
-                if (ephemeralBuilder_ == null) {
-                    content_ = builderForValue.build();
-                    onChanged();
-                } else {
-                    ephemeralBuilder_.setMessage(builderForValue.build());
-        }
-        contentCase_ = 18;
-                return this;
-            }
-
-            /**
              * <code>optional .Reaction reaction = 17;</code>
        */
       public com.waz.model.Messages.ReactionOrBuilder getReactionOrBuilder() {
@@ -6721,8 +6725,40 @@ public final class Messages {
                 }
             }
 
-      /**
-       * <code>optional .Ephemeral ephemeral = 18;</code>
+            /**
+             * <code>optional .Ephemeral ephemeral = 18;</code>
+             */
+            public Builder setEphemeral(com.waz.model.Messages.Ephemeral value) {
+                if (ephemeralBuilder_ == null) {
+                    if (value == null) {
+                        throw new NullPointerException();
+                    }
+                    content_ = value;
+                    onChanged();
+                } else {
+                    ephemeralBuilder_.setMessage(value);
+                }
+                contentCase_ = 18;
+                return this;
+            }
+
+            /**
+             * <code>optional .Ephemeral ephemeral = 18;</code>
+             */
+            public Builder setEphemeral(
+                    com.waz.model.Messages.Ephemeral.Builder builderForValue) {
+                if (ephemeralBuilder_ == null) {
+                    content_ = builderForValue.build();
+                    onChanged();
+                } else {
+                    ephemeralBuilder_.setMessage(builderForValue.build());
+                }
+                contentCase_ = 18;
+                return this;
+            }
+
+            /**
+             * <code>optional .Ephemeral ephemeral = 18;</code>
        */
       public Builder mergeEphemeral(com.waz.model.Messages.Ephemeral value) {
           if (ephemeralBuilder_ == null) {
@@ -7107,8 +7143,8 @@ public final class Messages {
                 } else {
                     if (contentCase_ == 21) {
                         return buttonActionBuilder_.getMessage();
-          }
-          return com.waz.model.Messages.ButtonAction.getDefaultInstance();
+                    }
+                    return com.waz.model.Messages.ButtonAction.getDefaultInstance();
                 }
             }
 
@@ -7273,27 +7309,27 @@ public final class Messages {
             /**
              * <code>optional .ButtonActionConfirmation buttonActionConfirmation = 22;</code>
              */
-      public Builder setButtonActionConfirmation(
-              com.waz.model.Messages.ButtonActionConfirmation.Builder builderForValue) {
-          if (buttonActionConfirmationBuilder_ == null) {
-              content_ = builderForValue.build();
-              onChanged();
-          } else {
-              buttonActionConfirmationBuilder_.setMessage(builderForValue.build());
-          }
-          contentCase_ = 22;
-          return this;
-      }
+            public Builder setButtonActionConfirmation(
+                    com.waz.model.Messages.ButtonActionConfirmation.Builder builderForValue) {
+                if (buttonActionConfirmationBuilder_ == null) {
+                    content_ = builderForValue.build();
+                    onChanged();
+                } else {
+                    buttonActionConfirmationBuilder_.setMessage(builderForValue.build());
+                }
+                contentCase_ = 22;
+                return this;
+            }
 
             /**
              * <code>optional .ButtonActionConfirmation buttonActionConfirmation = 22;</code>
              */
             public Builder mergeButtonActionConfirmation(com.waz.model.Messages.ButtonActionConfirmation value) {
                 if (buttonActionConfirmationBuilder_ == null) {
-          if (contentCase_ == 22 &&
+                    if (contentCase_ == 22 &&
               content_ != com.waz.model.Messages.ButtonActionConfirmation.getDefaultInstance()) {
-              content_ = com.waz.model.Messages.ButtonActionConfirmation.newBuilder((com.waz.model.Messages.ButtonActionConfirmation) content_)
-                .mergeFrom(value).buildPartial();
+                        content_ = com.waz.model.Messages.ButtonActionConfirmation.newBuilder((com.waz.model.Messages.ButtonActionConfirmation) content_)
+                                .mergeFrom(value).buildPartial();
           } else {
             content_ = value;
           }
@@ -7384,6 +7420,8 @@ public final class Messages {
             // @@protoc_insertion_point(message_implements:CompositeMessage)
             CompositeMessageOrBuilder {
         public static final int ITEMS_FIELD_NUMBER = 1;
+        public static final int EXPECTS_READ_CONFIRMATION_FIELD_NUMBER = 2;
+        public static final int LEGAL_HOLD_STATUS_FIELD_NUMBER = 3;
         private static final CompositeMessage defaultInstance;
         private static final long serialVersionUID = 0L;
         public static com.google.protobuf.Parser<CompositeMessage> PARSER =
@@ -7402,7 +7440,10 @@ public final class Messages {
         }
 
         private final com.google.protobuf.UnknownFieldSet unknownFields;
+        private int bitField0_;
         private java.util.List<com.waz.model.Messages.CompositeMessage.Item> items_;
+        private boolean expectsReadConfirmation_;
+        private com.waz.model.Messages.LegalHoldStatus legalHoldStatus_;
         private byte memoizedIsInitialized = -1;
         private int memoizedSerializedSize = -1;
 
@@ -7445,6 +7486,22 @@ public final class Messages {
                                 mutable_bitField0_ |= 0x00000001;
                             }
                             items_.add(input.readMessage(com.waz.model.Messages.CompositeMessage.Item.PARSER, extensionRegistry));
+                            break;
+                        }
+                        case 16: {
+                            bitField0_ |= 0x00000001;
+                            expectsReadConfirmation_ = input.readBool();
+                            break;
+                        }
+                        case 24: {
+                            int rawValue = input.readEnum();
+                            com.waz.model.Messages.LegalHoldStatus value = com.waz.model.Messages.LegalHoldStatus.valueOf(rawValue);
+                            if (value == null) {
+                                unknownFields.mergeVarintField(3, rawValue);
+                            } else {
+                                bitField0_ |= 0x00000002;
+                                legalHoldStatus_ = value;
+                            }
                             break;
                         }
                     }
@@ -7601,8 +7658,38 @@ public final class Messages {
             return items_.get(index);
         }
 
+        /**
+         * <code>optional bool expects_read_confirmation = 2 [default = false];</code>
+         */
+        public boolean hasExpectsReadConfirmation() {
+            return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+
+        /**
+         * <code>optional bool expects_read_confirmation = 2 [default = false];</code>
+         */
+        public boolean getExpectsReadConfirmation() {
+            return expectsReadConfirmation_;
+        }
+
+        /**
+         * <code>optional .LegalHoldStatus legal_hold_status = 3 [default = UNKNOWN];</code>
+         */
+        public boolean hasLegalHoldStatus() {
+            return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+
+        /**
+         * <code>optional .LegalHoldStatus legal_hold_status = 3 [default = UNKNOWN];</code>
+         */
+        public com.waz.model.Messages.LegalHoldStatus getLegalHoldStatus() {
+            return legalHoldStatus_;
+        }
+
         private void initFields() {
             items_ = java.util.Collections.emptyList();
+            expectsReadConfirmation_ = false;
+            legalHoldStatus_ = com.waz.model.Messages.LegalHoldStatus.UNKNOWN;
         }
 
         public final boolean isInitialized() {
@@ -7626,6 +7713,12 @@ public final class Messages {
             for (int i = 0; i < items_.size(); i++) {
                 output.writeMessage(1, items_.get(i));
             }
+            if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                output.writeBool(2, expectsReadConfirmation_);
+            }
+            if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                output.writeEnum(3, legalHoldStatus_.getNumber());
+            }
             getUnknownFields().writeTo(output);
         }
 
@@ -7637,6 +7730,14 @@ public final class Messages {
             for (int i = 0; i < items_.size(); i++) {
                 size += com.google.protobuf.CodedOutputStream
                         .computeMessageSize(1, items_.get(i));
+            }
+            if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                size += com.google.protobuf.CodedOutputStream
+                        .computeBoolSize(2, expectsReadConfirmation_);
+            }
+            if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                size += com.google.protobuf.CodedOutputStream
+                        .computeEnumSize(3, legalHoldStatus_.getNumber());
             }
             size += getUnknownFields().getSerializedSize();
             memoizedSerializedSize = size;
@@ -7726,8 +7827,10 @@ public final class Messages {
             }
 
             private final com.google.protobuf.UnknownFieldSet unknownFields;
+            private int bitField0_;
             private int contentCase_ = 0;
             private java.lang.Object content_;
+            private byte memoizedIsInitialized = -1;
             private int memoizedSerializedSize = -1;
 
             // Use Item.newBuilder() to construct.
@@ -7739,8 +7842,6 @@ public final class Messages {
             private Item(boolean noInit) {
                 this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
             }
-
-            private int bitField0_;
 
             private Item(
                     com.google.protobuf.CodedInputStream input,
@@ -7808,12 +7909,12 @@ public final class Messages {
                 return defaultInstance;
             }
 
+            ;
+
             public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
                 return com.waz.model.Messages.internal_static_CompositeMessage_Item_descriptor;
             }
-
-            ;
 
             public static com.waz.model.Messages.CompositeMessage.Item parseFrom(
                     com.google.protobuf.ByteString data)
@@ -7876,8 +7977,6 @@ public final class Messages {
                     throws java.io.IOException {
                 return PARSER.parseFrom(input, extensionRegistry);
             }
-
-            private byte memoizedIsInitialized = -1;
 
             public static Builder newBuilder() {
                 return Builder.create();
@@ -8548,6 +8647,8 @@ public final class Messages {
                     java.util.Collections.emptyList();
             private com.google.protobuf.RepeatedFieldBuilder<
                     com.waz.model.Messages.CompositeMessage.Item, com.waz.model.Messages.CompositeMessage.Item.Builder, com.waz.model.Messages.CompositeMessage.ItemOrBuilder> itemsBuilder_;
+            private boolean expectsReadConfirmation_;
+            private com.waz.model.Messages.LegalHoldStatus legalHoldStatus_ = com.waz.model.Messages.LegalHoldStatus.UNKNOWN;
 
             // Construct using com.waz.model.Messages.CompositeMessage.newBuilder()
             private Builder() {
@@ -8590,6 +8691,10 @@ public final class Messages {
                 } else {
                     itemsBuilder_.clear();
                 }
+                expectsReadConfirmation_ = false;
+                bitField0_ = (bitField0_ & ~0x00000002);
+                legalHoldStatus_ = com.waz.model.Messages.LegalHoldStatus.UNKNOWN;
+                bitField0_ = (bitField0_ & ~0x00000004);
                 return this;
             }
 
@@ -8617,6 +8722,7 @@ public final class Messages {
             public com.waz.model.Messages.CompositeMessage buildPartial() {
                 com.waz.model.Messages.CompositeMessage result = new com.waz.model.Messages.CompositeMessage(this);
                 int from_bitField0_ = bitField0_;
+                int to_bitField0_ = 0;
                 if (itemsBuilder_ == null) {
                     if (((bitField0_ & 0x00000001) == 0x00000001)) {
                         items_ = java.util.Collections.unmodifiableList(items_);
@@ -8626,6 +8732,15 @@ public final class Messages {
                 } else {
                     result.items_ = itemsBuilder_.build();
                 }
+                if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+                    to_bitField0_ |= 0x00000001;
+                }
+                result.expectsReadConfirmation_ = expectsReadConfirmation_;
+                if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+                    to_bitField0_ |= 0x00000002;
+                }
+                result.legalHoldStatus_ = legalHoldStatus_;
+                result.bitField0_ = to_bitField0_;
                 onBuilt();
                 return result;
             }
@@ -8666,6 +8781,12 @@ public final class Messages {
                             itemsBuilder_.addAllMessages(other.items_);
                         }
                     }
+                }
+                if (other.hasExpectsReadConfirmation()) {
+                    setExpectsReadConfirmation(other.getExpectsReadConfirmation());
+                }
+                if (other.hasLegalHoldStatus()) {
+                    setLegalHoldStatus(other.getLegalHoldStatus());
                 }
                 this.mergeUnknownFields(other.getUnknownFields());
                 return this;
@@ -8875,9 +8996,9 @@ public final class Messages {
                     ensureItemsIsMutable();
                     items_.remove(index);
                     onChanged();
-        } else {
-          itemsBuilder_.remove(index);
-        }
+                } else {
+                    itemsBuilder_.remove(index);
+                }
                 return this;
             }
 
@@ -8885,16 +9006,17 @@ public final class Messages {
              * <code>repeated .CompositeMessage.Item items = 1;</code>
              */
             public com.waz.model.Messages.CompositeMessage.Item.Builder getItemsBuilder(
-          int index) {
-        return getItemsFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .CompositeMessage.Item items = 1;</code>
-       */
-      public com.waz.model.Messages.CompositeMessage.ItemOrBuilder getItemsOrBuilder(
-          int index) {
+                    int index) {
+                return getItemsFieldBuilder().getBuilder(index);
+            }
+
+            /**
+             * <code>repeated .CompositeMessage.Item items = 1;</code>
+             */
+            public com.waz.model.Messages.CompositeMessage.ItemOrBuilder getItemsOrBuilder(
+                    int index) {
         if (itemsBuilder_ == null) {
-          return items_.get(index);
+            return items_.get(index);
         } else {
             return itemsBuilder_.getMessageOrBuilder(index);
         }
@@ -8950,6 +9072,77 @@ public final class Messages {
                     items_ = null;
                 }
                 return itemsBuilder_;
+            }
+
+            /**
+             * <code>optional bool expects_read_confirmation = 2 [default = false];</code>
+             */
+            public boolean hasExpectsReadConfirmation() {
+                return ((bitField0_ & 0x00000002) == 0x00000002);
+            }
+
+            /**
+             * <code>optional bool expects_read_confirmation = 2 [default = false];</code>
+             */
+            public boolean getExpectsReadConfirmation() {
+                return expectsReadConfirmation_;
+            }
+
+            /**
+             * <code>optional bool expects_read_confirmation = 2 [default = false];</code>
+             */
+            public Builder setExpectsReadConfirmation(boolean value) {
+                bitField0_ |= 0x00000002;
+                expectsReadConfirmation_ = value;
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional bool expects_read_confirmation = 2 [default = false];</code>
+             */
+            public Builder clearExpectsReadConfirmation() {
+                bitField0_ = (bitField0_ & ~0x00000002);
+                expectsReadConfirmation_ = false;
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional .LegalHoldStatus legal_hold_status = 3 [default = UNKNOWN];</code>
+             */
+            public boolean hasLegalHoldStatus() {
+                return ((bitField0_ & 0x00000004) == 0x00000004);
+            }
+
+            /**
+             * <code>optional .LegalHoldStatus legal_hold_status = 3 [default = UNKNOWN];</code>
+             */
+            public com.waz.model.Messages.LegalHoldStatus getLegalHoldStatus() {
+                return legalHoldStatus_;
+            }
+
+            /**
+             * <code>optional .LegalHoldStatus legal_hold_status = 3 [default = UNKNOWN];</code>
+             */
+            public Builder setLegalHoldStatus(com.waz.model.Messages.LegalHoldStatus value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                bitField0_ |= 0x00000004;
+                legalHoldStatus_ = value;
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional .LegalHoldStatus legal_hold_status = 3 [default = UNKNOWN];</code>
+             */
+            public Builder clearLegalHoldStatus() {
+                bitField0_ = (bitField0_ & ~0x00000004);
+                legalHoldStatus_ = com.waz.model.Messages.LegalHoldStatus.UNKNOWN;
+                onChanged();
+                return this;
             }
 
             // @@protoc_insertion_point(builder_scope:CompositeMessage)
@@ -9120,6 +9313,10 @@ public final class Messages {
             return PARSER.parseFrom(input, extensionRegistry);
         }
 
+        public static Builder newBuilder() {
+            return Builder.create();
+        }
+
         public static Builder newBuilder(com.waz.model.Messages.Button prototype) {
             return newBuilder().mergeFrom(prototype);
         }
@@ -9262,10 +9459,6 @@ public final class Messages {
                 output.writeBytes(2, getIdBytes());
             }
             getUnknownFields().writeTo(output);
-        }
-
-        public static Builder newBuilder() {
-            return Builder.create();
         }
 
         public int getSerializedSize() {
@@ -9544,8 +9737,8 @@ public final class Messages {
              */
             public java.lang.String getId() {
                 java.lang.Object ref = id_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
+                if (!(ref instanceof java.lang.String)) {
+                    com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           if (bs.isValidUtf8()) {
@@ -9793,12 +9986,6 @@ public final class Messages {
         }
 
         @java.lang.Override
-        protected java.lang.Object writeReplace()
-                throws java.io.ObjectStreamException {
-            return super.writeReplace();
-        }
-
-        @java.lang.Override
         public final com.google.protobuf.UnknownFieldSet
         getUnknownFields() {
             return this.unknownFields;
@@ -9950,6 +10137,12 @@ public final class Messages {
             size += getUnknownFields().getSerializedSize();
             memoizedSerializedSize = size;
             return size;
+        }
+
+        @java.lang.Override
+        protected java.lang.Object writeReplace()
+                throws java.io.ObjectStreamException {
+            return super.writeReplace();
         }
 
         public Builder newBuilderForType() {
@@ -10966,14 +11159,14 @@ public final class Messages {
         // @@protoc_insertion_point(class_scope:ButtonActionConfirmation)
     }
 
-  /**
-   * Protobuf type {@code Availability}
-   */
-  public static final class Availability extends
-          com.google.protobuf.GeneratedMessage implements
-          // @@protoc_insertion_point(message_implements:Availability)
-          AvailabilityOrBuilder {
-      public static final int TYPE_FIELD_NUMBER = 1;
+    /**
+     * Protobuf type {@code Availability}
+     */
+    public static final class Availability extends
+            com.google.protobuf.GeneratedMessage implements
+            // @@protoc_insertion_point(message_implements:Availability)
+            AvailabilityOrBuilder {
+        public static final int TYPE_FIELD_NUMBER = 1;
     private static final Availability defaultInstance;
     private static final long serialVersionUID = 0L;
     public static com.google.protobuf.Parser<Availability> PARSER =
@@ -10986,46 +11179,51 @@ public final class Messages {
       }
         };
 
-      static {
-          defaultInstance = new Availability(true);
-          defaultInstance.initFields();
-      }
+        static {
+            defaultInstance = new Availability(true);
+            defaultInstance.initFields();
+        }
 
-      private final com.google.protobuf.UnknownFieldSet unknownFields;
-      private int bitField0_;
-      private com.waz.model.Messages.Availability.Type type_;
-      private byte memoizedIsInitialized = -1;
-      private int memoizedSerializedSize = -1;
+        private final com.google.protobuf.UnknownFieldSet unknownFields;
+        private int bitField0_;
+        private com.waz.model.Messages.Availability.Type type_;
+        private byte memoizedIsInitialized = -1;
+        private int memoizedSerializedSize = -1;
 
-      // Use Availability.newBuilder() to construct.
-      private Availability(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-          super(builder);
-          this.unknownFields = builder.getUnknownFields();
-      }
+        // Use Availability.newBuilder() to construct.
+        private Availability(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+            super(builder);
+            this.unknownFields = builder.getUnknownFields();
+        }
 
-      private Availability(boolean noInit) {
-          this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
-      }
+        @java.lang.Override
+        public com.google.protobuf.Parser<Availability> getParserForType() {
+            return PARSER;
+        }
 
-      private Availability(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws com.google.protobuf.InvalidProtocolBufferException {
-          initFields();
-          int mutable_bitField0_ = 0;
-          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-                  com.google.protobuf.UnknownFieldSet.newBuilder();
-          try {
-              boolean done = false;
-              while (!done) {
-                  int tag = input.readTag();
-                  switch (tag) {
-                      case 0:
-                          done = true;
-                          break;
-                      default: {
-                          if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
+        private Availability(boolean noInit) {
+            this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+        }
+
+        private Availability(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            initFields();
+            int mutable_bitField0_ = 0;
+            com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+                    com.google.protobuf.UnknownFieldSet.newBuilder();
+            try {
+                boolean done = false;
+                while (!done) {
+                    int tag = input.readTag();
+                    switch (tag) {
+                        case 0:
+                            done = true;
+                            break;
+                        default: {
+                            if (!parseUnknownField(input, unknownFields,
+                                    extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -11041,94 +11239,102 @@ public final class Messages {
                 }
                 break;
             }
-                  }
-              }
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-              throw e.setUnfinishedMessage(this);
-          } catch (java.io.IOException e) {
-              throw new com.google.protobuf.InvalidProtocolBufferException(
-                      e.getMessage()).setUnfinishedMessage(this);
-          } finally {
-              this.unknownFields = unknownFields.build();
-              makeExtensionsImmutable();
-          }
-      }
+                    }
+                }
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(this);
+            } catch (java.io.IOException e) {
+                throw new com.google.protobuf.InvalidProtocolBufferException(
+                        e.getMessage()).setUnfinishedMessage(this);
+            } finally {
+                this.unknownFields = unknownFields.build();
+                makeExtensionsImmutable();
+            }
+        }
 
-      public static Availability getDefaultInstance() {
-          return defaultInstance;
-      }
+        public static Availability getDefaultInstance() {
+            return defaultInstance;
+        }
 
-      public static final com.google.protobuf.Descriptors.Descriptor
-      getDescriptor() {
-          return com.waz.model.Messages.internal_static_Availability_descriptor;
-      }
+        public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+            return com.waz.model.Messages.internal_static_Availability_descriptor;
+        }
 
-      public static com.waz.model.Messages.Availability parseFrom(
-              com.google.protobuf.ByteString data)
-              throws com.google.protobuf.InvalidProtocolBufferException {
-          return PARSER.parseFrom(data);
-      }
+        /**
+         * <code>required .Availability.Type type = 1;</code>
+         */
+        public boolean hasType() {
+            return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
 
-      public static com.waz.model.Messages.Availability parseFrom(
-              com.google.protobuf.ByteString data,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws com.google.protobuf.InvalidProtocolBufferException {
-          return PARSER.parseFrom(data, extensionRegistry);
-      }
+        public static com.waz.model.Messages.Availability parseFrom(
+                com.google.protobuf.ByteString data)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data);
+        }
 
-      public static com.waz.model.Messages.Availability parseFrom(byte[] data)
-              throws com.google.protobuf.InvalidProtocolBufferException {
-          return PARSER.parseFrom(data);
-    }
+        public static com.waz.model.Messages.Availability parseFrom(
+                com.google.protobuf.ByteString data,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data, extensionRegistry);
+        }
 
-    public static com.waz.model.Messages.Availability parseFrom(
+        public static com.waz.model.Messages.Availability parseFrom(byte[] data)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data);
+        }
+
+        public static com.waz.model.Messages.Availability parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
 
-      public static com.waz.model.Messages.Availability parseFrom(java.io.InputStream input)
-              throws java.io.IOException {
-          return PARSER.parseFrom(input);
-      }
+        public static com.waz.model.Messages.Availability parseFrom(java.io.InputStream input)
+                throws java.io.IOException {
+            return PARSER.parseFrom(input);
+        }
 
-      public static com.waz.model.Messages.Availability parseFrom(
-              java.io.InputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws java.io.IOException {
-          return PARSER.parseFrom(input, extensionRegistry);
-      }
+        public static com.waz.model.Messages.Availability parseFrom(
+                java.io.InputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws java.io.IOException {
+            return PARSER.parseFrom(input, extensionRegistry);
+        }
 
-      public static com.waz.model.Messages.Availability parseDelimitedFrom(java.io.InputStream input)
-              throws java.io.IOException {
-          return PARSER.parseDelimitedFrom(input);
-      }
+        public static com.waz.model.Messages.Availability parseDelimitedFrom(java.io.InputStream input)
+                throws java.io.IOException {
+            return PARSER.parseDelimitedFrom(input);
+        }
 
-      public static com.waz.model.Messages.Availability parseDelimitedFrom(
-              java.io.InputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws java.io.IOException {
-          return PARSER.parseDelimitedFrom(input, extensionRegistry);
+        public static com.waz.model.Messages.Availability parseDelimitedFrom(
+                java.io.InputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws java.io.IOException {
+            return PARSER.parseDelimitedFrom(input, extensionRegistry);
+        }
+
+        public static com.waz.model.Messages.Availability parseFrom(
+                com.google.protobuf.CodedInputStream input)
+                throws java.io.IOException {
+            return PARSER.parseFrom(input);
     }
 
-    public static com.waz.model.Messages.Availability parseFrom(
-            com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
-        return PARSER.parseFrom(input);
-    }
-
-      public static com.waz.model.Messages.Availability parseFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        public static com.waz.model.Messages.Availability parseFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-          return PARSER.parseFrom(input, extensionRegistry);
-      }
+            return PARSER.parseFrom(input, extensionRegistry);
+        }
 
-      public static Builder newBuilder() { return Builder.create();
-      }
+        public static Builder newBuilder() {
+            return Builder.create();
+        }
 
-      public static Builder newBuilder(com.waz.model.Messages.Availability prototype) {
+        public static Builder newBuilder(com.waz.model.Messages.Availability prototype) {
       return newBuilder().mergeFrom(prototype);
     }
 
@@ -11142,23 +11348,11 @@ public final class Messages {
         return this.unknownFields;
     }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internalGetFieldAccessorTable() {
-          return com.waz.model.Messages.internal_static_Availability_fieldAccessorTable
-                  .ensureFieldAccessorsInitialized(
-                          com.waz.model.Messages.Availability.class, com.waz.model.Messages.Availability.Builder.class);
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<Availability> getParserForType() {
-      return PARSER;
-    }
-
-    /**
-     * <code>required .Availability.Type type = 1;</code>
-     */
-    public boolean hasType() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+            return com.waz.model.Messages.internal_static_Availability_fieldAccessorTable
+                    .ensureFieldAccessorsInitialized(
+                            com.waz.model.Messages.Availability.class, com.waz.model.Messages.Availability.Builder.class);
     }
 
     /**
@@ -11168,96 +11362,96 @@ public final class Messages {
         return type_;
     }
 
-      private void initFields() {
-          type_ = com.waz.model.Messages.Availability.Type.NONE;
+        private void initFields() {
+            type_ = com.waz.model.Messages.Availability.Type.NONE;
     }
 
-      public final boolean isInitialized() {
-          byte isInitialized = memoizedIsInitialized;
-          if (isInitialized == 1) return true;
-          if (isInitialized == 0) return false;
+        public final boolean isInitialized() {
+            byte isInitialized = memoizedIsInitialized;
+            if (isInitialized == 1) return true;
+            if (isInitialized == 0) return false;
 
-          if (!hasType()) {
-              memoizedIsInitialized = 0;
-              return false;
-          }
-          memoizedIsInitialized = 1;
+            if (!hasType()) {
+                memoizedIsInitialized = 0;
+                return false;
+            }
+            memoizedIsInitialized = 1;
       return true;
-      }
+        }
 
-      public void writeTo(com.google.protobuf.CodedOutputStream output)
-              throws java.io.IOException {
-          getSerializedSize();
-          if (((bitField0_ & 0x00000001) == 0x00000001)) {
-              output.writeEnum(1, type_.getNumber());
-          }
-          getUnknownFields().writeTo(output);
-      }
+        public void writeTo(com.google.protobuf.CodedOutputStream output)
+                throws java.io.IOException {
+            getSerializedSize();
+            if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                output.writeEnum(1, type_.getNumber());
+            }
+            getUnknownFields().writeTo(output);
+        }
 
-      public int getSerializedSize() {
-          int size = memoizedSerializedSize;
-          if (size != -1) return size;
+        public int getSerializedSize() {
+            int size = memoizedSerializedSize;
+            if (size != -1) return size;
 
-          size = 0;
-          if (((bitField0_ & 0x00000001) == 0x00000001)) {
-              size += com.google.protobuf.CodedOutputStream
-                      .computeEnumSize(1, type_.getNumber());
-          }
-          size += getUnknownFields().getSerializedSize();
-          memoizedSerializedSize = size;
-          return size;
-      }
+            size = 0;
+            if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                size += com.google.protobuf.CodedOutputStream
+                        .computeEnumSize(1, type_.getNumber());
+            }
+            size += getUnknownFields().getSerializedSize();
+            memoizedSerializedSize = size;
+            return size;
+        }
 
-      @java.lang.Override
-      protected java.lang.Object writeReplace()
-              throws java.io.ObjectStreamException {
-          return super.writeReplace();
-      }
+        @java.lang.Override
+        protected java.lang.Object writeReplace()
+                throws java.io.ObjectStreamException {
+            return super.writeReplace();
+        }
 
-      public Builder newBuilderForType() {
-          return newBuilder();
-      }
+        public Builder newBuilderForType() {
+            return newBuilder();
+        }
 
-      public Builder toBuilder() {
-          return newBuilder(this);
-      }
+        public Builder toBuilder() {
+            return newBuilder(this);
+        }
 
-      @java.lang.Override
-      protected Builder newBuilderForType(
-              com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-          Builder builder = new Builder(parent);
-          return builder;
-      }
+        @java.lang.Override
+        protected Builder newBuilderForType(
+                com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+            Builder builder = new Builder(parent);
+            return builder;
+        }
 
-      /**
-       * Protobuf enum {@code Availability.Type}
-       */
-      public enum Type
-              implements com.google.protobuf.ProtocolMessageEnum {
-          /**
-           * <code>NONE = 0;</code>
-           */
-          NONE(0, 0),
-          /**
-           * <code>AVAILABLE = 1;</code>
-           */
+        /**
+         * Protobuf enum {@code Availability.Type}
+         */
+        public enum Type
+                implements com.google.protobuf.ProtocolMessageEnum {
+            /**
+             * <code>NONE = 0;</code>
+             */
+            NONE(0, 0),
+            /**
+             * <code>AVAILABLE = 1;</code>
+             */
       AVAILABLE(1, 1),
       /**
        * <code>AWAY = 2;</code>
        */
       AWAY(2, 2),
-          /**
-           * <code>BUSY = 3;</code>
-           */
-          BUSY(3, 3),
-          ;
+            /**
+             * <code>BUSY = 3;</code>
+             */
+            BUSY(3, 3),
+            ;
 
-          /**
-           * <code>NONE = 0;</code>
-           */
-          public static final int NONE_VALUE = 0;
-          /**
-           * <code>AVAILABLE = 1;</code>
+            /**
+             * <code>NONE = 0;</code>
+             */
+            public static final int NONE_VALUE = 0;
+            /**
+             * <code>AVAILABLE = 1;</code>
        */
       public static final int AVAILABLE_VALUE = 1;
       /**
@@ -11268,12 +11462,12 @@ public final class Messages {
        * <code>BUSY = 3;</code>
        */
       public static final int BUSY_VALUE = 3;
-          private static final Type[] VALUES = values();
-          private static com.google.protobuf.Internal.EnumLiteMap<Type>
-                  internalValueMap =
-                  new com.google.protobuf.Internal.EnumLiteMap<Type>() {
-                      public Type findValueByNumber(int number) {
-                          return Type.valueOf(number);
+            private static final Type[] VALUES = values();
+            private static com.google.protobuf.Internal.EnumLiteMap<Type>
+                    internalValueMap =
+                    new com.google.protobuf.Internal.EnumLiteMap<Type>() {
+                        public Type findValueByNumber(int number) {
+                            return Type.valueOf(number);
               }
             };
       private final int index;
@@ -11299,7 +11493,7 @@ public final class Messages {
         }
       }
 
-          public static com.google.protobuf.Internal.EnumLiteMap<Type>
+            public static com.google.protobuf.Internal.EnumLiteMap<Type>
           internalGetValueMap() {
         return internalValueMap;
       }
@@ -11325,49 +11519,50 @@ public final class Messages {
         return getDescriptor().getValues().get(index);
       }
 
-          public final com.google.protobuf.Descriptors.EnumDescriptor
+            public final com.google.protobuf.Descriptors.EnumDescriptor
           getDescriptorForType() {
-              return getDescriptor();
-          }
+                return getDescriptor();
+            }
 
-          // @@protoc_insertion_point(enum_scope:Availability.Type)
-      }
+            // @@protoc_insertion_point(enum_scope:Availability.Type)
+        }
 
-      /**
-       * Protobuf type {@code Availability}
-       */
-      public static final class Builder extends
-              com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-              // @@protoc_insertion_point(builder_implements:Availability)
-              com.waz.model.Messages.AvailabilityOrBuilder {
-          private int bitField0_;
-          private com.waz.model.Messages.Availability.Type type_ = com.waz.model.Messages.Availability.Type.NONE;
+        /**
+         * Protobuf type {@code Availability}
+         */
+        public static final class Builder extends
+                com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+                // @@protoc_insertion_point(builder_implements:Availability)
+                com.waz.model.Messages.AvailabilityOrBuilder {
+            private int bitField0_;
+
+            protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+                return com.waz.model.Messages.internal_static_Availability_fieldAccessorTable
+                        .ensureFieldAccessorsInitialized(
+                                com.waz.model.Messages.Availability.class, com.waz.model.Messages.Availability.Builder.class);
+            }
+
+            private com.waz.model.Messages.Availability.Type type_ = com.waz.model.Messages.Availability.Type.NONE;
 
       // Construct using com.waz.model.Messages.Availability.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
 
-          private Builder(
-                  com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-              super(parent);
-              maybeForceBuilderInitialization();
-          }
+            private Builder(
+                    com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+                super(parent);
+                maybeForceBuilderInitialization();
+            }
 
-          public static final com.google.protobuf.Descriptors.Descriptor
+            public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-              return com.waz.model.Messages.internal_static_Availability_descriptor;
-          }
+                return com.waz.model.Messages.internal_static_Availability_descriptor;
+            }
 
-          private static Builder create() {
-              return new Builder();
-      }
-
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.waz.model.Messages.internal_static_Availability_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.waz.model.Messages.Availability.class, com.waz.model.Messages.Availability.Builder.class);
+            private static Builder create() {
+                return new Builder();
       }
 
       private void maybeForceBuilderInitialization() {
@@ -11375,15 +11570,15 @@ public final class Messages {
           }
       }
 
-          public Builder clear() {
-              super.clear();
-              type_ = com.waz.model.Messages.Availability.Type.NONE;
-              bitField0_ = (bitField0_ & ~0x00000001);
-              return this;
-          }
+            public Builder clear() {
+                super.clear();
+                type_ = com.waz.model.Messages.Availability.Type.NONE;
+                bitField0_ = (bitField0_ & ~0x00000001);
+                return this;
+            }
 
-          public Builder clone() {
-              return create().mergeFrom(buildPartial());
+            public Builder clone() {
+                return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -11395,25 +11590,16 @@ public final class Messages {
           return com.waz.model.Messages.Availability.getDefaultInstance();
       }
 
-          public Builder mergeFrom(com.google.protobuf.Message other) {
-              if (other instanceof com.waz.model.Messages.Availability) {
-                  return mergeFrom((com.waz.model.Messages.Availability)other);
-        } else {
-          super.mergeFrom(other);
-                  return this;
-              }
-          }
+            public com.waz.model.Messages.Availability build() {
+                com.waz.model.Messages.Availability result = buildPartial();
+                if (!result.isInitialized()) {
+                    throw newUninitializedMessageException(result);
+                }
+                return result;
+            }
 
-          public com.waz.model.Messages.Availability build() {
-              com.waz.model.Messages.Availability result = buildPartial();
-              if (!result.isInitialized()) {
-                  throw newUninitializedMessageException(result);
-              }
-              return result;
-          }
-
-          public com.waz.model.Messages.Availability buildPartial() {
-              com.waz.model.Messages.Availability result = new com.waz.model.Messages.Availability(this);
+            public com.waz.model.Messages.Availability buildPartial() {
+                com.waz.model.Messages.Availability result = new com.waz.model.Messages.Availability(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -11423,12 +11609,21 @@ public final class Messages {
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
-          }
+            }
 
-          public Builder mergeFrom(com.waz.model.Messages.Availability other) {
-              if (other == com.waz.model.Messages.Availability.getDefaultInstance()) return this;
-        if (other.hasType()) {
-          setType(other.getType());
+            public Builder mergeFrom(com.google.protobuf.Message other) {
+                if (other instanceof com.waz.model.Messages.Availability) {
+                    return mergeFrom((com.waz.model.Messages.Availability) other);
+                } else {
+                    super.mergeFrom(other);
+                    return this;
+                }
+            }
+
+            public Builder mergeFrom(com.waz.model.Messages.Availability other) {
+                if (other == com.waz.model.Messages.Availability.getDefaultInstance()) return this;
+                if (other.hasType()) {
+                    setType(other.getType());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -11460,30 +11655,30 @@ public final class Messages {
           return this;
       }
 
-          /**
-           * <code>required .Availability.Type type = 1;</code>
-           */
-          public boolean hasType() {
-              return ((bitField0_ & 0x00000001) == 0x00000001);
-          }
+            /**
+             * <code>required .Availability.Type type = 1;</code>
+             */
+            public boolean hasType() {
+                return ((bitField0_ & 0x00000001) == 0x00000001);
+            }
 
-          /**
-           * <code>required .Availability.Type type = 1;</code>
-           */
-          public com.waz.model.Messages.Availability.Type getType() {
-              return type_;
-          }
+            /**
+             * <code>required .Availability.Type type = 1;</code>
+             */
+            public com.waz.model.Messages.Availability.Type getType() {
+                return type_;
+            }
 
-          /**
-           * <code>required .Availability.Type type = 1;</code>
-           */
-          public Builder setType(com.waz.model.Messages.Availability.Type value) {
-              if (value == null) {
-                  throw new NullPointerException();
-              }
-              bitField0_ |= 0x00000001;
-              type_ = value;
-              onChanged();
+            /**
+             * <code>required .Availability.Type type = 1;</code>
+             */
+            public Builder setType(com.waz.model.Messages.Availability.Type value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                bitField0_ |= 0x00000001;
+                type_ = value;
+                onChanged();
         return this;
       }
       /**
@@ -11496,10 +11691,10 @@ public final class Messages {
           return this;
       }
 
-          // @@protoc_insertion_point(builder_scope:Availability)
-      }
+            // @@protoc_insertion_point(builder_scope:Availability)
+        }
 
-      // @@protoc_insertion_point(class_scope:Availability)
+        // @@protoc_insertion_point(class_scope:Availability)
   }
 
     /**
@@ -11522,17 +11717,10 @@ public final class Messages {
                     public Ephemeral parsePartialFrom(
                             com.google.protobuf.CodedInputStream input,
                             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
+                            throws com.google.protobuf.InvalidProtocolBufferException {
                         return new Ephemeral(input, extensionRegistry);
       }
     };
-
-        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return com.waz.model.Messages.internal_static_Ephemeral_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            com.waz.model.Messages.Ephemeral.class, com.waz.model.Messages.Ephemeral.Builder.class);
-        }
 
         static {
             defaultInstance = new Ephemeral(true);
@@ -11544,8 +11732,8 @@ public final class Messages {
         private int contentCase_ = 0;
         private java.lang.Object content_;
         private long expireAfterMillis_;
-        ;
         private byte memoizedIsInitialized = -1;
+        ;
         private int memoizedSerializedSize = -1;
 
         // Use Ephemeral.newBuilder() to construct.
@@ -11691,31 +11879,6 @@ public final class Messages {
             return PARSER.parseFrom(data);
         }
 
-        /**
-         * <code>optional .ImageAsset image = 3;</code>
-         *
-         * <pre>
-         * deprecated in favour of Asset
-         * </pre>
-         */
-        public boolean hasImage() {
-            return contentCase_ == 3;
-        }
-
-        /**
-         * <code>optional .ImageAsset image = 3;</code>
-         *
-         * <pre>
-         * deprecated in favour of Asset
-         * </pre>
-         */
-        public com.waz.model.Messages.ImageAsset getImage() {
-            if (contentCase_ == 3) {
-                return (com.waz.model.Messages.ImageAsset) content_;
-      }
-      return com.waz.model.Messages.ImageAsset.getDefaultInstance();
-    }
-
     public static com.waz.model.Messages.Ephemeral parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -11733,6 +11896,11 @@ public final class Messages {
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
             return PARSER.parseFrom(input, extensionRegistry);
+        }
+
+        public static com.waz.model.Messages.Ephemeral parseDelimitedFrom(java.io.InputStream input)
+                throws java.io.IOException {
+            return PARSER.parseDelimitedFrom(input);
         }
 
         public static com.waz.model.Messages.Ephemeral parseDelimitedFrom(
@@ -11771,84 +11939,17 @@ public final class Messages {
             return this.unknownFields;
         }
 
-        /**
-         * <code>optional .Location location = 6;</code>
-         */
-        public boolean hasLocation() {
-            return contentCase_ == 6;
-        }
-
-        /**
-         * <code>optional .Location location = 6;</code>
-         */
-        public com.waz.model.Messages.Location getLocation() {
-            if (contentCase_ == 6) {
-                return (com.waz.model.Messages.Location) content_;
-            }
-            return com.waz.model.Messages.Location.getDefaultInstance();
-        }
-
-        /**
-         * <code>optional .Location location = 6;</code>
-         */
-        public com.waz.model.Messages.LocationOrBuilder getLocationOrBuilder() {
-            if (contentCase_ == 6) {
-                return (com.waz.model.Messages.Location) content_;
-            }
-            return com.waz.model.Messages.Location.getDefaultInstance();
-        }
-
-        private void initFields() {
-            expireAfterMillis_ = 0L;
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+            return com.waz.model.Messages.internal_static_Ephemeral_fieldAccessorTable
+                    .ensureFieldAccessorsInitialized(
+                            com.waz.model.Messages.Ephemeral.class, com.waz.model.Messages.Ephemeral.Builder.class);
         }
 
         @java.lang.Override
         public com.google.protobuf.Parser<Ephemeral> getParserForType() {
             return PARSER;
         }
-
-        public final boolean isInitialized() {
-            byte isInitialized = memoizedIsInitialized;
-            if (isInitialized == 1) return true;
-            if (isInitialized == 0) return false;
-
-            if (!hasExpireAfterMillis()) {
-        memoizedIsInitialized = 0;
-                return false;
-            }
-            if (hasText()) {
-                if (!getText().isInitialized()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-      }
-      if (hasImage()) {
-        if (!getImage().isInitialized()) {
-          memoizedIsInitialized = 0;
-            return false;
-        }
-      }
-            if (hasKnock()) {
-                if (!getKnock().isInitialized()) {
-                    memoizedIsInitialized = 0;
-          return false;
-        }
-      }
-      if (hasAsset()) {
-        if (!getAsset().isInitialized()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-      }
-      if (hasLocation()) {
-        if (!getLocation().isInitialized()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-      }
-      memoizedIsInitialized = 1;
-      return true;
-    }
 
     public ContentCase
     getContentCase() {
@@ -11904,6 +12005,31 @@ public final class Messages {
          * deprecated in favour of Asset
          * </pre>
          */
+        public boolean hasImage() {
+            return contentCase_ == 3;
+        }
+
+        /**
+         * <code>optional .ImageAsset image = 3;</code>
+         *
+         * <pre>
+         * deprecated in favour of Asset
+         * </pre>
+         */
+        public com.waz.model.Messages.ImageAsset getImage() {
+            if (contentCase_ == 3) {
+                return (com.waz.model.Messages.ImageAsset) content_;
+            }
+            return com.waz.model.Messages.ImageAsset.getDefaultInstance();
+        }
+
+        /**
+         * <code>optional .ImageAsset image = 3;</code>
+         *
+         * <pre>
+         * deprecated in favour of Asset
+         * </pre>
+         */
         public com.waz.model.Messages.ImageAssetOrBuilder getImageOrBuilder() {
             if (contentCase_ == 3) {
                 return (com.waz.model.Messages.ImageAsset) content_;
@@ -11945,11 +12071,6 @@ public final class Messages {
             return contentCase_ == 5;
         }
 
-        public static com.waz.model.Messages.Ephemeral parseDelimitedFrom(java.io.InputStream input)
-                throws java.io.IOException {
-            return PARSER.parseDelimitedFrom(input);
-        }
-
         /**
          * <code>optional .Asset asset = 5;</code>
          */
@@ -11968,6 +12089,80 @@ public final class Messages {
                 return (com.waz.model.Messages.Asset) content_;
             }
             return com.waz.model.Messages.Asset.getDefaultInstance();
+        }
+
+        /**
+         * <code>optional .Location location = 6;</code>
+         */
+        public boolean hasLocation() {
+            return contentCase_ == 6;
+        }
+
+        /**
+         * <code>optional .Location location = 6;</code>
+         */
+        public com.waz.model.Messages.Location getLocation() {
+            if (contentCase_ == 6) {
+                return (com.waz.model.Messages.Location) content_;
+            }
+            return com.waz.model.Messages.Location.getDefaultInstance();
+        }
+
+        /**
+         * <code>optional .Location location = 6;</code>
+         */
+        public com.waz.model.Messages.LocationOrBuilder getLocationOrBuilder() {
+            if (contentCase_ == 6) {
+                return (com.waz.model.Messages.Location) content_;
+            }
+            return com.waz.model.Messages.Location.getDefaultInstance();
+        }
+
+        private void initFields() {
+            expireAfterMillis_ = 0L;
+        }
+
+        public final boolean isInitialized() {
+            byte isInitialized = memoizedIsInitialized;
+            if (isInitialized == 1) return true;
+            if (isInitialized == 0) return false;
+
+            if (!hasExpireAfterMillis()) {
+                memoizedIsInitialized = 0;
+                return false;
+            }
+            if (hasText()) {
+                if (!getText().isInitialized()) {
+                    memoizedIsInitialized = 0;
+                    return false;
+                }
+            }
+            if (hasImage()) {
+                if (!getImage().isInitialized()) {
+                    memoizedIsInitialized = 0;
+                    return false;
+                }
+            }
+            if (hasKnock()) {
+                if (!getKnock().isInitialized()) {
+                    memoizedIsInitialized = 0;
+                    return false;
+                }
+            }
+            if (hasAsset()) {
+                if (!getAsset().isInitialized()) {
+                    memoizedIsInitialized = 0;
+                    return false;
+                }
+            }
+            if (hasLocation()) {
+                if (!getLocation().isInitialized()) {
+                    memoizedIsInitialized = 0;
+                    return false;
+                }
+            }
+            memoizedIsInitialized = 1;
+            return true;
         }
 
         public void writeTo(com.google.protobuf.CodedOutputStream output)
@@ -12060,7 +12255,7 @@ public final class Messages {
             private int value = 0;
 
             private ContentCase(int value) {
-        this.value = value;
+                this.value = value;
             }
 
             public static ContentCase valueOf(int value) {
@@ -12107,16 +12302,6 @@ public final class Messages {
                     com.waz.model.Messages.Knock, com.waz.model.Messages.Knock.Builder, com.waz.model.Messages.KnockOrBuilder> knockBuilder_;
             private com.google.protobuf.SingleFieldBuilder<
                     com.waz.model.Messages.Asset, com.waz.model.Messages.Asset.Builder, com.waz.model.Messages.AssetOrBuilder> assetBuilder_;
-
-            public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-                return com.waz.model.Messages.internal_static_Ephemeral_descriptor;
-      }
-
-      public com.waz.model.Messages.Ephemeral getDefaultInstanceForType() {
-        return com.waz.model.Messages.Ephemeral.getDefaultInstance();
-      }
-
             private com.google.protobuf.SingleFieldBuilder<
                     com.waz.model.Messages.Location, com.waz.model.Messages.Location.Builder, com.waz.model.Messages.LocationOrBuilder> locationBuilder_;
 
@@ -12125,8 +12310,8 @@ public final class Messages {
                 maybeForceBuilderInitialization();
             }
 
-      private Builder(
-              com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+            private Builder(
+                    com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -12163,6 +12348,22 @@ public final class Messages {
 
             public Builder clone() {
                 return create().mergeFrom(buildPartial());
+            }
+
+            public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+                return com.waz.model.Messages.internal_static_Ephemeral_descriptor;
+            }
+
+            public com.waz.model.Messages.Ephemeral getDefaultInstanceForType() {
+                return com.waz.model.Messages.Ephemeral.getDefaultInstance();
+            }
+
+            public Builder clearContent() {
+                contentCase_ = 0;
+                content_ = null;
+                onChanged();
+                return this;
             }
 
             public com.waz.model.Messages.Ephemeral build() {
@@ -12221,6 +12422,13 @@ public final class Messages {
           onBuilt();
           return result;
       }
+
+            /**
+             * <code>required int64 expire_after_millis = 1;</code>
+             */
+            public boolean hasExpireAfterMillis() {
+                return ((bitField0_ & 0x00000001) == 0x00000001);
+            }
 
             public Builder mergeFrom(com.google.protobuf.Message other) {
                 if (other instanceof com.waz.model.Messages.Ephemeral) {
@@ -12327,26 +12535,6 @@ public final class Messages {
                         contentCase_);
       }
 
-      public Builder clearContent() {
-        contentCase_ = 0;
-        content_ = null;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .Text text = 2;</code>
-       */
-      public boolean hasText() {
-        return contentCase_ == 2;
-      }
-
-      /**
-       * <code>required int64 expire_after_millis = 1;</code>
-       */
-      public boolean hasExpireAfterMillis() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-
       /**
        * <code>required int64 expire_after_millis = 1;</code>
        */
@@ -12372,6 +12560,13 @@ public final class Messages {
                 expireAfterMillis_ = 0L;
                 onChanged();
                 return this;
+            }
+
+            /**
+             * <code>optional .Text text = 2;</code>
+             */
+            public boolean hasText() {
+                return contentCase_ == 2;
             }
 
             /**
@@ -12566,8 +12761,19 @@ public final class Messages {
              *
              * <pre>
              * deprecated in favour of Asset
-       * </pre>
-       */
+             * </pre>
+             */
+            public com.waz.model.Messages.ImageAsset.Builder getImageBuilder() {
+                return getImageFieldBuilder().getBuilder();
+            }
+
+            /**
+             * <code>optional .ImageAsset image = 3;</code>
+             *
+             * <pre>
+             * deprecated in favour of Asset
+             * </pre>
+             */
       public Builder setImage(
           com.waz.model.Messages.ImageAsset.Builder builderForValue) {
         if (imageBuilder_ == null) {
@@ -12619,7 +12825,7 @@ public final class Messages {
                     if (contentCase_ == 3) {
                         contentCase_ = 0;
                         content_ = null;
-            onChanged();
+                        onChanged();
           }
         } else {
           if (contentCase_ == 3) {
@@ -12629,17 +12835,6 @@ public final class Messages {
           imageBuilder_.clear();
         }
         return this;
-      }
-
-      /**
-       * <code>optional .ImageAsset image = 3;</code>
-       *
-       * <pre>
-       * deprecated in favour of Asset
-       * </pre>
-       */
-      public com.waz.model.Messages.ImageAsset.Builder getImageBuilder() {
-        return getImageFieldBuilder().getBuilder();
       }
 
       /**
@@ -12671,7 +12866,7 @@ public final class Messages {
                     com.waz.model.Messages.ImageAsset, com.waz.model.Messages.ImageAsset.Builder, com.waz.model.Messages.ImageAssetOrBuilder>
             getImageFieldBuilder() {
                 if (imageBuilder_ == null) {
-          if (!(contentCase_ == 3)) {
+                    if (!(contentCase_ == 3)) {
             content_ = com.waz.model.Messages.ImageAsset.getDefaultInstance();
           }
                     imageBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -12712,29 +12907,6 @@ public final class Messages {
             /**
              * <code>optional .Knock knock = 4;</code>
              */
-            public Builder mergeKnock(com.waz.model.Messages.Knock value) {
-                if (knockBuilder_ == null) {
-                    if (contentCase_ == 4 &&
-                            content_ != com.waz.model.Messages.Knock.getDefaultInstance()) {
-            content_ = com.waz.model.Messages.Knock.newBuilder((com.waz.model.Messages.Knock) content_)
-                .mergeFrom(value).buildPartial();
-          } else {
-            content_ = value;
-          }
-          onChanged();
-        } else {
-          if (contentCase_ == 4) {
-            knockBuilder_.mergeFrom(value);
-          }
-                    knockBuilder_.setMessage(value);
-                }
-                contentCase_ = 4;
-                return this;
-            }
-
-            /**
-             * <code>optional .Knock knock = 4;</code>
-             */
             public Builder setKnock(com.waz.model.Messages.Knock value) {
                 if (knockBuilder_ == null) {
                     if (value == null) {
@@ -12751,23 +12923,22 @@ public final class Messages {
 
             /**
              * <code>optional .Knock knock = 4;</code>
-       */
-      public com.waz.model.Messages.Knock.Builder getKnockBuilder() {
-          return getKnockFieldBuilder().getBuilder();
-      }
-
-            /**
-             * <code>optional .Knock knock = 4;</code>
-       */
-      public com.waz.model.Messages.KnockOrBuilder getKnockOrBuilder() {
-          if ((contentCase_ == 4) && (knockBuilder_ != null)) {
-          return knockBuilder_.getMessageOrBuilder();
-          } else {
-              if (contentCase_ == 4) {
-                  return (com.waz.model.Messages.Knock) content_;
-              }
-              return com.waz.model.Messages.Knock.getDefaultInstance();
-          }
+             */
+            public Builder clearKnock() {
+                if (knockBuilder_ == null) {
+                    if (contentCase_ == 4) {
+                        contentCase_ = 0;
+                        content_ = null;
+                        onChanged();
+                    }
+                } else {
+                    if (contentCase_ == 4) {
+                        contentCase_ = 0;
+                        content_ = null;
+                    }
+                    knockBuilder_.clear();
+                }
+                return this;
       }
 
             /**
@@ -12779,7 +12950,7 @@ public final class Messages {
                     content_ = builderForValue.build();
                     onChanged();
                 } else {
-          knockBuilder_.setMessage(builderForValue.build());
+                    knockBuilder_.setMessage(builderForValue.build());
         }
         contentCase_ = 4;
         return this;
@@ -12788,43 +12959,44 @@ public final class Messages {
       /**
        * <code>optional .Knock knock = 4;</code>
        */
-      public Builder clearKnock() {
+      public Builder mergeKnock(com.waz.model.Messages.Knock value) {
         if (knockBuilder_ == null) {
-          if (contentCase_ == 4) {
-            contentCase_ = 0;
-            content_ = null;
+            if (contentCase_ == 4 &&
+                    content_ != com.waz.model.Messages.Knock.getDefaultInstance()) {
+                content_ = com.waz.model.Messages.Knock.newBuilder((com.waz.model.Messages.Knock) content_)
+                        .mergeFrom(value).buildPartial();
+            } else {
+                content_ = value;
+            }
             onChanged();
-          }
         } else {
-          if (contentCase_ == 4) {
-            contentCase_ = 0;
-            content_ = null;
+            if (contentCase_ == 4) {
+                knockBuilder_.mergeFrom(value);
           }
-          knockBuilder_.clear();
+            knockBuilder_.setMessage(value);
         }
+          contentCase_ = 4;
         return this;
       }
+
       /**
-       * <code>optional .Asset asset = 5;</code>
+       * <code>optional .Knock knock = 4;</code>
        */
-      public boolean hasAsset() {
-        return contentCase_ == 5;
+      public com.waz.model.Messages.Knock.Builder getKnockBuilder() {
+          return getKnockFieldBuilder().getBuilder();
       }
 
             /**
-             * <code>optional .Asset asset = 5;</code>
+             * <code>optional .Knock knock = 4;</code>
              */
-      public com.waz.model.Messages.Asset getAsset() {
-        if (assetBuilder_ == null) {
-          if (contentCase_ == 5) {
-            return (com.waz.model.Messages.Asset) content_;
+            public com.waz.model.Messages.KnockOrBuilder getKnockOrBuilder() {
+                if ((contentCase_ == 4) && (knockBuilder_ != null)) {
+                    return knockBuilder_.getMessageOrBuilder();
+                } else {
+                    if (contentCase_ == 4) {
+                        return (com.waz.model.Messages.Knock) content_;
           }
-          return com.waz.model.Messages.Asset.getDefaultInstance();
-        } else {
-          if (contentCase_ == 5) {
-            return assetBuilder_.getMessage();
-          }
-          return com.waz.model.Messages.Asset.getDefaultInstance();
+                    return com.waz.model.Messages.Knock.getDefaultInstance();
         }
       }
 
@@ -12847,6 +13019,30 @@ public final class Messages {
                 }
                 contentCase_ = 4;
                 return knockBuilder_;
+            }
+
+            /**
+             * <code>optional .Asset asset = 5;</code>
+             */
+            public boolean hasAsset() {
+                return contentCase_ == 5;
+            }
+
+            /**
+             * <code>optional .Asset asset = 5;</code>
+             */
+            public com.waz.model.Messages.Asset getAsset() {
+                if (assetBuilder_ == null) {
+                    if (contentCase_ == 5) {
+                        return (com.waz.model.Messages.Asset) content_;
+                    }
+                    return com.waz.model.Messages.Asset.getDefaultInstance();
+                } else {
+                    if (contentCase_ == 5) {
+                        return assetBuilder_.getMessage();
+                    }
+                    return com.waz.model.Messages.Asset.getDefaultInstance();
+                }
             }
 
             /**
@@ -12879,7 +13075,7 @@ public final class Messages {
                 }
                 contentCase_ = 5;
                 return this;
-      }
+            }
 
             /**
              * <code>optional .Asset asset = 5;</code>
@@ -12907,10 +13103,17 @@ public final class Messages {
             /**
              * <code>optional .Asset asset = 5;</code>
              */
+            public com.waz.model.Messages.Asset.Builder getAssetBuilder() {
+                return getAssetFieldBuilder().getBuilder();
+            }
+
+            /**
+             * <code>optional .Asset asset = 5;</code>
+             */
             public Builder clearAsset() {
                 if (assetBuilder_ == null) {
                     if (contentCase_ == 5) {
-            contentCase_ = 0;
+                        contentCase_ = 0;
                         content_ = null;
                         onChanged();
                     }
@@ -12922,13 +13125,6 @@ public final class Messages {
           assetBuilder_.clear();
         }
         return this;
-      }
-
-      /**
-       * <code>optional .Asset asset = 5;</code>
-       */
-      public com.waz.model.Messages.Asset.Builder getAssetBuilder() {
-        return getAssetFieldBuilder().getBuilder();
       }
 
       /**
@@ -12954,7 +13150,7 @@ public final class Messages {
                 if (assetBuilder_ == null) {
                     if (!(contentCase_ == 5)) {
                         content_ = com.waz.model.Messages.Asset.getDefaultInstance();
-          }
+                    }
           assetBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.waz.model.Messages.Asset, com.waz.model.Messages.Asset.Builder, com.waz.model.Messages.AssetOrBuilder>(
                   (com.waz.model.Messages.Asset) content_,
@@ -12971,7 +13167,6 @@ public final class Messages {
       public boolean hasLocation() {
         return contentCase_ == 6;
       }
-
       /**
        * <code>optional .Location location = 6;</code>
        */
@@ -12988,6 +13183,7 @@ public final class Messages {
           return com.waz.model.Messages.Location.getDefaultInstance();
         }
       }
+
       /**
        * <code>optional .Location location = 6;</code>
        */
@@ -13090,7 +13286,7 @@ public final class Messages {
                     com.waz.model.Messages.Location, com.waz.model.Messages.Location.Builder, com.waz.model.Messages.LocationOrBuilder>
             getLocationFieldBuilder() {
                 if (locationBuilder_ == null) {
-          if (!(contentCase_ == 6)) {
+                    if (!(contentCase_ == 6)) {
             content_ = com.waz.model.Messages.Location.getDefaultInstance();
           }
           locationBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -13105,9 +13301,9 @@ public final class Messages {
             }
 
             // @@protoc_insertion_point(builder_scope:Ephemeral)
-    }
+        }
 
-    // @@protoc_insertion_point(class_scope:Ephemeral)
+        // @@protoc_insertion_point(class_scope:Ephemeral)
   }
 
   /**
@@ -13161,6 +13357,17 @@ public final class Messages {
           this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
       }
 
+      /**
+       * <code>repeated .LinkPreview link_preview = 3;</code>
+       *
+       * <pre>
+       * reserved 2; // reserved keyword is not available in older protoc versions
+       * </pre>
+       */
+      public int getLinkPreviewCount() {
+          return linkPreview_.size();
+      }
+
       private Text(
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -13168,7 +13375,7 @@ public final class Messages {
           initFields();
           int mutable_bitField0_ = 0;
           com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
+                  com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
           while (!done) {
@@ -13180,7 +13387,7 @@ public final class Messages {
                   default: {
                       if (!parseUnknownField(input, unknownFields,
                               extensionRegistry, tag)) {
-                done = true;
+                          done = true;
               }
                       break;
                   }
@@ -13326,10 +13533,11 @@ public final class Messages {
       }
 
       public static Builder newBuilder() {
-          return Builder.create(); }
+          return Builder.create();
+      }
 
-    public static Builder newBuilder(com.waz.model.Messages.Text prototype) {
-        return newBuilder().mergeFrom(prototype);
+      public static Builder newBuilder(com.waz.model.Messages.Text prototype) {
+          return newBuilder().mergeFrom(prototype);
     }
 
       public Text getDefaultInstanceForType() {
@@ -13426,20 +13634,9 @@ public final class Messages {
      * reserved 2; // reserved keyword is not available in older protoc versions
      * </pre>
      */
-    public int getLinkPreviewCount() {
-      return linkPreview_.size();
+    public com.waz.model.Messages.LinkPreview getLinkPreview(int index) {
+        return linkPreview_.get(index);
     }
-
-      /**
-       * <code>repeated .LinkPreview link_preview = 3;</code>
-       *
-       * <pre>
-       * reserved 2; // reserved keyword is not available in older protoc versions
-       * </pre>
-       */
-      public com.waz.model.Messages.LinkPreview getLinkPreview(int index) {
-          return linkPreview_.get(index);
-      }
 
       /**
        * <code>repeated .LinkPreview link_preview = 3;</code>
@@ -13649,8 +13846,8 @@ public final class Messages {
                       .computeMessageSize(4, mentions_.get(i));
           }
           if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, quote_);
+              size += com.google.protobuf.CodedOutputStream
+                      .computeMessageSize(5, quote_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
@@ -13682,7 +13879,7 @@ public final class Messages {
       @java.lang.Override
       protected Builder newBuilderForType(
               com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-      Builder builder = new Builder(parent);
+          Builder builder = new Builder(parent);
           return builder;
       }
 
@@ -13693,12 +13890,17 @@ public final class Messages {
               com.google.protobuf.GeneratedMessage.Builder<Builder> implements
               // @@protoc_insertion_point(builder_implements:Text)
               com.waz.model.Messages.TextOrBuilder {
+          public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+              return com.waz.model.Messages.internal_static_Text_descriptor;
+          }
+
           private int bitField0_;
           private java.lang.Object content_ = "";
           private java.util.List<com.waz.model.Messages.LinkPreview> linkPreview_ =
                   java.util.Collections.emptyList();
           private com.google.protobuf.RepeatedFieldBuilder<
-          com.waz.model.Messages.LinkPreview, com.waz.model.Messages.LinkPreview.Builder, com.waz.model.Messages.LinkPreviewOrBuilder> linkPreviewBuilder_;
+                  com.waz.model.Messages.LinkPreview, com.waz.model.Messages.LinkPreview.Builder, com.waz.model.Messages.LinkPreviewOrBuilder> linkPreviewBuilder_;
       private java.util.List<com.waz.model.Messages.Mention> mentions_ =
         java.util.Collections.emptyList();
       private com.google.protobuf.RepeatedFieldBuilder<
@@ -13718,11 +13920,6 @@ public final class Messages {
           com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
-      }
-
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.waz.model.Messages.internal_static_Text_descriptor;
       }
 
       private static Builder create() {
@@ -13843,7 +14040,7 @@ public final class Messages {
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.waz.model.Messages.Text) {
-          return mergeFrom((com.waz.model.Messages.Text) other);
+            return mergeFrom((com.waz.model.Messages.Text) other);
         } else {
             super.mergeFrom(other);
             return this;
@@ -13948,13 +14145,6 @@ public final class Messages {
               return true;
           }
 
-          private void ensureLinkPreviewIsMutable() {
-              if (!((bitField0_ & 0x00000002) == 0x00000002)) {
-                  linkPreview_ = new java.util.ArrayList<com.waz.model.Messages.LinkPreview>(linkPreview_);
-                  bitField0_ |= 0x00000002;
-              }
-          }
-
           public Builder mergeFrom(
                   com.google.protobuf.CodedInputStream input,
                   com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -13971,21 +14161,6 @@ public final class Messages {
                   }
               }
               return this;
-          }
-
-          /**
-           * <code>repeated .LinkPreview link_preview = 3;</code>
-           *
-           * <pre>
-           * reserved 2; // reserved keyword is not available in older protoc versions
-           * </pre>
-           */
-          public java.util.List<com.waz.model.Messages.LinkPreview> getLinkPreviewList() {
-              if (linkPreviewBuilder_ == null) {
-                  return java.util.Collections.unmodifiableList(linkPreview_);
-              } else {
-                  return linkPreviewBuilder_.getMessageList();
-              }
           }
 
           /**
@@ -14066,6 +14241,28 @@ public final class Messages {
               content_ = getDefaultInstance().getContent();
               onChanged();
               return this;
+          }
+
+          private void ensureLinkPreviewIsMutable() {
+              if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+                  linkPreview_ = new java.util.ArrayList<com.waz.model.Messages.LinkPreview>(linkPreview_);
+                  bitField0_ |= 0x00000002;
+              }
+          }
+
+          /**
+           * <code>repeated .LinkPreview link_preview = 3;</code>
+           *
+           * <pre>
+           * reserved 2; // reserved keyword is not available in older protoc versions
+           * </pre>
+           */
+          public java.util.List<com.waz.model.Messages.LinkPreview> getLinkPreviewList() {
+              if (linkPreviewBuilder_ == null) {
+                  return java.util.Collections.unmodifiableList(linkPreview_);
+              } else {
+                  return linkPreviewBuilder_.getMessageList();
+              }
           }
 
           /**
@@ -14588,19 +14785,19 @@ public final class Messages {
 
           /**
            * <code>repeated .Mention mentions = 4;</code>
-       */
-      public com.waz.model.Messages.Mention.Builder addMentionsBuilder() {
-        return getMentionsFieldBuilder().addBuilder(
-            com.waz.model.Messages.Mention.getDefaultInstance());
-      }
+           */
+          public com.waz.model.Messages.Mention.Builder addMentionsBuilder() {
+              return getMentionsFieldBuilder().addBuilder(
+                      com.waz.model.Messages.Mention.getDefaultInstance());
+          }
 
-      /**
-       * <code>repeated .Mention mentions = 4;</code>
-       */
-      public com.waz.model.Messages.Mention.Builder addMentionsBuilder(
-              int index) {
-          return getMentionsFieldBuilder().addBuilder(
-                  index, com.waz.model.Messages.Mention.getDefaultInstance());
+          /**
+           * <code>repeated .Mention mentions = 4;</code>
+           */
+          public com.waz.model.Messages.Mention.Builder addMentionsBuilder(
+                  int index) {
+              return getMentionsFieldBuilder().addBuilder(
+                      index, com.waz.model.Messages.Mention.getDefaultInstance());
       }
 
           /**
@@ -14679,8 +14876,8 @@ public final class Messages {
            * <pre>
            * if this Text is part of a MessageEdit, this field is ignored
            * </pre>
-       */
-      public Builder setQuote(
+           */
+          public Builder setQuote(
           com.waz.model.Messages.Quote.Builder builderForValue) {
         if (quoteBuilder_ == null) {
           quote_ = builderForValue.build();
@@ -14688,8 +14885,8 @@ public final class Messages {
         } else {
             quoteBuilder_.setMessage(builderForValue.build());
         }
-          bitField0_ |= 0x00000008;
-          return this;
+              bitField0_ |= 0x00000008;
+              return this;
       }
 
           /**
@@ -14702,7 +14899,7 @@ public final class Messages {
           public Builder mergeQuote(com.waz.model.Messages.Quote value) {
               if (quoteBuilder_ == null) {
                   if (((bitField0_ & 0x00000008) == 0x00000008) &&
-              quote_ != com.waz.model.Messages.Quote.getDefaultInstance()) {
+                          quote_ != com.waz.model.Messages.Quote.getDefaultInstance()) {
             quote_ =
                     com.waz.model.Messages.Quote.newBuilder(quote_).mergeFrom(value).buildPartial();
                   } else {
@@ -14750,7 +14947,7 @@ public final class Messages {
           /**
            * <code>optional .Quote quote = 5;</code>
            *
-       * <pre>
+           * <pre>
            * if this Text is part of a MessageEdit, this field is ignored
        * </pre>
        */
@@ -14824,13 +15021,13 @@ public final class Messages {
            *
            * <pre>
            * whether the sender is expecting to receive a read confirmation
-       * </pre>
-       */
-      public Builder clearExpectsReadConfirmation() {
-          bitField0_ = (bitField0_ & ~0x00000010);
-          expectsReadConfirmation_ = false;
-          onChanged();
-          return this;
+           * </pre>
+           */
+          public Builder clearExpectsReadConfirmation() {
+              bitField0_ = (bitField0_ & ~0x00000010);
+              expectsReadConfirmation_ = false;
+              onChanged();
+              return this;
       }
 
           /**
@@ -14921,6 +15118,14 @@ public final class Messages {
 
         private final com.google.protobuf.UnknownFieldSet unknownFields;
         private int bitField0_;
+
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+            return com.waz.model.Messages.internal_static_Knock_fieldAccessorTable
+                    .ensureFieldAccessorsInitialized(
+                            com.waz.model.Messages.Knock.class, com.waz.model.Messages.Knock.Builder.class);
+        }
+
         private boolean hotKnock_;
         private boolean expectsReadConfirmation_;
         private com.waz.model.Messages.LegalHoldStatus legalHoldStatus_;
@@ -14968,18 +15173,18 @@ public final class Messages {
                         case 16: {
                             bitField0_ |= 0x00000002;
                             expectsReadConfirmation_ = input.readBool();
-              break;
-            }
-            case 24: {
-              int rawValue = input.readEnum();
-              com.waz.model.Messages.LegalHoldStatus value = com.waz.model.Messages.LegalHoldStatus.valueOf(rawValue);
+                            break;
+                        }
+                        case 24: {
+                            int rawValue = input.readEnum();
+                            com.waz.model.Messages.LegalHoldStatus value = com.waz.model.Messages.LegalHoldStatus.valueOf(rawValue);
               if (value == null) {
                 unknownFields.mergeVarintField(3, rawValue);
               } else {
                 bitField0_ |= 0x00000004;
                 legalHoldStatus_ = value;
               }
-                break;
+                            break;
             }
                     }
                 }
@@ -15024,8 +15229,8 @@ public final class Messages {
         public static com.waz.model.Messages.Knock parseFrom(
                 byte[] data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data, extensionRegistry);
     }
 
     public static com.waz.model.Messages.Knock parseFrom(java.io.InputStream input)
@@ -15081,13 +15286,6 @@ public final class Messages {
       return this.unknownFields;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.waz.model.Messages.internal_static_Knock_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.waz.model.Messages.Knock.class, com.waz.model.Messages.Knock.Builder.class);
-    }
-
     @java.lang.Override
     public com.google.protobuf.Parser<Knock> getParserForType() {
         return PARSER;
@@ -15135,7 +15333,7 @@ public final class Messages {
          * <pre>
          * whether this message was sent to legal hold
          * </pre>
-     */
+         */
     public boolean hasLegalHoldStatus() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
@@ -15213,9 +15411,13 @@ public final class Messages {
             return super.writeReplace();
         }
 
-        public Builder newBuilderForType() { return newBuilder(); }
+        public Builder toBuilder() {
+            return newBuilder(this);
+        }
 
-    public Builder toBuilder() { return newBuilder(this); }
+        public Builder newBuilderForType() {
+            return newBuilder();
+        }
 
     @java.lang.Override
     protected Builder newBuilderForType(
@@ -15232,13 +15434,15 @@ public final class Messages {
                 // @@protoc_insertion_point(builder_implements:Knock)
                 com.waz.model.Messages.KnockOrBuilder {
             private int bitField0_;
-            private boolean hotKnock_ ;
-      private boolean expectsReadConfirmation_ ;
-      private com.waz.model.Messages.LegalHoldStatus legalHoldStatus_ = com.waz.model.Messages.LegalHoldStatus.UNKNOWN;
+            private boolean hotKnock_;
+
       // Construct using com.waz.model.Messages.Knock.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
+
+            private boolean expectsReadConfirmation_;
+            private com.waz.model.Messages.LegalHoldStatus legalHoldStatus_ = com.waz.model.Messages.LegalHoldStatus.UNKNOWN;
       private Builder(
               com.google.protobuf.GeneratedMessage.BuilderParent parent) {
           super(parent);
@@ -15248,6 +15452,33 @@ public final class Messages {
             public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
                 return com.waz.model.Messages.internal_static_Knock_descriptor;
+            }
+
+            private static Builder create() {
+                return new Builder();
+            }
+
+            protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+                return com.waz.model.Messages.internal_static_Knock_fieldAccessorTable
+                        .ensureFieldAccessorsInitialized(
+                                com.waz.model.Messages.Knock.class, com.waz.model.Messages.Knock.Builder.class);
+            }
+
+            private void maybeForceBuilderInitialization() {
+                if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+                }
+            }
+
+            public Builder clear() {
+                super.clear();
+                hotKnock_ = false;
+                bitField0_ = (bitField0_ & ~0x00000001);
+                expectsReadConfirmation_ = false;
+                bitField0_ = (bitField0_ & ~0x00000002);
+                legalHoldStatus_ = com.waz.model.Messages.LegalHoldStatus.UNKNOWN;
+                bitField0_ = (bitField0_ & ~0x00000004);
+                return this;
             }
 
             public Builder clone() {
@@ -15313,33 +15544,6 @@ public final class Messages {
                     setLegalHoldStatus(other.getLegalHoldStatus());
                 }
                 this.mergeUnknownFields(other.getUnknownFields());
-                return this;
-            }
-
-            private static Builder create() {
-                return new Builder();
-            }
-
-            protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-                return com.waz.model.Messages.internal_static_Knock_fieldAccessorTable
-                        .ensureFieldAccessorsInitialized(
-                                com.waz.model.Messages.Knock.class, com.waz.model.Messages.Knock.Builder.class);
-            }
-
-            private void maybeForceBuilderInitialization() {
-                if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-                }
-            }
-
-            public Builder clear() {
-                super.clear();
-                hotKnock_ = false;
-                bitField0_ = (bitField0_ & ~0x00000001);
-                expectsReadConfirmation_ = false;
-                bitField0_ = (bitField0_ & ~0x00000002);
-                legalHoldStatus_ = com.waz.model.Messages.LegalHoldStatus.UNKNOWN;
-                bitField0_ = (bitField0_ & ~0x00000004);
                 return this;
             }
 
@@ -15421,26 +15625,26 @@ public final class Messages {
              * whether the sender is expecting to receive a read confirmation
              * </pre>
              */
+            public boolean getExpectsReadConfirmation() {
+                return expectsReadConfirmation_;
+            }
+
+            /**
+             * <code>optional bool expects_read_confirmation = 2 [default = false];</code>
+             *
+             * <pre>
+             * whether the sender is expecting to receive a read confirmation
+             * </pre>
+             */
             public Builder setExpectsReadConfirmation(boolean value) {
                 bitField0_ |= 0x00000002;
                 expectsReadConfirmation_ = value;
                 onChanged();
-        return this;
-      }
+                return this;
+            }
 
-      /**
-       * <code>optional bool expects_read_confirmation = 2 [default = false];</code>
-       *
-       * <pre>
-       * whether the sender is expecting to receive a read confirmation
-       * </pre>
-       */
-      public boolean getExpectsReadConfirmation() {
-        return expectsReadConfirmation_;
-      }
-
-      /**
-       * <code>optional bool expects_read_confirmation = 2 [default = false];</code>
+            /**
+             * <code>optional bool expects_read_confirmation = 2 [default = false];</code>
        *
        * <pre>
        * whether the sender is expecting to receive a read confirmation
@@ -15649,18 +15853,18 @@ public final class Messages {
                             bitField0_ |= 0x00000040;
                             break;
                         }
-            case 74: {
+                        case 74: {
               com.waz.model.Messages.Tweet.Builder subBuilder = null;
               if (metaDataCase_ == 9) {
                 subBuilder = ((com.waz.model.Messages.Tweet) metaData_).toBuilder();
               }
-                metaData_ = input.readMessage(com.waz.model.Messages.Tweet.PARSER, extensionRegistry);
+                            metaData_ = input.readMessage(com.waz.model.Messages.Tweet.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom((com.waz.model.Messages.Tweet) metaData_);
                   metaData_ = subBuilder.buildPartial();
               }
-                metaDataCase_ = 9;
-                break;
+                            metaDataCase_ = 9;
+                            break;
             }
                     }
                 }
@@ -15675,44 +15879,8 @@ public final class Messages {
             }
         }
 
-        /**
-         * <code>required int32 url_offset = 2;</code>
-         *
-         * <pre>
-         * url offset from beginning of text message
-         * </pre>
-         */
-        public int getUrlOffset() {
-            return urlOffset_;
-        }
-
         public static LinkPreview getDefaultInstance() {
             return defaultInstance;
-        }
-
-        /**
-         * <code>optional .Article article = 3;</code>
-         *
-         * <pre>
-         * deprecated - use meta_data
-     * </pre>
-         */
-        public boolean hasArticle() {
-            return previewCase_ == 3;
-        }
-
-        /**
-         * <code>optional .Article article = 3;</code>
-         *
-         * <pre>
-         * deprecated - use meta_data
-         * </pre>
-         */
-        public com.waz.model.Messages.Article getArticle() {
-            if (previewCase_ == 3) {
-                return (com.waz.model.Messages.Article) preview_;
-            }
-            return com.waz.model.Messages.Article.getDefaultInstance();
         }
 
         public static final com.google.protobuf.Descriptors.Descriptor
@@ -15751,9 +15919,9 @@ public final class Messages {
         }
 
         public static com.waz.model.Messages.LinkPreview parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
+                java.io.InputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
 
@@ -15782,8 +15950,9 @@ public final class Messages {
         return PARSER.parseFrom(input, extensionRegistry);
     }
 
-    public static Builder newBuilder() { return Builder.create();
-    }
+        public static Builder newBuilder() {
+            return Builder.create();
+        }
 
         public static Builder newBuilder(com.waz.model.Messages.LinkPreview prototype) {
             return newBuilder().mergeFrom(prototype);
@@ -15817,48 +15986,10 @@ public final class Messages {
                     previewCase_);
         }
 
-        /**
-         * <code>optional .Asset image = 8;</code>
-         */
-        public boolean hasImage() {
-            return ((bitField0_ & 0x00000040) == 0x00000040);
-        }
-
-        /**
-         * <code>optional .Asset image = 8;</code>
-         */
-        public com.waz.model.Messages.Asset getImage() {
-            return image_;
-        }
-
-        /**
-         * <code>optional .Asset image = 8;</code>
-         */
-        public com.waz.model.Messages.AssetOrBuilder getImageOrBuilder() {
-            return image_;
-        }
-
         public MetaDataCase
         getMetaDataCase() {
             return MetaDataCase.valueOf(
                     metaDataCase_);
-        }
-
-        /**
-         * <code>optional .Tweet tweet = 9;</code>
-         */
-        public boolean hasTweet() {
-            return metaDataCase_ == 9;
-        }
-
-        /**
-         * <code>optional .Tweet tweet = 9;</code>
-         */
-        public com.waz.model.Messages.Tweet getTweet() {
-            if (metaDataCase_ == 9) {
-         return (com.waz.model.Messages.Tweet) metaData_;
-            }
-            return com.waz.model.Messages.Tweet.getDefaultInstance();
         }
 
         /**
@@ -15912,6 +16043,42 @@ public final class Messages {
          */
         public boolean hasUrlOffset() {
             return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+
+        /**
+         * <code>required int32 url_offset = 2;</code>
+         *
+         * <pre>
+         * url offset from beginning of text message
+         * </pre>
+         */
+        public int getUrlOffset() {
+            return urlOffset_;
+        }
+
+        /**
+         * <code>optional .Article article = 3;</code>
+         *
+         * <pre>
+         * deprecated - use meta_data
+         * </pre>
+         */
+        public boolean hasArticle() {
+            return previewCase_ == 3;
+        }
+
+        /**
+         * <code>optional .Article article = 3;</code>
+         *
+         * <pre>
+         * deprecated - use meta_data
+         * </pre>
+         */
+        public com.waz.model.Messages.Article getArticle() {
+            if (previewCase_ == 3) {
+                return (com.waz.model.Messages.Article) preview_;
+            }
+            return com.waz.model.Messages.Article.getDefaultInstance();
         }
 
         /**
@@ -16054,6 +16221,44 @@ public final class Messages {
             }
     }
 
+        /**
+         * <code>optional .Asset image = 8;</code>
+         */
+        public boolean hasImage() {
+            return ((bitField0_ & 0x00000040) == 0x00000040);
+        }
+
+        /**
+         * <code>optional .Asset image = 8;</code>
+         */
+        public com.waz.model.Messages.Asset getImage() {
+            return image_;
+        }
+
+        /**
+         * <code>optional .Asset image = 8;</code>
+         */
+        public com.waz.model.Messages.AssetOrBuilder getImageOrBuilder() {
+            return image_;
+        }
+
+        /**
+         * <code>optional .Tweet tweet = 9;</code>
+         */
+        public boolean hasTweet() {
+            return metaDataCase_ == 9;
+        }
+
+        /**
+         * <code>optional .Tweet tweet = 9;</code>
+         */
+        public com.waz.model.Messages.Tweet getTweet() {
+            if (metaDataCase_ == 9) {
+                return (com.waz.model.Messages.Tweet) metaData_;
+            }
+            return com.waz.model.Messages.Tweet.getDefaultInstance();
+        }
+
     /**
      * <code>optional .Tweet tweet = 9;</code>
      */
@@ -16134,9 +16339,9 @@ public final class Messages {
 
         public int getSerializedSize() {
             int size = memoizedSerializedSize;
-      if (size != -1) return size;
+            if (size != -1) return size;
 
-      size = 0;
+            size = 0;
             if (((bitField0_ & 0x00000001) == 0x00000001)) {
                 size += com.google.protobuf.CodedOutputStream
                         .computeBytesSize(1, getUrlBytes());
@@ -16169,7 +16374,7 @@ public final class Messages {
                 size += com.google.protobuf.CodedOutputStream
                         .computeMessageSize(9, (com.waz.model.Messages.Tweet) metaData_);
             }
-      size += getUnknownFields().getSerializedSize();
+            size += getUnknownFields().getSerializedSize();
             memoizedSerializedSize = size;
             return size;
         }
@@ -16260,22 +16465,13 @@ public final class Messages {
             private java.lang.Object preview_;
             private int metaDataCase_ = 0;
             private java.lang.Object metaData_;
-      private int bitField0_;
-      private java.lang.Object url_ = "";
+            private int bitField0_;
+            private java.lang.Object url_ = "";
             private int urlOffset_;
             private com.google.protobuf.SingleFieldBuilder<
           com.waz.model.Messages.Article, com.waz.model.Messages.Article.Builder, com.waz.model.Messages.ArticleOrBuilder> articleBuilder_;
             private java.lang.Object permanentUrl_ = "";
             private java.lang.Object title_ = "";
-
-            public com.waz.model.Messages.LinkPreview build() {
-                com.waz.model.Messages.LinkPreview result = buildPartial();
-                if (!result.isInitialized()) {
-                    throw newUninitializedMessageException(result);
-                }
-                return result;
-            }
-
             private java.lang.Object summary_ = "";
             private com.waz.model.Messages.Asset image_ = com.waz.model.Messages.Asset.getDefaultInstance();
             private com.google.protobuf.SingleFieldBuilder<
@@ -16292,27 +16488,33 @@ public final class Messages {
                     com.google.protobuf.GeneratedMessage.BuilderParent parent) {
                 super(parent);
                 maybeForceBuilderInitialization();
-      }
+            }
 
-      public static final com.google.protobuf.Descriptors.Descriptor
-      getDescriptor() {
-          return com.waz.model.Messages.internal_static_LinkPreview_descriptor;
+            public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+                return com.waz.model.Messages.internal_static_LinkPreview_descriptor;
       }
 
             private static Builder create() {
                 return new Builder();
             }
 
+            public PreviewCase
+            getPreviewCase() {
+                return PreviewCase.valueOf(
+                        previewCase_);
+            }
+
             protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-        return com.waz.model.Messages.internal_static_LinkPreview_fieldAccessorTable
+                return com.waz.model.Messages.internal_static_LinkPreview_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.waz.model.Messages.LinkPreview.class, com.waz.model.Messages.LinkPreview.Builder.class);
             }
 
             private void maybeForceBuilderInitialization() {
                 if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getImageFieldBuilder();
+                    getImageFieldBuilder();
         }
             }
 
@@ -16352,6 +16554,14 @@ public final class Messages {
 
             public com.waz.model.Messages.LinkPreview getDefaultInstanceForType() {
                 return com.waz.model.Messages.LinkPreview.getDefaultInstance();
+            }
+
+            public com.waz.model.Messages.LinkPreview build() {
+                com.waz.model.Messages.LinkPreview result = buildPartial();
+                if (!result.isInitialized()) {
+                    throw newUninitializedMessageException(result);
+                }
+                return result;
             }
 
             public com.waz.model.Messages.LinkPreview buildPartial() {
@@ -16490,6 +16700,16 @@ public final class Messages {
         return true;
             }
 
+            /**
+             * <code>required string url = 1;</code>
+             */
+            public Builder clearUrl() {
+                bitField0_ = (bitField0_ & ~0x00000001);
+                url_ = getDefaultInstance().getUrl();
+                onChanged();
+                return this;
+            }
+
             public Builder mergeFrom(
                     com.google.protobuf.CodedInputStream input,
                     com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -16506,12 +16726,6 @@ public final class Messages {
           }
         }
         return this;
-      }
-
-      public PreviewCase
-          getPreviewCase() {
-        return PreviewCase.valueOf(
-            previewCase_);
       }
 
       public Builder clearPreview() {
@@ -16605,16 +16819,6 @@ public final class Messages {
       }
 
       /**
-       * <code>required string url = 1;</code>
-       */
-      public Builder clearUrl() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        url_ = getDefaultInstance().getUrl();
-        onChanged();
-        return this;
-      }
-
-      /**
        * <code>required int32 url_offset = 2;</code>
        *
        * <pre>
@@ -16663,17 +16867,6 @@ public final class Messages {
           onChanged();
           return this;
       }
-
-            /**
-             * <code>optional .Article article = 3;</code>
-             *
-             * <pre>
-       * deprecated - use meta_data
-             * </pre>
-             */
-            public com.waz.model.Messages.Article.Builder getArticleBuilder() {
-                return getArticleFieldBuilder().getBuilder();
-            }
 
             /**
              * <code>optional .Article article = 3;</code>
@@ -16748,24 +16941,6 @@ public final class Messages {
             }
 
             /**
-             * <code>optional string permanent_url = 5;</code>
-             */
-            public java.lang.String getPermanentUrl() {
-                java.lang.Object ref = permanentUrl_;
-                if (!(ref instanceof java.lang.String)) {
-                    com.google.protobuf.ByteString bs =
-                            (com.google.protobuf.ByteString) ref;
-                    java.lang.String s = bs.toStringUtf8();
-                    if (bs.isValidUtf8()) {
-                        permanentUrl_ = s;
-                    }
-                    return s;
-                } else {
-                    return (java.lang.String) ref;
-                }
-            }
-
-            /**
              * <code>optional .Article article = 3;</code>
              *
              * <pre>
@@ -16818,6 +16993,17 @@ public final class Messages {
 
             /**
              * <code>optional .Article article = 3;</code>
+             *
+             * <pre>
+             * deprecated - use meta_data
+             * </pre>
+             */
+            public com.waz.model.Messages.Article.Builder getArticleBuilder() {
+                return getArticleFieldBuilder().getBuilder();
+            }
+
+            /**
+             * <code>optional .Article article = 3;</code>
        *
        * <pre>
        * deprecated - use meta_data
@@ -16865,15 +17051,41 @@ public final class Messages {
             public boolean hasPermanentUrl() {
                 return ((bitField0_ & 0x00000008) == 0x00000008);
       }
-      /**
-       * <code>optional string title = 6;</code>
-       */
-      public boolean hasTitle() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
 
       /**
        * <code>optional string permanent_url = 5;</code>
+       */
+      public java.lang.String getPermanentUrl() {
+          java.lang.Object ref = permanentUrl_;
+          if (!(ref instanceof java.lang.String)) {
+              com.google.protobuf.ByteString bs =
+                      (com.google.protobuf.ByteString) ref;
+              java.lang.String s = bs.toStringUtf8();
+              if (bs.isValidUtf8()) {
+                  permanentUrl_ = s;
+              }
+              return s;
+          } else {
+              return (java.lang.String) ref;
+          }
+      }
+
+            /**
+             * <code>optional string permanent_url = 5;</code>
+             */
+            public Builder setPermanentUrl(
+                    java.lang.String value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                bitField0_ |= 0x00000008;
+                permanentUrl_ = value;
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional string permanent_url = 5;</code>
        */
       public com.google.protobuf.ByteString
       getPermanentUrlBytes() {
@@ -16906,20 +17118,6 @@ public final class Messages {
       /**
        * <code>optional string permanent_url = 5;</code>
        */
-      public Builder setPermanentUrl(
-              java.lang.String value) {
-          if (value == null) {
-              throw new NullPointerException();
-          }
-          bitField0_ |= 0x00000008;
-          permanentUrl_ = value;
-          onChanged();
-          return this;
-      }
-
-      /**
-       * <code>optional string permanent_url = 5;</code>
-       */
       public Builder clearPermanentUrl() {
           bitField0_ = (bitField0_ & ~0x00000008);
           permanentUrl_ = getDefaultInstance().getPermanentUrl();
@@ -16930,10 +17128,17 @@ public final class Messages {
             /**
              * <code>optional string title = 6;</code>
              */
+            public boolean hasTitle() {
+                return ((bitField0_ & 0x00000010) == 0x00000010);
+            }
+
+            /**
+             * <code>optional string title = 6;</code>
+             */
             public java.lang.String getTitle() {
                 java.lang.Object ref = title_;
                 if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
+                    com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           if (bs.isValidUtf8()) {
@@ -16960,14 +17165,21 @@ public final class Messages {
             }
 
             /**
+             * <code>optional string summary = 7;</code>
+             */
+            public boolean hasSummary() {
+                return ((bitField0_ & 0x00000020) == 0x00000020);
+            }
+
+            /**
              * <code>optional string title = 6;</code>
              */
             public com.google.protobuf.ByteString
             getTitleBytes() {
                 java.lang.Object ref = title_;
                 if (ref instanceof String) {
-          com.google.protobuf.ByteString b =
-              com.google.protobuf.ByteString.copyFromUtf8(
+                    com.google.protobuf.ByteString b =
+                            com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
           title_ = b;
           return b;
@@ -17002,13 +17214,6 @@ public final class Messages {
 
       /**
        * <code>optional string summary = 7;</code>
-       */
-      public boolean hasSummary() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
-
-            /**
-             * <code>optional string summary = 7;</code>
        */
       public java.lang.String getSummary() {
         java.lang.Object ref = summary_;
@@ -17069,24 +17274,12 @@ public final class Messages {
                 onChanged();
                 return this;
             }
-
-            /**
-             * <code>optional string summary = 7;</code>
-             */
-            public Builder clearSummary() {
-                bitField0_ = (bitField0_ & ~0x00000020);
-        summary_ = getDefaultInstance().getSummary();
-        onChanged();
-        return this;
-      }
-
       /**
        * <code>optional .Asset image = 8;</code>
        */
       public boolean hasImage() {
         return ((bitField0_ & 0x00000040) == 0x00000040);
       }
-
       /**
        * <code>optional .Asset image = 8;</code>
        */
@@ -17099,6 +17292,16 @@ public final class Messages {
       }
 
             /**
+             * <code>optional string summary = 7;</code>
+             */
+            public Builder clearSummary() {
+                bitField0_ = (bitField0_ & ~0x00000020);
+                summary_ = getDefaultInstance().getSummary();
+                onChanged();
+                return this;
+            }
+
+            /**
              * <code>optional .Asset image = 8;</code>
              */
             public Builder setImage(com.waz.model.Messages.Asset value) {
@@ -17109,7 +17312,7 @@ public final class Messages {
                     image_ = value;
                     onChanged();
                 } else {
-          imageBuilder_.setMessage(value);
+                    imageBuilder_.setMessage(value);
                 }
                 bitField0_ |= 0x00000040;
                 return this;
@@ -17167,39 +17370,39 @@ public final class Messages {
             /**
              * <code>optional .Asset image = 8;</code>
              */
+            public com.waz.model.Messages.Asset.Builder getImageBuilder() {
+                bitField0_ |= 0x00000040;
+                onChanged();
+                return getImageFieldBuilder().getBuilder();
+            }
+
+            /**
+             * <code>optional .Asset image = 8;</code>
+             */
             public com.waz.model.Messages.AssetOrBuilder getImageOrBuilder() {
                 if (imageBuilder_ != null) {
                     return imageBuilder_.getMessageOrBuilder();
                 } else {
                     return image_;
-        }
-      }
+                }
+            }
 
       /**
        * <code>optional .Asset image = 8;</code>
        */
-      public com.waz.model.Messages.Asset.Builder getImageBuilder() {
-          bitField0_ |= 0x00000040;
-          onChanged();
-          return getImageFieldBuilder().getBuilder();
+      private com.google.protobuf.SingleFieldBuilder<
+              com.waz.model.Messages.Asset, com.waz.model.Messages.Asset.Builder, com.waz.model.Messages.AssetOrBuilder>
+      getImageFieldBuilder() {
+          if (imageBuilder_ == null) {
+              imageBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+                      com.waz.model.Messages.Asset, com.waz.model.Messages.Asset.Builder, com.waz.model.Messages.AssetOrBuilder>(
+                      getImage(),
+                      getParentForChildren(),
+                      isClean());
+              image_ = null;
+          }
+          return imageBuilder_;
       }
-
-            /**
-       * <code>optional .Asset image = 8;</code>
-             */
-            private com.google.protobuf.SingleFieldBuilder<
-                    com.waz.model.Messages.Asset, com.waz.model.Messages.Asset.Builder, com.waz.model.Messages.AssetOrBuilder>
-            getImageFieldBuilder() {
-                if (imageBuilder_ == null) {
-                    imageBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-                            com.waz.model.Messages.Asset, com.waz.model.Messages.Asset.Builder, com.waz.model.Messages.AssetOrBuilder>(
-                            getImage(),
-                            getParentForChildren(),
-                            isClean());
-                    image_ = null;
-                }
-                return imageBuilder_;
-            }
 
             /**
              * <code>optional .Tweet tweet = 9;</code>
@@ -17230,8 +17433,8 @@ public final class Messages {
              */
             public Builder setTweet(com.waz.model.Messages.Tweet value) {
                 if (tweetBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
+                    if (value == null) {
+                        throw new NullPointerException();
           }
           metaData_ = value;
           onChanged();
@@ -17291,7 +17494,7 @@ public final class Messages {
                         onChanged();
                     }
                 } else {
-          if (metaDataCase_ == 9) {
+                    if (metaDataCase_ == 9) {
             metaDataCase_ = 0;
             metaData_ = null;
           }
@@ -17319,9 +17522,10 @@ public final class Messages {
                     }
                     return com.waz.model.Messages.Tweet.getDefaultInstance();
                 }
-      }
-      /**
-       * <code>optional .Tweet tweet = 9;</code>
+            }
+
+            /**
+             * <code>optional .Tweet tweet = 9;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
               com.waz.model.Messages.Tweet, com.waz.model.Messages.Tweet.Builder, com.waz.model.Messages.TweetOrBuilder>
@@ -17329,7 +17533,7 @@ public final class Messages {
           if (tweetBuilder_ == null) {
               if (!(metaDataCase_ == 9)) {
                   metaData_ = com.waz.model.Messages.Tweet.getDefaultInstance();
-          }
+              }
           tweetBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.waz.model.Messages.Tweet, com.waz.model.Messages.Tweet.Builder, com.waz.model.Messages.TweetOrBuilder>(
                   (com.waz.model.Messages.Tweet) metaData_,
@@ -17353,10 +17557,15 @@ public final class Messages {
     public static final class Tweet extends
             com.google.protobuf.GeneratedMessage implements
             // @@protoc_insertion_point(message_implements:Tweet)
-      TweetOrBuilder {
-    public static final int AUTHOR_FIELD_NUMBER = 1;
-    public static final int USERNAME_FIELD_NUMBER = 2;
+            TweetOrBuilder {
+        // Use Tweet.newBuilder() to construct.
+        private Tweet(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+            super(builder);
+            this.unknownFields = builder.getUnknownFields();
+        }
 
+        public static final int AUTHOR_FIELD_NUMBER = 1;
+    public static final int USERNAME_FIELD_NUMBER = 2;
     private static final Tweet defaultInstance;
     private static final long serialVersionUID = 0L;
     public static com.google.protobuf.Parser<Tweet> PARSER =
@@ -17381,13 +17590,8 @@ public final class Messages {
         private byte memoizedIsInitialized = -1;
         private int memoizedSerializedSize = -1;
 
-    // Use Tweet.newBuilder() to construct.
-    private Tweet(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-      super(builder);
-      this.unknownFields = builder.getUnknownFields();
-    }
-
-        private Tweet(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+        private Tweet(boolean noInit) {
+            this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
         }
 
         private Tweet(
@@ -17484,23 +17688,9 @@ public final class Messages {
             return PARSER.parseFrom(input, extensionRegistry);
         }
 
-        private void initFields() {
-            author_ = "";
-            username_ = "";
-        }
-
         public static com.waz.model.Messages.Tweet parseDelimitedFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return PARSER.parseDelimitedFrom(input);
-        }
-
-        public final boolean isInitialized() {
-            byte isInitialized = memoizedIsInitialized;
-            if (isInitialized == 1) return true;
-            if (isInitialized == 0) return false;
-
-            memoizedIsInitialized = 1;
-            return true;
         }
 
         public static com.waz.model.Messages.Tweet parseDelimitedFrom(
@@ -17514,16 +17704,18 @@ public final class Messages {
                 com.google.protobuf.CodedInputStream input)
                 throws java.io.IOException {
             return PARSER.parseFrom(input);
-    }
+        }
 
-    public static com.waz.model.Messages.Tweet parseFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-        return PARSER.parseFrom(input, extensionRegistry);
-    }
+        public static com.waz.model.Messages.Tweet parseFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws java.io.IOException {
+            return PARSER.parseFrom(input, extensionRegistry);
+        }
 
-        public static Builder newBuilder() { return Builder.create(); }
+        public static Builder newBuilder() {
+            return Builder.create();
+        }
 
     public static Builder newBuilder(com.waz.model.Messages.Tweet prototype) {
       return newBuilder().mergeFrom(prototype);
@@ -17564,7 +17756,7 @@ public final class Messages {
         public java.lang.String getAuthor() {
             java.lang.Object ref = author_;
             if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+                return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
@@ -17587,7 +17779,7 @@ public final class Messages {
                         com.google.protobuf.ByteString.copyFromUtf8(
                                 (java.lang.String) ref);
                 author_ = b;
-        return b;
+                return b;
       } else {
                 return (com.google.protobuf.ByteString) ref;
             }
@@ -17635,6 +17827,20 @@ public final class Messages {
       }
     }
 
+        private void initFields() {
+            author_ = "";
+            username_ = "";
+        }
+
+        public final boolean isInitialized() {
+            byte isInitialized = memoizedIsInitialized;
+            if (isInitialized == 1) return true;
+            if (isInitialized == 0) return false;
+
+            memoizedIsInitialized = 1;
+            return true;
+        }
+
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -17646,6 +17852,10 @@ public final class Messages {
         }
         getUnknownFields().writeTo(output);
     }
+
+        public Builder newBuilderForType() {
+            return newBuilder();
+        }
 
         public int getSerializedSize() {
             int size = memoizedSerializedSize;
@@ -17665,15 +17875,15 @@ public final class Messages {
             return size;
         }
 
+        public Builder toBuilder() {
+            return newBuilder(this);
+        }
+
         @java.lang.Override
     protected java.lang.Object writeReplace()
                 throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
-
-    public Builder newBuilderForType() { return newBuilder(); }
-
-    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
@@ -17689,23 +17899,29 @@ public final class Messages {
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
                 // @@protoc_insertion_point(builder_implements:Tweet)
                 com.waz.model.Messages.TweetOrBuilder {
+            public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+                return com.waz.model.Messages.internal_static_Tweet_descriptor;
+            }
+
             private int bitField0_;
             private java.lang.Object author_ = "";
             private java.lang.Object username_ = "";
+
+            private void maybeForceBuilderInitialization() {
+                if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+                }
+            }
 
             // Construct using com.waz.model.Messages.Tweet.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
+
       private Builder(
           com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
-      }
-
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.waz.model.Messages.internal_static_Tweet_descriptor;
       }
 
       private static Builder create() {
@@ -17717,11 +17933,6 @@ public final class Messages {
                 return com.waz.model.Messages.internal_static_Tweet_fieldAccessorTable
                         .ensureFieldAccessorsInitialized(
                 com.waz.model.Messages.Tweet.class, com.waz.model.Messages.Tweet.Builder.class);
-      }
-
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-        }
       }
 
             public Builder clear() {
@@ -17754,6 +17965,28 @@ public final class Messages {
                 return result;
             }
 
+            public final boolean isInitialized() {
+                return true;
+            }
+
+            public Builder mergeFrom(
+                    com.google.protobuf.CodedInputStream input,
+                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                    throws java.io.IOException {
+                com.waz.model.Messages.Tweet parsedMessage = null;
+                try {
+                    parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                    parsedMessage = (com.waz.model.Messages.Tweet) e.getUnfinishedMessage();
+                    throw e;
+                } finally {
+                    if (parsedMessage != null) {
+                        mergeFrom(parsedMessage);
+                    }
+                }
+                return this;
+            }
+
             public com.waz.model.Messages.Tweet buildPartial() {
                 com.waz.model.Messages.Tweet result = new com.waz.model.Messages.Tweet(this);
                 int from_bitField0_ = bitField0_;
@@ -17780,6 +18013,13 @@ public final class Messages {
                 }
             }
 
+            /**
+             * <code>optional string author = 1;</code>
+             */
+            public boolean hasAuthor() {
+                return ((bitField0_ & 0x00000001) == 0x00000001);
+            }
+
             public Builder mergeFrom(com.waz.model.Messages.Tweet other) {
                 if (other == com.waz.model.Messages.Tweet.getDefaultInstance()) return this;
                 if (other.hasAuthor()) {
@@ -17790,39 +18030,10 @@ public final class Messages {
                 if (other.hasUsername()) {
                     bitField0_ |= 0x00000002;
                     username_ = other.username_;
-          onChanged();
+                    onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
-      }
-
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.waz.model.Messages.Tweet parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.waz.model.Messages.Tweet) e.getUnfinishedMessage();
-          throw e;
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-
-      /**
-       * <code>optional string author = 1;</code>
-       */
-      public boolean hasAuthor() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
 
       /**
@@ -17857,16 +18068,6 @@ public final class Messages {
                 return this;
             }
 
-            /**
-             * <code>optional string author = 1;</code>
-             */
-            public Builder clearAuthor() {
-                bitField0_ = (bitField0_ & ~0x00000001);
-                author_ = getDefaultInstance().getAuthor();
-                onChanged();
-                return this;
-            }
-
       /**
        * <code>optional string author = 1;</code>
        */
@@ -17894,6 +18095,16 @@ public final class Messages {
                 }
                 bitField0_ |= 0x00000001;
                 author_ = value;
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional string author = 1;</code>
+             */
+            public Builder clearAuthor() {
+                bitField0_ = (bitField0_ & ~0x00000001);
+                author_ = getDefaultInstance().getAuthor();
                 onChanged();
                 return this;
             }
@@ -17997,7 +18208,7 @@ public final class Messages {
             ArticleOrBuilder {
         public static final int PERMANENT_URL_FIELD_NUMBER = 1;
         public static final int TITLE_FIELD_NUMBER = 2;
-    public static final int SUMMARY_FIELD_NUMBER = 3;
+        public static final int SUMMARY_FIELD_NUMBER = 3;
     public static final int IMAGE_FIELD_NUMBER = 4;
         private static final Article defaultInstance;
         private static final long serialVersionUID = 0L;
@@ -18156,7 +18367,7 @@ public final class Messages {
         public static com.waz.model.Messages.Article parseDelimitedFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
+                throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
         }
 
@@ -18164,13 +18375,13 @@ public final class Messages {
                 com.google.protobuf.CodedInputStream input)
                 throws java.io.IOException {
             return PARSER.parseFrom(input);
-    }
+        }
 
-    public static com.waz.model.Messages.Article parseFrom(
+        public static com.waz.model.Messages.Article parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-        return PARSER.parseFrom(input, extensionRegistry);
+                throws java.io.IOException {
+            return PARSER.parseFrom(input, extensionRegistry);
     }
 
         public static Builder newBuilder() {
@@ -18179,13 +18390,6 @@ public final class Messages {
 
         public static Builder newBuilder(com.waz.model.Messages.Article prototype) {
             return newBuilder().mergeFrom(prototype);
-        }
-
-        private void initFields() {
-            permanentUrl_ = "";
-            title_ = "";
-            summary_ = "";
-            image_ = com.waz.model.Messages.Asset.getDefaultInstance();
         }
 
         public Article getDefaultInstanceForType() {
@@ -18227,7 +18431,7 @@ public final class Messages {
             } else {
                 com.google.protobuf.ByteString bs =
                         (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+                java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           permanentUrl_ = s;
         }
@@ -18357,6 +18561,13 @@ public final class Messages {
       return image_;
     }
 
+        private void initFields() {
+            permanentUrl_ = "";
+            title_ = "";
+            summary_ = "";
+            image_ = com.waz.model.Messages.Asset.getDefaultInstance();
+        }
+
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -18452,37 +18663,29 @@ public final class Messages {
                 com.google.protobuf.GeneratedMessage.Builder<Builder> implements
                 // @@protoc_insertion_point(builder_implements:Article)
                 com.waz.model.Messages.ArticleOrBuilder {
-            public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-                return com.waz.model.Messages.internal_static_Article_descriptor;
-            }
-
       private int bitField0_;
             private java.lang.Object permanentUrl_ = "";
+
+            // Construct using com.waz.model.Messages.Article.newBuilder()
+            private Builder() {
+                maybeForceBuilderInitialization();
+            }
+
             private java.lang.Object title_ = "";
       private java.lang.Object summary_ = "";
       private com.waz.model.Messages.Asset image_ = com.waz.model.Messages.Asset.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
               com.waz.model.Messages.Asset, com.waz.model.Messages.Asset.Builder, com.waz.model.Messages.AssetOrBuilder> imageBuilder_;
 
-      // Construct using com.waz.model.Messages.Article.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.waz.model.Messages.internal_static_Article_descriptor;
-      }
-
-            public com.waz.model.Messages.Article getDefaultInstanceForType() {
-                return com.waz.model.Messages.Article.getDefaultInstance();
-            }
-
             private Builder(
                     com.google.protobuf.GeneratedMessage.BuilderParent parent) {
                 super(parent);
                 maybeForceBuilderInitialization();
+            }
+
+            public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+                return com.waz.model.Messages.internal_static_Article_descriptor;
             }
 
             private static Builder create() {
@@ -18519,26 +18722,17 @@ public final class Messages {
                 return this;
             }
 
-            public Builder mergeFrom(
-                    com.google.protobuf.CodedInputStream input,
-                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                    throws java.io.IOException {
-                com.waz.model.Messages.Article parsedMessage = null;
-                try {
-                    parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (com.waz.model.Messages.Article) e.getUnfinishedMessage();
-                    throw e;
-                } finally {
-                    if (parsedMessage != null) {
-                        mergeFrom(parsedMessage);
-                    }
-                }
-                return this;
-            }
-
             public Builder clone() {
                 return create().mergeFrom(buildPartial());
+            }
+
+            public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+                return com.waz.model.Messages.internal_static_Article_descriptor;
+            }
+
+            public com.waz.model.Messages.Article getDefaultInstanceForType() {
+                return com.waz.model.Messages.Article.getDefaultInstance();
             }
 
             public com.waz.model.Messages.Article build() {
@@ -18555,8 +18749,8 @@ public final class Messages {
                 int to_bitField0_ = 0;
                 if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
                     to_bitField0_ |= 0x00000001;
-        }
-        result.permanentUrl_ = permanentUrl_;
+                }
+                result.permanentUrl_ = permanentUrl_;
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
@@ -18577,23 +18771,6 @@ public final class Messages {
                 onBuilt();
         return result;
       }
-      /**
-       * <code>required string permanent_url = 1;</code>
-       */
-      public java.lang.String getPermanentUrl() {
-          java.lang.Object ref = permanentUrl_;
-          if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-              permanentUrl_ = s;
-          }
-              return s;
-          } else {
-              return (java.lang.String) ref;
-          }
-      }
 
             public Builder mergeFrom(com.google.protobuf.Message other) {
                 if (other instanceof com.waz.model.Messages.Article) {
@@ -18606,7 +18783,7 @@ public final class Messages {
 
             public Builder mergeFrom(com.waz.model.Messages.Article other) {
                 if (other == com.waz.model.Messages.Article.getDefaultInstance()) return this;
-        if (other.hasPermanentUrl()) {
+                if (other.hasPermanentUrl()) {
           bitField0_ |= 0x00000001;
           permanentUrl_ = other.permanentUrl_;
           onChanged();
@@ -18642,12 +18819,62 @@ public final class Messages {
           return true;
       }
 
+            public Builder mergeFrom(
+                    com.google.protobuf.CodedInputStream input,
+                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                    throws java.io.IOException {
+                com.waz.model.Messages.Article parsedMessage = null;
+                try {
+                    parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                    parsedMessage = (com.waz.model.Messages.Article) e.getUnfinishedMessage();
+                    throw e;
+                } finally {
+                    if (parsedMessage != null) {
+                        mergeFrom(parsedMessage);
+                    }
+                }
+                return this;
+            }
+
             /**
              * <code>required string permanent_url = 1;</code>
              */
             public boolean hasPermanentUrl() {
                 return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
+            }
+
+            /**
+             * <code>required string permanent_url = 1;</code>
+             */
+            public java.lang.String getPermanentUrl() {
+                java.lang.Object ref = permanentUrl_;
+                if (!(ref instanceof java.lang.String)) {
+                    com.google.protobuf.ByteString bs =
+                            (com.google.protobuf.ByteString) ref;
+                    java.lang.String s = bs.toStringUtf8();
+                    if (bs.isValidUtf8()) {
+                        permanentUrl_ = s;
+                    }
+                    return s;
+                } else {
+                    return (java.lang.String) ref;
+                }
+            }
+
+            /**
+             * <code>required string permanent_url = 1;</code>
+             */
+            public Builder setPermanentUrl(
+                    java.lang.String value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                bitField0_ |= 0x00000001;
+                permanentUrl_ = value;
+                onChanged();
+                return this;
+            }
 
       /**
        * <code>required string permanent_url = 1;</code>
@@ -18679,20 +18906,6 @@ public final class Messages {
           onChanged();
           return this;
       }
-
-            /**
-             * <code>required string permanent_url = 1;</code>
-             */
-            public Builder setPermanentUrl(
-                    java.lang.String value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-                bitField0_ |= 0x00000001;
-                permanentUrl_ = value;
-                onChanged();
-                return this;
-            }
 
             /**
              * <code>required string permanent_url = 1;</code>
@@ -18904,11 +19117,11 @@ public final class Messages {
              */
             public Builder setImage(
                     com.waz.model.Messages.Asset.Builder builderForValue) {
-        if (imageBuilder_ == null) {
+                if (imageBuilder_ == null) {
           image_ = builderForValue.build();
-            onChanged();
+                    onChanged();
         } else {
-            imageBuilder_.setMessage(builderForValue.build());
+                    imageBuilder_.setMessage(builderForValue.build());
         }
                 bitField0_ |= 0x00000008;
                 return this;
@@ -18985,9 +19198,9 @@ public final class Messages {
             }
 
             // @@protoc_insertion_point(builder_scope:Article)
-    }
+        }
 
-    // @@protoc_insertion_point(class_scope:Article)
+        // @@protoc_insertion_point(class_scope:Article)
   }
 
   /**
@@ -18997,11 +19210,17 @@ public final class Messages {
       com.google.protobuf.GeneratedMessage implements
           // @@protoc_insertion_point(message_implements:Mention)
           MentionOrBuilder {
+      // Use Mention.newBuilder() to construct.
+      private Mention(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+          super(builder);
+          this.unknownFields = builder.getUnknownFields();
+      }
+
       public static final int START_FIELD_NUMBER = 1;
       public static final int LENGTH_FIELD_NUMBER = 2;
       public static final int USER_ID_FIELD_NUMBER = 3;
       private static final Mention defaultInstance;
-    private static final long serialVersionUID = 0L;
+      private static final long serialVersionUID = 0L;
     public static com.google.protobuf.Parser<Mention> PARSER =
         new com.google.protobuf.AbstractParser<Mention>() {
       public Mention parsePartialFrom(
@@ -19019,25 +19238,12 @@ public final class Messages {
 
     private final com.google.protobuf.UnknownFieldSet unknownFields;
     private int bitField0_;
-
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-        return com.waz.model.Messages.internal_static_Mention_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        com.waz.model.Messages.Mention.class, com.waz.model.Messages.Mention.Builder.class);
-    }
     private int mentionTypeCase_ = 0;
     private java.lang.Object mentionType_;
     private int start_;
     private int length_;
     private byte memoizedIsInitialized = -1;
         private int memoizedSerializedSize = -1;;
-
-    // Use Mention.newBuilder() to construct.
-    private Mention(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-      super(builder);
-      this.unknownFields = builder.getUnknownFields();
-    }
 
       private Mention(boolean noInit) {
           this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
@@ -19099,6 +19305,28 @@ public final class Messages {
           return defaultInstance;
       }
 
+      /**
+       * <code>required int32 start = 1;</code>
+       *
+       * <pre>
+       * offset from beginning of the message counting in utf16 characters
+       * </pre>
+       */
+      public boolean hasStart() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+
+      /**
+       * <code>required int32 start = 1;</code>
+       *
+       * <pre>
+       * offset from beginning of the message counting in utf16 characters
+       * </pre>
+       */
+      public int getStart() {
+          return start_;
+      }
+
       public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
           return com.waz.model.Messages.internal_static_Mention_descriptor;
@@ -19121,13 +19349,6 @@ public final class Messages {
               throws com.google.protobuf.InvalidProtocolBufferException {
           return PARSER.parseFrom(data);
       }
-
-      /**
-       * <code>required int32 length = 2;</code>
-       */
-    public int getLength() {
-        return length_;
-    }
 
       public static com.waz.model.Messages.Mention parseFrom(
               byte[] data,
@@ -19153,37 +19374,17 @@ public final class Messages {
           return PARSER.parseDelimitedFrom(input);
       }
 
-      private void initFields() {
-          start_ = 0;
-          length_ = 0;
-      }
-
       public static com.waz.model.Messages.Mention parseDelimitedFrom(
               java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+          return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
 
     public static com.waz.model.Messages.Mention parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          output.writeInt32(1, start_);
-      }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
-            output.writeInt32(2, length_);
-        }
-        if (mentionTypeCase_ == 3) {
-            output.writeBytes(3, getUserIdBytes());
-        }
-        getUnknownFields().writeTo(output);
     }
 
     public static com.waz.model.Messages.Mention parseFrom(
@@ -19209,6 +19410,13 @@ public final class Messages {
         return this.unknownFields;
     }
 
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+          return com.waz.model.Messages.internal_static_Mention_fieldAccessorTable
+                  .ensureFieldAccessorsInitialized(
+                          com.waz.model.Messages.Mention.class, com.waz.model.Messages.Mention.Builder.class);
+      }
+
       @java.lang.Override
       public com.google.protobuf.Parser<Mention> getParserForType() {
           return PARSER;
@@ -19217,36 +19425,21 @@ public final class Messages {
       public MentionTypeCase
       getMentionTypeCase() {
           return MentionTypeCase.valueOf(
-          mentionTypeCase_);
+                  mentionTypeCase_);
     }
 
     /**
-     * <code>required int32 start = 1;</code>
-     *
-     * <pre>
-     * offset from beginning of the message counting in utf16 characters
-     * </pre>
+     * <code>required int32 length = 2;</code>
      */
-    public boolean hasStart() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-
-    /**
-     * <code>required int32 start = 1;</code>
-     *
-     * <pre>
-     * offset from beginning of the message counting in utf16 characters
-     * </pre>
-     */
-    public int getStart() {
-      return start_;
+    public boolean hasLength() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
     }
 
       /**
        * <code>required int32 length = 2;</code>
        */
-      public boolean hasLength() {
-          return ((bitField0_ & 0x00000002) == 0x00000002);
+      public int getLength() {
+          return length_;
       }
 
       /**
@@ -19273,11 +19466,11 @@ public final class Messages {
               if (bs.isValidUtf8() && (mentionTypeCase_ == 3)) {
                   mentionType_ = s;
               }
-        return s;
+              return s;
+          }
       }
-    }
 
-    /**
+      /**
      * <code>optional string user_id = 3;</code>
      */
     public com.google.protobuf.ByteString
@@ -19299,6 +19492,11 @@ public final class Messages {
       }
     }
 
+      private void initFields() {
+          start_ = 0;
+          length_ = 0;
+      }
+
       public final boolean isInitialized() {
           byte isInitialized = memoizedIsInitialized;
           if (isInitialized == 1) return true;
@@ -19315,6 +19513,21 @@ public final class Messages {
       memoizedIsInitialized = 1;
       return true;
     }
+
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+              throws java.io.IOException {
+          getSerializedSize();
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+              output.writeInt32(1, start_);
+          }
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+              output.writeInt32(2, length_);
+          }
+          if (mentionTypeCase_ == 3) {
+              output.writeBytes(3, getUserIdBytes());
+          }
+          getUnknownFields().writeTo(output);
+      }
 
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
@@ -19371,7 +19584,8 @@ public final class Messages {
 
           public static MentionTypeCase valueOf(int value) {
               switch (value) {
-                  case 3: return USER_ID;
+                  case 3:
+                      return USER_ID;
           case 0: return MENTIONTYPE_NOT_SET;
           default: throw new java.lang.IllegalArgumentException(
             "Value is undefined for this oneof enum.");
@@ -19393,13 +19607,7 @@ public final class Messages {
         private java.lang.Object mentionType_;
       private int bitField0_;
       private int start_ ;
-      private void maybeForceBuilderInitialization() {
-          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          }
-      }
-
-        private int length_ ;
-
+        private int length_;
       // Construct using com.waz.model.Messages.Mention.newBuilder()
       private Builder() {
           maybeForceBuilderInitialization();
@@ -19409,6 +19617,15 @@ public final class Messages {
                 com.google.protobuf.GeneratedMessage.BuilderParent parent) {
             super(parent);
             maybeForceBuilderInitialization();
+        }
+
+        public Builder clone() {
+            return create().mergeFrom(buildPartial());
+        }
+
+        public com.google.protobuf.Descriptors.Descriptor
+        getDescriptorForType() {
+            return com.waz.model.Messages.internal_static_Mention_descriptor;
         }
 
         public static final com.google.protobuf.Descriptors.Descriptor
@@ -19427,24 +19644,20 @@ public final class Messages {
                             com.waz.model.Messages.Mention.class, com.waz.model.Messages.Mention.Builder.class);
         }
 
+        private void maybeForceBuilderInitialization() {
+            if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+            }
+        }
+
         public Builder clear() {
             super.clear();
             start_ = 0;
             bitField0_ = (bitField0_ & ~0x00000001);
             length_ = 0;
             bitField0_ = (bitField0_ & ~0x00000002);
-        mentionTypeCase_ = 0;
+            mentionTypeCase_ = 0;
         mentionType_ = null;
         return this;
-      }
-
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.waz.model.Messages.internal_static_Mention_descriptor;
       }
 
         public com.waz.model.Messages.Mention getDefaultInstanceForType() {
@@ -19482,7 +19695,7 @@ public final class Messages {
 
         public Builder mergeFrom(com.google.protobuf.Message other) {
             if (other instanceof com.waz.model.Messages.Mention) {
-                return mergeFrom((com.waz.model.Messages.Mention)other);
+                return mergeFrom((com.waz.model.Messages.Mention) other);
             } else {
                 super.mergeFrom(other);
                 return this;
@@ -19511,6 +19724,13 @@ public final class Messages {
           this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
+
+        public Builder clearMentionType() {
+            mentionTypeCase_ = 0;
+            mentionType_ = null;
+            onChanged();
+            return this;
+        }
 
       public final boolean isInitialized() {
           if (!hasStart()) {
@@ -19548,15 +19768,8 @@ public final class Messages {
                     mentionTypeCase_);
         }
 
-      public Builder clearMentionType() {
-        mentionTypeCase_ = 0;
-        mentionType_ = null;
-        onChanged();
-        return this;
-      }
-
-      /**
-       * <code>required int32 start = 1;</code>
+        /**
+         * <code>required int32 start = 1;</code>
        *
        * <pre>
        * offset from beginning of the message counting in utf16 characters
@@ -19744,6 +19957,16 @@ public final class Messages {
             com.google.protobuf.GeneratedMessage implements
             // @@protoc_insertion_point(message_implements:LastRead)
             LastReadOrBuilder {
+        // Use LastRead.newBuilder() to construct.
+        private LastRead(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+            super(builder);
+            this.unknownFields = builder.getUnknownFields();
+        }
+
+        private LastRead(boolean noInit) {
+            this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+        }
+
         public static final int CONVERSATION_ID_FIELD_NUMBER = 1;
         public static final int LAST_READ_TIMESTAMP_FIELD_NUMBER = 2;
         private static final LastRead defaultInstance;
@@ -19763,29 +19986,17 @@ public final class Messages {
             defaultInstance.initFields();
         }
 
+        public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+            return com.waz.model.Messages.internal_static_LastRead_descriptor;
+        }
+
         private final com.google.protobuf.UnknownFieldSet unknownFields;
         private int bitField0_;
         private java.lang.Object conversationId_;
         private long lastReadTimestamp_;
         private byte memoizedIsInitialized = -1;
-
-        @java.lang.Override
-        public com.google.protobuf.Parser<LastRead> getParserForType() {
-            return PARSER;
-        }
     private int memoizedSerializedSize = -1;
-    // Use LastRead.newBuilder() to construct.
-    private LastRead(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-      super(builder);
-      this.unknownFields = builder.getUnknownFields();
-    }
-    private LastRead(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-    /**
-     * <code>required string conversation_id = 1;</code>
-     */
-    public boolean hasConversationId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
 
         private LastRead(
                 com.google.protobuf.CodedInputStream input,
@@ -19838,11 +20049,6 @@ public final class Messages {
       return defaultInstance;
     }
 
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.waz.model.Messages.internal_static_LastRead_descriptor;
-    }
-
     public static com.waz.model.Messages.LastRead parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -19886,8 +20092,8 @@ public final class Messages {
         }
 
         public static com.waz.model.Messages.LastRead parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                java.io.InputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
             return PARSER.parseDelimitedFrom(input, extensionRegistry);
         }
@@ -19913,6 +20119,12 @@ public final class Messages {
             return newBuilder().mergeFrom(prototype);
         }
 
+        @java.lang.Override
+        protected java.lang.Object writeReplace()
+                throws java.io.ObjectStreamException {
+            return super.writeReplace();
+        }
+
         public LastRead getDefaultInstanceForType() {
             return defaultInstance;
         }
@@ -19928,6 +20140,18 @@ public final class Messages {
             return com.waz.model.Messages.internal_static_LastRead_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
                             com.waz.model.Messages.LastRead.class, com.waz.model.Messages.LastRead.Builder.class);
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Parser<LastRead> getParserForType() {
+            return PARSER;
+        }
+
+        /**
+         * <code>required string conversation_id = 1;</code>
+         */
+        public boolean hasConversationId() {
+            return ((bitField0_ & 0x00000001) == 0x00000001);
         }
 
         /**
@@ -19958,7 +20182,7 @@ public final class Messages {
                 com.google.protobuf.ByteString b =
                         com.google.protobuf.ByteString.copyFromUtf8(
                                 (java.lang.String) ref);
-        conversationId_ = b;
+                conversationId_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -20001,6 +20225,10 @@ public final class Messages {
             return true;
         }
 
+        public Builder newBuilderForType() {
+            return newBuilder();
+        }
+
         public void writeTo(com.google.protobuf.CodedOutputStream output)
                 throws java.io.IOException {
             getSerializedSize();
@@ -20008,10 +20236,14 @@ public final class Messages {
                 output.writeBytes(1, getConversationIdBytes());
             }
             if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeInt64(2, lastReadTimestamp_);
+                output.writeInt64(2, lastReadTimestamp_);
       }
       getUnknownFields().writeTo(output);
     }
+
+        public Builder toBuilder() {
+            return newBuilder(this);
+        }
 
     public int getSerializedSize() {
         int size = memoizedSerializedSize;
@@ -20032,16 +20264,6 @@ public final class Messages {
     }
 
     @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-
-    public Builder newBuilderForType() { return newBuilder(); }
-
-    public Builder toBuilder() { return newBuilder(this); }
-
-    @java.lang.Override
     protected Builder newBuilderForType(
             com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         Builder builder = new Builder(parent);
@@ -20057,7 +20279,7 @@ public final class Messages {
                 com.waz.model.Messages.LastReadOrBuilder {
             private int bitField0_;
       private java.lang.Object conversationId_ = "";
-      private long lastReadTimestamp_;
+            private long lastReadTimestamp_;
 
             // Construct using com.waz.model.Messages.LastRead.newBuilder()
             private Builder() {
@@ -20069,26 +20291,10 @@ public final class Messages {
         maybeForceBuilderInitialization();
       }
 
-            private static Builder create() {
-                return new Builder();
-            }
-
             public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
                 return com.waz.model.Messages.internal_static_LastRead_descriptor;
             }
-
-            protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-                return com.waz.model.Messages.internal_static_LastRead_fieldAccessorTable
-                        .ensureFieldAccessorsInitialized(
-                                com.waz.model.Messages.LastRead.class, com.waz.model.Messages.LastRead.Builder.class);
-            }
-
-            private void maybeForceBuilderInitialization() {
-                if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-        }
-      }
 
       public Builder clear() {
         super.clear();
@@ -20103,37 +20309,30 @@ public final class Messages {
         return create().mergeFrom(buildPartial());
       }
 
+            private static Builder create() {
+                return new Builder();
+            }
+
+            public com.waz.model.Messages.LastRead getDefaultInstanceForType() {
+                return com.waz.model.Messages.LastRead.getDefaultInstance();
+            }
+
+            protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+                return com.waz.model.Messages.internal_static_LastRead_fieldAccessorTable
+                        .ensureFieldAccessorsInitialized(
+                                com.waz.model.Messages.LastRead.class, com.waz.model.Messages.LastRead.Builder.class);
+            }
+
+            private void maybeForceBuilderInitialization() {
+                if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+                }
+            }
+
             public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
                 return com.waz.model.Messages.internal_static_LastRead_descriptor;
             }
-
-            public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof com.waz.model.Messages.LastRead) {
-                    return mergeFrom((com.waz.model.Messages.LastRead) other);
-                } else {
-                    super.mergeFrom(other);
-                    return this;
-                }
-            }
-
-            public Builder mergeFrom(com.waz.model.Messages.LastRead other) {
-                if (other == com.waz.model.Messages.LastRead.getDefaultInstance()) return this;
-                if (other.hasConversationId()) {
-                    bitField0_ |= 0x00000001;
-                    conversationId_ = other.conversationId_;
-                    onChanged();
-                }
-                if (other.hasLastReadTimestamp()) {
-                    setLastReadTimestamp(other.getLastReadTimestamp());
-                }
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-
-      public com.waz.model.Messages.LastRead getDefaultInstanceForType() {
-        return com.waz.model.Messages.LastRead.getDefaultInstance();
-      }
 
             public com.waz.model.Messages.LastRead build() {
                 com.waz.model.Messages.LastRead result = buildPartial();
@@ -20158,6 +20357,29 @@ public final class Messages {
                 result.bitField0_ = to_bitField0_;
                 onBuilt();
                 return result;
+            }
+
+            public Builder mergeFrom(com.google.protobuf.Message other) {
+                if (other instanceof com.waz.model.Messages.LastRead) {
+                    return mergeFrom((com.waz.model.Messages.LastRead) other);
+                } else {
+                    super.mergeFrom(other);
+                    return this;
+                }
+            }
+
+            public Builder mergeFrom(com.waz.model.Messages.LastRead other) {
+                if (other == com.waz.model.Messages.LastRead.getDefaultInstance()) return this;
+                if (other.hasConversationId()) {
+                    bitField0_ |= 0x00000001;
+                    conversationId_ = other.conversationId_;
+                    onChanged();
+                }
+                if (other.hasLastReadTimestamp()) {
+                    setLastReadTimestamp(other.getLastReadTimestamp());
+                }
+                this.mergeUnknownFields(other.getUnknownFields());
+                return this;
             }
 
             public final boolean isInitialized() {
@@ -20235,14 +20457,14 @@ public final class Messages {
             public com.google.protobuf.ByteString
             getConversationIdBytes() {
                 java.lang.Object ref = conversationId_;
-        if (ref instanceof String) {
+                if (ref instanceof String) {
           com.google.protobuf.ByteString b =
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-            conversationId_ = b;
-            return b;
+                    conversationId_ = b;
+                    return b;
         } else {
-            return (com.google.protobuf.ByteString) ref;
+                    return (com.google.protobuf.ByteString) ref;
         }
             }
 
@@ -20341,12 +20563,6 @@ public final class Messages {
         private java.lang.Object conversationId_;
         private long clearedTimestamp_;
         private byte memoizedIsInitialized = -1;
-
-        @java.lang.Override
-        public com.google.protobuf.Parser<Cleared> getParserForType() {
-            return PARSER;
-        }
-
         private int memoizedSerializedSize = -1;
 
         // Use Cleared.newBuilder() to construct.
@@ -20372,9 +20588,9 @@ public final class Messages {
                 while (!done) {
                     int tag = input.readTag();
                     switch (tag) {
-            case 0:
-                done = true;
-                break;
+                        case 0:
+                            done = true;
+                            break;
                         default: {
                             if (!parseUnknownField(input, unknownFields,
                                     extensionRegistry, tag)) {
@@ -20502,6 +20718,11 @@ public final class Messages {
                             com.waz.model.Messages.Cleared.class, com.waz.model.Messages.Cleared.Builder.class);
         }
 
+        @java.lang.Override
+        public com.google.protobuf.Parser<Cleared> getParserForType() {
+            return PARSER;
+        }
+
         /**
          * <code>required string conversation_id = 1;</code>
          */
@@ -20509,8 +20730,8 @@ public final class Messages {
             return ((bitField0_ & 0x00000001) == 0x00000001);
         }
 
-    /**
-     * <code>required string conversation_id = 1;</code>
+        /**
+         * <code>required string conversation_id = 1;</code>
      */
     public java.lang.String getConversationId() {
       java.lang.Object ref = conversationId_;
@@ -20592,10 +20813,6 @@ public final class Messages {
             getUnknownFields().writeTo(output);
         }
 
-        public Builder newBuilderForType() {
-            return newBuilder();
-        }
-
         public int getSerializedSize() {
             int size = memoizedSerializedSize;
             if (size != -1) return size;
@@ -20604,8 +20821,8 @@ public final class Messages {
             if (((bitField0_ & 0x00000001) == 0x00000001)) {
                 size += com.google.protobuf.CodedOutputStream
                         .computeBytesSize(1, getConversationIdBytes());
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            }
+            if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(2, clearedTimestamp_);
       }
@@ -20613,13 +20830,19 @@ public final class Messages {
       memoizedSerializedSize = size;
       return size;
     }
-    public Builder toBuilder() { return newBuilder(this);
-    }
 
         @java.lang.Override
         protected java.lang.Object writeReplace()
                 throws java.io.ObjectStreamException {
             return super.writeReplace();
+        }
+
+        public Builder newBuilderForType() {
+            return newBuilder();
+        }
+
+        public Builder toBuilder() {
+            return newBuilder(this);
         }
 
         @java.lang.Override
@@ -20636,6 +20859,11 @@ public final class Messages {
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
                 // @@protoc_insertion_point(builder_implements:Cleared)
         com.waz.model.Messages.ClearedOrBuilder {
+            public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+                return com.waz.model.Messages.internal_static_Cleared_descriptor;
+            }
+
             private int bitField0_;
             private java.lang.Object conversationId_ = "";
             private long clearedTimestamp_;
@@ -20651,14 +20879,13 @@ public final class Messages {
         maybeForceBuilderInitialization();
       }
 
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.waz.model.Messages.internal_static_Cleared_descriptor;
-      }
-
       private static Builder create() {
         return new Builder();
       }
+
+            public Builder clone() {
+                return create().mergeFrom(buildPartial());
+            }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
@@ -20672,10 +20899,6 @@ public final class Messages {
                 }
             }
 
-            public com.waz.model.Messages.Cleared getDefaultInstanceForType() {
-                return com.waz.model.Messages.Cleared.getDefaultInstance();
-            }
-
             public Builder clear() {
                 super.clear();
                 conversationId_ = "";
@@ -20685,22 +20908,13 @@ public final class Messages {
                 return this;
       }
 
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
-      }
-
-            public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof com.waz.model.Messages.Cleared) {
-                    return mergeFrom((com.waz.model.Messages.Cleared)other);
-        } else {
-                    super.mergeFrom(other);
-                    return this;
-                }
-            }
-
             public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
                 return com.waz.model.Messages.internal_static_Cleared_descriptor;
+            }
+
+            public com.waz.model.Messages.Cleared getDefaultInstanceForType() {
+                return com.waz.model.Messages.Cleared.getDefaultInstance();
             }
 
             public com.waz.model.Messages.Cleared build() {
@@ -20726,6 +20940,15 @@ public final class Messages {
                 result.bitField0_ = to_bitField0_;
                 onBuilt();
                 return result;
+            }
+
+            public Builder mergeFrom(com.google.protobuf.Message other) {
+                if (other instanceof com.waz.model.Messages.Cleared) {
+                    return mergeFrom((com.waz.model.Messages.Cleared) other);
+                } else {
+                    super.mergeFrom(other);
+                    return this;
+                }
             }
 
             public Builder mergeFrom(com.waz.model.Messages.Cleared other) {
@@ -20833,7 +21056,7 @@ public final class Messages {
              */
             public Builder setConversationIdBytes(
                     com.google.protobuf.ByteString value) {
-        if (value == null) {
+                if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000001;
@@ -20899,7 +21122,6 @@ public final class Messages {
             MessageHideOrBuilder {
         public static final int CONVERSATION_ID_FIELD_NUMBER = 1;
         public static final int MESSAGE_ID_FIELD_NUMBER = 2;
-
         private static final MessageHide defaultInstance;
         private static final long serialVersionUID = 0L;
         public static com.google.protobuf.Parser<MessageHide> PARSER =
@@ -20912,13 +21134,12 @@ public final class Messages {
                     }
                 };
 
-        private final com.google.protobuf.UnknownFieldSet unknownFields;
-
         static {
             defaultInstance = new MessageHide(true);
             defaultInstance.initFields();
         }
 
+        private final com.google.protobuf.UnknownFieldSet unknownFields;
         private int bitField0_;
         private java.lang.Object conversationId_;
         private java.lang.Object messageId_;
@@ -21010,13 +21231,6 @@ public final class Messages {
             return PARSER.parseFrom(data);
         }
 
-        /**
-         * <code>required string message_id = 2;</code>
-         */
-        public boolean hasMessageId() {
-            return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-
     public static com.waz.model.Messages.MessageHide parseFrom(
             byte[] data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -21034,6 +21248,11 @@ public final class Messages {
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
+        }
+
+        private void initFields() {
+            conversationId_ = "";
+            messageId_ = "";
         }
 
         public static com.waz.model.Messages.MessageHide parseDelimitedFrom(java.io.InputStream input)
@@ -21061,11 +21280,19 @@ public final class Messages {
             return PARSER.parseFrom(input, extensionRegistry);
         }
 
-        public static Builder newBuilder() { return Builder.create(); }
+        public static Builder newBuilder() {
+            return Builder.create();
+        }
 
     public static Builder newBuilder(com.waz.model.Messages.MessageHide prototype) {
         return newBuilder().mergeFrom(prototype);
     }
+
+        @java.lang.Override
+        protected java.lang.Object writeReplace()
+                throws java.io.ObjectStreamException {
+            return super.writeReplace();
+        }
 
         public MessageHide getDefaultInstanceForType() {
             return defaultInstance;
@@ -21100,7 +21327,7 @@ public final class Messages {
          * <code>required string conversation_id = 1;</code>
          */
         public java.lang.String getConversationId() {
-      java.lang.Object ref = conversationId_;
+            java.lang.Object ref = conversationId_;
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
@@ -21134,8 +21361,15 @@ public final class Messages {
         /**
          * <code>required string message_id = 2;</code>
          */
+        public boolean hasMessageId() {
+            return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+
+        /**
+         * <code>required string message_id = 2;</code>
+         */
         public java.lang.String getMessageId() {
-      java.lang.Object ref = messageId_;
+            java.lang.Object ref = messageId_;
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
@@ -21166,11 +21400,6 @@ public final class Messages {
       }
     }
 
-    private void initFields() {
-      conversationId_ = "";
-      messageId_ = "";
-    }
-
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -21188,6 +21417,10 @@ public final class Messages {
         return true;
     }
 
+        public Builder newBuilderForType() {
+            return newBuilder();
+        }
+
         public void writeTo(com.google.protobuf.CodedOutputStream output)
                 throws java.io.IOException {
             getSerializedSize();
@@ -21198,6 +21431,10 @@ public final class Messages {
                 output.writeBytes(2, getMessageIdBytes());
             }
             getUnknownFields().writeTo(output);
+        }
+
+        public Builder toBuilder() {
+            return newBuilder(this);
         }
 
         public int getSerializedSize() {
@@ -21217,16 +21454,6 @@ public final class Messages {
       memoizedSerializedSize = size;
       return size;
     }
-
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-
-    public Builder newBuilderForType() { return newBuilder(); }
-
-    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
@@ -21432,7 +21659,7 @@ public final class Messages {
                     conversationId_ = b;
                     return b;
                 } else {
-          return (com.google.protobuf.ByteString) ref;
+                    return (com.google.protobuf.ByteString) ref;
                 }
             }
 
@@ -21457,7 +21684,7 @@ public final class Messages {
                 bitField0_ = (bitField0_ & ~0x00000001);
                 conversationId_ = getDefaultInstance().getConversationId();
                 onChanged();
-        return this;
+                return this;
       }
 
       /**
@@ -21552,7 +21779,7 @@ public final class Messages {
     public static final class MessageDelete extends
             com.google.protobuf.GeneratedMessage implements
             // @@protoc_insertion_point(message_implements:MessageDelete)
-      MessageDeleteOrBuilder {
+            MessageDeleteOrBuilder {
     public static final int MESSAGE_ID_FIELD_NUMBER = 1;
     private static final MessageDelete defaultInstance;
     private static final long serialVersionUID = 0L;
@@ -21572,7 +21799,6 @@ public final class Messages {
     }
 
         private final com.google.protobuf.UnknownFieldSet unknownFields;
-
         private int bitField0_;
         private java.lang.Object messageId_;
         private byte memoizedIsInitialized = -1;
@@ -21637,13 +21863,6 @@ public final class Messages {
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
             return com.waz.model.Messages.internal_static_MessageDelete_descriptor;
-        }
-
-        /**
-         * <code>required string message_id = 1;</code>
-         */
-        public boolean hasMessageId() {
-            return ((bitField0_ & 0x00000001) == 0x00000001);
         }
 
         public static com.waz.model.Messages.MessageDelete parseFrom(
@@ -21740,8 +21959,15 @@ public final class Messages {
 
         /**
          * <code>required string message_id = 1;</code>
-     */
-    public java.lang.String getMessageId() {
+         */
+        public boolean hasMessageId() {
+            return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+
+        /**
+         * <code>required string message_id = 1;</code>
+         */
+        public java.lang.String getMessageId() {
       java.lang.Object ref = messageId_;
       if (ref instanceof java.lang.String) {
           return (java.lang.String) ref;
@@ -21837,8 +22063,8 @@ public final class Messages {
         /**
          * Protobuf type {@code MessageDelete}
          */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        public static final class Builder extends
+                com.google.protobuf.GeneratedMessage.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:MessageDelete)
         com.waz.model.Messages.MessageDeleteOrBuilder {
             private int bitField0_;
@@ -21892,18 +22118,6 @@ public final class Messages {
                 return com.waz.model.Messages.internal_static_MessageDelete_descriptor;
             }
 
-            public com.waz.model.Messages.MessageDelete getDefaultInstanceForType() {
-                return com.waz.model.Messages.MessageDelete.getDefaultInstance();
-            }
-
-            public com.waz.model.Messages.MessageDelete build() {
-        com.waz.model.Messages.MessageDelete result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
       public com.waz.model.Messages.MessageDelete buildPartial() {
         com.waz.model.Messages.MessageDelete result = new com.waz.model.Messages.MessageDelete(this);
         int from_bitField0_ = bitField0_;
@@ -21916,6 +22130,18 @@ public final class Messages {
         onBuilt();
         return result;
       }
+
+            public com.waz.model.Messages.MessageDelete getDefaultInstanceForType() {
+                return com.waz.model.Messages.MessageDelete.getDefaultInstance();
+            }
+
+            public com.waz.model.Messages.MessageDelete build() {
+                com.waz.model.Messages.MessageDelete result = buildPartial();
+                if (!result.isInitialized()) {
+                    throw newUninitializedMessageException(result);
+                }
+                return result;
+            }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof com.waz.model.Messages.MessageDelete) {
@@ -21991,6 +22217,20 @@ public final class Messages {
             /**
              * <code>required string message_id = 1;</code>
              */
+            public Builder setMessageId(
+                    java.lang.String value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                bitField0_ |= 0x00000001;
+                messageId_ = value;
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>required string message_id = 1;</code>
+             */
             public com.google.protobuf.ByteString
             getMessageIdBytes() {
                 java.lang.Object ref = messageId_;
@@ -22010,20 +22250,6 @@ public final class Messages {
              */
             public Builder setMessageIdBytes(
                     com.google.protobuf.ByteString value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-                bitField0_ |= 0x00000001;
-                messageId_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>required string message_id = 1;</code>
-             */
-            public Builder setMessageId(
-                    java.lang.String value) {
                 if (value == null) {
                     throw new NullPointerException();
                 }
@@ -22057,16 +22283,9 @@ public final class Messages {
             // @@protoc_insertion_point(message_implements:MessageEdit)
       MessageEditOrBuilder {
     public static final int REPLACING_MESSAGE_ID_FIELD_NUMBER = 1;
-
-        private MessageEdit(boolean noInit) {
-            this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
-        }
-
-        private static final MessageEdit defaultInstance;
         public static final int TEXT_FIELD_NUMBER = 2;
         public static final int COMPOSITEMESSAGE_FIELD_NUMBER = 3;
-
-        private final com.google.protobuf.UnknownFieldSet unknownFields;
+        private static final MessageEdit defaultInstance;
         private static final long serialVersionUID = 0L;
         public static com.google.protobuf.Parser<MessageEdit> PARSER =
         new com.google.protobuf.AbstractParser<MessageEdit>() {
@@ -22083,6 +22302,7 @@ public final class Messages {
             defaultInstance.initFields();
         }
 
+        private final com.google.protobuf.UnknownFieldSet unknownFields;
         private int bitField0_;
         private int contentCase_ = 0;
         private java.lang.Object content_;
@@ -22094,6 +22314,10 @@ public final class Messages {
         private MessageEdit(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
             super(builder);
             this.unknownFields = builder.getUnknownFields();
+        }
+
+        private MessageEdit(boolean noInit) {
+            this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
         }
 
         ;
@@ -22145,7 +22369,7 @@ public final class Messages {
                   if (contentCase_ == 3) {
                       subBuilder = ((com.waz.model.Messages.CompositeMessage) content_).toBuilder();
                   }
-              content_ = input.readMessage(com.waz.model.Messages.CompositeMessage.PARSER, extensionRegistry);
+                  content_ = input.readMessage(com.waz.model.Messages.CompositeMessage.PARSER, extensionRegistry);
                   if (subBuilder != null) {
                       subBuilder.mergeFrom((com.waz.model.Messages.CompositeMessage) content_);
                       content_ = subBuilder.buildPartial();
@@ -22183,7 +22407,7 @@ public final class Messages {
 
     public static com.waz.model.Messages.MessageEdit parseFrom(
             com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
     }
@@ -22239,10 +22463,6 @@ public final class Messages {
 
         public static Builder newBuilder() {
             return Builder.create();
-        }
-
-        private void initFields() {
-            replacingMessageId_ = "";
         }
 
         public static Builder newBuilder(com.waz.model.Messages.MessageEdit prototype) {
@@ -22383,6 +22603,10 @@ public final class Messages {
                 return (com.waz.model.Messages.CompositeMessage) content_;
             }
             return com.waz.model.Messages.CompositeMessage.getDefaultInstance();
+        }
+
+        private void initFields() {
+            replacingMessageId_ = "";
         }
 
         public final boolean isInitialized() {
@@ -23121,7 +23345,21 @@ public final class Messages {
         private final com.google.protobuf.UnknownFieldSet unknownFields;
         private int bitField0_;
         private java.lang.Object quotedMessageId_;
+
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+            return com.waz.model.Messages.internal_static_Quote_fieldAccessorTable
+                    .ensureFieldAccessorsInitialized(
+                            com.waz.model.Messages.Quote.class, com.waz.model.Messages.Quote.Builder.class);
+        }
+
         private com.google.protobuf.ByteString quotedMessageSha256_;
+
+        @java.lang.Override
+        public com.google.protobuf.Parser<Quote> getParserForType() {
+            return PARSER;
+        }
+
         private byte memoizedIsInitialized = -1;
         private int memoizedSerializedSize = -1;
 
@@ -23131,54 +23369,63 @@ public final class Messages {
             this.unknownFields = builder.getUnknownFields();
         }
 
+        /**
+         * <code>required string quoted_message_id = 1;</code>
+         */
+        public boolean hasQuotedMessageId() {
+            return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+
         private Quote(boolean noInit) {
-            this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-    private Quote(
+            this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+        }
+
+        private Quote(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-        initFields();
-        int mutable_bitField0_ = 0;
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-                com.google.protobuf.UnknownFieldSet.newBuilder();
-        try {
-            boolean done = false;
-            while (!done) {
-                int tag = input.readTag();
-                switch (tag) {
-                    case 0:
-                        done = true;
-                        break;
-                    default: {
-                        if (!parseUnknownField(input, unknownFields,
-                                extensionRegistry, tag)) {
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            initFields();
+            int mutable_bitField0_ = 0;
+            com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+                    com.google.protobuf.UnknownFieldSet.newBuilder();
+            try {
+                boolean done = false;
+                while (!done) {
+                    int tag = input.readTag();
+                    switch (tag) {
+                        case 0:
                             done = true;
+                            break;
+                        default: {
+                            if (!parseUnknownField(input, unknownFields,
+                                    extensionRegistry, tag)) {
+                                done = true;
+                            }
+                            break;
                         }
-                        break;
-                    }
-                    case 10: {
-                        com.google.protobuf.ByteString bs = input.readBytes();
-                        bitField0_ |= 0x00000001;
-                        quotedMessageId_ = bs;
-                        break;
-                    }
-                    case 18: {
-                        bitField0_ |= 0x00000002;
-                        quotedMessageSha256_ = input.readBytes();
-                        break;
+                        case 10: {
+                            com.google.protobuf.ByteString bs = input.readBytes();
+                            bitField0_ |= 0x00000001;
+                            quotedMessageId_ = bs;
+                            break;
+                        }
+                        case 18: {
+                            bitField0_ |= 0x00000002;
+                            quotedMessageSha256_ = input.readBytes();
+                            break;
+                        }
                     }
                 }
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(this);
+            } catch (java.io.IOException e) {
+                throw new com.google.protobuf.InvalidProtocolBufferException(
+                        e.getMessage()).setUnfinishedMessage(this);
+            } finally {
+                this.unknownFields = unknownFields.build();
+                makeExtensionsImmutable();
             }
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            throw e.setUnfinishedMessage(this);
-        } catch (java.io.IOException e) {
-            throw new com.google.protobuf.InvalidProtocolBufferException(
-                    e.getMessage()).setUnfinishedMessage(this);
-        } finally {
-            this.unknownFields = unknownFields.build();
-            makeExtensionsImmutable();
         }
-    }
 
         public static Quote getDefaultInstance() {
             return defaultInstance;
@@ -23236,12 +23483,12 @@ public final class Messages {
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
             return PARSER.parseDelimitedFrom(input, extensionRegistry);
-    }
+        }
 
-    public static com.waz.model.Messages.Quote parseFrom(
-        com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
-        return PARSER.parseFrom(input);
+        public static com.waz.model.Messages.Quote parseFrom(
+                com.google.protobuf.CodedInputStream input)
+                throws java.io.IOException {
+            return PARSER.parseFrom(input);
     }
 
     public static com.waz.model.Messages.Quote parseFrom(
@@ -23251,8 +23498,9 @@ public final class Messages {
       return PARSER.parseFrom(input, extensionRegistry);
     }
 
-    public static Builder newBuilder() { return Builder.create();
-    }
+        public static Builder newBuilder() {
+            return Builder.create();
+        }
 
         public static Builder newBuilder(com.waz.model.Messages.Quote prototype) {
             return newBuilder().mergeFrom(prototype);
@@ -23266,25 +23514,6 @@ public final class Messages {
     public final com.google.protobuf.UnknownFieldSet
         getUnknownFields() {
       return this.unknownFields;
-    }
-
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.waz.model.Messages.internal_static_Quote_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.waz.model.Messages.Quote.class, com.waz.model.Messages.Quote.Builder.class);
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<Quote> getParserForType() {
-      return PARSER;
-    }
-
-    /**
-     * <code>required string quoted_message_id = 1;</code>
-     */
-    public boolean hasQuotedMessageId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
     }
 
     /**
@@ -23377,9 +23606,9 @@ public final class Messages {
             }
             if (((bitField0_ & 0x00000002) == 0x00000002)) {
                 size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(2, quotedMessageSha256_);
-      }
-      size += getUnknownFields().getSerializedSize();
+                        .computeBytesSize(2, quotedMessageSha256_);
+            }
+            size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
             return size;
         }
@@ -23412,8 +23641,26 @@ public final class Messages {
                 com.google.protobuf.GeneratedMessage.Builder<Builder> implements
                 // @@protoc_insertion_point(builder_implements:Quote)
                 com.waz.model.Messages.QuoteOrBuilder {
+            public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+                return com.waz.model.Messages.internal_static_Quote_descriptor;
+            }
+
+            protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+                return com.waz.model.Messages.internal_static_Quote_fieldAccessorTable
+                        .ensureFieldAccessorsInitialized(
+                                com.waz.model.Messages.Quote.class, com.waz.model.Messages.Quote.Builder.class);
+            }
+
             private int bitField0_;
             private java.lang.Object quotedMessageId_ = "";
+
+            private void maybeForceBuilderInitialization() {
+                if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+                }
+            }
+
             private com.google.protobuf.ByteString quotedMessageSha256_ = com.google.protobuf.ByteString.EMPTY;
 
             // Construct using com.waz.model.Messages.Quote.newBuilder()
@@ -23424,28 +23671,11 @@ public final class Messages {
             private Builder(
                     com.google.protobuf.GeneratedMessage.BuilderParent parent) {
                 super(parent);
-        maybeForceBuilderInitialization();
-      }
-
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.waz.model.Messages.internal_static_Quote_descriptor;
+                maybeForceBuilderInitialization();
       }
 
       private static Builder create() {
         return new Builder();
-      }
-
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.waz.model.Messages.internal_static_Quote_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.waz.model.Messages.Quote.class, com.waz.model.Messages.Quote.Builder.class);
-      }
-
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-        }
       }
 
       public Builder clear() {
@@ -23497,7 +23727,7 @@ public final class Messages {
 
             public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.waz.model.Messages.Quote) {
-            return mergeFrom((com.waz.model.Messages.Quote)other);
+            return mergeFrom((com.waz.model.Messages.Quote) other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -23642,7 +23872,7 @@ public final class Messages {
              * <code>optional bytes quoted_message_sha256 = 2;</code>
              */
             public Builder setQuotedMessageSha256(com.google.protobuf.ByteString value) {
-        if (value == null) {
+                if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000002;
@@ -23674,11 +23904,6 @@ public final class Messages {
       // @@protoc_insertion_point(message_implements:Confirmation)
           ConfirmationOrBuilder {
       public static final int TYPE_FIELD_NUMBER = 2;
-
-      private Confirmation(boolean noInit) {
-          this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
-      }
-
       public static final int FIRST_MESSAGE_ID_FIELD_NUMBER = 1;
       public static final int MORE_MESSAGE_IDS_FIELD_NUMBER = 3;
       private static final Confirmation defaultInstance;
@@ -23698,18 +23923,6 @@ public final class Messages {
           defaultInstance.initFields();
       }
 
-      public static final com.google.protobuf.Descriptors.Descriptor
-      getDescriptor() {
-          return com.waz.model.Messages.internal_static_Confirmation_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internalGetFieldAccessorTable() {
-      return com.waz.model.Messages.internal_static_Confirmation_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.waz.model.Messages.Confirmation.class, com.waz.model.Messages.Confirmation.Builder.class);
-    }
-
     private final com.google.protobuf.UnknownFieldSet unknownFields;
     private int bitField0_;
     private com.waz.model.Messages.Confirmation.Type type_;
@@ -23722,6 +23935,10 @@ public final class Messages {
         super(builder);
         this.unknownFields = builder.getUnknownFields();
     }
+
+      private Confirmation(boolean noInit) {
+          this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+      }
 
       private Confirmation(
               com.google.protobuf.CodedInputStream input,
@@ -23792,6 +24009,11 @@ public final class Messages {
           return defaultInstance;
       }
 
+      public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+          return com.waz.model.Messages.internal_static_Confirmation_descriptor;
+      }
+
       public static com.waz.model.Messages.Confirmation parseFrom(
               com.google.protobuf.ByteString data)
               throws com.google.protobuf.InvalidProtocolBufferException {
@@ -23821,26 +24043,6 @@ public final class Messages {
               throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    /**
-     * <code>repeated string more_message_ids = 3;</code>
-     */
-    public com.google.protobuf.ProtocolStringList
-        getMoreMessageIdsList() {
-      return moreMessageIds_;
-    }
-    /**
-     * <code>repeated string more_message_ids = 3;</code>
-     */
-    public int getMoreMessageIdsCount() {
-      return moreMessageIds_.size();
-    }
-
-      /**
-       * <code>repeated string more_message_ids = 3;</code>
-       */
-      public java.lang.String getMoreMessageIds(int index) {
-          return moreMessageIds_.get(index);
-      }
 
       public static com.waz.model.Messages.Confirmation parseFrom(
               java.io.InputStream input,
@@ -23863,7 +24065,7 @@ public final class Messages {
 
       public static com.waz.model.Messages.Confirmation parseFrom(
               com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
+              throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
 
@@ -23890,6 +24092,13 @@ public final class Messages {
       public final com.google.protobuf.UnknownFieldSet
       getUnknownFields() {
           return this.unknownFields;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+          return com.waz.model.Messages.internal_static_Confirmation_fieldAccessorTable
+                  .ensureFieldAccessorsInitialized(
+                          com.waz.model.Messages.Confirmation.class, com.waz.model.Messages.Confirmation.Builder.class);
       }
 
       @java.lang.Override
@@ -23951,6 +24160,28 @@ public final class Messages {
           } else {
               return (com.google.protobuf.ByteString) ref;
           }
+      }
+
+      /**
+       * <code>repeated string more_message_ids = 3;</code>
+       */
+      public com.google.protobuf.ProtocolStringList
+      getMoreMessageIdsList() {
+          return moreMessageIds_;
+      }
+
+      /**
+       * <code>repeated string more_message_ids = 3;</code>
+       */
+      public int getMoreMessageIdsCount() {
+          return moreMessageIds_.size();
+      }
+
+      /**
+       * <code>repeated string more_message_ids = 3;</code>
+       */
+      public java.lang.String getMoreMessageIds(int index) {
+          return moreMessageIds_.get(index);
       }
 
       /**
@@ -24022,8 +24253,8 @@ public final class Messages {
               size += 1 * getMoreMessageIdsList().size();
           }
           size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
+          memoizedSerializedSize = size;
+          return size;
       }
 
       @java.lang.Override
@@ -24150,21 +24381,6 @@ public final class Messages {
               maybeForceBuilderInitialization();
           }
 
-          private static Builder create() {
-              return new Builder();
-          }
-
-          public Builder clear() {
-              super.clear();
-              type_ = com.waz.model.Messages.Confirmation.Type.DELIVERED;
-              bitField0_ = (bitField0_ & ~0x00000001);
-              firstMessageId_ = "";
-              bitField0_ = (bitField0_ & ~0x00000002);
-              moreMessageIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-              bitField0_ = (bitField0_ & ~0x00000004);
-              return this;
-          }
-
           private Builder(
                   com.google.protobuf.GeneratedMessage.BuilderParent parent) {
               super(parent);
@@ -24174,6 +24390,10 @@ public final class Messages {
           public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
               return com.waz.model.Messages.internal_static_Confirmation_descriptor;
+          }
+
+          private static Builder create() {
+              return new Builder();
           }
 
           protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -24186,6 +24406,17 @@ public final class Messages {
           private void maybeForceBuilderInitialization() {
               if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
               }
+          }
+
+          public Builder clear() {
+              super.clear();
+              type_ = com.waz.model.Messages.Confirmation.Type.DELIVERED;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              firstMessageId_ = "";
+              bitField0_ = (bitField0_ & ~0x00000002);
+              moreMessageIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+              bitField0_ = (bitField0_ & ~0x00000004);
+              return this;
           }
 
           public Builder clone() {
@@ -24215,8 +24446,8 @@ public final class Messages {
               int to_bitField0_ = 0;
               if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
                   to_bitField0_ |= 0x00000001;
-        }
-        result.type_ = type_;
+              }
+              result.type_ = type_;
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
             to_bitField0_ |= 0x00000002;
         }
@@ -24233,7 +24464,7 @@ public final class Messages {
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.waz.model.Messages.Confirmation) {
-          return mergeFrom((com.waz.model.Messages.Confirmation) other);
+            return mergeFrom((com.waz.model.Messages.Confirmation) other);
         } else {
             super.mergeFrom(other);
             return this;
@@ -24251,12 +24482,12 @@ public final class Messages {
                   onChanged();
               }
               if (!other.moreMessageIds_.isEmpty()) {
-          if (moreMessageIds_.isEmpty()) {
+                  if (moreMessageIds_.isEmpty()) {
             moreMessageIds_ = other.moreMessageIds_;
             bitField0_ = (bitField0_ & ~0x00000004);
           } else {
             ensureMoreMessageIdsIsMutable();
-              moreMessageIds_.addAll(other.moreMessageIds_);
+                      moreMessageIds_.addAll(other.moreMessageIds_);
           }
                   onChanged();
               }
@@ -24368,7 +24599,7 @@ public final class Messages {
               firstMessageId_ = value;
               onChanged();
               return this;
-      }
+          }
 
       /**
        * <code>required string first_message_id = 1;</code>
@@ -24410,7 +24641,6 @@ public final class Messages {
         onChanged();
         return this;
       }
-
       private void ensureMoreMessageIdsIsMutable() {
         if (!((bitField0_ & 0x00000004) == 0x00000004)) {
           moreMessageIds_ = new com.google.protobuf.LazyStringArrayList(moreMessageIds_);
@@ -24519,16 +24749,6 @@ public final class Messages {
             com.google.protobuf.GeneratedMessage implements
             // @@protoc_insertion_point(message_implements:Location)
             LocationOrBuilder {
-        // Use Location.newBuilder() to construct.
-        private Location(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-            super(builder);
-            this.unknownFields = builder.getUnknownFields();
-        }
-
-        private Location(boolean noInit) {
-            this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
-        }
-
         public static final int LONGITUDE_FIELD_NUMBER = 1;
         public static final int LATITUDE_FIELD_NUMBER = 2;
         public static final int NAME_FIELD_NUMBER = 3;
@@ -24559,27 +24779,18 @@ public final class Messages {
         private java.lang.Object name_;
         private int zoom_;
         private boolean expectsReadConfirmation_;
-
-        /**
-         * <code>required float latitude = 2;</code>
-         */
-        public boolean hasLatitude() {
-            return ((bitField0_ & 0x00000002) == 0x00000002);
-        }
-
         private com.waz.model.Messages.LegalHoldStatus legalHoldStatus_;
         private byte memoizedIsInitialized = -1;
         private int memoizedSerializedSize = -1;
 
-        /**
-         * <code>optional string name = 3;</code>
-         *
-         * <pre>
-         * location description/name
-         * </pre>
-         */
-        public boolean hasName() {
-            return ((bitField0_ & 0x00000004) == 0x00000004);
+        // Use Location.newBuilder() to construct.
+        private Location(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+            super(builder);
+            this.unknownFields = builder.getUnknownFields();
+        }
+
+        private Location(boolean noInit) {
+            this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
         }
 
         private Location(
@@ -24687,11 +24898,11 @@ public final class Messages {
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
-    }
+        }
 
-    public static com.waz.model.Messages.Location parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
-        return PARSER.parseFrom(input);
+        public static com.waz.model.Messages.Location parseFrom(java.io.InputStream input)
+                throws java.io.IOException {
+            return PARSER.parseFrom(input);
     }
 
         public static com.waz.model.Messages.Location parseFrom(
@@ -24773,8 +24984,26 @@ public final class Messages {
         /**
          * <code>required float latitude = 2;</code>
          */
+        public boolean hasLatitude() {
+            return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+
+        /**
+         * <code>required float latitude = 2;</code>
+         */
         public float getLatitude() {
             return latitude_;
+        }
+
+        /**
+         * <code>optional string name = 3;</code>
+         *
+         * <pre>
+         * location description/name
+         * </pre>
+         */
+        public boolean hasName() {
+            return ((bitField0_ & 0x00000004) == 0x00000004);
         }
 
         /**
@@ -24790,8 +25019,8 @@ public final class Messages {
                 return (java.lang.String) ref;
             } else {
                 com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+                        (com.google.protobuf.ByteString) ref;
+                java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           name_ = s;
         }
@@ -24880,8 +25109,8 @@ public final class Messages {
          *
          * <pre>
          * whether this message was sent to legal hold
-     * </pre>
-     */
+         * </pre>
+         */
     public com.waz.model.Messages.LegalHoldStatus getLegalHoldStatus() {
       return legalHoldStatus_;
     }
@@ -25033,6 +25262,15 @@ public final class Messages {
                                 com.waz.model.Messages.Location.class, com.waz.model.Messages.Location.Builder.class);
             }
 
+            public Builder mergeFrom(com.google.protobuf.Message other) {
+                if (other instanceof com.waz.model.Messages.Location) {
+                    return mergeFrom((com.waz.model.Messages.Location) other);
+                } else {
+                    super.mergeFrom(other);
+                    return this;
+                }
+            }
+
             private void maybeForceBuilderInitialization() {
                 if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
                 }
@@ -25105,44 +25343,35 @@ public final class Messages {
                 }
                 result.legalHoldStatus_ = legalHoldStatus_;
                 result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
-      }
+                onBuilt();
+                return result;
+            }
 
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.waz.model.Messages.Location) {
-          return mergeFrom((com.waz.model.Messages.Location)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(com.waz.model.Messages.Location other) {
+            public Builder mergeFrom(com.waz.model.Messages.Location other) {
         if (other == com.waz.model.Messages.Location.getDefaultInstance()) return this;
-          if (other.hasLongitude()) {
-              setLongitude(other.getLongitude());
-          }
-          if (other.hasLatitude()) {
-              setLatitude(other.getLatitude());
-          }
-          if (other.hasName()) {
-              bitField0_ |= 0x00000004;
-              name_ = other.name_;
-              onChanged();
-          }
-          if (other.hasZoom()) {
-              setZoom(other.getZoom());
-          }
-          if (other.hasExpectsReadConfirmation()) {
-              setExpectsReadConfirmation(other.getExpectsReadConfirmation());
-          }
-          if (other.hasLegalHoldStatus()) {
-              setLegalHoldStatus(other.getLegalHoldStatus());
-          }
-          this.mergeUnknownFields(other.getUnknownFields());
-          return this;
-      }
+                if (other.hasLongitude()) {
+                    setLongitude(other.getLongitude());
+                }
+                if (other.hasLatitude()) {
+                    setLatitude(other.getLatitude());
+                }
+                if (other.hasName()) {
+                    bitField0_ |= 0x00000004;
+                    name_ = other.name_;
+                    onChanged();
+                }
+                if (other.hasZoom()) {
+                    setZoom(other.getZoom());
+                }
+                if (other.hasExpectsReadConfirmation()) {
+                    setExpectsReadConfirmation(other.getExpectsReadConfirmation());
+                }
+                if (other.hasLegalHoldStatus()) {
+                    setLegalHoldStatus(other.getLegalHoldStatus());
+                }
+                this.mergeUnknownFields(other.getUnknownFields());
+                return this;
+            }
 
             public final boolean isInitialized() {
                 if (!hasLongitude()) {
@@ -25199,14 +25428,35 @@ public final class Messages {
             }
 
             /**
+             * <code>required float latitude = 2;</code>
+             */
+            public Builder clearLatitude() {
+                bitField0_ = (bitField0_ & ~0x00000002);
+                latitude_ = 0F;
+                onChanged();
+                return this;
+            }
+
+            /**
              * <code>required float longitude = 1;</code>
              */
             public Builder clearLongitude() {
                 bitField0_ = (bitField0_ & ~0x00000001);
-        longitude_ = 0F;
-        onChanged();
-        return this;
-      }
+                longitude_ = 0F;
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional string name = 3;</code>
+             *
+             * <pre>
+             * location description/name
+             * </pre>
+             */
+            public boolean hasName() {
+                return ((bitField0_ & 0x00000004) == 0x00000004);
+            }
 
       /**
        * <code>required float latitude = 2;</code>
@@ -25230,27 +25480,6 @@ public final class Messages {
         latitude_ = value;
         onChanged();
         return this;
-      }
-
-      /**
-       * <code>required float latitude = 2;</code>
-       */
-      public Builder clearLatitude() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        latitude_ = 0F;
-        onChanged();
-        return this;
-      }
-
-      /**
-       * <code>optional string name = 3;</code>
-       *
-       * <pre>
-       * location description/name
-       * </pre>
-       */
-      public boolean hasName() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
       }
 
       /**
@@ -25315,28 +25544,6 @@ public final class Messages {
             }
 
             /**
-             * <code>optional int32 zoom = 4;</code>
-             *
-             * <pre>
-             * google maps zoom level (check maps api documentation)
-             * </pre>
-             */
-            public boolean hasZoom() {
-                return ((bitField0_ & 0x00000008) == 0x00000008);
-            }
-
-            /**
-             * <code>optional int32 zoom = 4;</code>
-             *
-             * <pre>
-             * google maps zoom level (check maps api documentation)
-             * </pre>
-             */
-            public int getZoom() {
-                return zoom_;
-            }
-
-            /**
              * <code>optional string name = 3;</code>
              *
              * <pre>
@@ -25366,6 +25573,28 @@ public final class Messages {
                 name_ = getDefaultInstance().getName();
                 onChanged();
                 return this;
+            }
+
+            /**
+             * <code>optional int32 zoom = 4;</code>
+             *
+             * <pre>
+             * google maps zoom level (check maps api documentation)
+             * </pre>
+             */
+            public boolean hasZoom() {
+                return ((bitField0_ & 0x00000008) == 0x00000008);
+            }
+
+            /**
+             * <code>optional int32 zoom = 4;</code>
+             *
+             * <pre>
+             * google maps zoom level (check maps api documentation)
+             * </pre>
+             */
+            public int getZoom() {
+                return zoom_;
             }
 
             /**
@@ -25478,7 +25707,7 @@ public final class Messages {
             public Builder setLegalHoldStatus(com.waz.model.Messages.LegalHoldStatus value) {
                 if (value == null) {
                     throw new NullPointerException();
-        }
+                }
         bitField0_ |= 0x00000020;
         legalHoldStatus_ = value;
         onChanged();
@@ -25515,12 +25744,6 @@ public final class Messages {
           com.google.protobuf.GeneratedMessage implements
           // @@protoc_insertion_point(message_implements:ImageAsset)
       ImageAssetOrBuilder {
-      // Use ImageAsset.newBuilder() to construct.
-      private ImageAsset(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-          super(builder);
-          this.unknownFields = builder.getUnknownFields();
-      }
-
       public static final int TAG_FIELD_NUMBER = 1;
     public static final int WIDTH_FIELD_NUMBER = 2;
     public static final int HEIGHT_FIELD_NUMBER = 3;
@@ -25553,32 +25776,9 @@ public final class Messages {
       private int bitField0_;
       private java.lang.Object tag_;
       private int width_;
-
-      /**
-       * <code>required int32 width = 2;</code>
-       */
-      public boolean hasWidth() {
-          return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-
-      /**
-       * <code>required int32 width = 2;</code>
-       */
-      public int getWidth() {
-          return width_;
-      }
-
       private int height_;
       private int originalWidth_;
       private int originalHeight_;
-
-      /**
-       * <code>required int32 height = 3;</code>
-       */
-      public int getHeight() {
-          return height_;
-      }
-
       private java.lang.Object mimeType_;
       private int size_;
       private com.google.protobuf.ByteString otrKey_;
@@ -25588,15 +25788,23 @@ public final class Messages {
       private byte memoizedIsInitialized = -1;
       private int memoizedSerializedSize = -1;
 
+      // Use ImageAsset.newBuilder() to construct.
+      private ImageAsset(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+          super(builder);
+          this.unknownFields = builder.getUnknownFields();
+      }
+
       private ImageAsset(boolean noInit) {
-          this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-    private ImageAsset(
-        com.google.protobuf.CodedInputStream input,
+          this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+      }
+
+      private ImageAsset(
+              com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-        initFields();
-        int mutable_bitField0_ = 0;
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          initFields();
+          int mutable_bitField0_ = 0;
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
@@ -25652,9 +25860,9 @@ public final class Messages {
               }
               case 66: {
                   bitField0_ |= 0x00000080;
-              otrKey_ = input.readBytes();
-              break;
-            }
+                  otrKey_ = input.readBytes();
+                  break;
+              }
             case 74: {
                 bitField0_ |= 0x00000100;
                 macKey_ = input.readBytes();
@@ -25684,10 +25892,10 @@ public final class Messages {
     }
 
       /**
-       * <code>required string mime_type = 6;</code>
+       * <code>required int32 original_height = 5;</code>
        */
-      public boolean hasMimeType() {
-          return ((bitField0_ & 0x00000020) == 0x00000020);
+      public int getOriginalHeight() {
+          return originalHeight_;
     }
 
     public static ImageAsset getDefaultInstance() {
@@ -25729,17 +25937,38 @@ public final class Messages {
           return PARSER.parseFrom(input);
       }
 
+      /**
+       * <code>required int32 size = 7;</code>
+       */
+      public boolean hasSize() {
+          return ((bitField0_ & 0x00000040) == 0x00000040);
+      }
+
+      /**
+       * <code>required int32 size = 7;</code>
+       */
+      public int getSize() {
+          return size_;
+      }
+
       public static com.waz.model.Messages.ImageAsset parseFrom(
               java.io.InputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
+              throws java.io.IOException {
+          return PARSER.parseFrom(input, extensionRegistry);
+      }
 
-    public static com.waz.model.Messages.ImageAsset parseDelimitedFrom(java.io.InputStream input)
+      public static com.waz.model.Messages.ImageAsset parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
+
+      /**
+       * <code>optional bytes otr_key = 8;</code>
+       */
+      public boolean hasOtrKey() {
+          return ((bitField0_ & 0x00000080) == 0x00000080);
+      }
 
     public static com.waz.model.Messages.ImageAsset parseDelimitedFrom(
         java.io.InputStream input,
@@ -25765,12 +25994,38 @@ public final class Messages {
           return Builder.create();
       }
 
+      /**
+       * <code>optional bytes mac_key = 9;</code>
+       *
+       * <pre>
+       * deprecated - use sha256
+       * </pre>
+       */
+      public com.google.protobuf.ByteString getMacKey() {
+          return macKey_;
+      }
+
+      public static Builder newBuilder(com.waz.model.Messages.ImageAsset prototype) {
+          return newBuilder().mergeFrom(prototype);
+      }
+
       public ImageAsset getDefaultInstanceForType() {
           return defaultInstance;
       }
 
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
+      /**
+       * <code>optional bytes mac = 10;</code>
+       *
+       * <pre>
+       * deprecated - use sha256
+       * </pre>
+       */
+      public boolean hasMac() {
+          return ((bitField0_ & 0x00000200) == 0x00000200);
+      }
+
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
         getUnknownFields() {
       return this.unknownFields;
     }
@@ -25829,12 +26084,33 @@ public final class Messages {
       }
     }
 
+      /**
+       * <code>required int32 width = 2;</code>
+       */
+      public boolean hasWidth() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+
+      /**
+       * <code>required int32 width = 2;</code>
+       */
+      public int getWidth() {
+          return width_;
+      }
+
     /**
      * <code>required int32 height = 3;</code>
      */
     public boolean hasHeight() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
     }
+
+      /**
+       * <code>required int32 height = 3;</code>
+       */
+      public int getHeight() {
+          return height_;
+      }
 
       /**
        * <code>required int32 original_width = 4;</code>
@@ -25858,10 +26134,10 @@ public final class Messages {
     }
 
     /**
-     * <code>required int32 original_height = 5;</code>
+     * <code>required string mime_type = 6;</code>
      */
-    public int getOriginalHeight() {
-      return originalHeight_;
+    public boolean hasMimeType() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
     }
 
     /**
@@ -25900,27 +26176,6 @@ public final class Messages {
     }
 
     /**
-     * <code>required int32 size = 7;</code>
-     */
-    public boolean hasSize() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
-    }
-
-    /**
-     * <code>required int32 size = 7;</code>
-     */
-    public int getSize() {
-      return size_;
-    }
-
-    /**
-     * <code>optional bytes otr_key = 8;</code>
-     */
-    public boolean hasOtrKey() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
-    }
-
-    /**
      * <code>optional bytes otr_key = 8;</code>
      */
     public com.google.protobuf.ByteString getOtrKey() {
@@ -25937,28 +26192,6 @@ public final class Messages {
       public boolean hasMacKey() {
           return ((bitField0_ & 0x00000100) == 0x00000100);
       }
-
-    /**
-     * <code>optional bytes mac_key = 9;</code>
-     *
-     * <pre>
-     * deprecated - use sha256
-     * </pre>
-     */
-    public com.google.protobuf.ByteString getMacKey() {
-      return macKey_;
-    }
-
-    /**
-     * <code>optional bytes mac = 10;</code>
-     *
-     * <pre>
-     * deprecated - use sha256
-     * </pre>
-     */
-    public boolean hasMac() {
-      return ((bitField0_ & 0x00000200) == 0x00000200);
-    }
 
     /**
      * <code>optional bytes mac = 10;</code>
@@ -26072,7 +26305,7 @@ public final class Messages {
               output.writeBytes(8, otrKey_);
           }
           if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        output.writeBytes(9, macKey_);
+              output.writeBytes(9, macKey_);
       }
       if (((bitField0_ & 0x00000200) == 0x00000200)) {
         output.writeBytes(10, mac_);
@@ -26133,7 +26366,7 @@ public final class Messages {
                     .computeBytesSize(11, sha256_);
         }
         size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
+        memoizedSerializedSize = size;
         return size;
     }
 
@@ -26141,10 +26374,6 @@ public final class Messages {
       protected java.lang.Object writeReplace()
               throws java.io.ObjectStreamException {
           return super.writeReplace();
-      }
-
-      public static Builder newBuilder(com.waz.model.Messages.ImageAsset prototype) {
-          return newBuilder().mergeFrom(prototype);
       }
 
       public Builder newBuilderForType() {
@@ -26175,6 +26404,31 @@ public final class Messages {
               com.waz.model.Messages.ImageAssetOrBuilder {
           private int bitField0_;
           private java.lang.Object tag_ = "";
+          private int width_;
+          private int height_;
+          private int originalWidth_;
+          private int originalHeight_;
+          private java.lang.Object mimeType_ = "";
+
+          public Builder clone() {
+              return create().mergeFrom(buildPartial());
+          }
+
+          private int size_;
+          private com.google.protobuf.ByteString otrKey_ = com.google.protobuf.ByteString.EMPTY;
+          private com.google.protobuf.ByteString macKey_ = com.google.protobuf.ByteString.EMPTY;
+          private com.google.protobuf.ByteString mac_ = com.google.protobuf.ByteString.EMPTY;
+
+          public Builder mergeFrom(com.google.protobuf.Message other) {
+              if (other instanceof com.waz.model.Messages.ImageAsset) {
+                  return mergeFrom((com.waz.model.Messages.ImageAsset) other);
+              } else {
+                  super.mergeFrom(other);
+                  return this;
+              }
+          }
+
+          private com.google.protobuf.ByteString sha256_ = com.google.protobuf.ByteString.EMPTY;
 
           // Construct using com.waz.model.Messages.ImageAsset.newBuilder()
           private Builder() {
@@ -26186,22 +26440,6 @@ public final class Messages {
               super(parent);
               maybeForceBuilderInitialization();
           }
-
-          private void maybeForceBuilderInitialization() {
-              if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-              }
-          }
-
-          private int width_;
-          private int height_;
-          private int originalWidth_;
-          private int originalHeight_;
-          private java.lang.Object mimeType_ = "";
-          private int size_;
-          private com.google.protobuf.ByteString otrKey_ = com.google.protobuf.ByteString.EMPTY;
-          private com.google.protobuf.ByteString macKey_ = com.google.protobuf.ByteString.EMPTY;
-          private com.google.protobuf.ByteString mac_ = com.google.protobuf.ByteString.EMPTY;
-          private com.google.protobuf.ByteString sha256_ = com.google.protobuf.ByteString.EMPTY;
 
           public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
@@ -26219,13 +26457,18 @@ public final class Messages {
                               com.waz.model.Messages.ImageAsset.class, com.waz.model.Messages.ImageAsset.Builder.class);
           }
 
+          private void maybeForceBuilderInitialization() {
+              if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+              }
+          }
+
           public Builder clear() {
               super.clear();
               tag_ = "";
               bitField0_ = (bitField0_ & ~0x00000001);
               width_ = 0;
               bitField0_ = (bitField0_ & ~0x00000002);
-        height_ = 0;
+              height_ = 0;
         bitField0_ = (bitField0_ & ~0x00000004);
         originalWidth_ = 0;
               bitField0_ = (bitField0_ & ~0x00000008);
@@ -26238,16 +26481,12 @@ public final class Messages {
               otrKey_ = com.google.protobuf.ByteString.EMPTY;
               bitField0_ = (bitField0_ & ~0x00000080);
               macKey_ = com.google.protobuf.ByteString.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000100);
+              bitField0_ = (bitField0_ & ~0x00000100);
         mac_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000200);
         sha256_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000400);
         return this;
-      }
-
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
       }
 
           public com.google.protobuf.Descriptors.Descriptor
@@ -26256,14 +26495,14 @@ public final class Messages {
           }
 
           public com.waz.model.Messages.ImageAsset getDefaultInstanceForType() {
-        return com.waz.model.Messages.ImageAsset.getDefaultInstance();
+              return com.waz.model.Messages.ImageAsset.getDefaultInstance();
           }
 
           public com.waz.model.Messages.ImageAsset build() {
               com.waz.model.Messages.ImageAsset result = buildPartial();
               if (!result.isInitialized()) {
                   throw newUninitializedMessageException(result);
-        }
+              }
         return result;
       }
 
@@ -26288,7 +26527,7 @@ public final class Messages {
           }
           result.originalWidth_ = originalWidth_;
           if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
+              to_bitField0_ |= 0x00000010;
         }
         result.originalHeight_ = originalHeight_;
         if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
@@ -26312,21 +26551,12 @@ public final class Messages {
           }
           result.mac_ = mac_;
           if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
-          to_bitField0_ |= 0x00000400;
+              to_bitField0_ |= 0x00000400;
           }
           result.sha256_ = sha256_;
           result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
-      }
-
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.waz.model.Messages.ImageAsset) {
-          return mergeFrom((com.waz.model.Messages.ImageAsset)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
       }
 
       public Builder mergeFrom(com.waz.model.Messages.ImageAsset other) {
@@ -26404,6 +26634,26 @@ public final class Messages {
               return true;
           }
 
+          /**
+           * <code>required int32 width = 2;</code>
+           */
+          public Builder setWidth(int value) {
+              bitField0_ |= 0x00000002;
+              width_ = value;
+              onChanged();
+              return this;
+          }
+
+          /**
+           * <code>required int32 width = 2;</code>
+           */
+          public Builder clearWidth() {
+              bitField0_ = (bitField0_ & ~0x00000002);
+              width_ = 0;
+              onChanged();
+              return this;
+          }
+
           public Builder mergeFrom(
                   com.google.protobuf.CodedInputStream input,
                   com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -26445,29 +26695,6 @@ public final class Messages {
         } else {
           return (java.lang.String) ref;
           }
-      }
-
-          /**
-           * <code>required int32 height = 3;</code>
-           */
-          public boolean hasHeight() {
-              return ((bitField0_ & 0x00000004) == 0x00000004);
-          }
-
-          /**
-           * <code>required int32 height = 3;</code>
-       */
-      public int getHeight() {
-        return height_;
-      }
-      /**
-       * <code>required int32 height = 3;</code>
-       */
-      public Builder setHeight(int value) {
-        bitField0_ |= 0x00000004;
-        height_ = value;
-          onChanged();
-          return this;
       }
 
           /**
@@ -26533,28 +26760,59 @@ public final class Messages {
           }
 
           /**
-       * <code>required int32 width = 2;</code>
+           * <code>required int32 original_width = 4;</code>
+           */
+          public Builder setOriginalWidth(int value) {
+              bitField0_ |= 0x00000008;
+              originalWidth_ = value;
+              onChanged();
+              return this;
+          }
+
+          /**
+           * <code>required int32 original_width = 4;</code>
+           */
+          public Builder clearOriginalWidth() {
+              bitField0_ = (bitField0_ & ~0x00000008);
+              originalWidth_ = 0;
+              onChanged();
+              return this;
+          }
+
+          /**
+           * <code>required int32 width = 2;</code>
        */
       public int getWidth() {
         return width_;
       }
 
-      /**
-       * <code>required int32 width = 2;</code>
-       */
-      public Builder setWidth(int value) {
-        bitField0_ |= 0x00000002;
-        width_ = value;
-        onChanged();
-        return this;
-      }
+          /**
+           * <code>required int32 original_height = 5;</code>
+           */
+          public boolean hasOriginalHeight() {
+              return ((bitField0_ & 0x00000010) == 0x00000010);
+          }
+
+          /**
+           * <code>required int32 height = 3;</code>
+           */
+          public boolean hasHeight() {
+              return ((bitField0_ & 0x00000004) == 0x00000004);
+          }
+
+          /**
+           * <code>required int32 height = 3;</code>
+           */
+          public int getHeight() {
+              return height_;
+          }
 
       /**
-       * <code>required int32 width = 2;</code>
+       * <code>required int32 height = 3;</code>
        */
-      public Builder clearWidth() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        width_ = 0;
+      public Builder setHeight(int value) {
+          bitField0_ |= 0x00000004;
+          height_ = value;
         onChanged();
         return this;
       }
@@ -26584,54 +26842,11 @@ public final class Messages {
       }
 
       /**
-       * <code>required int32 original_width = 4;</code>
-       */
-      public Builder setOriginalWidth(int value) {
-        bitField0_ |= 0x00000008;
-        originalWidth_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string mime_type = 6;</code>
-       */
-      public boolean hasMimeType() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
-
-      /**
-       * <code>required int32 original_width = 4;</code>
-       */
-      public Builder clearOriginalWidth() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        originalWidth_ = 0;
-        onChanged();
-        return this;
-      }
-
-      /**
-       * <code>required int32 original_height = 5;</code>
-       */
-      public boolean hasOriginalHeight() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
-
-      /**
        * <code>required int32 original_height = 5;</code>
        */
       public int getOriginalHeight() {
           return originalHeight_;
       }
-
-          /**
-           * <code>required string mime_type = 6;</code>
-           */
-          public Builder clearMimeType() {
-              bitField0_ = (bitField0_ & ~0x00000020);
-              mimeType_ = getDefaultInstance().getMimeType();
-              onChanged();
-              return this;
-          }
 
           /**
            * <code>required int32 original_height = 5;</code>
@@ -26654,27 +26869,10 @@ public final class Messages {
           }
 
           /**
-           * <code>required int32 size = 7;</code>
+           * <code>required string mime_type = 6;</code>
            */
-          public boolean hasSize() {
-              return ((bitField0_ & 0x00000040) == 0x00000040);
-          }
-
-          /**
-           * <code>required int32 size = 7;</code>
-           */
-          public int getSize() {
-              return size_;
-          }
-
-          /**
-           * <code>required int32 size = 7;</code>
-           */
-          public Builder setSize(int value) {
-              bitField0_ |= 0x00000040;
-              size_ = value;
-              onChanged();
-              return this;
+          public boolean hasMimeType() {
+              return ((bitField0_ & 0x00000020) == 0x00000020);
           }
 
           /**
@@ -26741,6 +26939,53 @@ public final class Messages {
           }
 
           /**
+           * <code>required string mime_type = 6;</code>
+           */
+          public Builder clearMimeType() {
+              bitField0_ = (bitField0_ & ~0x00000020);
+              mimeType_ = getDefaultInstance().getMimeType();
+              onChanged();
+              return this;
+          }
+
+          /**
+           * <code>required int32 size = 7;</code>
+           */
+          public boolean hasSize() {
+              return ((bitField0_ & 0x00000040) == 0x00000040);
+          }
+
+          /**
+           * <code>required int32 size = 7;</code>
+           */
+          public int getSize() {
+              return size_;
+          }
+
+          /**
+           * <code>required int32 size = 7;</code>
+           */
+          public Builder setSize(int value) {
+              bitField0_ |= 0x00000040;
+              size_ = value;
+              onChanged();
+              return this;
+          }
+
+          /**
+           * <code>optional bytes otr_key = 8;</code>
+           */
+          public Builder setOtrKey(com.google.protobuf.ByteString value) {
+              if (value == null) {
+                  throw new NullPointerException();
+              }
+              bitField0_ |= 0x00000080;
+              otrKey_ = value;
+              onChanged();
+              return this;
+          }
+
+          /**
            * <code>required int32 size = 7;</code>
            */
           public Builder clearSize() {
@@ -26753,30 +26998,9 @@ public final class Messages {
           /**
            * <code>optional bytes otr_key = 8;</code>
            */
-          public Builder clearOtrKey() {
-              bitField0_ = (bitField0_ & ~0x00000080);
-              otrKey_ = getDefaultInstance().getOtrKey();
-              onChanged();
-              return this;
-          }
-
-          /**
-           * <code>optional bytes otr_key = 8;</code>
-           */
           public boolean hasOtrKey() {
               return ((bitField0_ & 0x00000080) == 0x00000080);
           }
-
-          /**
-           * <code>optional bytes mac_key = 9;</code>
-           *
-           * <pre>
-           * deprecated - use sha256
-       * </pre>
-       */
-      public boolean hasMacKey() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
-      }
 
           /**
            * <code>optional bytes otr_key = 8;</code>
@@ -26784,20 +27008,6 @@ public final class Messages {
           public com.google.protobuf.ByteString getOtrKey() {
               return otrKey_;
           }
-
-      /**
-       * <code>optional bytes otr_key = 8;</code>
-       */
-      public Builder setOtrKey(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000080;
-        otrKey_ = value;
-        onChanged();
-        return this;
-      }
-
       /**
        * <code>optional bytes mac_key = 9;</code>
        *
@@ -26808,7 +27018,6 @@ public final class Messages {
       public com.google.protobuf.ByteString getMacKey() {
         return macKey_;
       }
-
       /**
        * <code>optional bytes mac_key = 9;</code>
        *
@@ -26825,7 +27034,6 @@ public final class Messages {
         onChanged();
         return this;
       }
-
       /**
        * <code>optional bytes mac_key = 9;</code>
        *
@@ -26839,6 +27047,27 @@ public final class Messages {
         onChanged();
         return this;
       }
+
+          /**
+           * <code>optional bytes otr_key = 8;</code>
+           */
+          public Builder clearOtrKey() {
+              bitField0_ = (bitField0_ & ~0x00000080);
+              otrKey_ = getDefaultInstance().getOtrKey();
+              onChanged();
+              return this;
+          }
+
+          /**
+           * <code>optional bytes mac_key = 9;</code>
+           *
+           * <pre>
+           * deprecated - use sha256
+           * </pre>
+           */
+          public boolean hasMacKey() {
+              return ((bitField0_ & 0x00000100) == 0x00000100);
+          }
 
       /**
        * <code>optional bytes mac = 10;</code>
@@ -26869,9 +27098,12 @@ public final class Messages {
            * deprecated - use sha256
            * </pre>
            */
-          public Builder clearMac() {
-              bitField0_ = (bitField0_ & ~0x00000200);
-              mac_ = getDefaultInstance().getMac();
+          public Builder setMac(com.google.protobuf.ByteString value) {
+              if (value == null) {
+                  throw new NullPointerException();
+              }
+              bitField0_ |= 0x00000200;
+              mac_ = value;
               onChanged();
               return this;
           }
@@ -26883,20 +27115,17 @@ public final class Messages {
            * deprecated - use sha256
            * </pre>
            */
-          public Builder setMac(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-        }
-              bitField0_ |= 0x00000200;
-              mac_ = value;
+          public Builder clearMac() {
+              bitField0_ = (bitField0_ & ~0x00000200);
+              mac_ = getDefaultInstance().getMac();
               onChanged();
               return this;
           }
 
           /**
            * <code>optional bytes sha256 = 11;</code>
-       *
-       * <pre>
+           *
+           * <pre>
        * sha256 of ciphertext
        * </pre>
        */
@@ -26961,8 +27190,6 @@ public final class Messages {
       public static final int UPLOADED_FIELD_NUMBER = 4;
       public static final int PREVIEW_FIELD_NUMBER = 5;
       public static final int EXPECTS_READ_CONFIRMATION_FIELD_NUMBER = 6;
-
-      private final com.google.protobuf.UnknownFieldSet unknownFields;
       public static final int LEGAL_HOLD_STATUS_FIELD_NUMBER = 7;
       private static final Asset defaultInstance;
       private static final long serialVersionUID = 0L;
@@ -26981,6 +27208,7 @@ public final class Messages {
           defaultInstance.initFields();
       }
 
+      private final com.google.protobuf.UnknownFieldSet unknownFields;
       private int bitField0_;
       private int statusCase_ = 0;
       private java.lang.Object status_;
@@ -27064,11 +27292,11 @@ public final class Messages {
                       case 42: {
                           com.waz.model.Messages.Asset.Preview.Builder subBuilder = null;
                           if (((bitField0_ & 0x00000008) == 0x00000008)) {
-                subBuilder = preview_.toBuilder();
-              }
-              preview_ = input.readMessage(com.waz.model.Messages.Asset.Preview.PARSER, extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(preview_);
+                              subBuilder = preview_.toBuilder();
+                          }
+                          preview_ = input.readMessage(com.waz.model.Messages.Asset.Preview.PARSER, extensionRegistry);
+                          if (subBuilder != null) {
+                              subBuilder.mergeFrom(preview_);
                 preview_ = subBuilder.buildPartial();
               }
               bitField0_ |= 0x00000008;
@@ -27197,8 +27425,8 @@ public final class Messages {
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internalGetFieldAccessorTable() {
           return com.waz.model.Messages.internal_static_Asset_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-                  com.waz.model.Messages.Asset.class, com.waz.model.Messages.Asset.Builder.class);
+                  .ensureFieldAccessorsInitialized(
+                          com.waz.model.Messages.Asset.class, com.waz.model.Messages.Asset.Builder.class);
       }
 
       @java.lang.Override
@@ -27318,16 +27546,16 @@ public final class Messages {
        */
       public boolean getExpectsReadConfirmation() {
           return expectsReadConfirmation_;
-    }
+      }
 
-    /**
-     * <code>optional .LegalHoldStatus legal_hold_status = 7 [default = UNKNOWN];</code>
-     *
-     * <pre>
-     * whether this message was sent to legal hold
-     * </pre>
-     */
-    public boolean hasLegalHoldStatus() {
+      /**
+       * <code>optional .LegalHoldStatus legal_hold_status = 7 [default = UNKNOWN];</code>
+       *
+       * <pre>
+       * whether this message was sent to legal hold
+       * </pre>
+       */
+      public boolean hasLegalHoldStatus() {
       return ((bitField0_ & 0x00000020) == 0x00000020);
     }
 
@@ -27774,8 +28002,8 @@ public enum StatusCase
 
           /**
            * <code>optional .Asset.ImageMetaData image = 4;</code>
-       */
-      com.waz.model.Messages.Asset.ImageMetaDataOrBuilder getImageOrBuilder();
+           */
+          com.waz.model.Messages.Asset.ImageMetaDataOrBuilder getImageOrBuilder();
     }
     public interface ImageMetaDataOrBuilder extends
         // @@protoc_insertion_point(interface_extends:Asset.ImageMetaData)
@@ -27976,16 +28204,6 @@ public enum StatusCase
               com.google.protobuf.GeneratedMessage implements
               // @@protoc_insertion_point(message_implements:Asset.Original)
               OriginalOrBuilder {
-          // Use Original.newBuilder() to construct.
-          private Original(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-              super(builder);
-              this.unknownFields = builder.getUnknownFields();
-          }
-
-          private Original(boolean noInit) {
-              this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
-          }
-
           public static final int MIME_TYPE_FIELD_NUMBER = 1;
       public static final int SIZE_FIELD_NUMBER = 2;
           public static final int NAME_FIELD_NUMBER = 3;
@@ -28013,9 +28231,9 @@ public enum StatusCase
 
           private final com.google.protobuf.UnknownFieldSet unknownFields;
           private int bitField0_;
-          ;
           private int metaDataCase_ = 0;
           private java.lang.Object metaData_;
+          ;
           private java.lang.Object mimeType_;
           private long size_;
           private java.lang.Object name_;
@@ -28023,6 +28241,16 @@ public enum StatusCase
           private java.lang.Object caption_;
           private byte memoizedIsInitialized = -1;
           private int memoizedSerializedSize = -1;
+
+          // Use Original.newBuilder() to construct.
+          private Original(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+              super(builder);
+              this.unknownFields = builder.getUnknownFields();
+          }
+
+          private Original(boolean noInit) {
+              this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+          }
 
           private Original(
                   com.google.protobuf.CodedInputStream input,
@@ -28056,13 +28284,13 @@ public enum StatusCase
                           case 16: {
                               bitField0_ |= 0x00000002;
                               size_ = input.readUInt64();
-                break;
-              }
-              case 26: {
-                com.google.protobuf.ByteString bs = input.readBytes();
-                  bitField0_ |= 0x00000004;
-                  name_ = bs;
-                  break;
+                              break;
+                          }
+                          case 26: {
+                              com.google.protobuf.ByteString bs = input.readBytes();
+                              bitField0_ |= 0x00000004;
+                              name_ = bs;
+                              break;
               }
                           case 34: {
                               com.waz.model.Messages.Asset.ImageMetaData.Builder subBuilder = null;
@@ -28079,8 +28307,8 @@ public enum StatusCase
                           }
                           case 42: {
                               com.waz.model.Messages.Asset.VideoMetaData.Builder subBuilder = null;
-                if (metaDataCase_ == 5) {
-                  subBuilder = ((com.waz.model.Messages.Asset.VideoMetaData) metaData_).toBuilder();
+                              if (metaDataCase_ == 5) {
+                                  subBuilder = ((com.waz.model.Messages.Asset.VideoMetaData) metaData_).toBuilder();
                 }
                 metaData_ = input.readMessage(com.waz.model.Messages.Asset.VideoMetaData.PARSER, extensionRegistry);
                 if (subBuilder != null) {
@@ -28098,8 +28326,8 @@ public enum StatusCase
                               metaData_ = input.readMessage(com.waz.model.Messages.Asset.AudioMetaData.PARSER, extensionRegistry);
                               if (subBuilder != null) {
                                   subBuilder.mergeFrom((com.waz.model.Messages.Asset.AudioMetaData) metaData_);
-                  metaData_ = subBuilder.buildPartial();
-                }
+                                  metaData_ = subBuilder.buildPartial();
+                              }
                 metaDataCase_ = 6;
                 break;
               }
@@ -28151,7 +28379,7 @@ public enum StatusCase
           }
 
           public static com.waz.model.Messages.Asset.Original parseFrom(byte[] data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
+                  throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
 
@@ -28162,7 +28390,7 @@ public enum StatusCase
           return PARSER.parseFrom(data, extensionRegistry);
       }
 
-      public static com.waz.model.Messages.Asset.Original parseFrom(java.io.InputStream input)
+          public static com.waz.model.Messages.Asset.Original parseFrom(java.io.InputStream input)
           throws java.io.IOException {
         return PARSER.parseFrom(input);
       }
@@ -28240,10 +28468,10 @@ public enum StatusCase
            */
           public boolean hasMimeType() {
               return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
+          }
 
-      /**
-       * <code>required string mime_type = 1;</code>
+          /**
+           * <code>required string mime_type = 1;</code>
        */
       public java.lang.String getMimeType() {
           java.lang.Object ref = mimeType_;
@@ -28292,17 +28520,6 @@ public enum StatusCase
           }
 
           /**
-           * <code>optional string caption = 8;</code>
-           *
-           * <pre>
-           * caption of the asset, e.g. "dog" for a Giphy "dog" search result
-           * </pre>
-           */
-          public boolean hasCaption() {
-              return ((bitField0_ & 0x00000080) == 0x00000080);
-          }
-
-          /**
            * <code>optional string name = 3;</code>
            */
           public boolean hasName() {
@@ -28325,14 +28542,6 @@ public enum StatusCase
                   }
                   return s;
               }
-          }
-
-          private void initFields() {
-              mimeType_ = "";
-              size_ = 0L;
-              name_ = "";
-              source_ = "";
-              caption_ = "";
           }
 
           /**
@@ -28494,6 +28703,17 @@ public enum StatusCase
            * caption of the asset, e.g. "dog" for a Giphy "dog" search result
            * </pre>
            */
+          public boolean hasCaption() {
+              return ((bitField0_ & 0x00000080) == 0x00000080);
+          }
+
+          /**
+           * <code>optional string caption = 8;</code>
+           *
+           * <pre>
+           * caption of the asset, e.g. "dog" for a Giphy "dog" search result
+           * </pre>
+           */
           public java.lang.String getCaption() {
               java.lang.Object ref = caption_;
               if (ref instanceof java.lang.String) {
@@ -28528,6 +28748,14 @@ public enum StatusCase
               } else {
                   return (com.google.protobuf.ByteString) ref;
               }
+          }
+
+          private void initFields() {
+              mimeType_ = "";
+              size_ = 0L;
+              name_ = "";
+              source_ = "";
+              caption_ = "";
           }
 
           public final boolean isInitialized() {
@@ -28664,8 +28892,10 @@ public enum StatusCase
                           return IMAGE;
                       case 5:
                           return VIDEO;
-                      case 6: return AUDIO;
-            case 0: return METADATA_NOT_SET;
+                      case 6:
+                          return AUDIO;
+                      case 0:
+                          return METADATA_NOT_SET;
             default: throw new java.lang.IllegalArgumentException(
               "Value is undefined for this oneof enum.");
           }
@@ -28682,9 +28912,20 @@ public enum StatusCase
               com.google.protobuf.GeneratedMessage.Builder<Builder> implements
               // @@protoc_insertion_point(builder_implements:Asset.Original)
               com.waz.model.Messages.Asset.OriginalOrBuilder {
+          public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+              return com.waz.model.Messages.internal_static_Asset_Original_descriptor;
+          }
+
           private int metaDataCase_ = 0;
           private java.lang.Object metaData_;
           private int bitField0_;
+
+          private void maybeForceBuilderInitialization() {
+              if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+              }
+          }
+
           private java.lang.Object mimeType_ = "";
           private long size_;
           private java.lang.Object name_ = "";
@@ -28694,8 +28935,8 @@ public enum StatusCase
                   com.waz.model.Messages.Asset.VideoMetaData, com.waz.model.Messages.Asset.VideoMetaData.Builder, com.waz.model.Messages.Asset.VideoMetaDataOrBuilder> videoBuilder_;
           private com.google.protobuf.SingleFieldBuilder<
                   com.waz.model.Messages.Asset.AudioMetaData, com.waz.model.Messages.Asset.AudioMetaData.Builder, com.waz.model.Messages.Asset.AudioMetaDataOrBuilder> audioBuilder_;
-        private java.lang.Object source_ = "";
-        private java.lang.Object caption_ = "";
+          private java.lang.Object source_ = "";
+          private java.lang.Object caption_ = "";
 
         // Construct using com.waz.model.Messages.Asset.Original.newBuilder()
         private Builder() {
@@ -28708,11 +28949,6 @@ public enum StatusCase
             maybeForceBuilderInitialization();
         }
 
-        public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-          return com.waz.model.Messages.internal_static_Asset_Original_descriptor;
-        }
-
           private static Builder create() {
               return new Builder();
           }
@@ -28722,12 +28958,7 @@ public enum StatusCase
               return com.waz.model.Messages.internal_static_Asset_Original_fieldAccessorTable
                       .ensureFieldAccessorsInitialized(
                               com.waz.model.Messages.Asset.Original.class, com.waz.model.Messages.Asset.Original.Builder.class);
-        }
-
-        private void maybeForceBuilderInitialization() {
-          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           }
-        }
 
           public Builder clear() {
               super.clear();
@@ -28746,14 +28977,34 @@ public enum StatusCase
               return this;
           }
 
+          public MetaDataCase
+          getMetaDataCase() {
+              return MetaDataCase.valueOf(
+                      metaDataCase_);
+          }
+
+          public Builder clearMetaData() {
+              metaDataCase_ = 0;
+              metaData_ = null;
+              onChanged();
+              return this;
+          }
+
           public Builder clone() {
               return create().mergeFrom(buildPartial());
           }
 
           public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-          return com.waz.model.Messages.internal_static_Asset_Original_descriptor;
+              return com.waz.model.Messages.internal_static_Asset_Original_descriptor;
         }
+
+          /**
+           * <code>required string mime_type = 1;</code>
+           */
+          public boolean hasMimeType() {
+              return ((bitField0_ & 0x00000001) == 0x00000001);
+          }
 
           public com.waz.model.Messages.Asset.Original getDefaultInstanceForType() {
               return com.waz.model.Messages.Asset.Original.getDefaultInstance();
@@ -28768,7 +29019,7 @@ public enum StatusCase
           }
 
           public com.waz.model.Messages.Asset.Original buildPartial() {
-          com.waz.model.Messages.Asset.Original result = new com.waz.model.Messages.Asset.Original(this);
+              com.waz.model.Messages.Asset.Original result = new com.waz.model.Messages.Asset.Original(this);
           int from_bitField0_ = bitField0_;
           int to_bitField0_ = 0;
           if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -28871,25 +29122,39 @@ public enum StatusCase
               }
               this.mergeUnknownFields(other.getUnknownFields());
               return this;
-        }
-
-        public final boolean isInitialized() {
-          if (!hasMimeType()) {
-
-              return false;
           }
-            if (!hasSize()) {
 
-                return false;
-            }
-            if (hasImage()) {
-                if (!getImage().isInitialized()) {
+          public final boolean isInitialized() {
+              if (!hasMimeType()) {
 
-                    return false;
-                }
-            }
-            return true;
+                  return false;
+              }
+              if (!hasSize()) {
+
+                  return false;
+              }
+              if (hasImage()) {
+                  if (!getImage().isInitialized()) {
+
+                      return false;
+                  }
+              }
+              return true;
         }
+
+          /**
+           * <code>required uint64 size = 2;</code>
+           */
+          public boolean hasSize() {
+              return ((bitField0_ & 0x00000002) == 0x00000002);
+          }
+
+          /**
+           * <code>required uint64 size = 2;</code>
+           */
+          public long getSize() {
+              return size_;
+          }
 
           public Builder mergeFrom(
                   com.google.protobuf.CodedInputStream input,
@@ -28907,26 +29172,6 @@ public enum StatusCase
             }
           }
           return this;
-        }
-
-        public MetaDataCase
-            getMetaDataCase() {
-          return MetaDataCase.valueOf(
-              metaDataCase_);
-        }
-
-        public Builder clearMetaData() {
-          metaDataCase_ = 0;
-          metaData_ = null;
-          onChanged();
-          return this;
-        }
-
-        /**
-         * <code>required string mime_type = 1;</code>
-         */
-        public boolean hasMimeType() {
-          return ((bitField0_ & 0x00000001) == 0x00000001);
         }
 
         /**
@@ -29005,20 +29250,6 @@ public enum StatusCase
         /**
          * <code>required uint64 size = 2;</code>
          */
-        public boolean hasSize() {
-          return ((bitField0_ & 0x00000002) == 0x00000002);
-        }
-
-        /**
-         * <code>required uint64 size = 2;</code>
-         */
-        public long getSize() {
-          return size_;
-        }
-
-        /**
-         * <code>required uint64 size = 2;</code>
-         */
         public Builder setSize(long value) {
             bitField0_ |= 0x00000002;
             size_ = value;
@@ -29058,30 +29289,6 @@ public enum StatusCase
                   return s;
               } else {
                   return (java.lang.String) ref;
-              }
-          }
-
-          /**
-           * <code>optional .Asset.ImageMetaData image = 4;</code>
-           */
-          public boolean hasImage() {
-              return metaDataCase_ == 4;
-          }
-
-          /**
-           * <code>optional .Asset.ImageMetaData image = 4;</code>
-           */
-          public com.waz.model.Messages.Asset.ImageMetaData getImage() {
-              if (imageBuilder_ == null) {
-                  if (metaDataCase_ == 4) {
-                      return (com.waz.model.Messages.Asset.ImageMetaData) metaData_;
-                  }
-                  return com.waz.model.Messages.Asset.ImageMetaData.getDefaultInstance();
-              } else {
-                  if (metaDataCase_ == 4) {
-                      return imageBuilder_.getMessage();
-                  }
-                  return com.waz.model.Messages.Asset.ImageMetaData.getDefaultInstance();
               }
           }
 
@@ -29143,6 +29350,74 @@ public enum StatusCase
           /**
            * <code>optional .Asset.ImageMetaData image = 4;</code>
            */
+          public Builder mergeImage(com.waz.model.Messages.Asset.ImageMetaData value) {
+              if (imageBuilder_ == null) {
+                  if (metaDataCase_ == 4 &&
+                          metaData_ != com.waz.model.Messages.Asset.ImageMetaData.getDefaultInstance()) {
+                      metaData_ = com.waz.model.Messages.Asset.ImageMetaData.newBuilder((com.waz.model.Messages.Asset.ImageMetaData) metaData_)
+                              .mergeFrom(value).buildPartial();
+                  } else {
+                      metaData_ = value;
+                  }
+                  onChanged();
+              } else {
+                  if (metaDataCase_ == 4) {
+                      imageBuilder_.mergeFrom(value);
+                  }
+                  imageBuilder_.setMessage(value);
+              }
+              metaDataCase_ = 4;
+              return this;
+          }
+
+          /**
+           * <code>optional .Asset.ImageMetaData image = 4;</code>
+           */
+          public boolean hasImage() {
+              return metaDataCase_ == 4;
+          }
+
+          /**
+           * <code>optional .Asset.ImageMetaData image = 4;</code>
+           */
+          public com.waz.model.Messages.Asset.ImageMetaData.Builder getImageBuilder() {
+              return getImageFieldBuilder().getBuilder();
+          }
+
+          /**
+           * <code>optional .Asset.ImageMetaData image = 4;</code>
+           */
+          public com.waz.model.Messages.Asset.ImageMetaDataOrBuilder getImageOrBuilder() {
+              if ((metaDataCase_ == 4) && (imageBuilder_ != null)) {
+                  return imageBuilder_.getMessageOrBuilder();
+              } else {
+                  if (metaDataCase_ == 4) {
+                      return (com.waz.model.Messages.Asset.ImageMetaData) metaData_;
+                  }
+                  return com.waz.model.Messages.Asset.ImageMetaData.getDefaultInstance();
+              }
+          }
+
+          /**
+           * <code>optional .Asset.ImageMetaData image = 4;</code>
+           */
+          public com.waz.model.Messages.Asset.ImageMetaData getImage() {
+              if (imageBuilder_ == null) {
+                  if (metaDataCase_ == 4) {
+                      return (com.waz.model.Messages.Asset.ImageMetaData) metaData_;
+                  }
+                  return com.waz.model.Messages.Asset.ImageMetaData.getDefaultInstance();
+              } else {
+                  if (metaDataCase_ == 4) {
+                      return imageBuilder_.getMessage();
+                  }
+                  return com.waz.model.Messages.Asset.ImageMetaData.getDefaultInstance();
+              }
+          }
+
+          /**
+           * <code>optional .Asset.ImageMetaData image = 4;</code>
+           */
           public Builder setImage(com.waz.model.Messages.Asset.ImageMetaData value) {
               if (imageBuilder_ == null) {
                   if (value == null) {
@@ -29154,7 +29429,7 @@ public enum StatusCase
                   imageBuilder_.setMessage(value);
               }
               metaDataCase_ = 4;
-          return this;
+              return this;
         }
 
         /**
@@ -29167,29 +29442,6 @@ public enum StatusCase
                 onChanged();
           } else {
             imageBuilder_.setMessage(builderForValue.build());
-          }
-          metaDataCase_ = 4;
-          return this;
-        }
-
-        /**
-         * <code>optional .Asset.ImageMetaData image = 4;</code>
-         */
-        public Builder mergeImage(com.waz.model.Messages.Asset.ImageMetaData value) {
-          if (imageBuilder_ == null) {
-            if (metaDataCase_ == 4 &&
-                metaData_ != com.waz.model.Messages.Asset.ImageMetaData.getDefaultInstance()) {
-              metaData_ = com.waz.model.Messages.Asset.ImageMetaData.newBuilder((com.waz.model.Messages.Asset.ImageMetaData) metaData_)
-                  .mergeFrom(value).buildPartial();
-            } else {
-              metaData_ = value;
-            }
-            onChanged();
-          } else {
-            if (metaDataCase_ == 4) {
-              imageBuilder_.mergeFrom(value);
-            }
-            imageBuilder_.setMessage(value);
           }
           metaDataCase_ = 4;
           return this;
@@ -29218,44 +29470,23 @@ public enum StatusCase
         /**
          * <code>optional .Asset.ImageMetaData image = 4;</code>
          */
-        public com.waz.model.Messages.Asset.ImageMetaData.Builder getImageBuilder() {
-          return getImageFieldBuilder().getBuilder();
-        }
-
-        /**
-         * <code>optional .Asset.ImageMetaData image = 4;</code>
-         */
-        public com.waz.model.Messages.Asset.ImageMetaDataOrBuilder getImageOrBuilder() {
-          if ((metaDataCase_ == 4) && (imageBuilder_ != null)) {
-            return imageBuilder_.getMessageOrBuilder();
-          } else {
-            if (metaDataCase_ == 4) {
-              return (com.waz.model.Messages.Asset.ImageMetaData) metaData_;
+        private com.google.protobuf.SingleFieldBuilder<
+                com.waz.model.Messages.Asset.ImageMetaData, com.waz.model.Messages.Asset.ImageMetaData.Builder, com.waz.model.Messages.Asset.ImageMetaDataOrBuilder>
+        getImageFieldBuilder() {
+            if (imageBuilder_ == null) {
+                if (!(metaDataCase_ == 4)) {
+                    metaData_ = com.waz.model.Messages.Asset.ImageMetaData.getDefaultInstance();
+                }
+                imageBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+                        com.waz.model.Messages.Asset.ImageMetaData, com.waz.model.Messages.Asset.ImageMetaData.Builder, com.waz.model.Messages.Asset.ImageMetaDataOrBuilder>(
+                        (com.waz.model.Messages.Asset.ImageMetaData) metaData_,
+                        getParentForChildren(),
+                        isClean());
+                metaData_ = null;
             }
-            return com.waz.model.Messages.Asset.ImageMetaData.getDefaultInstance();
-          }
+            metaDataCase_ = 4;
+            return imageBuilder_;
         }
-
-          /**
-           * <code>optional .Asset.ImageMetaData image = 4;</code>
-           */
-          private com.google.protobuf.SingleFieldBuilder<
-                  com.waz.model.Messages.Asset.ImageMetaData, com.waz.model.Messages.Asset.ImageMetaData.Builder, com.waz.model.Messages.Asset.ImageMetaDataOrBuilder>
-          getImageFieldBuilder() {
-              if (imageBuilder_ == null) {
-                  if (!(metaDataCase_ == 4)) {
-                      metaData_ = com.waz.model.Messages.Asset.ImageMetaData.getDefaultInstance();
-                  }
-                  imageBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-                          com.waz.model.Messages.Asset.ImageMetaData, com.waz.model.Messages.Asset.ImageMetaData.Builder, com.waz.model.Messages.Asset.ImageMetaDataOrBuilder>(
-                          (com.waz.model.Messages.Asset.ImageMetaData) metaData_,
-                          getParentForChildren(),
-                          isClean());
-                  metaData_ = null;
-              }
-              metaDataCase_ = 4;
-              return imageBuilder_;
-          }
 
           /**
            * <code>optional .Asset.VideoMetaData video = 5;</code>
@@ -29358,8 +29589,8 @@ public enum StatusCase
 
           /**
            * <code>optional .Asset.VideoMetaData video = 5;</code>
-         */
-        public com.waz.model.Messages.Asset.VideoMetaData.Builder getVideoBuilder() {
+           */
+          public com.waz.model.Messages.Asset.VideoMetaData.Builder getVideoBuilder() {
           return getVideoFieldBuilder().getBuilder();
         }
 
@@ -29391,7 +29622,7 @@ public enum StatusCase
                           com.waz.model.Messages.Asset.VideoMetaData, com.waz.model.Messages.Asset.VideoMetaData.Builder, com.waz.model.Messages.Asset.VideoMetaDataOrBuilder>(
                           (com.waz.model.Messages.Asset.VideoMetaData) metaData_,
                           getParentForChildren(),
-                    isClean());
+                          isClean());
             metaData_ = null;
               }
               metaDataCase_ = 5;
@@ -29415,7 +29646,7 @@ public enum StatusCase
                   }
                   return com.waz.model.Messages.Asset.AudioMetaData.getDefaultInstance();
               } else {
-            if (metaDataCase_ == 6) {
+                  if (metaDataCase_ == 6) {
               return audioBuilder_.getMessage();
             }
             return com.waz.model.Messages.Asset.AudioMetaData.getDefaultInstance();
@@ -29457,6 +29688,27 @@ public enum StatusCase
           /**
            * <code>optional .Asset.AudioMetaData audio = 6;</code>
            */
+          public com.waz.model.Messages.Asset.AudioMetaData.Builder getAudioBuilder() {
+              return getAudioFieldBuilder().getBuilder();
+          }
+
+          /**
+           * <code>optional .Asset.AudioMetaData audio = 6;</code>
+           */
+          public com.waz.model.Messages.Asset.AudioMetaDataOrBuilder getAudioOrBuilder() {
+              if ((metaDataCase_ == 6) && (audioBuilder_ != null)) {
+                  return audioBuilder_.getMessageOrBuilder();
+              } else {
+                  if (metaDataCase_ == 6) {
+                      return (com.waz.model.Messages.Asset.AudioMetaData) metaData_;
+                  }
+                  return com.waz.model.Messages.Asset.AudioMetaData.getDefaultInstance();
+              }
+          }
+
+          /**
+           * <code>optional .Asset.AudioMetaData audio = 6;</code>
+           */
           public Builder mergeAudio(com.waz.model.Messages.Asset.AudioMetaData value) {
               if (audioBuilder_ == null) {
                   if (metaDataCase_ == 6 &&
@@ -29479,16 +29731,16 @@ public enum StatusCase
 
           /**
            * <code>optional .Asset.AudioMetaData audio = 6;</code>
-         */
-        public Builder clearAudio() {
-          if (audioBuilder_ == null) {
-              if (metaDataCase_ == 6) {
+           */
+          public Builder clearAudio() {
+              if (audioBuilder_ == null) {
+                  if (metaDataCase_ == 6) {
               metaDataCase_ = 0;
-                  metaData_ = null;
-                  onChanged();
-              }
+                      metaData_ = null;
+                      onChanged();
+                  }
           } else {
-              if (metaDataCase_ == 6) {
+                  if (metaDataCase_ == 6) {
               metaDataCase_ = 0;
               metaData_ = null;
             }
@@ -29496,38 +29748,6 @@ public enum StatusCase
           }
           return this;
         }
-
-        /**
-         * <code>optional .Asset.AudioMetaData audio = 6;</code>
-         */
-        public com.waz.model.Messages.Asset.AudioMetaData.Builder getAudioBuilder() {
-          return getAudioFieldBuilder().getBuilder();
-        }
-
-        /**
-         * <code>optional .Asset.AudioMetaData audio = 6;</code>
-         */
-        public com.waz.model.Messages.Asset.AudioMetaDataOrBuilder getAudioOrBuilder() {
-          if ((metaDataCase_ == 6) && (audioBuilder_ != null)) {
-            return audioBuilder_.getMessageOrBuilder();
-          } else {
-            if (metaDataCase_ == 6) {
-              return (com.waz.model.Messages.Asset.AudioMetaData) metaData_;
-            }
-            return com.waz.model.Messages.Asset.AudioMetaData.getDefaultInstance();
-          }
-        }
-
-          /**
-           * <code>optional string source = 7;</code>
-           *
-           * <pre>
-           * link to source e.g. http://giphy.com/234245
-           * </pre>
-           */
-          public boolean hasSource() {
-              return ((bitField0_ & 0x00000040) == 0x00000040);
-          }
 
         /**
          * <code>optional .Asset.AudioMetaData audio = 6;</code>
@@ -29550,8 +29770,19 @@ public enum StatusCase
             return audioBuilder_;
         }
 
-        /**
-         * <code>optional string source = 7;</code>
+          /**
+           * <code>optional string source = 7;</code>
+           *
+           * <pre>
+           * link to source e.g. http://giphy.com/234245
+           * </pre>
+           */
+          public boolean hasSource() {
+              return ((bitField0_ & 0x00000040) == 0x00000040);
+          }
+
+          /**
+           * <code>optional string source = 7;</code>
          *
          * <pre>
          * link to source e.g. http://giphy.com/234245
@@ -29590,7 +29821,7 @@ public enum StatusCase
             return this;
         }
 
-        /**
+          /**
          * <code>optional string source = 7;</code>
          *
          * <pre>
@@ -29704,14 +29935,14 @@ public enum StatusCase
           public com.google.protobuf.ByteString
           getCaptionBytes() {
               java.lang.Object ref = caption_;
-          if (ref instanceof String) {
-            com.google.protobuf.ByteString b =
+              if (ref instanceof String) {
+                  com.google.protobuf.ByteString b =
                 com.google.protobuf.ByteString.copyFromUtf8(
                         (java.lang.String) ref);
             caption_ = b;
             return b;
           } else {
-              return (com.google.protobuf.ByteString) ref;
+                  return (com.google.protobuf.ByteString) ref;
           }
           }
 
@@ -29760,19 +29991,15 @@ public enum StatusCase
               com.google.protobuf.GeneratedMessage implements
               // @@protoc_insertion_point(message_implements:Asset.Preview)
               PreviewOrBuilder {
-          // Use Preview.newBuilder() to construct.
-          private Preview(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-              super(builder);
-              this.unknownFields = builder.getUnknownFields();
-          }
-
           public static final int MIME_TYPE_FIELD_NUMBER = 1;
           public static final int SIZE_FIELD_NUMBER = 2;
           public static final int REMOTE_FIELD_NUMBER = 3;
           public static final int IMAGE_FIELD_NUMBER = 4;
           private static final Preview defaultInstance;
+
+          private final com.google.protobuf.UnknownFieldSet unknownFields;
           private static final long serialVersionUID = 0L;
-      public static com.google.protobuf.Parser<Preview> PARSER =
+          public static com.google.protobuf.Parser<Preview> PARSER =
           new com.google.protobuf.AbstractParser<Preview>() {
         public Preview parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
@@ -29781,25 +30008,27 @@ public enum StatusCase
           return new Preview(input, extensionRegistry);
         }
       };
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.waz.model.Messages.internal_static_Asset_Preview_descriptor;
-      }
 
       static {
         defaultInstance = new Preview(true);
         defaultInstance.initFields();
       }
 
-      private final com.google.protobuf.UnknownFieldSet unknownFields;
       private int bitField0_;
       private int metaDataCase_ = 0;
       private java.lang.Object metaData_;
       private java.lang.Object mimeType_;
-            private long size_;;
+          private long size_;
       private com.waz.model.Messages.Asset.RemoteData remote_;
-      private byte memoizedIsInitialized = -1;
+          private byte memoizedIsInitialized = -1;
+          ;
       private int memoizedSerializedSize = -1;
+
+          // Use Preview.newBuilder() to construct.
+          private Preview(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+              super(builder);
+              this.unknownFields = builder.getUnknownFields();
+          }
       private Preview(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
       private Preview(
           com.google.protobuf.CodedInputStream input,
@@ -29878,6 +30107,11 @@ public enum StatusCase
               return defaultInstance;
           }
 
+          public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+              return com.waz.model.Messages.internal_static_Asset_Preview_descriptor;
+          }
+
           public static com.waz.model.Messages.Asset.Preview parseFrom(
                   com.google.protobuf.ByteString data)
                   throws com.google.protobuf.InvalidProtocolBufferException {
@@ -29927,9 +30161,9 @@ public enum StatusCase
               return PARSER.parseDelimitedFrom(input, extensionRegistry);
           }
 
-      public static com.waz.model.Messages.Asset.Preview parseFrom(
+          public static com.waz.model.Messages.Asset.Preview parseFrom(
           com.google.protobuf.CodedInputStream input)
-              throws java.io.IOException {
+                  throws java.io.IOException {
         return PARSER.parseFrom(input);
       }
 
@@ -29946,16 +30180,6 @@ public enum StatusCase
 
           public static Builder newBuilder(com.waz.model.Messages.Asset.Preview prototype) {
               return newBuilder().mergeFrom(prototype);
-          }
-
-          /**
-           * <code>optional .Asset.ImageMetaData image = 4;</code>
-           */
-          public com.waz.model.Messages.Asset.ImageMetaDataOrBuilder getImageOrBuilder() {
-              if (metaDataCase_ == 4) {
-                  return (com.waz.model.Messages.Asset.ImageMetaData) metaData_;
-              }
-              return com.waz.model.Messages.Asset.ImageMetaData.getDefaultInstance();
           }
 
           public Preview getDefaultInstanceForType() {
@@ -30009,12 +30233,6 @@ public enum StatusCase
                   }
                   return s;
               }
-          }
-
-          @java.lang.Override
-          protected java.lang.Object writeReplace()
-                  throws java.io.ObjectStreamException {
-              return super.writeReplace();
           }
 
           /**
@@ -30086,6 +30304,16 @@ public enum StatusCase
               return com.waz.model.Messages.Asset.ImageMetaData.getDefaultInstance();
           }
 
+          /**
+           * <code>optional .Asset.ImageMetaData image = 4;</code>
+           */
+          public com.waz.model.Messages.Asset.ImageMetaDataOrBuilder getImageOrBuilder() {
+              if (metaDataCase_ == 4) {
+                  return (com.waz.model.Messages.Asset.ImageMetaData) metaData_;
+              }
+              return com.waz.model.Messages.Asset.ImageMetaData.getDefaultInstance();
+          }
+
           private void initFields() {
               mimeType_ = "";
               size_ = 0L;
@@ -30111,12 +30339,12 @@ public enum StatusCase
                       return false;
                   }
               }
-        if (hasImage()) {
-          if (!getImage().isInitialized()) {
-            memoizedIsInitialized = 0;
-              return false;
-          }
-        }
+              if (hasImage()) {
+                  if (!getImage().isInitialized()) {
+                      memoizedIsInitialized = 0;
+                      return false;
+                  }
+              }
               memoizedIsInitialized = 1;
               return true;
           }
@@ -30138,7 +30366,6 @@ public enum StatusCase
         }
         getUnknownFields().writeTo(output);
       }
-      public Builder newBuilderForType() { return newBuilder(); }
 
           public int getSerializedSize() {
               int size = memoizedSerializedSize;
@@ -30155,8 +30382,8 @@ public enum StatusCase
               }
               if (((bitField0_ & 0x00000004) == 0x00000004)) {
                   size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(3, remote_);
-        }
+                          .computeMessageSize(3, remote_);
+              }
         if (metaDataCase_ == 4) {
             size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(4, (com.waz.model.Messages.Asset.ImageMetaData) metaData_);
@@ -30166,8 +30393,19 @@ public enum StatusCase
               return size;
           }
 
+          @java.lang.Override
+          protected java.lang.Object writeReplace()
+                  throws java.io.ObjectStreamException {
+              return super.writeReplace();
+          }
+
+          public Builder newBuilderForType() {
+              return newBuilder();
+          }
+
           public Builder toBuilder() {
-              return newBuilder(this); }
+              return newBuilder(this);
+          }
 
           @java.lang.Override
           protected Builder newBuilderForType(
@@ -30268,6 +30506,24 @@ public enum MetaDataCase
                   return this;
         }
 
+              public Builder mergeFrom(
+                      com.google.protobuf.CodedInputStream input,
+                      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                      throws java.io.IOException {
+                  com.waz.model.Messages.Asset.Preview parsedMessage = null;
+                  try {
+                      parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+                  } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                      parsedMessage = (com.waz.model.Messages.Asset.Preview) e.getUnfinishedMessage();
+                      throw e;
+                  } finally {
+                      if (parsedMessage != null) {
+                          mergeFrom(parsedMessage);
+                      }
+                  }
+                  return this;
+              }
+
         public Builder clone() {
             return create().mergeFrom(buildPartial());
         }
@@ -30324,7 +30580,7 @@ public enum MetaDataCase
 
               public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof com.waz.model.Messages.Asset.Preview) {
-            return mergeFrom((com.waz.model.Messages.Asset.Preview) other);
+              return mergeFrom((com.waz.model.Messages.Asset.Preview) other);
           } else {
               super.mergeFrom(other);
               return this;
@@ -30381,24 +30637,6 @@ public enum MetaDataCase
           return true;
         }
 
-        public Builder mergeFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-          com.waz.model.Messages.Asset.Preview parsedMessage = null;
-          try {
-            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            parsedMessage = (com.waz.model.Messages.Asset.Preview) e.getUnfinishedMessage();
-            throw e;
-          } finally {
-            if (parsedMessage != null) {
-              mergeFrom(parsedMessage);
-            }
-          }
-          return this;
-        }
-
         public MetaDataCase
             getMetaDataCase() {
           return MetaDataCase.valueOf(
@@ -30452,14 +30690,28 @@ public enum MetaDataCase
               }
 
               /**
+               * <code>required uint64 size = 2;</code>
+               */
+              public boolean hasSize() {
+                  return ((bitField0_ & 0x00000002) == 0x00000002);
+              }
+
+              /**
+               * <code>required uint64 size = 2;</code>
+               */
+              public long getSize() {
+                  return size_;
+              }
+
+              /**
                * <code>required string mime_type = 1;</code>
                */
               public com.google.protobuf.ByteString
               getMimeTypeBytes() {
                   java.lang.Object ref = mimeType_;
                   if (ref instanceof String) {
-            com.google.protobuf.ByteString b =
-                    com.google.protobuf.ByteString.copyFromUtf8(
+                      com.google.protobuf.ByteString b =
+                              com.google.protobuf.ByteString.copyFromUtf8(
                     (java.lang.String) ref);
             mimeType_ = b;
                       return b;
@@ -30483,7 +30735,7 @@ public enum MetaDataCase
               }
 
               /**
-         * <code>required string mime_type = 1;</code>
+               * <code>required string mime_type = 1;</code>
          */
         public Builder clearMimeType() {
           bitField0_ = (bitField0_ & ~0x00000001);
@@ -30495,26 +30747,12 @@ public enum MetaDataCase
         /**
          * <code>required uint64 size = 2;</code>
          */
-        public boolean hasSize() {
-          return ((bitField0_ & 0x00000002) == 0x00000002);
+        public Builder setSize(long value) {
+            bitField0_ |= 0x00000002;
+            size_ = value;
+            onChanged();
+            return this;
         }
-
-        /**
-         * <code>required uint64 size = 2;</code>
-         */
-        public long getSize() {
-          return size_;
-        }
-
-              /**
-               * <code>required uint64 size = 2;</code>
-               */
-              public Builder setSize(long value) {
-                  bitField0_ |= 0x00000002;
-                  size_ = value;
-                  onChanged();
-                  return this;
-              }
 
               /**
                * <code>required uint64 size = 2;</code>
@@ -30675,7 +30913,7 @@ public enum MetaDataCase
                * <code>optional .Asset.ImageMetaData image = 4;</code>
                */
               public Builder setImage(com.waz.model.Messages.Asset.ImageMetaData value) {
-          if (imageBuilder_ == null) {
+                  if (imageBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
             }
@@ -30873,10 +31111,10 @@ public enum MetaDataCase
                               com.google.protobuf.ByteString bs = input.readBytes();
                               bitField0_ |= 0x00000004;
                               tag_ = bs;
-                break;
-              }
-            }
-          }
+                              break;
+                          }
+                      }
+                  }
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
                   throw e.setUnfinishedMessage(this);
               } catch (java.io.IOException e) {
@@ -30932,9 +31170,9 @@ public enum MetaDataCase
                   com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                   throws java.io.IOException {
               return PARSER.parseFrom(input, extensionRegistry);
-      }
+          }
 
-      public static com.waz.model.Messages.Asset.ImageMetaData parseDelimitedFrom(java.io.InputStream input)
+          public static com.waz.model.Messages.Asset.ImageMetaData parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
         return PARSER.parseDelimitedFrom(input);
       }
@@ -30958,6 +31196,10 @@ public enum MetaDataCase
           throws java.io.IOException {
         return PARSER.parseFrom(input, extensionRegistry);
       }
+
+          public static Builder newBuilder() {
+              return Builder.create();
+          }
 
       public static Builder newBuilder(com.waz.model.Messages.Asset.ImageMetaData prototype) {
         return newBuilder().mergeFrom(prototype);
@@ -31093,10 +31335,6 @@ public enum MetaDataCase
               getUnknownFields().writeTo(output);
           }
 
-          public static Builder newBuilder() {
-              return Builder.create();
-          }
-
           public int getSerializedSize() {
               int size = memoizedSerializedSize;
               if (size != -1) return size;
@@ -31125,12 +31363,12 @@ public enum MetaDataCase
               return super.writeReplace();
           }
 
-          public Builder toBuilder() {
-              return newBuilder(this);
-          }
-
           public Builder newBuilderForType() {
               return newBuilder();
+          }
+
+          public Builder toBuilder() {
+              return newBuilder(this);
           }
 
           @java.lang.Override
@@ -31147,15 +31385,10 @@ public enum MetaDataCase
                   com.google.protobuf.GeneratedMessage.Builder<Builder> implements
                   // @@protoc_insertion_point(builder_implements:Asset.ImageMetaData)
                   com.waz.model.Messages.Asset.ImageMetaDataOrBuilder {
-              public static final com.google.protobuf.Descriptors.Descriptor
-              getDescriptor() {
-                  return com.waz.model.Messages.internal_static_Asset_ImageMetaData_descriptor;
-              }
-
               private int bitField0_;
-        private int width_ ;
-        private int height_ ;
-        private java.lang.Object tag_ = "";
+              private int width_;
+              private int height_;
+              private java.lang.Object tag_ = "";
         // Construct using com.waz.model.Messages.Asset.ImageMetaData.newBuilder()
         private Builder() {
             maybeForceBuilderInitialization();
@@ -31165,6 +31398,20 @@ public enum MetaDataCase
                       com.google.protobuf.GeneratedMessage.BuilderParent parent) {
                   super(parent);
                   maybeForceBuilderInitialization();
+              }
+
+              public static final com.google.protobuf.Descriptors.Descriptor
+              getDescriptor() {
+                  return com.waz.model.Messages.internal_static_Asset_ImageMetaData_descriptor;
+              }
+
+              public Builder clone() {
+                  return create().mergeFrom(buildPartial());
+              }
+
+              public com.google.protobuf.Descriptors.Descriptor
+              getDescriptorForType() {
+                  return com.waz.model.Messages.internal_static_Asset_ImageMetaData_descriptor;
               }
 
               private static Builder create() {
@@ -31186,21 +31433,12 @@ public enum MetaDataCase
               public Builder clear() {
                   super.clear();
                   width_ = 0;
-          bitField0_ = (bitField0_ & ~0x00000001);
+                  bitField0_ = (bitField0_ & ~0x00000001);
           height_ = 0;
           bitField0_ = (bitField0_ & ~0x00000002);
           tag_ = "";
           bitField0_ = (bitField0_ & ~0x00000004);
           return this;
-        }
-
-        public Builder clone() {
-          return create().mergeFrom(buildPartial());
-        }
-
-        public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-          return com.waz.model.Messages.internal_static_Asset_ImageMetaData_descriptor;
         }
 
         public com.waz.model.Messages.Asset.ImageMetaData getDefaultInstanceForType() {
@@ -31262,6 +31500,20 @@ public enum MetaDataCase
           return this;
         }
 
+              /**
+               * <code>required int32 width = 1;</code>
+               */
+              public boolean hasWidth() {
+                  return ((bitField0_ & 0x00000001) == 0x00000001);
+              }
+
+              /**
+               * <code>required int32 width = 1;</code>
+               */
+              public int getWidth() {
+                  return width_;
+              }
+
         public final boolean isInitialized() {
             if (!hasWidth()) {
 
@@ -31290,20 +31542,6 @@ public enum MetaDataCase
                       }
           }
           return this;
-        }
-
-        /**
-         * <code>required int32 width = 1;</code>
-         */
-        public boolean hasWidth() {
-          return ((bitField0_ & 0x00000001) == 0x00000001);
-        }
-
-        /**
-         * <code>required int32 width = 1;</code>
-         */
-        public int getWidth() {
-          return width_;
         }
 
         /**
@@ -31487,6 +31725,13 @@ public enum MetaDataCase
               this.unknownFields = builder.getUnknownFields();
           }
 
+          /**
+           * <code>optional int32 width = 1;</code>
+           */
+          public boolean hasWidth() {
+              return ((bitField0_ & 0x00000001) == 0x00000001);
+          }
+
           private VideoMetaData(boolean noInit) {
               this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
           }
@@ -31498,8 +31743,8 @@ public enum MetaDataCase
               initFields();
               int mutable_bitField0_ = 0;
               com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-            com.google.protobuf.UnknownFieldSet.newBuilder();
-        try {
+                      com.google.protobuf.UnknownFieldSet.newBuilder();
+              try {
           boolean done = false;
           while (!done) {
             int tag = input.readTag();
@@ -31532,13 +31777,13 @@ public enum MetaDataCase
             }
           }
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            throw e.setUnfinishedMessage(this);
+                  throw e.setUnfinishedMessage(this);
         } catch (java.io.IOException e) {
-            throw new com.google.protobuf.InvalidProtocolBufferException(
-                    e.getMessage()).setUnfinishedMessage(this);
+                  throw new com.google.protobuf.InvalidProtocolBufferException(
+                          e.getMessage()).setUnfinishedMessage(this);
         } finally {
-            this.unknownFields = unknownFields.build();
-            makeExtensionsImmutable();
+                  this.unknownFields = unknownFields.build();
+                  makeExtensionsImmutable();
         }
           }
 
@@ -31626,12 +31871,6 @@ public enum MetaDataCase
           }
 
           @java.lang.Override
-          protected java.lang.Object writeReplace()
-                  throws java.io.ObjectStreamException {
-              return super.writeReplace();
-          }
-
-          @java.lang.Override
           public final com.google.protobuf.UnknownFieldSet
           getUnknownFields() {
               return this.unknownFields;
@@ -31647,13 +31886,6 @@ public enum MetaDataCase
           @java.lang.Override
       public com.google.protobuf.Parser<VideoMetaData> getParserForType() {
         return PARSER;
-      }
-
-      /**
-       * <code>optional int32 width = 1;</code>
-       */
-      public boolean hasWidth() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
 
       /**
@@ -31743,12 +31975,18 @@ public enum MetaDataCase
               return size;
           }
 
-          public Builder toBuilder() {
-              return newBuilder(this);
+          @java.lang.Override
+          protected java.lang.Object writeReplace()
+                  throws java.io.ObjectStreamException {
+              return super.writeReplace();
           }
 
           public Builder newBuilderForType() {
               return newBuilder();
+          }
+
+          public Builder toBuilder() {
+              return newBuilder(this);
           }
 
           @java.lang.Override
@@ -31765,23 +32003,12 @@ public enum MetaDataCase
                   com.google.protobuf.GeneratedMessage.Builder<Builder> implements
                   // @@protoc_insertion_point(builder_implements:Asset.VideoMetaData)
                   com.waz.model.Messages.Asset.VideoMetaDataOrBuilder {
-              public static final com.google.protobuf.Descriptors.Descriptor
-              getDescriptor() {
-                  return com.waz.model.Messages.internal_static_Asset_VideoMetaData_descriptor;
-              }
-
               private int bitField0_;
               private int width_;
               private int height_;
+              private long durationInMillis_;
 
-              private void maybeForceBuilderInitialization() {
-                  if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-                  }
-              }
-
-              private long durationInMillis_ ;
-
-        // Construct using com.waz.model.Messages.Asset.VideoMetaData.newBuilder()
+              // Construct using com.waz.model.Messages.Asset.VideoMetaData.newBuilder()
         private Builder() {
             maybeForceBuilderInitialization();
         }
@@ -31790,6 +32017,11 @@ public enum MetaDataCase
                       com.google.protobuf.GeneratedMessage.BuilderParent parent) {
                   super(parent);
                   maybeForceBuilderInitialization();
+              }
+
+              public static final com.google.protobuf.Descriptors.Descriptor
+              getDescriptor() {
+                  return com.waz.model.Messages.internal_static_Asset_VideoMetaData_descriptor;
               }
 
               private static Builder create() {
@@ -31803,12 +32035,17 @@ public enum MetaDataCase
                                   com.waz.model.Messages.Asset.VideoMetaData.class, com.waz.model.Messages.Asset.VideoMetaData.Builder.class);
               }
 
+              private void maybeForceBuilderInitialization() {
+                  if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+                  }
+              }
+
               public Builder clear() {
                   super.clear();
                   width_ = 0;
-          bitField0_ = (bitField0_ & ~0x00000001);
-          height_ = 0;
-          bitField0_ = (bitField0_ & ~0x00000002);
+                  bitField0_ = (bitField0_ & ~0x00000001);
+                  height_ = 0;
+                  bitField0_ = (bitField0_ & ~0x00000002);
           durationInMillis_ = 0L;
           bitField0_ = (bitField0_ & ~0x00000004);
           return this;
@@ -31825,28 +32062,6 @@ public enum MetaDataCase
 
               public com.waz.model.Messages.Asset.VideoMetaData getDefaultInstanceForType() {
                   return com.waz.model.Messages.Asset.VideoMetaData.getDefaultInstance();
-              }
-
-              public final boolean isInitialized() {
-                  return true;
-              }
-
-              public Builder mergeFrom(
-                      com.google.protobuf.CodedInputStream input,
-                      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                      throws java.io.IOException {
-                  com.waz.model.Messages.Asset.VideoMetaData parsedMessage = null;
-                  try {
-                      parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-                  } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                      parsedMessage = (com.waz.model.Messages.Asset.VideoMetaData) e.getUnfinishedMessage();
-                      throw e;
-                  } finally {
-                      if (parsedMessage != null) {
-                          mergeFrom(parsedMessage);
-                      }
-                  }
-                  return this;
               }
 
               public com.waz.model.Messages.Asset.VideoMetaData build() {
@@ -31878,20 +32093,6 @@ public enum MetaDataCase
                   return result;
               }
 
-              /**
-               * <code>optional int32 width = 1;</code>
-               */
-              public boolean hasWidth() {
-                  return ((bitField0_ & 0x00000001) == 0x00000001);
-              }
-
-              /**
-               * <code>optional int32 width = 1;</code>
-               */
-              public int getWidth() {
-                  return width_;
-              }
-
               public Builder mergeFrom(com.google.protobuf.Message other) {
                   if (other instanceof com.waz.model.Messages.Asset.VideoMetaData) {
                       return mergeFrom((com.waz.model.Messages.Asset.VideoMetaData) other);
@@ -31910,12 +32111,33 @@ public enum MetaDataCase
                       setHeight(other.getHeight());
                   }
                   if (other.hasDurationInMillis()) {
-            setDurationInMillis(other.getDurationInMillis());
-          }
+                      setDurationInMillis(other.getDurationInMillis());
+                  }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
         }
 
+              public final boolean isInitialized() {
+                  return true;
+              }
+
+              public Builder mergeFrom(
+                      com.google.protobuf.CodedInputStream input,
+                      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                      throws java.io.IOException {
+                  com.waz.model.Messages.Asset.VideoMetaData parsedMessage = null;
+                  try {
+                      parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+                  } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                      parsedMessage = (com.waz.model.Messages.Asset.VideoMetaData) e.getUnfinishedMessage();
+                      throw e;
+                  } finally {
+                      if (parsedMessage != null) {
+                          mergeFrom(parsedMessage);
+                      }
+                  }
+                  return this;
+              }
         /**
          * <code>optional int32 width = 1;</code>
          */
@@ -31926,7 +32148,28 @@ public enum MetaDataCase
           return this;
         }
 
-        /**
+              /**
+               * <code>optional int32 width = 1;</code>
+               */
+              public boolean hasWidth() {
+                  return ((bitField0_ & 0x00000001) == 0x00000001);
+              }
+
+              /**
+               * <code>optional int32 width = 1;</code>
+               */
+              public int getWidth() {
+                  return width_;
+              }
+
+              /**
+               * <code>optional int32 height = 2;</code>
+               */
+              public boolean hasHeight() {
+                  return ((bitField0_ & 0x00000002) == 0x00000002);
+              }
+
+              /**
          * <code>optional int32 width = 1;</code>
          */
         public Builder clearWidth() {
@@ -31934,13 +32177,6 @@ public enum MetaDataCase
             width_ = 0;
             onChanged();
             return this;
-        }
-
-        /**
-         * <code>optional int32 height = 2;</code>
-         */
-        public boolean hasHeight() {
-          return ((bitField0_ & 0x00000002) == 0x00000002);
         }
 
         /**
@@ -32038,12 +32274,6 @@ public enum MetaDataCase
 
           private final com.google.protobuf.UnknownFieldSet unknownFields;
           private int bitField0_;
-
-          public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-              return com.waz.model.Messages.internal_static_Asset_AudioMetaData_descriptor;
-          }
-
           private long durationInMillis_;
           private com.google.protobuf.ByteString normalizedLoudness_;
           private byte memoizedIsInitialized = -1;
@@ -32104,16 +32334,15 @@ public enum MetaDataCase
           makeExtensionsImmutable();
         }
       }
-      /**
-       * <code>optional uint64 duration_in_millis = 1;</code>
-       */
-      public long getDurationInMillis() {
-        return durationInMillis_;
-      }
 
       public static AudioMetaData getDefaultInstance() {
         return defaultInstance;
       }
+
+          public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+              return com.waz.model.Messages.internal_static_Asset_AudioMetaData_descriptor;
+          }
 
       public static com.waz.model.Messages.Asset.AudioMetaData parseFrom(
           com.google.protobuf.ByteString data)
@@ -32122,7 +32351,7 @@ public enum MetaDataCase
       }
 
           public static com.waz.model.Messages.Asset.AudioMetaData parseFrom(
-          com.google.protobuf.ByteString data,
+                  com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
@@ -32144,6 +32373,22 @@ public enum MetaDataCase
           throws java.io.IOException {
         return PARSER.parseFrom(input);
       }
+
+          public static com.waz.model.Messages.Asset.AudioMetaData parseFrom(
+                  java.io.InputStream input,
+                  com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                  throws java.io.IOException {
+              return PARSER.parseFrom(input, extensionRegistry);
+          }
+
+          public final boolean isInitialized() {
+              byte isInitialized = memoizedIsInitialized;
+              if (isInitialized == 1) return true;
+              if (isInitialized == 0) return false;
+
+              memoizedIsInitialized = 1;
+              return true;
+          }
 
       public static com.waz.model.Messages.Asset.AudioMetaData parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
@@ -32207,11 +32452,11 @@ public enum MetaDataCase
               return ((bitField0_ & 0x00000001) == 0x00000001);
           }
 
-          public static com.waz.model.Messages.Asset.AudioMetaData parseFrom(
-                  java.io.InputStream input,
-                  com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                  throws java.io.IOException {
-              return PARSER.parseFrom(input, extensionRegistry);
+          /**
+           * <code>optional uint64 duration_in_millis = 1;</code>
+           */
+          public long getDurationInMillis() {
+              return durationInMillis_;
           }
 
           /**
@@ -32239,15 +32484,6 @@ public enum MetaDataCase
           private void initFields() {
               durationInMillis_ = 0L;
               normalizedLoudness_ = com.google.protobuf.ByteString.EMPTY;
-      }
-
-      public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
       }
 
       public void writeTo(com.google.protobuf.CodedOutputStream output)
@@ -32328,35 +32564,9 @@ public enum MetaDataCase
                   return com.waz.model.Messages.internal_static_Asset_AudioMetaData_descriptor;
               }
 
-              public Builder clear() {
-                  super.clear();
-                  durationInMillis_ = 0L;
-                  bitField0_ = (bitField0_ & ~0x00000001);
-                  normalizedLoudness_ = com.google.protobuf.ByteString.EMPTY;
-                  bitField0_ = (bitField0_ & ~0x00000002);
-          return this;
-              }
-
-              public Builder clone() {
-                  return create().mergeFrom(buildPartial());
-              }
-
-              public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-                  return com.waz.model.Messages.internal_static_Asset_AudioMetaData_descriptor;
-              }
-
               private static Builder create() {
                   return new Builder();
               }
-
-              public com.waz.model.Messages.Asset.AudioMetaData build() {
-          com.waz.model.Messages.Asset.AudioMetaData result = buildPartial();
-                  if (!result.isInitialized()) {
-                      throw newUninitializedMessageException(result);
-                  }
-                  return result;
-        }
 
               protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
               internalGetFieldAccessorTable() {
@@ -32370,32 +32580,58 @@ public enum MetaDataCase
                   }
               }
 
-        public com.waz.model.Messages.Asset.AudioMetaData getDefaultInstanceForType() {
-          return com.waz.model.Messages.Asset.AudioMetaData.getDefaultInstance();
-        }
+              public Builder clear() {
+                  super.clear();
+                  durationInMillis_ = 0L;
+                  bitField0_ = (bitField0_ & ~0x00000001);
+                  normalizedLoudness_ = com.google.protobuf.ByteString.EMPTY;
+                  bitField0_ = (bitField0_ & ~0x00000002);
+                  return this;
+              }
 
-        public com.waz.model.Messages.Asset.AudioMetaData buildPartial() {
+              public Builder clone() {
+                  return create().mergeFrom(buildPartial());
+              }
+
+              public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+                  return com.waz.model.Messages.internal_static_Asset_AudioMetaData_descriptor;
+              }
+
+              public com.waz.model.Messages.Asset.AudioMetaData getDefaultInstanceForType() {
+                  return com.waz.model.Messages.Asset.AudioMetaData.getDefaultInstance();
+              }
+
+              public com.waz.model.Messages.Asset.AudioMetaData build() {
+                  com.waz.model.Messages.Asset.AudioMetaData result = buildPartial();
+                  if (!result.isInitialized()) {
+                      throw newUninitializedMessageException(result);
+                  }
+                  return result;
+              }
+
+              public com.waz.model.Messages.Asset.AudioMetaData buildPartial() {
           com.waz.model.Messages.Asset.AudioMetaData result = new com.waz.model.Messages.Asset.AudioMetaData(this);
           int from_bitField0_ = bitField0_;
           int to_bitField0_ = 0;
-            if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-                to_bitField0_ |= 0x00000001;
-            }
-            result.durationInMillis_ = durationInMillis_;
-            if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-                to_bitField0_ |= 0x00000002;
-            }
-            result.normalizedLoudness_ = normalizedLoudness_;
-            result.bitField0_ = to_bitField0_;
-            onBuilt();
-            return result;
-        }
+                  if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+                      to_bitField0_ |= 0x00000001;
+                  }
+                  result.durationInMillis_ = durationInMillis_;
+                  if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+                      to_bitField0_ |= 0x00000002;
+                  }
+                  result.normalizedLoudness_ = normalizedLoudness_;
+                  result.bitField0_ = to_bitField0_;
+                  onBuilt();
+                  return result;
+              }
 
               public Builder mergeFrom(com.google.protobuf.Message other) {
                   if (other instanceof com.waz.model.Messages.Asset.AudioMetaData) {
                       return mergeFrom((com.waz.model.Messages.Asset.AudioMetaData) other);
                   } else {
-            super.mergeFrom(other);
+                      super.mergeFrom(other);
             return this;
           }
         }
@@ -32425,7 +32661,7 @@ public enum MetaDataCase
                       parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
                   } catch (com.google.protobuf.InvalidProtocolBufferException e) {
                       parsedMessage = (com.waz.model.Messages.Asset.AudioMetaData) e.getUnfinishedMessage();
-            throw e;
+                      throw e;
           } finally {
             if (parsedMessage != null) {
               mergeFrom(parsedMessage);
@@ -32536,13 +32772,10 @@ public enum MetaDataCase
               RemoteDataOrBuilder {
           public static final int OTR_KEY_FIELD_NUMBER = 1;
           public static final int SHA256_FIELD_NUMBER = 2;
-
-          private static final RemoteData defaultInstance;
           public static final int ASSET_ID_FIELD_NUMBER = 3;
           public static final int ASSET_TOKEN_FIELD_NUMBER = 5;
-
-      private final com.google.protobuf.UnknownFieldSet unknownFields;
       public static final int ENCRYPTION_FIELD_NUMBER = 6;
+          private static final RemoteData defaultInstance;
       private static final long serialVersionUID = 0L;
       public static com.google.protobuf.Parser<RemoteData> PARSER =
               new com.google.protobuf.AbstractParser<RemoteData>() {
@@ -32559,42 +32792,13 @@ public enum MetaDataCase
               defaultInstance.initFields();
           }
 
+          private final com.google.protobuf.UnknownFieldSet unknownFields;
           private int bitField0_;
-
-      @java.lang.Override
-      public com.google.protobuf.Parser<RemoteData> getParserForType() {
-        return PARSER;
-      }
       private com.google.protobuf.ByteString otrKey_;
       private com.google.protobuf.ByteString sha256_;
       private java.lang.Object assetId_;
-
-          /**
-           * <code>required bytes otr_key = 1;</code>
-           */
-          public boolean hasOtrKey() {
-              return ((bitField0_ & 0x00000001) == 0x00000001);
-          }
-
-          /**
-           * <code>required bytes otr_key = 1;</code>
-           */
-      public com.google.protobuf.ByteString getOtrKey() {
-        return otrKey_;
-      }
       private java.lang.Object assetToken_;
       private com.waz.model.Messages.EncryptionAlgorithm encryption_;
-      /**
-       * <code>required bytes sha256 = 2;</code>
-       *
-       * <pre>
-       * obsolete but required for backward compatibility
-       * </pre>
-       */
-      public boolean hasSha256() {
-          return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-
           private byte memoizedIsInitialized = -1;
           private int memoizedSerializedSize = -1;
 
@@ -32716,6 +32920,17 @@ public enum MetaDataCase
               return PARSER.parseFrom(input);
           }
 
+          /**
+           * <code>optional string asset_token = 5;</code>
+           *
+           * <pre>
+           * optional bytes asset_token = 4; // deprecated - changed type to string
+           * </pre>
+           */
+          public boolean hasAssetToken() {
+              return ((bitField0_ & 0x00000008) == 0x00000008);
+          }
+
           public static com.waz.model.Messages.Asset.RemoteData parseFrom(
                   java.io.InputStream input,
                   com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -32771,6 +32986,36 @@ public enum MetaDataCase
               return com.waz.model.Messages.internal_static_Asset_RemoteData_fieldAccessorTable
                       .ensureFieldAccessorsInitialized(
                               com.waz.model.Messages.Asset.RemoteData.class, com.waz.model.Messages.Asset.RemoteData.Builder.class);
+          }
+
+          @java.lang.Override
+          public com.google.protobuf.Parser<RemoteData> getParserForType() {
+              return PARSER;
+          }
+
+          /**
+           * <code>required bytes otr_key = 1;</code>
+           */
+          public boolean hasOtrKey() {
+              return ((bitField0_ & 0x00000001) == 0x00000001);
+          }
+
+          /**
+           * <code>required bytes otr_key = 1;</code>
+           */
+          public com.google.protobuf.ByteString getOtrKey() {
+              return otrKey_;
+          }
+
+          /**
+           * <code>required bytes sha256 = 2;</code>
+           *
+           * <pre>
+           * obsolete but required for backward compatibility
+           * </pre>
+           */
+          public boolean hasSha256() {
+              return ((bitField0_ & 0x00000002) == 0x00000002);
           }
 
           /**
@@ -32833,31 +33078,20 @@ public enum MetaDataCase
        * optional bytes asset_token = 4; // deprecated - changed type to string
        * </pre>
        */
-      public boolean hasAssetToken() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-
-          /**
-           * <code>optional string asset_token = 5;</code>
-           *
-           * <pre>
-       * optional bytes asset_token = 4; // deprecated - changed type to string
-           * </pre>
-           */
-          public java.lang.String getAssetToken() {
-              java.lang.Object ref = assetToken_;
-              if (ref instanceof java.lang.String) {
-                  return (java.lang.String) ref;
-              } else {
-                  com.google.protobuf.ByteString bs =
-                          (com.google.protobuf.ByteString) ref;
-                  java.lang.String s = bs.toStringUtf8();
-                  if (bs.isValidUtf8()) {
+      public java.lang.String getAssetToken() {
+          java.lang.Object ref = assetToken_;
+          if (ref instanceof java.lang.String) {
+              return (java.lang.String) ref;
+          } else {
+              com.google.protobuf.ByteString bs =
+                      (com.google.protobuf.ByteString) ref;
+              java.lang.String s = bs.toStringUtf8();
+              if (bs.isValidUtf8()) {
             assetToken_ = s;
-                  }
-                  return s;
               }
+              return s;
           }
+      }
 
           /**
            * <code>optional string asset_token = 5;</code>
@@ -32902,8 +33136,8 @@ public enum MetaDataCase
               encryption_ = com.waz.model.Messages.EncryptionAlgorithm.AES_CBC;
           }
 
-      public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
+          public final boolean isInitialized() {
+              byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
         if (isInitialized == 0) return false;
 
@@ -32916,7 +33150,7 @@ public enum MetaDataCase
           return false;
         }
         memoizedIsInitialized = 1;
-          return true;
+              return true;
       }
 
           public void writeTo(com.google.protobuf.CodedOutputStream output)
@@ -33010,27 +33244,10 @@ public enum MetaDataCase
                   maybeForceBuilderInitialization();
               }
 
-              public Builder clone() {
-                  return create().mergeFrom(buildPartial());
-              }
-
-              public com.google.protobuf.Descriptors.Descriptor
-              getDescriptorForType() {
-                  return com.waz.model.Messages.internal_static_Asset_RemoteData_descriptor;
-              }
-
               private Builder(
                       com.google.protobuf.GeneratedMessage.BuilderParent parent) {
                   super(parent);
                   maybeForceBuilderInitialization();
-              }
-
-              public com.waz.model.Messages.Asset.RemoteData build() {
-                  com.waz.model.Messages.Asset.RemoteData result = buildPartial();
-                  if (!result.isInitialized()) {
-                      throw newUninitializedMessageException(result);
-                  }
-                  return result;
               }
 
               public static final com.google.protobuf.Descriptors.Descriptor
@@ -33069,8 +33286,25 @@ public enum MetaDataCase
                   return this;
               }
 
+              public Builder clone() {
+                  return create().mergeFrom(buildPartial());
+              }
+
+              public com.google.protobuf.Descriptors.Descriptor
+              getDescriptorForType() {
+                  return com.waz.model.Messages.internal_static_Asset_RemoteData_descriptor;
+              }
+
               public com.waz.model.Messages.Asset.RemoteData getDefaultInstanceForType() {
                   return com.waz.model.Messages.Asset.RemoteData.getDefaultInstance();
+              }
+
+              public com.waz.model.Messages.Asset.RemoteData build() {
+                  com.waz.model.Messages.Asset.RemoteData result = buildPartial();
+                  if (!result.isInitialized()) {
+                      throw newUninitializedMessageException(result);
+                  }
+                  return result;
               }
 
               public com.waz.model.Messages.Asset.RemoteData buildPartial() {
@@ -33082,7 +33316,7 @@ public enum MetaDataCase
                   }
                   result.otrKey_ = otrKey_;
                   if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-            to_bitField0_ |= 0x00000002;
+                      to_bitField0_ |= 0x00000002;
           }
           result.sha256_ = sha256_;
           if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
@@ -33136,6 +33370,19 @@ public enum MetaDataCase
           return this;
         }
 
+              /**
+               * <code>required bytes otr_key = 1;</code>
+               */
+              public Builder setOtrKey(com.google.protobuf.ByteString value) {
+                  if (value == null) {
+                      throw new NullPointerException();
+                  }
+                  bitField0_ |= 0x00000001;
+                  otrKey_ = value;
+                  onChanged();
+                  return this;
+              }
+
         public final boolean isInitialized() {
           if (!hasOtrKey()) {
 
@@ -33183,25 +33430,12 @@ public enum MetaDataCase
         /**
          * <code>required bytes otr_key = 1;</code>
          */
-        public Builder setOtrKey(com.google.protobuf.ByteString value) {
-          if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-          otrKey_ = value;
-          onChanged();
-          return this;
-        }
-
-              /**
-               * <code>required bytes otr_key = 1;</code>
-               */
-              public Builder clearOtrKey() {
+        public Builder clearOtrKey() {
           bitField0_ = (bitField0_ & ~0x00000001);
-                  otrKey_ = getDefaultInstance().getOtrKey();
-                  onChanged();
-                  return this;
-              }
+            otrKey_ = getDefaultInstance().getOtrKey();
+            onChanged();
+            return this;
+        }
 
               /**
                * <code>required bytes sha256 = 2;</code>
@@ -33395,11 +33629,11 @@ public enum MetaDataCase
                * </pre>
                */
               public com.google.protobuf.ByteString
-            getAssetTokenBytes() {
-          java.lang.Object ref = assetToken_;
-          if (ref instanceof String) {
-            com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8(
+              getAssetTokenBytes() {
+                  java.lang.Object ref = assetToken_;
+                  if (ref instanceof String) {
+                      com.google.protobuf.ByteString b =
+                              com.google.protobuf.ByteString.copyFromUtf8(
                     (java.lang.String) ref);
             assetToken_ = b;
             return b;
@@ -33502,14 +33736,6 @@ public enum MetaDataCase
       private boolean expectsReadConfirmation_ ;
       private com.waz.model.Messages.LegalHoldStatus legalHoldStatus_ = com.waz.model.Messages.LegalHoldStatus.UNKNOWN;
 
-          public com.waz.model.Messages.Asset build() {
-              com.waz.model.Messages.Asset result = buildPartial();
-              if (!result.isInitialized()) {
-                  throw newUninitializedMessageException(result);
-              }
-              return result;
-          }
-
           // Construct using com.waz.model.Messages.Asset.newBuilder()
           private Builder() {
               maybeForceBuilderInitialization();
@@ -33580,6 +33806,14 @@ public enum MetaDataCase
               return com.waz.model.Messages.Asset.getDefaultInstance();
           }
 
+          public com.waz.model.Messages.Asset build() {
+              com.waz.model.Messages.Asset result = buildPartial();
+              if (!result.isInitialized()) {
+                  throw newUninitializedMessageException(result);
+              }
+              return result;
+          }
+
           public com.waz.model.Messages.Asset buildPartial() {
               com.waz.model.Messages.Asset result = new com.waz.model.Messages.Asset(this);
               int from_bitField0_ = bitField0_;
@@ -33647,19 +33881,19 @@ public enum MetaDataCase
               if (other.hasLegalHoldStatus()) {
                   setLegalHoldStatus(other.getLegalHoldStatus());
               }
-        switch (other.getStatusCase()) {
-            case NOT_UPLOADED: {
-                setNotUploaded(other.getNotUploaded());
-                break;
-            }
-            case UPLOADED: {
-                mergeUploaded(other.getUploaded());
-                break;
-            }
-            case STATUS_NOT_SET: {
-                break;
-            }
-        }
+              switch (other.getStatusCase()) {
+                  case NOT_UPLOADED: {
+                      setNotUploaded(other.getNotUploaded());
+                      break;
+                  }
+                  case UPLOADED: {
+                      mergeUploaded(other.getUploaded());
+                      break;
+                  }
+                  case STATUS_NOT_SET: {
+                      break;
+                  }
+              }
               this.mergeUnknownFields(other.getUnknownFields());
               return this;
           }
@@ -33727,26 +33961,6 @@ public enum MetaDataCase
           /**
            * <code>optional .Asset.Original original = 1;</code>
            */
-          public com.waz.model.Messages.Asset.Original.Builder getOriginalBuilder() {
-              bitField0_ |= 0x00000001;
-              onChanged();
-              return getOriginalFieldBuilder().getBuilder();
-          }
-
-          /**
-           * <code>optional .Asset.Original original = 1;</code>
-           */
-          public com.waz.model.Messages.Asset.OriginalOrBuilder getOriginalOrBuilder() {
-              if (originalBuilder_ != null) {
-                  return originalBuilder_.getMessageOrBuilder();
-              } else {
-                  return original_;
-              }
-          }
-
-          /**
-           * <code>optional .Asset.Original original = 1;</code>
-           */
           public com.waz.model.Messages.Asset.Original getOriginal() {
               if (originalBuilder_ == null) {
                   return original_;
@@ -33756,37 +33970,7 @@ public enum MetaDataCase
           }
 
           /**
-           * <code>optional .Asset.NotUploaded not_uploaded = 3;</code>
-           */
-          public boolean hasNotUploaded() {
-              return statusCase_ == 3;
-          }
-
-          /**
-       * <code>optional .Asset.NotUploaded not_uploaded = 3;</code>
-       */
-      public com.waz.model.Messages.Asset.NotUploaded getNotUploaded() {
-        if (statusCase_ == 3) {
-            return (com.waz.model.Messages.Asset.NotUploaded) status_;
-        }
-          return com.waz.model.Messages.Asset.NotUploaded.CANCELLED;
-      }
-
-          /**
-           * <code>optional .Asset.NotUploaded not_uploaded = 3;</code>
-           */
-          public Builder setNotUploaded(com.waz.model.Messages.Asset.NotUploaded value) {
-              if (value == null) {
-                  throw new NullPointerException();
-              }
-              statusCase_ = 3;
-        status_ = value;
-        onChanged();
-        return this;
-      }
-
-      /**
-       * <code>optional .Asset.Original original = 1;</code>
+           * <code>optional .Asset.Original original = 1;</code>
        */
       public Builder setOriginal(com.waz.model.Messages.Asset.Original value) {
           if (originalBuilder_ == null) {
@@ -33826,7 +34010,7 @@ public enum MetaDataCase
                           original_ != com.waz.model.Messages.Asset.Original.getDefaultInstance()) {
                       original_ =
                               com.waz.model.Messages.Asset.Original.newBuilder(original_).mergeFrom(value).buildPartial();
-          } else {
+                  } else {
                       original_ = value;
                   }
           onChanged();
@@ -33854,6 +34038,26 @@ public enum MetaDataCase
           /**
            * <code>optional .Asset.Original original = 1;</code>
            */
+          public com.waz.model.Messages.Asset.Original.Builder getOriginalBuilder() {
+              bitField0_ |= 0x00000001;
+              onChanged();
+              return getOriginalFieldBuilder().getBuilder();
+          }
+
+          /**
+           * <code>optional .Asset.Original original = 1;</code>
+           */
+          public com.waz.model.Messages.Asset.OriginalOrBuilder getOriginalOrBuilder() {
+              if (originalBuilder_ != null) {
+                  return originalBuilder_.getMessageOrBuilder();
+              } else {
+                  return original_;
+              }
+          }
+
+          /**
+           * <code>optional .Asset.Original original = 1;</code>
+           */
           private com.google.protobuf.SingleFieldBuilder<
                   com.waz.model.Messages.Asset.Original, com.waz.model.Messages.Asset.Original.Builder, com.waz.model.Messages.Asset.OriginalOrBuilder>
           getOriginalFieldBuilder() {
@@ -33866,6 +34070,67 @@ public enum MetaDataCase
                   original_ = null;
               }
               return originalBuilder_;
+          }
+
+          /**
+           * <code>optional .Asset.NotUploaded not_uploaded = 3;</code>
+           */
+          public boolean hasNotUploaded() {
+              return statusCase_ == 3;
+          }
+
+          /**
+           * <code>optional .Asset.NotUploaded not_uploaded = 3;</code>
+           */
+          public com.waz.model.Messages.Asset.NotUploaded getNotUploaded() {
+              if (statusCase_ == 3) {
+                  return (com.waz.model.Messages.Asset.NotUploaded) status_;
+              }
+              return com.waz.model.Messages.Asset.NotUploaded.CANCELLED;
+          }
+
+          /**
+           * <code>optional .Asset.RemoteData uploaded = 4;</code>
+       */
+      public Builder setUploaded(com.waz.model.Messages.Asset.RemoteData value) {
+        if (uploadedBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          status_ = value;
+          onChanged();
+        } else {
+          uploadedBuilder_.setMessage(value);
+        }
+        statusCase_ = 4;
+        return this;
+      }
+      /**
+       * <code>optional .Asset.RemoteData uploaded = 4;</code>
+       */
+      public Builder setUploaded(
+          com.waz.model.Messages.Asset.RemoteData.Builder builderForValue) {
+        if (uploadedBuilder_ == null) {
+          status_ = builderForValue.build();
+          onChanged();
+        } else {
+          uploadedBuilder_.setMessage(builderForValue.build());
+        }
+        statusCase_ = 4;
+        return this;
+      }
+
+          /**
+           * <code>optional .Asset.NotUploaded not_uploaded = 3;</code>
+           */
+          public Builder setNotUploaded(com.waz.model.Messages.Asset.NotUploaded value) {
+              if (value == null) {
+                  throw new NullPointerException();
+              }
+              statusCase_ = 3;
+              status_ = value;
+              onChanged();
+              return this;
           }
 
           /**
@@ -33901,45 +34166,13 @@ public enum MetaDataCase
                       return uploadedBuilder_.getMessage();
                   }
                   return com.waz.model.Messages.Asset.RemoteData.getDefaultInstance();
-        }
-      }
-
-      /**
-       * <code>optional .Asset.RemoteData uploaded = 4;</code>
-       */
-      public Builder setUploaded(com.waz.model.Messages.Asset.RemoteData value) {
-        if (uploadedBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
+              }
           }
-          status_ = value;
-          onChanged();
-        } else {
-          uploadedBuilder_.setMessage(value);
-        }
-        statusCase_ = 4;
-        return this;
-      }
 
-      /**
-       * <code>optional .Asset.RemoteData uploaded = 4;</code>
-       */
-      public Builder setUploaded(
-          com.waz.model.Messages.Asset.RemoteData.Builder builderForValue) {
-        if (uploadedBuilder_ == null) {
-          status_ = builderForValue.build();
-          onChanged();
-        } else {
-          uploadedBuilder_.setMessage(builderForValue.build());
-        }
-        statusCase_ = 4;
-        return this;
-      }
-
-      /**
-       * <code>optional .Asset.RemoteData uploaded = 4;</code>
-       */
-      public Builder mergeUploaded(com.waz.model.Messages.Asset.RemoteData value) {
+          /**
+           * <code>optional .Asset.RemoteData uploaded = 4;</code>
+           */
+          public Builder mergeUploaded(com.waz.model.Messages.Asset.RemoteData value) {
         if (uploadedBuilder_ == null) {
           if (statusCase_ == 4 &&
               status_ != com.waz.model.Messages.Asset.RemoteData.getDefaultInstance()) {
@@ -33955,7 +34188,7 @@ public enum MetaDataCase
           }
             uploadedBuilder_.setMessage(value);
         }
-          statusCase_ = 4;
+              statusCase_ = 4;
         return this;
       }
 
@@ -34223,7 +34456,7 @@ public enum MetaDataCase
            */
           public Builder setLegalHoldStatus(com.waz.model.Messages.LegalHoldStatus value) {
               if (value == null) {
-          throw new NullPointerException();
+                  throw new NullPointerException();
         }
         bitField0_ |= 0x00000020;
         legalHoldStatus_ = value;
@@ -34265,12 +34498,12 @@ public enum MetaDataCase
         public static final int SHA256_FIELD_NUMBER = 2;
         public static final int ENCRYPTION_FIELD_NUMBER = 3;
         private static final External defaultInstance;
-    private static final long serialVersionUID = 0L;
+        private static final long serialVersionUID = 0L;
     public static com.google.protobuf.Parser<External> PARSER =
         new com.google.protobuf.AbstractParser<External>() {
       public External parsePartialFrom(
               com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
           return new External(input, extensionRegistry);
       }
@@ -34282,12 +34515,6 @@ public enum MetaDataCase
     }
 
         private final com.google.protobuf.UnknownFieldSet unknownFields;
-
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return com.waz.model.Messages.internal_static_External_descriptor;
-        }
-
         private int bitField0_;
         private com.google.protobuf.ByteString otrKey_;
         private com.google.protobuf.ByteString sha256_;
@@ -34366,6 +34593,11 @@ public enum MetaDataCase
             return defaultInstance;
         }
 
+        public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+            return com.waz.model.Messages.internal_static_External_descriptor;
+        }
+
         public static com.waz.model.Messages.External parseFrom(
                 com.google.protobuf.ByteString data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
@@ -34389,6 +34621,13 @@ public enum MetaDataCase
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
+        }
+
+        /**
+         * <code>optional .EncryptionAlgorithm encryption = 3;</code>
+         */
+        public boolean hasEncryption() {
+            return ((bitField0_ & 0x00000004) == 0x00000004);
         }
 
         public static com.waz.model.Messages.External parseFrom(java.io.InputStream input)
@@ -34434,16 +34673,16 @@ public enum MetaDataCase
 
         public static Builder newBuilder(com.waz.model.Messages.External prototype) {
             return newBuilder().mergeFrom(prototype);
-    }
+        }
 
-    public External getDefaultInstanceForType() {
-      return defaultInstance;
-    }
+        public External getDefaultInstanceForType() {
+            return defaultInstance;
+        }
 
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-        return this.unknownFields;
+        @java.lang.Override
+        public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+            return this.unknownFields;
     }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -34460,8 +34699,8 @@ public enum MetaDataCase
 
         /**
          * <code>required bytes otr_key = 1;</code>
-     */
-    public boolean hasOtrKey() {
+         */
+        public boolean hasOtrKey() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
 
@@ -34492,16 +34731,9 @@ public enum MetaDataCase
          */
         public com.google.protobuf.ByteString getSha256() {
             return sha256_;
-    }
+        }
 
-    /**
-     * <code>optional .EncryptionAlgorithm encryption = 3;</code>
-     */
-    public boolean hasEncryption() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-
-    /**
+        /**
      * <code>optional .EncryptionAlgorithm encryption = 3;</code>
      */
     public com.waz.model.Messages.EncryptionAlgorithm getEncryption() {
@@ -34589,7 +34821,7 @@ public enum MetaDataCase
          * Protobuf type {@code External}
          *
          * <pre>
-     * Actual message is encrypted with AES and sent as additional data
+         * Actual message is encrypted with AES and sent as additional data
          * </pre>
          */
         public static final class Builder extends
@@ -34648,15 +34880,6 @@ public enum MetaDataCase
                 return create().mergeFrom(buildPartial());
             }
 
-            public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof com.waz.model.Messages.External) {
-                    return mergeFrom((com.waz.model.Messages.External) other);
-                } else {
-                    super.mergeFrom(other);
-                    return this;
-                }
-            }
-
             public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
                 return com.waz.model.Messages.internal_static_External_descriptor;
@@ -34693,6 +34916,15 @@ public enum MetaDataCase
                 result.bitField0_ = to_bitField0_;
                 onBuilt();
                 return result;
+            }
+
+            public Builder mergeFrom(com.google.protobuf.Message other) {
+                if (other instanceof com.waz.model.Messages.External) {
+                    return mergeFrom((com.waz.model.Messages.External) other);
+                } else {
+                    super.mergeFrom(other);
+                    return this;
+                }
             }
 
             public Builder mergeFrom(com.waz.model.Messages.External other) {
@@ -35671,11 +35903,11 @@ public enum MetaDataCase
             // @@protoc_insertion_point(message_implements:Calling)
             CallingOrBuilder {
         public static final int CONTENT_FIELD_NUMBER = 1;
-    private static final Calling defaultInstance;
-    private static final long serialVersionUID = 0L;
-    public static com.google.protobuf.Parser<Calling> PARSER =
-        new com.google.protobuf.AbstractParser<Calling>() {
-      public Calling parsePartialFrom(
+        private static final Calling defaultInstance;
+        private static final long serialVersionUID = 0L;
+        public static com.google.protobuf.Parser<Calling> PARSER =
+                new com.google.protobuf.AbstractParser<Calling>() {
+                    public Calling parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -35700,9 +35932,11 @@ public enum MetaDataCase
             this.unknownFields = builder.getUnknownFields();
         }
 
-        private Calling(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+        private Calling(boolean noInit) {
+            this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+        }
 
-    private Calling(
+        private Calling(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -35800,6 +36034,12 @@ public enum MetaDataCase
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
             return PARSER.parseDelimitedFrom(input, extensionRegistry);
+        }
+
+        public static com.waz.model.Messages.Calling parseFrom(
+                com.google.protobuf.CodedInputStream input)
+                throws java.io.IOException {
+            return PARSER.parseFrom(input);
         }
 
         public Calling getDefaultInstanceForType() {
@@ -35904,12 +36144,6 @@ public enum MetaDataCase
             size += getUnknownFields().getSerializedSize();
             memoizedSerializedSize = size;
             return size;
-        }
-
-        public static com.waz.model.Messages.Calling parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
     }
     public static com.waz.model.Messages.Calling parseFrom(
         com.google.protobuf.CodedInputStream input,
@@ -35977,14 +36211,11 @@ public enum MetaDataCase
             maybeForceBuilderInitialization();
         }
 
-        public Builder clear() {
-            super.clear();
-        content_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
-        return this;
-      }
+        private static Builder create() {
+            return new Builder();
+        }
 
-      public Builder clone() {
+        public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
 
@@ -36005,8 +36236,9 @@ public enum MetaDataCase
         return result;
       }
 
-        private static Builder create() {
-            return new Builder();
+        private void maybeForceBuilderInitialization() {
+            if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+            }
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -36029,26 +36261,10 @@ public enum MetaDataCase
         return this;
       }
 
-        private void maybeForceBuilderInitialization() {
-            if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-            }
-        }
-
-        public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.waz.model.Messages.Calling parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.waz.model.Messages.Calling) e.getUnfinishedMessage();
-          throw e;
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
+        public Builder clear() {
+            super.clear();
+            content_ = "";
+            bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
 
@@ -36073,16 +36289,35 @@ public enum MetaDataCase
             return true;
         }
 
+        public Builder mergeFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws java.io.IOException {
+            com.waz.model.Messages.Calling parsedMessage = null;
+            try {
+                parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                parsedMessage = (com.waz.model.Messages.Calling) e.getUnfinishedMessage();
+                throw e;
+            } finally {
+                if (parsedMessage != null) {
+                    mergeFrom(parsedMessage);
+                }
+            }
+            return this;
+        }
+
         /**
          * <code>required string content = 1;</code>
          */
         public boolean hasContent() {
             return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>required string content = 1;</code>
-       */
-      public java.lang.String getContent() {
+        }
+
+        /**
+         * <code>required string content = 1;</code>
+         */
+        public java.lang.String getContent() {
         java.lang.Object ref = content_;
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
@@ -36153,7 +36388,7 @@ public enum MetaDataCase
         // @@protoc_insertion_point(builder_scope:Calling)
     }
 
-    // @@protoc_insertion_point(class_scope:Calling)
+        // @@protoc_insertion_point(class_scope:Calling)
   }
 
   // @@protoc_insertion_point(outer_class_scope)

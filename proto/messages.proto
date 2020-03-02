@@ -29,6 +29,8 @@ message GenericMessage {
 
 message CompositeMessage {
     repeated Item items = 1;
+    optional bool expects_read_confirmation = 2 [default = false];
+    optional LegalHoldStatus legal_hold_status = 3 [default = UNKNOWN];
 
     message Item {
         oneof content {
