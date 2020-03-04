@@ -74,7 +74,7 @@
         <dependency>
             <artifactId>protobuf-java</artifactId>
             <groupId>com.google.protobuf</groupId>
-            <version>2.6.1</version>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.tyrus.bundles</groupId>
@@ -151,6 +151,25 @@
                         <goals>
                             <goal>jar</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.os72</groupId>
+                <artifactId>protoc-jar-maven-plugin</artifactId>
+                <version>3.1.0.1</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <protocVersion>3.1.0</protocVersion>
+                            <inputDirectories>
+                                <include>proto</include>
+                            </inputDirectories>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

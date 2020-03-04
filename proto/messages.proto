@@ -1,4 +1,4 @@
-// syntax = "proto2";
+syntax = "proto2";
 option java_package = "com.waz.model";
 
 message GenericMessage {
@@ -21,13 +21,13 @@ message GenericMessage {
         Reaction reaction = 17;
         Ephemeral ephemeral = 18;
         Availability availability = 19;
-        CompositeMessage compositeMessage = 20;
+        Composite composite = 20;
         ButtonAction buttonAction = 21;
         ButtonActionConfirmation buttonActionConfirmation = 22;
     }
 }
 
-message CompositeMessage {
+message Composite {
     repeated Item items = 1;
     optional bool expects_read_confirmation = 2 [default = false];
     optional LegalHoldStatus legal_hold_status = 3 [default = UNKNOWN];
@@ -155,7 +155,7 @@ message MessageEdit {
     required string replacing_message_id = 1;
     oneof content {
         Text text = 2;
-        CompositeMessage compositeMessage = 3;
+        Composite composite = 3;
         // Reply can also be edited, but the edit will only affect the Text part
     }
 }

@@ -24,14 +24,14 @@ import java.util.UUID;
 
 
 public class Poll implements IGeneric {
-    private final Messages.CompositeMessage.Builder poll = Messages.CompositeMessage.newBuilder();
+    private final Messages.Composite.Builder poll = Messages.Composite.newBuilder();
     private UUID messageId = UUID.randomUUID();
 
     public Poll addText(String str) {
         Messages.Text.Builder text = Messages.Text.newBuilder()
                 .setContent(str);
 
-        Messages.CompositeMessage.Item textItem = Messages.CompositeMessage.Item.newBuilder()
+        Messages.Composite.Item textItem = Messages.Composite.Item.newBuilder()
                 .setText(text)
                 .build();
 
@@ -44,7 +44,7 @@ public class Poll implements IGeneric {
                 .setText(caption)
                 .setId(buttonId);
 
-        Messages.CompositeMessage.Item.Builder buttonItem = Messages.CompositeMessage.Item.newBuilder()
+        Messages.Composite.Item.Builder buttonItem = Messages.Composite.Item.newBuilder()
                 .setButton(button);
 
         poll.addItems(buttonItem);
@@ -55,7 +55,7 @@ public class Poll implements IGeneric {
     public Messages.GenericMessage createGenericMsg() {
         return Messages.GenericMessage.newBuilder()
                 .setMessageId(getMessageId().toString())
-                .setCompositeMessage(poll)
+                .setComposite(poll)
                 .build();
     }
 
