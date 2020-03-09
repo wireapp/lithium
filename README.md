@@ -24,7 +24,7 @@
     <dependency>
         <groupId>com.wire.bots</groupId>
         <artifactId>lithium</artifactId>
-        <version>2.34.5</version>
+        <version>2.35.0</version>
     </dependency>
 <dependencies>
 ```
@@ -79,6 +79,10 @@ Using the `manage.sh` script:
 ## Use Hello World sample service as your first service
 
 - [Hello World](https://github.com/wireapp/echo-bot)
+
+## Environment variables used:
+- `WIRE_API_HOST`: Wire Backend. `https://prod-nginz-https.wire.com` by default
+- `SERVICE_TOKEN`: Your service authentication token. All requests sent by the BE will have this token as Bearer Authorization HTTP header
 
 ## Other examples of Wire Services
 
