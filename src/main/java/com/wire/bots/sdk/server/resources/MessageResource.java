@@ -58,8 +58,7 @@ public class MessageResource extends MessageResourceBase {
             @ApiResponse(code = 200, message = "Alles gute")})
     @Authorization("Bearer")
     @Metered
-    public Response newMessage(@ApiParam("Service token as Bearer") @NotNull @HeaderParam("Authorization") String auth,
-                               @ApiParam("UUID Bot instance id") @PathParam("bot") UUID botId,
+    public Response newMessage(@ApiParam("UUID Bot instance id") @PathParam("bot") UUID botId,
                                @ApiParam("UUID Unique message id") @QueryParam("id") UUID messageID,
                                @ApiParam @Valid @NotNull Payload payload) throws IOException {
 

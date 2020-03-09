@@ -106,6 +106,10 @@ public class WireClientBase {
         postGenericMessage(message);
     }
 
+    public void send(IGeneric message, UUID userId) throws Exception {
+        postGenericMessage(message, userId);
+    }
+
     public UUID getId() {
         return state.id;
     }

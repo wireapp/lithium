@@ -15,7 +15,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         String auth = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
         if (auth == null) {
             Exception cause = new IllegalArgumentException("Bad Authorization");
-            throw new WebApplicationException(cause, Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(cause, Response.Status.UNAUTHORIZED);
         }
 
         String[] split = auth.split(" ");
@@ -29,7 +29,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         String token = split[1];
 
         if (!Objects.equals(type, "Bearer")) {
-            Exception cause = new IllegalArgumentException("Wrong wrong token type");
+            Exception cause = new IllegalArgumentException("Wrong token type");
             throw new WebApplicationException(cause, Response.Status.BAD_REQUEST);
         }
 

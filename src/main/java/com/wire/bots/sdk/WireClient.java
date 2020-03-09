@@ -109,8 +109,10 @@ public interface WireClient extends Closeable {
      * @return MessageId
      * @throws Exception
      */
+    @Deprecated
     UUID sendPicture(IGeneric image) throws Exception;
 
+    @Deprecated
     UUID sendDirectPicture(IGeneric image, UUID userId) throws Exception;
 
     /**
@@ -187,7 +189,20 @@ public interface WireClient extends Closeable {
      */
     UUID editMessage(UUID replacingMessageId, String text) throws Exception;
 
+    /**
+     * Post a generic message into conversation
+     *
+     * @param message generic message (Text, Image, File, Reply, Mention, ...)
+     * @throws Exception
+     */
     void send(IGeneric message) throws Exception;
+
+    /**
+     * @param message generic message (Text, Image, File, Reply, Mention, ...)
+     * @param userId  ignore all other participants except this user
+     * @throws Exception
+     */
+    void send(IGeneric message, UUID userId) throws Exception;
 
     /**
      * This method downloads asset from the Backend.
