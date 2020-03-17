@@ -65,4 +65,7 @@ public class MessageText implements IGeneric {
         return messageId;
     }
 
+    public Messages.Text.Builder getBuilder() {
+        return builder;
+    }
 }
