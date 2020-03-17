@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -34,6 +35,9 @@ public class TextMessage extends MessageBase {
 
     @JsonProperty
     private byte[] quotedMessageSha256;
+
+    @JsonProperty
+    private ArrayList<Mention> mentions = new ArrayList<>();
 
     @JsonCreator
     public TextMessage(@JsonProperty("messageId") UUID messageId,
@@ -55,8 +59,8 @@ public class TextMessage extends MessageBase {
         return quotedMessageId;
     }
 
-    public void setQuotedMessageId(UUID quotedMessageId) {
-        this.quotedMessageId = quotedMessageId;
+    public void setQuotedMessageId(String quotedMessageId) {
+        this.quotedMessageId = UUID.fromString(quotedMessageId);
     }
 
     public byte[] getQuotedMessageSha256() {
@@ -65,5 +69,24 @@ public class TextMessage extends MessageBase {
 
     public void setQuotedMessageSha256(byte[] quotedMessageSha256) {
         this.quotedMessageSha256 = quotedMessageSha256;
+    }
+
+    public void addMention(String userId, int offset, int len) {
+        Mention mention = new Mention();
+        mention.userId = UUID.fromString(userId);
+        mention.offset = offset;
+        mention.length = len;
+
+        mentions.add(mention);
+    }
+
+    public ArrayList<Mention> getMentions() {
+        return mentions;
+    }
+
+    public static class Mention {
+        public UUID userId;
+        public int offset;
+        public int length;
     }
 }

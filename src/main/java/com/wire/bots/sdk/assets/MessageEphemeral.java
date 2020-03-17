@@ -22,33 +22,19 @@ import com.waz.model.Messages;
 
 import java.util.UUID;
 
-public class MessageText implements IGeneric {
-    private final Messages.Text.Builder builder = Messages.Text.newBuilder();
+public class MessageEphemeral implements IGeneric {
+    private final Messages.Ephemeral.Builder builder = Messages.Ephemeral.newBuilder();
 
     private UUID messageId = UUID.randomUUID();
 
-    public MessageText(String text) {
-        builder.setExpectsReadConfirmation(true);
-        setText(text);
+    public MessageEphemeral(long mills) {
+        builder.setExpireAfterMillis(mills);
     }
 
-    public MessageText setMessageId(UUID messageId) {
-        this.messageId = messageId;
-        return this;
-    }
-
-    public MessageText setText(String text) {
-        builder.setContent(text);
-        return this;
-    }
-
-    public MessageText addMention(UUID mentionUser, int offset, int len) {
-        Messages.Mention.Builder mention = Messages.Mention.newBuilder()
-                .setUserId(mentionUser.toString())
-                .setLength(len)
-                .setStart(offset);
-
-        builder.addMentions(mention);
+    public MessageEphemeral setText(String text) {
+        final Messages.Text.Builder textBuilder = Messages.Text.newBuilder()
+                .setContent(text);
+        builder.setText(textBuilder);
         return this;
     }
 
@@ -56,7 +42,7 @@ public class MessageText implements IGeneric {
     public Messages.GenericMessage createGenericMsg() {
         return Messages.GenericMessage.newBuilder()
                 .setMessageId(getMessageId().toString())
-                .setText(builder)
+                .setEphemeral(builder)
                 .build();
     }
 
@@ -65,7 +51,9 @@ public class MessageText implements IGeneric {
         return messageId;
     }
 
-    public Messages.Text.Builder getBuilder() {
-        return builder;
+    public MessageEphemeral setMessageId(UUID messageId) {
+        this.messageId = messageId;
+        return this;
     }
+
 }

@@ -24,38 +24,35 @@ import com.wire.bots.sdk.tools.Util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.UUID;
 
 public class FileAsset implements IGeneric, IAsset {
-
     static private final SecureRandom random = new SecureRandom();
 
     private final String mimeType;
     private final UUID messageId;
     private final byte[] encBytes;
-    private final byte[] otrKey = new byte[32];
+    private final byte[] otrKey;
     private final byte[] sha256;
 
     private String assetKey;
     private String assetToken;
 
     public FileAsset(File file, String mimeType, UUID messageId) throws Exception {
+        this(readFile(file), mimeType, messageId);
+    }
+
+    public FileAsset(byte[] bytes, String mimeType, UUID messageId) throws Exception {
         this.mimeType = mimeType;
         this.messageId = messageId;
 
-        random.nextBytes(otrKey);
-
-        byte[] iv = new byte[16];
-        random.nextBytes(iv);
-
-        try (FileInputStream input = new FileInputStream(file)) {
-            byte[] bytes = Util.toByteArray(input);
-            encBytes = Util.encrypt(otrKey, bytes, iv);
-        }
-
-        sha256 = MessageDigest.getInstance("SHA-256").digest(encBytes);
+        otrKey = newOtrKey();
+        encBytes = encrypt(bytes);
+        sha256 = getSha256(encBytes);
     }
 
     public FileAsset(String assetKey, String assetToken, byte[] sha256, UUID messageId) {
@@ -65,6 +62,7 @@ public class FileAsset implements IGeneric, IAsset {
         this.sha256 = sha256;
         mimeType = null;
         encBytes = null;
+        otrKey = null;
     }
 
     @Override
@@ -116,5 +114,29 @@ public class FileAsset implements IGeneric, IAsset {
     @Override
     public UUID getMessageId() {
         return messageId;
+    }
+
+    private static byte[] getSha256(byte[] bytes) throws NoSuchAlgorithmException {
+        return MessageDigest.getInstance("SHA-256").digest(bytes);
+    }
+
+    private static byte[] newOtrKey() {
+        byte[] otrKey = new byte[32];
+        random.nextBytes(otrKey);
+        return otrKey;
+    }
+
+    private static byte[] readFile(File file) throws IOException {
+        byte[] bytes;
+        try (FileInputStream input = new FileInputStream(file)) {
+            bytes = Util.toByteArray(input);
+        }
+        return bytes;
+    }
+
+    private byte[] encrypt(byte[] bytes) throws Exception {
+        byte[] iv = new byte[16];
+        random.nextBytes(iv);
+        return Util.encrypt(otrKey, bytes, iv);
     }
 }

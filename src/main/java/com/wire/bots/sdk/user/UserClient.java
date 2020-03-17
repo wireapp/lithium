@@ -55,7 +55,9 @@ public class UserClient extends WireClientBase implements WireClient {
 
     @Override
     public UUID sendText(String txt, long expires) throws Exception {
-        MessageText generic = new MessageText(txt, expires);
+        MessageEphemeral generic = new MessageEphemeral(expires)
+                .setText(txt);
+
         postGenericMessage(generic);
         return generic.getMessageId();
     }
@@ -64,7 +66,9 @@ public class UserClient extends WireClientBase implements WireClient {
     public UUID sendText(String txt, UUID mention) throws Exception {
         int offset = Util.mentionStart(txt);
         int len = Util.mentionLen(txt);
-        MessageText generic = new MessageText(txt, 0, mention, offset, len);
+        MessageText generic = new MessageText(txt)
+                .addMention(mention, offset, len);
+
         postGenericMessage(generic);
         return generic.getMessageId();
     }
