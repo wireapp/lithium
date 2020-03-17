@@ -39,6 +39,15 @@ public class Poll implements IGeneric {
         return this;
     }
 
+    public Poll addText(MessageText msg) {
+        Messages.Composite.Item textItem = Messages.Composite.Item.newBuilder()
+                .setText(msg.getBuilder())
+                .build();
+
+        poll.addItems(textItem);
+        return this;
+    }
+
     public Poll addButton(String buttonId, String caption) {
         Messages.Button.Builder button = Messages.Button.newBuilder()
                 .setText(caption)

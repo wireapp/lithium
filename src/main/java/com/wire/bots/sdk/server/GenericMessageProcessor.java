@@ -29,6 +29,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ *
  */
 public class GenericMessageProcessor {
     private final static ConcurrentHashMap<UUID, Messages.Asset.Original> originals = new ConcurrentHashMap<>();
@@ -67,7 +68,9 @@ public class GenericMessageProcessor {
                 msg.setExpireAfterMillis(ephemeral.getExpireAfterMillis());
                 msg.setText(ephemeral.getText().getContent());
                 if (ephemeral.getText().hasQuote())
-                    msg.setQuotedMessageId(UUID.fromString(ephemeral.getText().getQuote().getQuotedMessageId()));
+                    msg.setQuotedMessageId(ephemeral.getText().getQuote().getQuotedMessageId());
+                for (Messages.Mention mention : ephemeral.getText().getMentionsList())
+                    msg.addMention(mention.getUserId(), mention.getStart(), mention.getLength());
 
                 handler.onText(client, msg);
                 return true;
@@ -85,6 +88,8 @@ public class GenericMessageProcessor {
             msg.setReplacingMessageId(UUID.fromString(edited.getReplacingMessageId()));
             msg.setText(edited.getText().getContent());
             msg.setTime(time);
+            for (Messages.Mention mention : edited.getText().getMentionsList())
+                msg.addMention(mention.getUserId(), mention.getStart(), mention.getLength());
 
             handler.onEditText(client, msg);
             return true;
@@ -113,9 +118,10 @@ public class GenericMessageProcessor {
                 TextMessage msg = new TextMessage(messageId, convId, clientId, from);
                 msg.setText(text.getContent());
                 msg.setTime(time);
-
                 if (text.hasQuote())
-                    msg.setQuotedMessageId(UUID.fromString(text.getQuote().getQuotedMessageId()));
+                    msg.setQuotedMessageId(text.getQuote().getQuotedMessageId());
+                for (Messages.Mention mention : text.getMentionsList())
+                    msg.addMention(mention.getUserId(), mention.getStart(), mention.getLength());
 
                 handler.onText(client, msg);
                 return true;
