@@ -38,7 +38,7 @@ public class Configuration extends io.dropwizard.Configuration {
 
     @Valid
     @JsonProperty("jerseyClient")
-    public JerseyClientConfiguration jerseyClient = new JerseyClientConfiguration();
+    public JerseyClientConfiguration jerseyClient = new _JerseyClientConfiguration();
 
     @JsonProperty
     @Deprecated
@@ -82,6 +82,14 @@ public class Configuration extends io.dropwizard.Configuration {
     public static class Database extends DataSourceFactory {
         @JsonProperty
         public boolean baseline;
+    }
+
+    private static class _JerseyClientConfiguration extends JerseyClientConfiguration {
+        _JerseyClientConfiguration() {
+            setChunkedEncodingEnabled(false);
+            setGzipEnabled(false);
+            setGzipEnabledForRequests(false);
+        }
     }
 
     private static class _SwaggerBundleConfiguration extends SwaggerBundleConfiguration {

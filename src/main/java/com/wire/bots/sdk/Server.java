@@ -128,12 +128,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
         migrateDBifNeeded(config.database);
 
-        this.jdbi = new DBIFactory().build(environment, config.database, "lithium");
-
-        // Override these values for Jersey Client just in case
-        config.jerseyClient.setChunkedEncodingEnabled(false);
-        config.jerseyClient.setGzipEnabled(false);
-        config.jerseyClient.setGzipEnabledForRequests(false);
+        buildJdbi(config.database);
 
         client = new JerseyClientBuilder(environment)
                 .using(config.jerseyClient)
@@ -159,6 +154,10 @@ public abstract class Server<Config extends Configuration> extends Application<C
         initTelemetry();
 
         onRun(config, env);
+    }
+
+    protected void buildJdbi(Configuration.Database database) {
+        this.jdbi = new DBIFactory().build(environment, database, "lithium");
     }
 
     protected void migrateDBifNeeded(Configuration.Database database) {
