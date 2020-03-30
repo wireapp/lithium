@@ -131,7 +131,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
         buildJdbi(config.database);
 
         client = new JerseyClientBuilder(environment)
-                .using(config.jerseyClient)
+                .using(config.getJerseyClient())
                 .withProvider(MultiPartFeature.class)
                 .withProvider(JacksonJsonProvider.class)
                 .build(getName());

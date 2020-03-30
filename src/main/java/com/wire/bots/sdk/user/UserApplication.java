@@ -198,7 +198,7 @@ public class UserApplication implements Managed {
         // container.getProperties().put(ClientProperties.RECONNECT_HANDLER, new SocketReconnectHandler(5));
         container.setDefaultMaxSessionIdleTimeout(-1);
 
-        TlsConfiguration tlsConfiguration = config.jerseyClient.getTlsConfiguration();
+        TlsConfiguration tlsConfiguration = config.getJerseyClient().getTlsConfiguration();
         SSLContextConfigurator ssl = new SSLContextConfigurator();
         if (tlsConfiguration != null) {
             ssl.setSecurityProtocol(tlsConfiguration.getProtocol());

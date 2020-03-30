@@ -37,8 +37,7 @@ public class Configuration extends io.dropwizard.Configuration {
     public Database database;
 
     @Valid
-    @JsonProperty("jerseyClient")
-    public JerseyClientConfiguration jerseyClient = new _JerseyClientConfiguration();
+    private _JerseyClientConfiguration jerseyClient = new _JerseyClientConfiguration();
 
     @JsonProperty
     @Deprecated
@@ -56,6 +55,16 @@ public class Configuration extends io.dropwizard.Configuration {
 
     @JsonProperty
     public String wsHost = "wss://prod-nginz-ssl.wire.com/await";
+
+    @JsonProperty("jerseyClient")
+    public JerseyClientConfiguration getJerseyClient() {
+        return jerseyClient;
+    }
+
+    @JsonProperty("jerseyClient")
+    public void setJerseyClient(_JerseyClientConfiguration jerseyClient) {
+        this.jerseyClient = jerseyClient;
+    }
 
     @Deprecated
     public static class DB {
@@ -84,8 +93,8 @@ public class Configuration extends io.dropwizard.Configuration {
         public boolean baseline;
     }
 
-    private static class _JerseyClientConfiguration extends JerseyClientConfiguration {
-        _JerseyClientConfiguration() {
+    public static class _JerseyClientConfiguration extends JerseyClientConfiguration {
+        public _JerseyClientConfiguration() {
             setChunkedEncodingEnabled(false);
             setGzipEnabled(false);
             setGzipEnabledForRequests(false);
