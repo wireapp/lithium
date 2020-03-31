@@ -53,7 +53,7 @@ public abstract class MessageResourceBase {
                     processor.cleanUp(messageId);
                 }
 
-                handler.onEvent(client, payload.from, message);
+                handler.onEvent(client, from, message);
             }
             break;
             case "conversation.member-join": {

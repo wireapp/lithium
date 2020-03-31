@@ -24,8 +24,18 @@ import java.util.UUID;
 
 
 public class Poll implements IGeneric {
-    private final Messages.Composite.Builder poll = Messages.Composite.newBuilder();
-    private UUID messageId = UUID.randomUUID();
+    private final Messages.Composite.Builder poll;
+    private final UUID messageId;
+
+    public Poll() {
+        this(UUID.randomUUID());
+    }
+
+    public Poll(UUID messageId) {
+        this.messageId = messageId;
+        poll = Messages.Composite.newBuilder();
+        poll.setExpectsReadConfirmation(true);
+    }
 
     public Poll addText(String str) {
         Messages.Text.Builder text = Messages.Text.newBuilder()
@@ -73,7 +83,4 @@ public class Poll implements IGeneric {
         return messageId;
     }
 
-    public void setMessageId(UUID messageId) {
-        this.messageId = messageId;
-    }
 }
