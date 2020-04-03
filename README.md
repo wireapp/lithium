@@ -29,6 +29,17 @@
 <dependencies>
 ```
 
+If you want to use [Version]() resource (API endpoint), you must create version file during the build.
+For example, during the Docker build, one can put following code inside `Dockerfile`:
+```dockerfile
+# create version file
+ARG release_version=development
+ENV RELEASE_FILE_PATH=/path/to/release.txt
+RUN echo $release_version > $RELEASE_FILE_PATH
+```
+And than add build argument ie. in the build pipeline 
+[like that](https://github.com/dkovacevic/roman/blob/8d41bcba20a8f7607210263944c9ccecd757ed44/.github/workflows/release.yml#L26).
+
 ### Tutorial:
 - [Echo Bot](https://github.com/wireapp/echo-bot)
 

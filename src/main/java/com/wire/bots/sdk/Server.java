@@ -35,6 +35,7 @@ import com.wire.bots.sdk.server.filters.AuthenticationFeature;
 import com.wire.bots.sdk.server.resources.BotsResource;
 import com.wire.bots.sdk.server.resources.EmptyStatusResource;
 import com.wire.bots.sdk.server.resources.MessageResource;
+import com.wire.bots.sdk.server.resources.VersionResource;
 import com.wire.bots.sdk.server.tasks.AvailablePrekeysTask;
 import com.wire.bots.sdk.server.tasks.ConversationTask;
 import com.wire.bots.sdk.state.FileState;
@@ -196,7 +197,10 @@ public abstract class Server<Config extends Configuration> extends Application<C
     }
 
     private void runInBotMode() {
+        // add status endpoint
         addResource(new EmptyStatusResource());
+        // add version endpoint
+        addResource(new VersionResource());
 
         botResource();
         messageResource();
