@@ -34,7 +34,11 @@ public class Poll implements IGeneric {
     public Poll(UUID messageId) {
         this.messageId = messageId;
         poll = Messages.Composite.newBuilder();
-        poll.setExpectsReadConfirmation(true);
+    }
+
+    public Poll setExpectsReadConfirmation(boolean value) {
+        poll.setExpectsReadConfirmation(value);
+        return this;
     }
 
     public Poll addText(String str) {

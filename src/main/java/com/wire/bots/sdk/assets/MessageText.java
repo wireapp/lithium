@@ -28,8 +28,12 @@ public class MessageText implements IGeneric {
     private UUID messageId = UUID.randomUUID();
 
     public MessageText(String text) {
-        builder.setExpectsReadConfirmation(true);
         setText(text);
+    }
+
+    public MessageText setExpectsReadConfirmation(boolean value) {
+        builder.setExpectsReadConfirmation(value);
+        return this;
     }
 
     public MessageText setMessageId(UUID messageId) {
