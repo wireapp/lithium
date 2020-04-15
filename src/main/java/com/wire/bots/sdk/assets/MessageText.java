@@ -18,6 +18,7 @@
 
 package com.wire.bots.sdk.assets;
 
+import com.google.protobuf.ByteString;
 import com.waz.model.Messages;
 
 import java.util.UUID;
@@ -43,6 +44,14 @@ public class MessageText implements IGeneric {
 
     public MessageText setText(String text) {
         builder.setContent(text);
+        return this;
+    }
+
+    public MessageText setQuote(UUID msgId, byte[] sha256) {
+        Messages.Quote.Builder quote = Messages.Quote.newBuilder()
+                .setQuotedMessageId(msgId.toString())
+                .setQuotedMessageSha256(ByteString.copyFrom(sha256));
+        builder.setQuote(quote);
         return this;
     }
 
