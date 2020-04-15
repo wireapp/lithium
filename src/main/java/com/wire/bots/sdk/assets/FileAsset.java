@@ -55,14 +55,14 @@ public class FileAsset implements IGeneric, IAsset {
         sha256 = getSha256(encBytes);
     }
 
-    public FileAsset(String assetKey, String assetToken, byte[] sha256, UUID messageId) {
+    public FileAsset(String assetKey, String assetToken, byte[] sha256, byte[] otrKey, UUID messageId) {
         this.messageId = messageId;
         this.assetKey = assetKey;
         this.assetToken = assetToken;
         this.sha256 = sha256;
+        this.otrKey = otrKey;
         mimeType = null;
         encBytes = null;
-        otrKey = null;
     }
 
     @Override
