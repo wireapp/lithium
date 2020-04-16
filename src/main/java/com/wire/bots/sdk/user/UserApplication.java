@@ -195,7 +195,7 @@ public class UserApplication implements Managed {
 
         // connect the Websocket
         ClientManager container = ClientManager.createClient();
-        // container.getProperties().put(ClientProperties.RECONNECT_HANDLER, new SocketReconnectHandler(5));
+        container.getProperties().put(ClientProperties.RECONNECT_HANDLER, new SocketReconnectHandler(5));
         container.setDefaultMaxSessionIdleTimeout(-1);
 
         TlsConfiguration tlsConfiguration = config.getJerseyClient().getTlsConfiguration();
