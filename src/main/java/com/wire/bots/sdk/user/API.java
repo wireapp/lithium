@@ -75,7 +75,7 @@ public class API extends LoginClient implements Backend {
         selfPath = target.path("self");
 
         Feature feature = new LoggingFeature(Logger.getLOGGER(), Level.FINE, null, null);
-        assetsPath.register(feature);
+        //assetsPath.register(feature);
         //usersPath.register(feature);
     }
 

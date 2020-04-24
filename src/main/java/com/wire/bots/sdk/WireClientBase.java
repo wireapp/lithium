@@ -154,8 +154,9 @@ public class WireClientBase {
      */
     private Devices getDevices() throws HttpException {
         if (devices == null || devices.hasMissing()) {
-            OtrMessage msg = new OtrMessage(getDeviceId(), new Recipients());
-            devices = api.sendMessage(msg, false);
+            String deviceId = getDeviceId();
+            OtrMessage msg = new OtrMessage(deviceId, new Recipients());
+            devices = api.sendMessage(msg);
         }
         return devices;
     }

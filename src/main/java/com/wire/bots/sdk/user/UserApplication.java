@@ -93,7 +93,7 @@ public class UserApplication implements Managed {
             } catch (Exception e) {
                 Logger.warning("Token renewal error: %s", e);
             }
-        }, access.expire - 10, access.expire, TimeUnit.SECONDS);
+        }, 900, 900, TimeUnit.SECONDS);
 
         renewal.scheduleAtFixedRate(() -> {
             try {
