@@ -171,7 +171,6 @@ new_service() {
     read -p "Service summary: " service_summary
     read -p "Service base URL: " service_base_url
     read -p "Service RSA public key file: " service_pubkey_file
-    read -p "Service tags (ie: tutorial): " service_tags_str
 
     service_pubkey=$(< "$service_pubkey_file")
     service_tags=$(echo "$service_tags_str" | sed 's/,/","/g')
@@ -184,7 +183,7 @@ new_service() {
              "summary": "'"$service_summary"'",
              "base_url": "'"$service_base_url"'",
              "public_key": "'"$service_pubkey"'",
-             "tags": ["'"$service_tags"'"]
+             "tags": ["tutorial"]
             }' \
         -b ./.cookie \
         | jq .
@@ -207,7 +206,6 @@ update_service() {
     read -p "Service ID: " service_id
     read -p "New service name [default: no change]: " new_name
     read -p "New service description [default: no change]: " new_descr
-    read -p "New service tags [default: no change]: " new_tags
     read -p "New service summary [default: no change]: " new_summary
     if [ -z "$new_name" ]; then
         new_name="null"
@@ -224,18 +222,11 @@ update_service() {
     else
         new_summary="\"$new_summary\""
     fi
-    if [ -z "$new_tags" ]; then
-        new_tags="null"
-    else
-        new_tags_tmp=$(echo "$new_tags" | sed 's/,/","/g')
-        new_tags="[\"$new_tags_tmp\"]"
-    fi
     echo "Updating service profile ..."
     curl -s -XPUT "$zapi/provider/services/$service_id" \
         -H 'Content-Type: application/json' \
         -d '{"name": '"$new_name"',
              "description": '"$new_descr"',
-             "tags": '"$new_tags"',
              "summary": '"$new_summary"'
             }' \
         -b ./.cookie
