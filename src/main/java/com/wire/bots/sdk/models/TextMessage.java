@@ -20,12 +20,14 @@ package com.wire.bots.sdk.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TextMessage extends MessageBase {
     @JsonProperty
     private String text;
@@ -59,8 +61,8 @@ public class TextMessage extends MessageBase {
         return quotedMessageId;
     }
 
-    public void setQuotedMessageId(String quotedMessageId) {
-        this.quotedMessageId = UUID.fromString(quotedMessageId);
+    public void setQuotedMessageId(UUID quotedMessageId) {
+        this.quotedMessageId = quotedMessageId;
     }
 
     public byte[] getQuotedMessageSha256() {

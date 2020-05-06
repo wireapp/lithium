@@ -67,8 +67,10 @@ public class GenericMessageProcessor {
                 msg.setTime(time);
                 msg.setExpireAfterMillis(ephemeral.getExpireAfterMillis());
                 msg.setText(ephemeral.getText().getContent());
-                if (ephemeral.getText().hasQuote())
-                    msg.setQuotedMessageId(ephemeral.getText().getQuote().getQuotedMessageId());
+                if (ephemeral.getText().hasQuote()) {
+                    final String quotedMessageId = ephemeral.getText().getQuote().getQuotedMessageId();
+                    msg.setQuotedMessageId(UUID.fromString(quotedMessageId));
+                }
                 for (Messages.Mention mention : ephemeral.getText().getMentionsList())
                     msg.addMention(mention.getUserId(), mention.getStart(), mention.getLength());
 
@@ -118,8 +120,10 @@ public class GenericMessageProcessor {
                 TextMessage msg = new TextMessage(messageId, convId, clientId, from);
                 msg.setText(text.getContent());
                 msg.setTime(time);
-                if (text.hasQuote())
-                    msg.setQuotedMessageId(text.getQuote().getQuotedMessageId());
+                if (text.hasQuote()) {
+                    final String quotedMessageId = text.getQuote().getQuotedMessageId();
+                    msg.setQuotedMessageId(UUID.fromString(quotedMessageId));
+                }
                 for (Messages.Mention mention : text.getMentionsList())
                     msg.addMention(mention.getUserId(), mention.getStart(), mention.getLength());
 
