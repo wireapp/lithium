@@ -32,6 +32,7 @@ import com.wire.bots.sdk.healthchecks.CryptoHealthCheck;
 import com.wire.bots.sdk.healthchecks.Outbound;
 import com.wire.bots.sdk.healthchecks.StorageHealthCheck;
 import com.wire.bots.sdk.server.filters.AuthenticationFeature;
+import com.wire.bots.sdk.server.filters.RequestMdcFactoryFilter;
 import com.wire.bots.sdk.server.resources.BotsResource;
 import com.wire.bots.sdk.server.resources.EmptyStatusResource;
 import com.wire.bots.sdk.server.resources.MessageResource;
@@ -254,6 +255,8 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
         environment.metrics().register("logger.errors", (Gauge<Integer>) Logger::getErrorCount);
         environment.metrics().register("logger.warnings", (Gauge<Integer>) Logger::getWarningCount);
+
+        environment.jersey().register(new RequestMdcFactoryFilter());
 
         JmxReporter jmxReporter = JmxReporter.forRegistry(environment.metrics())
                 .convertRatesTo(TimeUnit.SECONDS)
