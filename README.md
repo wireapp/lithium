@@ -95,6 +95,14 @@ Using the `manage.sh` script:
 - `WIRE_API_HOST`: Wire Backend. `https://prod-nginz-https.wire.com` by default
 - `SERVICE_TOKEN`: Your service authentication token. All requests sent by the BE will have this token as Bearer Authorization HTTP header
 
+## Logging to JSON
+Wire uses JSON logging in the production. To enable JSON logging one must specify `json-console` appender in the Dropwizard yaml.
+```yaml
+logging:
+  appenders:
+    - type: json-console
+```
+
 ## Other examples of Wire Services
 
 - [Hello World](https://github.com/wireapp/echo-bot)
