@@ -132,16 +132,9 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
         buildJdbi(config.database);
 
-        client = new JerseyClientBuilder(environment)
-                .using(config.getJerseyClient())
-                .withProvider(MultiPartFeature.class)
-                .withProvider(JacksonJsonProvider.class)
-                .build(getName());
+        client = createHttpClient(config, env);
 
-        StorageFactory storageFactory = getStorageFactory();
-        CryptoFactory cryptoFactory = getCryptoFactory();
-
-        repo = new ClientRepo(client, cryptoFactory, storageFactory);
+        repo = createClientRepo();
 
         initialize(config, env);
 
@@ -156,6 +149,20 @@ public abstract class Server<Config extends Configuration> extends Application<C
         initTelemetry();
 
         onRun(config, env);
+    }
+
+    private Client createHttpClient(Config config, Environment env) {
+        return new JerseyClientBuilder(env)
+                .using(config.getJerseyClient())
+                .withProvider(MultiPartFeature.class)
+                .withProvider(JacksonJsonProvider.class)
+                .build(getName());
+    }
+
+    protected ClientRepo createClientRepo() {
+        StorageFactory storageFactory = getStorageFactory();
+        CryptoFactory cryptoFactory = getCryptoFactory();
+        return new ClientRepo(getClient(), cryptoFactory, storageFactory);
     }
 
     protected void buildJdbi(Configuration.Database database) {

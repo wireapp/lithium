@@ -37,7 +37,7 @@ public class WireClientBase {
         byte[] content = generic.createGenericMsg().toByteArray();
 
         // Try to encrypt the msg for those devices that we have the session already
-        Recipients encrypt = crypto.encrypt(getAllDevices(), content);
+        Recipients encrypt = encrypt(content, getAllDevices());
         OtrMessage msg = new OtrMessage(getDeviceId(), encrypt);
 
         Devices res = api.sendMessage(msg, false);
@@ -64,19 +64,19 @@ public class WireClientBase {
     }
 
     protected void postGenericMessage(IGeneric generic, UUID userId) throws Exception {
-        byte[] content = generic.createGenericMsg().toByteArray();
-
         // Try to encrypt the msg for those devices that we have the session already
         Missing all = getAllDevices();
-        Missing user = new Missing();
+        Missing missing = new Missing();
         for (UUID u : all.toUserIds()) {
             if (userId.equals(u)) {
                 Collection<String> clients = all.toClients(u);
-                user.add(u, clients);
+                missing.add(u, clients);
             }
         }
 
-        Recipients encrypt = crypto.encrypt(user, content);
+        byte[] content = generic.createGenericMsg().toByteArray();
+
+        Recipients encrypt = encrypt(content, missing);
         OtrMessage msg = new OtrMessage(getDeviceId(), encrypt);
 
         Devices res = api.sendPartialMessage(msg, userId);
@@ -128,6 +128,10 @@ public class WireClientBase {
 
     public boolean isClosed() {
         return crypto.isClosed();
+    }
+
+    public Recipients encrypt(byte[] content, Missing missing) throws CryptoException {
+        return crypto.encrypt(missing, content);
     }
 
     public String decrypt(UUID userId, String clientId, String cypher) throws CryptoException {

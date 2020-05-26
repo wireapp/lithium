@@ -40,7 +40,7 @@ public class BotClient extends WireClientBase implements WireClient {
 
     private final API api;
 
-    BotClient(NewBot state, Crypto crypto, API api) {
+    protected BotClient(NewBot state, Crypto crypto, API api) {
         super(api, crypto, state);
         this.api = api;
     }
