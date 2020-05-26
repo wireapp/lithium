@@ -1,0 +1,4 @@
+io.dropwizard.logging.ConsoleAppenderFactory
+io.dropwizard.logging.FileAppenderFactory
+io.dropwizard.logging.SyslogAppenderFactory
+com.wire.bots.sdk.tools.JsonAppenderFactory
