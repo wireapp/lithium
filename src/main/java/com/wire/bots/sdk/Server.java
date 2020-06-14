@@ -87,7 +87,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
     /**
      * Override this method to put your custom initialization
-     * NOTE: ClientRepo is not yet set at this stage. messageHandler is also not set
+     * NOTE: MessageHandler is not yet set when this method is invoked!
      *
      * @param config Configuration object (yaml)
      * @param env    Environment object
@@ -130,7 +130,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
         migrateDBifNeeded(config.database);
 
-        buildJdbi(config.database);
+        jdbi = buildJdbi(config.database, env);
 
         client = createHttpClient(config, env);
 
@@ -165,8 +165,8 @@ public abstract class Server<Config extends Configuration> extends Application<C
         return new ClientRepo(getClient(), cryptoFactory, storageFactory);
     }
 
-    protected void buildJdbi(Configuration.Database database) {
-        this.jdbi = new DBIFactory().build(environment, database, "lithium");
+    protected DBI buildJdbi(Configuration.Database database, Environment env) {
+        return new DBIFactory().build(env, database, "lithium");
     }
 
     protected void migrateDBifNeeded(Configuration.Database database) {
@@ -185,10 +185,10 @@ public abstract class Server<Config extends Configuration> extends Application<C
             if (config.db.driver.equals("fs"))
                 return botId -> new FileState(botId, config.db);
 
-            return botId -> new JdbiState(botId, jdbi);
+            return botId -> new JdbiState(botId, getJdbi());
         }
 
-        return botId -> new JdbiState(botId, jdbi);
+        return botId -> new JdbiState(botId, getJdbi());
     }
 
     public CryptoFactory getCryptoFactory() {
@@ -198,10 +198,10 @@ public abstract class Server<Config extends Configuration> extends Application<C
             if (config.db.driver.equals("fs"))
                 return (botId) -> new CryptoFile(botId, config.db);
 
-            return (botId) -> new CryptoDatabase(botId, new JdbiStorage(jdbi));
+            return (botId) -> new CryptoDatabase(botId, new JdbiStorage(getJdbi()));
         }
 
-        return (botId) -> new CryptoDatabase(botId, new JdbiStorage(jdbi));
+        return (botId) -> new CryptoDatabase(botId, new JdbiStorage(getJdbi()));
     }
 
     private void runInBotMode() {
@@ -213,15 +213,15 @@ public abstract class Server<Config extends Configuration> extends Application<C
         botResource();
         messageResource();
 
-        addTask(new ConversationTask(repo));
-        addTask(new AvailablePrekeysTask(repo));
+        addTask(new ConversationTask(getRepo()));
+        addTask(new AvailablePrekeysTask(getRepo()));
     }
 
     private void runInUserMode() {
         Logger.info("Starting in User Mode");
 
         UserApplication app = new UserApplication(environment)
-                .addClient(client)
+                .addClient(getClient())
                 .addConfig(config)
                 .addCryptoFactory(getCryptoFactory())
                 .addStorageFactory(getStorageFactory())
@@ -231,7 +231,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
     }
 
     protected void messageResource() {
-        addResource(new MessageResource(messageHandler, repo));
+        addResource(new MessageResource(messageHandler, getRepo()));
     }
 
     protected void botResource() {
@@ -258,7 +258,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
         environment.healthChecks().register("Storage", new StorageHealthCheck(storageFactory));
         environment.healthChecks().register("Crypto", new CryptoHealthCheck(cryptoFactory));
         environment.healthChecks().register("Alice2Bob", new Alice2Bob(cryptoFactory));
-        environment.healthChecks().register("Outbound", new Outbound(client));
+        environment.healthChecks().register("Outbound", new Outbound(getClient()));
 
         environment.metrics().register("logger.errors", (Gauge<Integer>) Logger::getErrorCount);
         environment.metrics().register("logger.warnings", (Gauge<Integer>) Logger::getWarningCount);
