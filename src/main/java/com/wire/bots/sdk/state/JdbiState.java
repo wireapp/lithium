@@ -1,6 +1,7 @@
 package com.wire.bots.sdk.state;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wire.bots.sdk.exceptions.MissingStateException;
 import com.wire.bots.sdk.server.model.NewBot;
 import org.skife.jdbi.v2.DBI;
 
@@ -28,7 +29,7 @@ public class JdbiState implements State {
     public NewBot getState() throws IOException {
         String str = statesDAO.get(botId);
         if (str == null)
-            throw new IOException("Missing State");
+            throw new MissingStateException(botId);
         return mapper.readValue(str, NewBot.class);
     }
 

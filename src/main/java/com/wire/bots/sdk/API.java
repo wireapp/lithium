@@ -257,7 +257,7 @@ public class API implements Backend {
                 .bodyPart(bodyPart2);
     }
 
-    byte[] downloadAsset(String assetKey, String assetToken) throws HttpException {
+    public byte[] downloadAsset(String assetKey, String assetToken) throws HttpException {
         Invocation.Builder req = assets
                 .path(assetKey)
                 .request()
