@@ -97,6 +97,7 @@ public class API extends LoginClient implements Backend {
         if (statusCode >= 400)
             throw new HttpException(response.getStatusInfo().getReasonPhrase(), response.getStatus());
 
+        response.close();
         return new Devices();
     }
 
@@ -118,6 +119,7 @@ public class API extends LoginClient implements Backend {
         if (statusCode >= 400)
             throw new HttpException(response.getStatusInfo().getReasonPhrase(), response.getStatus());
 
+        response.close();
         return new Devices();
     }
 
@@ -165,6 +167,7 @@ public class API extends LoginClient implements Backend {
         if (response.getStatus() >= 400) {
             throw new HttpException(response.readEntity(String.class), response.getStatus());
         }
+        response.close();
     }
 
     public AssetKey uploadAsset(IAsset asset) throws Exception {
