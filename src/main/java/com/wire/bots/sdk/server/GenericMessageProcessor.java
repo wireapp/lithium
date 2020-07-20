@@ -202,18 +202,21 @@ public class GenericMessageProcessor {
             base.fromRemote(remoteData);
 
             if (base.getAssetKey() != null) {
-                if (original.hasImage()) {
-                    handler.onImage(client, new ImageMessage(base, original.getImage()));
-                    return true;
+                if (original != null) {
+                    if (original.hasImage()) {
+                        handler.onImage(client, new ImageMessage(base, original.getImage()));
+                        return true;
+                    }
+                    if (original.hasAudio()) {
+                        handler.onAudio(client, new AudioMessage(base, original.getAudio()));
+                        return true;
+                    }
+                    if (original.hasVideo()) {
+                        handler.onVideo(client, new VideoMessage(base, original.getVideo()));
+                        return true;
+                    }
                 }
-                if (original.hasAudio()) {
-                    handler.onAudio(client, new AudioMessage(base, original.getAudio()));
-                    return true;
-                }
-                if (original.hasVideo()) {
-                    handler.onVideo(client, new VideoMessage(base, original.getVideo()));
-                    return true;
-                }
+
                 {
                     handler.onAttachment(client, new AttachmentMessage(base));
                     return true;
