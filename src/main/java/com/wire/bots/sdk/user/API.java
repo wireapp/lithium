@@ -417,6 +417,22 @@ public class API extends LoginClient implements Backend {
         return response.readEntity(User.class);
     }
 
+    public UUID getUserId(String handle) throws HttpException {
+        Response response = usersPath.
+                path("handles").
+                path(handle).
+                request(MediaType.APPLICATION_JSON).
+                header(HttpHeaders.AUTHORIZATION, bearer(token)).
+                get();
+
+        if (response.getStatus() != 200) {
+            throw new HttpException(response.readEntity(String.class), response.getStatus());
+        }
+
+        final _TeamMember teamMember = response.readEntity(_TeamMember.class);
+        return teamMember.user;
+    }
+
     public boolean hasDevice(UUID userId, String clientId) {
         Response response = usersPath.
                 path(userId.toString()).
@@ -426,6 +442,7 @@ public class API extends LoginClient implements Backend {
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
                 get();
 
+        response.close();
         return response.getStatus() == 200;
     }
 
