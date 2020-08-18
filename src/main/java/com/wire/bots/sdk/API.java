@@ -26,7 +26,9 @@ import com.wire.bots.sdk.models.otr.*;
 import com.wire.bots.sdk.server.model.Conversation;
 import com.wire.bots.sdk.server.model.NewBotResponseModel;
 import com.wire.bots.sdk.server.model.User;
+import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
+import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.media.multipart.BodyPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 
@@ -42,6 +44,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class API implements Backend {
 
@@ -74,6 +77,12 @@ public class API implements Backend {
                 .path("prekeys");
         prekeys = users
                 .path("prekeys");
+
+        if (Logger.getLevel() == Level.FINE) {
+            Feature feature = new LoggingFeature(Logger.getLOGGER(), Level.FINE, null, null);
+            assets.register(feature);
+            users.register(feature);
+        }
     }
 
     public Response options() {

@@ -74,9 +74,11 @@ public class API extends LoginClient implements Backend {
         connectionsPath = target.path("connections");
         selfPath = target.path("self");
 
-        Feature feature = new LoggingFeature(Logger.getLOGGER(), Level.FINE, null, null);
-        //assetsPath.register(feature);
-        //usersPath.register(feature);
+        if (Logger.getLevel() == Level.FINE) {
+            Feature feature = new LoggingFeature(Logger.getLOGGER(), Level.FINE, null, null);
+            assetsPath.register(feature);
+            usersPath.register(feature);
+        }
     }
 
     @Override
