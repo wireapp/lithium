@@ -28,6 +28,7 @@ import com.wire.bots.sdk.server.model.NewBotResponseModel;
 import com.wire.bots.sdk.server.model.User;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.tools.Util;
+import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.media.multipart.BodyPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
@@ -56,9 +57,11 @@ public class API implements Backend {
     private final WebTarget conversation;
     private final WebTarget bot;
 
+    private final Client httpClient;
     private final String token;
 
     public API(Client httpClient, String token) {
+        this.httpClient = httpClient;
         this.token = token;
 
         bot = httpClient
@@ -270,12 +273,25 @@ public class API implements Backend {
         Invocation.Builder req = assets
                 .path(assetKey)
                 .request()
+                .property(ClientProperties.FOLLOW_REDIRECTS, Boolean.FALSE)
                 .header(HttpHeaders.AUTHORIZATION, bearer());
 
         if (assetToken != null)
             req.header("Asset-Token", assetToken);
 
         Response response = req.get();
+
+        if (response.getStatus() >= 400) {
+            throw new HttpException(response.readEntity(String.class), response.getStatus());
+        }
+
+        final String location = response.getHeaderString(HttpHeaders.LOCATION);
+        response.close();
+
+        response = httpClient
+                .target(location)
+                .request()
+                .get();
 
         if (response.getStatus() >= 400) {
             throw new HttpException(response.readEntity(String.class), response.getStatus());
