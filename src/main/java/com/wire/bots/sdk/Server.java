@@ -24,7 +24,6 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.wire.bots.sdk.crypto.CryptoDatabase;
 import com.wire.bots.sdk.crypto.CryptoFile;
 import com.wire.bots.sdk.crypto.storage.JdbiStorage;
-import com.wire.bots.sdk.crypto.storage.RedisStorage;
 import com.wire.bots.sdk.factories.CryptoFactory;
 import com.wire.bots.sdk.factories.StorageFactory;
 import com.wire.bots.sdk.healthchecks.Alice2Bob;
@@ -41,7 +40,6 @@ import com.wire.bots.sdk.server.tasks.AvailablePrekeysTask;
 import com.wire.bots.sdk.server.tasks.ConversationTask;
 import com.wire.bots.sdk.state.FileState;
 import com.wire.bots.sdk.state.JdbiState;
-import com.wire.bots.sdk.state.RedisState;
 import com.wire.bots.sdk.tools.Logger;
 import com.wire.bots.sdk.user.UserApplication;
 import io.dropwizard.Application;
@@ -60,6 +58,7 @@ import org.flywaydb.core.Flyway;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.skife.jdbi.v2.DBI;
 
+import javax.annotation.Nullable;
 import javax.ws.rs.client.Client;
 import java.util.concurrent.TimeUnit;
 
@@ -169,40 +168,35 @@ public abstract class Server<Config extends Configuration> extends Application<C
         return new ClientRepo(getClient(), cryptoFactory, storageFactory);
     }
 
+    @Nullable
     protected DBI buildJdbi(Configuration.Database database, Environment env) {
+        if (database.getDriverClass().equalsIgnoreCase("fs"))
+            return null;
         return new DBIFactory().build(env, database, "lithium");
     }
 
     protected void migrateDBifNeeded(Configuration.Database database) {
-        Flyway flyway = Flyway
-                .configure()
-                .dataSource(database.getUrl(), database.getUser(), database.getPassword())
-                .baselineOnMigrate(database.baseline)
-                .load();
-        flyway.migrate();
+        if (!database.getDriverClass().equalsIgnoreCase("fs")) {
+            Flyway flyway = Flyway
+                    .configure()
+                    .dataSource(database.getUrl(), database.getUser(), database.getPassword())
+                    .baselineOnMigrate(database.baseline)
+                    .load();
+            flyway.migrate();
+        }
     }
 
     public StorageFactory getStorageFactory() {
-        if (config.db != null) {
-            if (config.db.driver.equals("redis"))
-                return (botId) -> new RedisState(botId, config.db);
-            if (config.db.driver.equals("fs"))
-                return botId -> new FileState(botId, config.db);
-
-            return botId -> new JdbiState(botId, getJdbi());
+        if (config.database.getDriverClass().equalsIgnoreCase("fs")) {
+            return botId -> new FileState(config.database.getUrl(), botId);
         }
 
         return botId -> new JdbiState(botId, getJdbi());
     }
 
     public CryptoFactory getCryptoFactory() {
-        if (config.db != null) {
-            if (config.db.driver.equals("redis"))
-                return (botId) -> new CryptoDatabase(botId, new RedisStorage(config.db.host, config.db.port, config.db.password));
-            if (config.db.driver.equals("fs"))
-                return (botId) -> new CryptoFile(botId, config.db);
-
-            return (botId) -> new CryptoDatabase(botId, new JdbiStorage(getJdbi()));
+        if (config.database.getDriverClass().equalsIgnoreCase("fs")) {
+            return (botId) -> new CryptoFile(config.database.getUrl(), botId);
         }
 
         return (botId) -> new CryptoDatabase(botId, new JdbiStorage(getJdbi()));

@@ -47,10 +47,6 @@ public class Configuration extends io.dropwizard.Configuration {
     @Valid
     private _JerseyClientConfiguration jerseyClient = new _JerseyClientConfiguration();
 
-    @JsonProperty
-    @Deprecated
-    public DB db;
-
     @JsonProperty("swagger")
     public SwaggerBundleConfiguration swagger = new _SwaggerBundleConfiguration();
 
@@ -72,17 +68,6 @@ public class Configuration extends io.dropwizard.Configuration {
     @JsonProperty("jerseyClient")
     public void setJerseyClient(_JerseyClientConfiguration jerseyClient) {
         this.jerseyClient = jerseyClient;
-    }
-
-    @Deprecated
-    public static class DB {
-        public String host;
-        public Integer port;
-        public String user;
-        public String password;
-        public Integer timeout = 5000;
-        public String url;
-        public String driver;
     }
 
     public static class UserMode {

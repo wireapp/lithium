@@ -21,11 +21,9 @@ package com.wire.bots.sdk.crypto;
 import com.wire.bots.cryptobox.CryptoBox;
 import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.cryptobox.ICryptobox;
-import com.wire.bots.sdk.Configuration;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -53,29 +51,6 @@ public class CryptoFile extends CryptoBase {
      */
     public CryptoFile(String rootDir, UUID botId) throws CryptoException {
         root = String.format("%s/%s", rootDir, botId);
-        box = CryptoBox.open(root);
-    }
-
-    /**
-     * Opens the CryptoBox using given directory path
-     * The given directory must be writable.
-     * <p/>
-     * Note: Do not create multiple OtrManagers that operate on the same or
-     * overlapping directories. Doing so results in undefined behaviour.
-     *
-     * @param db    config
-     * @param botId Bot id
-     * @throws Exception
-     */
-    public CryptoFile(UUID botId, Configuration.DB db) throws CryptoException {
-        String path;
-        try {
-            URL root = new URL(db.url);
-            path = root.getPath();
-        } catch (Exception e) {
-            path = "data";
-        }
-        root = String.format("%s/%s", path, botId);
         box = CryptoBox.open(root);
     }
 

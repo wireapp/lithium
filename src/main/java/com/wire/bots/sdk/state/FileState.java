@@ -1,13 +1,11 @@
 package com.wire.bots.sdk.state;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wire.bots.sdk.Configuration;
 import com.wire.bots.sdk.exceptions.MissingStateException;
 import com.wire.bots.sdk.server.model.NewBot;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.UUID;
 
 public class FileState implements State {
@@ -20,22 +18,6 @@ public class FileState implements State {
         this.path = path;
         this.botId = botId;
         File dir = new File(String.format("%s/%s", path, botId));
-        dir.mkdirs();
-    }
-
-    public FileState(UUID botId, Configuration.DB db) {
-        this.botId = botId;
-
-        String path;
-        try {
-            URL root = new URL(db.url);
-            path = root.getPath();
-        } catch (Exception e) {
-            path = "data";
-        }
-
-        this.path = path;
-        File dir = new File(String.format("%s/%s", this.path, botId));
         dir.mkdirs();
     }
 
