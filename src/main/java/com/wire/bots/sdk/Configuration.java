@@ -32,9 +32,17 @@ import javax.validation.constraints.NotNull;
  * Application configuration class. Extend this class to add your custom configuration
  */
 public class Configuration extends io.dropwizard.Configuration {
-    @JsonProperty("database")
+    public static final String WIRE_BOTS_SDK_TOKEN = "wire.bots.sdk.token";
+    public static final String WIRE_BOTS_SDK_API = "wire.bots.sdk.api";
+    public static final String WIRE_BOTS_SDK_WS = "wire.bots.sdk.ws";
+
+    @JsonProperty
     @NotNull
     public Database database;
+
+    @JsonProperty
+    @NotNull
+    public String token;   // Service token. Obtained when the Service is registered with Wire
 
     @Valid
     private _JerseyClientConfiguration jerseyClient = new _JerseyClientConfiguration();

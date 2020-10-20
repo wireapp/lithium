@@ -95,7 +95,7 @@ public class API implements Backend {
     }
 
     private String host() {
-        String host = System.getenv("WIRE_API_HOST");
+        String host = System.getProperty(Configuration.WIRE_BOTS_SDK_API, System.getenv("WIRE_API_HOST"));
         return host != null ? host : "https://prod-nginz-https.wire.com";
     }
 

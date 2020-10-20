@@ -19,6 +19,7 @@
 package com.wire.bots.sdk.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.wire.bots.sdk.Configuration;
 import com.wire.bots.sdk.exceptions.AuthException;
 import com.wire.bots.sdk.exceptions.HttpException;
 import com.wire.bots.sdk.models.otr.PreKey;
@@ -69,7 +70,7 @@ public class LoginClient {
     }
 
     public String host() {
-        String host = System.getenv("WIRE_API_HOST");
+        String host = System.getProperty(Configuration.WIRE_BOTS_SDK_API, System.getenv("WIRE_API_HOST"));
         return host != null ? host : "https://prod-nginz-https.wire.com";
     }
 

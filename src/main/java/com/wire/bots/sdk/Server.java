@@ -128,6 +128,10 @@ public abstract class Server<Config extends Configuration> extends Application<C
         this.config = config;
         this.environment = env;
 
+        System.setProperty(Configuration.WIRE_BOTS_SDK_TOKEN, config.token);
+        System.setProperty(Configuration.WIRE_BOTS_SDK_API, config.apiHost);
+        System.setProperty(Configuration.WIRE_BOTS_SDK_WS, config.wsHost);
+
         migrateDBifNeeded(config.database);
 
         jdbi = buildJdbi(config.database, env);
