@@ -37,8 +37,8 @@ public class Configuration extends io.dropwizard.Configuration {
     public static final String WIRE_BOTS_SDK_WS = "wire.bots.sdk.ws";
 
     @JsonProperty
-    @NotNull
-    public Database database;
+    @Valid
+    public Database database = new Database();
 
     @JsonProperty
     @NotNull
