@@ -1,5 +1,7 @@
 package com.wire.bots.sdk.tools;
 
+import com.wire.xenon.tools.Util;
+
 public class AuthValidator {
     private final String auth;
 

@@ -34,7 +34,6 @@ import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.media.multipart.BodyPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.client.Client;
@@ -315,7 +314,7 @@ public class API implements WireAPI {
 
     @Override
     public boolean deleteConversation(UUID teamId) {
-        throw new NotImplementedException();
+        return false;
     }
 
     @Override
