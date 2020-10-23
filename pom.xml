@@ -28,18 +28,6 @@
         </repository>
     </repositories>
 
-    <profiles>
-        <!--        <profile>-->
-        <!--            <id>java8-doclint-disabled</id>-->
-        <!--            <activation>-->
-        <!--                <jdk>[1.8,)</jdk>-->
-        <!--            </activation>-->
-        <!--            <properties>-->
-        <!--                <javadoc.opts>-Xdoclint:none</javadoc.opts>-->
-        <!--            </properties>-->
-        <!--        </profile>-->
-    </profiles>
-
     <dependencies>
         <dependency>
             <groupId>com.wire</groupId>
@@ -81,13 +69,7 @@
         <dependency>
             <groupId>com.smoketurner</groupId>
             <artifactId>dropwizard-swagger</artifactId>
-            <version>1.1.0-1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.validation</groupId>
-                    <artifactId>validation-api</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>2.0.12-1</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.tyrus.bundles</groupId>
@@ -97,7 +79,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.2.1</version>
+            <version>42.2.18</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -110,7 +92,6 @@
             <artifactId>flyway-core</artifactId>
             <version>6.1.0</version>
         </dependency>
-
     </dependencies>
     <build>
         <extensions>

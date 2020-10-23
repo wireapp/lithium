@@ -39,7 +39,6 @@ public class CryptoPostgresTest {
         DataSourceFactory dataSourceFactory = new DataSourceFactory();
         dataSourceFactory.setDriverClass("org.postgresql.Driver");
         dataSourceFactory.setUrl("jdbc:postgresql://localhost/lithium");
-        dataSourceFactory.setUser("dejankovacevic");
 
         // Migrate DB if needed
         Flyway flyway = Flyway
