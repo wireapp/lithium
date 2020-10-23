@@ -19,14 +19,14 @@
 package com.wire.bots.sdk.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.wire.bots.sdk.Configuration;
-import com.wire.bots.sdk.exceptions.AuthException;
-import com.wire.bots.sdk.exceptions.HttpException;
-import com.wire.bots.sdk.models.otr.PreKey;
-import com.wire.bots.sdk.tools.Logger;
-import com.wire.bots.sdk.user.model.Access;
-import com.wire.bots.sdk.user.model.NewClient;
-import com.wire.bots.sdk.user.model.NotificationList;
+import com.wire.xenon.Const;
+import com.wire.xenon.exceptions.AuthException;
+import com.wire.xenon.exceptions.HttpException;
+import com.wire.xenon.models.otr.PreKey;
+import com.wire.xenon.tools.Logger;
+import com.wire.xenon.user.model.Access;
+import com.wire.xenon.user.model.NewClient;
+import com.wire.xenon.user.model.NotificationList;
 import org.glassfish.jersey.logging.LoggingFeature;
 
 import javax.ws.rs.client.Client;
@@ -40,7 +40,7 @@ import java.util.logging.Level;
 public class LoginClient {
     private static final String LABEL = "wbots";
     private static final String COOKIE_NAME = "zuid";
-    final WebTarget clientsPath;
+    protected final WebTarget clientsPath;
     private final WebTarget loginPath;
     private final WebTarget accessPath;
     private final WebTarget cookiesPath;
@@ -69,13 +69,13 @@ public class LoginClient {
         accessPath.register(feature);
     }
 
-    public String host() {
-        String host = System.getProperty(Configuration.WIRE_BOTS_SDK_API, System.getenv("WIRE_API_HOST"));
-        return host != null ? host : "https://prod-nginz-https.wire.com";
+    public static String bearer(String token) {
+        return "Bearer " + token;
     }
 
-    static String bearer(String token) {
-        return "Bearer " + token;
+    public String host() {
+        String host = System.getProperty(Const.WIRE_BOTS_SDK_API, System.getenv("WIRE_API_HOST"));
+        return host != null ? host : "https://prod-nginz-https.wire.com";
     }
 
     public Access login(String email, String password) throws HttpException {
@@ -114,7 +114,10 @@ public class LoginClient {
 
         NewCookie zuid = response.getCookies().get(COOKIE_NAME);
         if (zuid != null) {
-            access.setCookie(zuid);
+            com.wire.xenon.user.model.Cookie c = new com.wire.xenon.user.model.Cookie();
+            c.name = zuid.getName();
+            c.value = zuid.getValue();
+            access.setCookie(c);
         }
         return access;
     }
@@ -194,7 +197,10 @@ public class LoginClient {
 
         NewCookie zuid = response.getCookies().get(COOKIE_NAME);
         if (zuid != null) {
-            access.setCookie(zuid);
+            com.wire.xenon.user.model.Cookie c = new com.wire.xenon.user.model.Cookie();
+            c.name = zuid.getName();
+            c.value = zuid.getValue();
+            access.setCookie(c);
         }
         return access;
     }

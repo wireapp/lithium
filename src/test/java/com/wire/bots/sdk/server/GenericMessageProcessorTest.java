@@ -2,9 +2,10 @@ package com.wire.bots.sdk.server;
 
 import com.google.protobuf.ByteString;
 import com.waz.model.Messages;
-import com.wire.bots.sdk.MessageHandlerBase;
-import com.wire.bots.sdk.WireClient;
-import com.wire.bots.sdk.models.LinkPreviewMessage;
+import com.wire.xenon.MessageHandlerBase;
+import com.wire.xenon.WireClient;
+import com.wire.xenon.backend.GenericMessageProcessor;
+import com.wire.xenon.models.LinkPreviewMessage;
 import org.junit.Test;
 
 import java.util.UUID;
@@ -71,7 +72,7 @@ public class GenericMessageProcessorTest {
         processor.process(from, sender, convId, time, builder.build());
     }
 
-    private class MessageHandler extends MessageHandlerBase {
+    private static class MessageHandler extends MessageHandlerBase {
         @Override
         public void onLinkPreview(WireClient client, LinkPreviewMessage msg) {
             assert msg.getTitle().equals(TITLE);

@@ -19,14 +19,14 @@
 package com.wire.bots.sdk.server.resources;
 
 import com.codahale.metrics.annotation.Metered;
-import com.wire.bots.sdk.MessageHandlerBase;
-import com.wire.bots.sdk.crypto.Crypto;
-import com.wire.bots.sdk.factories.CryptoFactory;
-import com.wire.bots.sdk.factories.StorageFactory;
-import com.wire.bots.sdk.server.model.ErrorMessage;
-import com.wire.bots.sdk.server.model.NewBot;
-import com.wire.bots.sdk.server.model.NewBotResponseModel;
-import com.wire.bots.sdk.tools.Logger;
+import com.wire.xenon.MessageHandlerBase;
+import com.wire.xenon.backend.models.ErrorMessage;
+import com.wire.xenon.backend.models.NewBot;
+import com.wire.xenon.backend.models.NewBotResponseModel;
+import com.wire.xenon.crypto.Crypto;
+import com.wire.xenon.factories.CryptoFactory;
+import com.wire.xenon.factories.StorageFactory;
+import com.wire.xenon.tools.Logger;
 import io.swagger.annotations.*;
 
 import javax.validation.Valid;

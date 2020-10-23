@@ -1,16 +1,18 @@
 package com.wire.bots.sdk.user;
 
 import com.wire.bots.cryptobox.CryptoException;
-import com.wire.bots.sdk.MessageHandlerBase;
-import com.wire.bots.sdk.WireClient;
-import com.wire.bots.sdk.crypto.Crypto;
-import com.wire.bots.sdk.factories.CryptoFactory;
-import com.wire.bots.sdk.factories.StorageFactory;
-import com.wire.bots.sdk.server.model.NewBot;
-import com.wire.bots.sdk.server.model.Payload;
 import com.wire.bots.sdk.server.resources.MessageResourceBase;
-import com.wire.bots.sdk.state.State;
-import com.wire.bots.sdk.tools.Logger;
+import com.wire.xenon.MessageHandlerBase;
+import com.wire.xenon.WireAPI;
+import com.wire.xenon.WireClient;
+import com.wire.xenon.backend.models.NewBot;
+import com.wire.xenon.backend.models.Payload;
+import com.wire.xenon.crypto.Crypto;
+import com.wire.xenon.factories.CryptoFactory;
+import com.wire.xenon.factories.StorageFactory;
+import com.wire.xenon.state.State;
+import com.wire.xenon.tools.Logger;
+import com.wire.xenon.user.UserClient;
 
 import javax.ws.rs.client.Client;
 import java.io.IOException;
@@ -48,7 +50,7 @@ public class UserMessageResource extends MessageResourceBase {
         NewBot newBot = getStorage().getState();
         String token = newBot.token;
         String clientId = newBot.client;
-        API api = new API(client, null, token);
+        WireAPI api = new API(client, null, token);
         UserClient userClient = new UserClient(userId, clientId, null, crypto, api);
 
         handleUpdate(id, payload, userClient);
@@ -59,7 +61,7 @@ public class UserMessageResource extends MessageResourceBase {
         NewBot newBot = getStorage().getState();
         String token = newBot.token;
         String clientId = newBot.client;
-        API api = new API(client, convId, token);
+        WireAPI api = new API(client, convId, token);
         return new UserClient(userId, clientId, convId, crypto, api);
     }
 

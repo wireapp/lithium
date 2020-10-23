@@ -22,12 +22,12 @@ import com.codahale.metrics.annotation.Metered;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.sdk.ClientRepo;
-import com.wire.bots.sdk.MessageHandlerBase;
-import com.wire.bots.sdk.WireClient;
-import com.wire.bots.sdk.exceptions.MissingStateException;
-import com.wire.bots.sdk.server.model.ErrorMessage;
-import com.wire.bots.sdk.server.model.Payload;
-import com.wire.bots.sdk.tools.Logger;
+import com.wire.xenon.MessageHandlerBase;
+import com.wire.xenon.WireClient;
+import com.wire.xenon.backend.models.ErrorMessage;
+import com.wire.xenon.backend.models.Payload;
+import com.wire.xenon.exceptions.MissingStateException;
+import com.wire.xenon.tools.Logger;
 import io.swagger.annotations.*;
 
 import javax.validation.Valid;

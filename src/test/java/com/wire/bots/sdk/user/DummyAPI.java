@@ -1,6 +1,6 @@
 package com.wire.bots.sdk.user;
 
-import com.wire.bots.sdk.models.otr.*;
+import com.wire.xenon.models.otr.*;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 
 import java.util.Base64;

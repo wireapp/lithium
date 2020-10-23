@@ -1,9 +1,9 @@
 package com.wire.bots.sdk;
 
 import com.codahale.metrics.MetricRegistry;
-import com.wire.bots.sdk.server.model.Conversation;
-import com.wire.bots.sdk.server.model.NewBot;
-import com.wire.bots.sdk.state.JdbiState;
+import com.wire.xenon.backend.models.Conversation;
+import com.wire.xenon.backend.models.NewBot;
+import com.wire.xenon.state.JdbiState;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.db.ManagedDataSource;
 import org.flywaydb.core.Flyway;

@@ -1,6 +1,6 @@
 package com.wire.bots.sdk.server.resources;
 
-import com.wire.bots.sdk.server.model.Version;
+import com.wire.xenon.backend.models.Version;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;

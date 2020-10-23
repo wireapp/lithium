@@ -2,19 +2,19 @@ package com.wire.bots.sdk.user;
 
 import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.sdk.Configuration;
-import com.wire.bots.sdk.MessageHandlerBase;
-import com.wire.bots.sdk.crypto.Crypto;
-import com.wire.bots.sdk.exceptions.HttpException;
-import com.wire.bots.sdk.factories.CryptoFactory;
-import com.wire.bots.sdk.factories.StorageFactory;
-import com.wire.bots.sdk.models.otr.PreKey;
-import com.wire.bots.sdk.server.model.NewBot;
-import com.wire.bots.sdk.server.model.Payload;
-import com.wire.bots.sdk.state.State;
-import com.wire.bots.sdk.tools.Logger;
-import com.wire.bots.sdk.user.model.Access;
-import com.wire.bots.sdk.user.model.Event;
-import com.wire.bots.sdk.user.model.NotificationList;
+import com.wire.xenon.MessageHandlerBase;
+import com.wire.xenon.backend.models.NewBot;
+import com.wire.xenon.backend.models.Payload;
+import com.wire.xenon.crypto.Crypto;
+import com.wire.xenon.exceptions.HttpException;
+import com.wire.xenon.factories.CryptoFactory;
+import com.wire.xenon.factories.StorageFactory;
+import com.wire.xenon.models.otr.PreKey;
+import com.wire.xenon.state.State;
+import com.wire.xenon.tools.Logger;
+import com.wire.xenon.user.model.Access;
+import com.wire.xenon.user.model.Event;
+import com.wire.xenon.user.model.NotificationList;
 import io.dropwizard.client.ssl.TlsConfiguration;
 import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.setup.Environment;
@@ -72,7 +72,7 @@ public class UserApplication implements Managed {
         Access access = loginClient.login(email, password);
 
         userId = access.getUserId();
-        cookie = access.getCookie();
+        cookie = new Cookie(access.getCookie().name, access.getCookie().value);
 
         String clientId = getDeviceId(userId);
         if (clientId == null) {

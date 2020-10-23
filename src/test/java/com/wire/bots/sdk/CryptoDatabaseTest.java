@@ -16,13 +16,13 @@ package com.wire.bots.sdk;//
 // along with this program. If not, see http://www.gnu.org/licenses/.
 //
 
-import com.wire.bots.sdk.crypto.CryptoDatabase;
 import com.wire.bots.sdk.helpers.MemStorage;
 import com.wire.bots.sdk.helpers.Util;
-import com.wire.bots.sdk.models.otr.Missing;
-import com.wire.bots.sdk.models.otr.PreKey;
-import com.wire.bots.sdk.models.otr.PreKeys;
-import com.wire.bots.sdk.models.otr.Recipients;
+import com.wire.xenon.crypto.CryptoDatabase;
+import com.wire.xenon.models.otr.Missing;
+import com.wire.xenon.models.otr.PreKey;
+import com.wire.xenon.models.otr.PreKeys;
+import com.wire.xenon.models.otr.Recipients;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

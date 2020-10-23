@@ -1,10 +1,10 @@
 package com.wire.bots.sdk.healthchecks;
 
 import com.codahale.metrics.health.HealthCheck;
-import com.wire.bots.sdk.factories.StorageFactory;
-import com.wire.bots.sdk.server.model.NewBot;
-import com.wire.bots.sdk.state.State;
-import com.wire.bots.sdk.tools.Logger;
+import com.wire.xenon.backend.models.NewBot;
+import com.wire.xenon.factories.StorageFactory;
+import com.wire.xenon.state.State;
+import com.wire.xenon.tools.Logger;
 
 import java.util.UUID;
 

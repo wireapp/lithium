@@ -2,7 +2,7 @@ package com.wire.bots.sdk.healthchecks;
 
 import com.codahale.metrics.health.HealthCheck;
 import com.wire.bots.sdk.API;
-import com.wire.bots.sdk.tools.Logger;
+import com.wire.xenon.tools.Logger;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.Response;

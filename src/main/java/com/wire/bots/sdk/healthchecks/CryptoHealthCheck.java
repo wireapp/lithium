@@ -1,9 +1,9 @@
 package com.wire.bots.sdk.healthchecks;
 
 import com.codahale.metrics.health.HealthCheck;
-import com.wire.bots.sdk.crypto.Crypto;
-import com.wire.bots.sdk.factories.CryptoFactory;
-import com.wire.bots.sdk.tools.Logger;
+import com.wire.xenon.crypto.Crypto;
+import com.wire.xenon.factories.CryptoFactory;
+import com.wire.xenon.tools.Logger;
 
 import java.util.UUID;
 

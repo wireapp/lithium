@@ -3,8 +3,7 @@ package com.wire.bots.sdk;
 import com.codahale.metrics.MetricRegistry;
 import com.wire.bots.cryptobox.IRecord;
 import com.wire.bots.cryptobox.PreKey;
-import com.wire.bots.cryptobox.StorageException;
-import com.wire.bots.sdk.crypto.storage.JdbiStorage;
+import com.wire.xenon.crypto.storage.JdbiStorage;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.db.ManagedDataSource;
 import org.flywaydb.core.Flyway;
@@ -38,8 +37,9 @@ public class PostgresCryptoStorageTest {
 
         jdbi = new DBI(dataSource);
     }
+
     @Test
-    public void testFetchSession() throws StorageException {
+    public void testFetchSession() {
         JdbiStorage storage = new JdbiStorage(jdbi);
 
         Random random = new Random();
@@ -62,7 +62,7 @@ public class PostgresCryptoStorageTest {
     }
 
     @Test
-    public void testFetchIdentity() throws StorageException {
+    public void testFetchIdentity() {
         JdbiStorage storage = new JdbiStorage(jdbi);
 
         Random random = new Random();
@@ -82,7 +82,7 @@ public class PostgresCryptoStorageTest {
     }
 
     @Test
-    public void testFetchLastPrekey() throws StorageException {
+    public void testFetchLastPrekey() {
         JdbiStorage storage = new JdbiStorage(jdbi);
 
         Random random = new Random();
@@ -109,7 +109,7 @@ public class PostgresCryptoStorageTest {
     }
 
     @Test
-    public void testFetchPrekeys() throws StorageException {
+    public void testFetchPrekeys() {
         int SIZE = 10;
         JdbiStorage storage = new JdbiStorage(jdbi);
 
@@ -143,7 +143,7 @@ public class PostgresCryptoStorageTest {
     }
 
     @Test
-    public void testPurge() throws StorageException {
+    public void testPurge() {
         JdbiStorage storage = new JdbiStorage(jdbi);
 
         Random random = new Random();

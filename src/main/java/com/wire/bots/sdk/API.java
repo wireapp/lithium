@@ -19,20 +19,24 @@
 package com.wire.bots.sdk;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.wire.bots.sdk.assets.IAsset;
-import com.wire.bots.sdk.exceptions.HttpException;
-import com.wire.bots.sdk.models.AssetKey;
-import com.wire.bots.sdk.models.otr.*;
-import com.wire.bots.sdk.server.model.Conversation;
-import com.wire.bots.sdk.server.model.NewBotResponseModel;
-import com.wire.bots.sdk.server.model.User;
-import com.wire.bots.sdk.tools.Logger;
-import com.wire.bots.sdk.tools.Util;
+import com.wire.xenon.Const;
+import com.wire.xenon.WireAPI;
+import com.wire.xenon.assets.IAsset;
+import com.wire.xenon.backend.models.Conversation;
+import com.wire.xenon.backend.models.NewBotResponseModel;
+import com.wire.xenon.backend.models.User;
+import com.wire.xenon.exceptions.HttpException;
+import com.wire.xenon.models.AssetKey;
+import com.wire.xenon.models.otr.*;
+import com.wire.xenon.tools.Logger;
+import com.wire.xenon.tools.Util;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.media.multipart.BodyPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import javax.annotation.Nullable;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
@@ -44,10 +48,11 @@ import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class API implements Backend {
+public class API implements WireAPI {
 
     private final WebTarget messages;
     private final WebTarget assets;
@@ -95,7 +100,7 @@ public class API implements Backend {
     }
 
     private String host() {
-        String host = System.getProperty(Configuration.WIRE_BOTS_SDK_API, System.getenv("WIRE_API_HOST"));
+        String host = System.getProperty(Const.WIRE_BOTS_SDK_API, System.getenv("WIRE_API_HOST"));
         return host != null ? host : "https://prod-nginz-https.wire.com";
     }
 
@@ -149,7 +154,8 @@ public class API implements Backend {
         return response.readEntity(Devices.class);
     }
 
-    Collection<User> getUsers(Collection<UUID> ids) {
+    @Override
+    public Collection<User> getUsers(Collection<UUID> ids) {
         return users
                 .queryParam("ids", ids.toArray())
                 .request(MediaType.APPLICATION_JSON)
@@ -158,7 +164,8 @@ public class API implements Backend {
                 });
     }
 
-    User getSelf() {
+    @Override
+    public User getSelf() {
         return bot
                 .path("self")
                 .request(MediaType.APPLICATION_JSON)
@@ -166,7 +173,8 @@ public class API implements Backend {
                 .get(User.class);
     }
 
-    Conversation getConversation() {
+    @Override
+    public Conversation getConversation() {
         return conversation
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, bearer())
@@ -174,6 +182,7 @@ public class API implements Backend {
                 .get(Conversation.class);
     }
 
+    @Override
     public PreKeys getPreKeys(Missing missing) {
         return prekeys
                 .request(MediaType.APPLICATION_JSON)
@@ -182,7 +191,8 @@ public class API implements Backend {
                 .post(Entity.entity(missing, MediaType.APPLICATION_JSON), PreKeys.class);
     }
 
-    ArrayList<Integer> getAvailablePrekeys() {
+    @Override
+    public ArrayList<Integer> getAvailablePrekeys(@Nullable String clientId) {
         return client
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, bearer())
@@ -191,7 +201,8 @@ public class API implements Backend {
                 });
     }
 
-    void uploadPreKeys(ArrayList<PreKey> preKeys) throws IOException {
+    @Override
+    public void uploadPreKeys(ArrayList<PreKey> preKeys) throws IOException {
         NewBotResponseModel model = new NewBotResponseModel();
         model.preKeys = preKeys;
 
@@ -207,7 +218,8 @@ public class API implements Backend {
         }
     }
 
-    AssetKey uploadAsset(IAsset asset) throws Exception {
+    @Override
+    public AssetKey uploadAsset(IAsset asset) throws Exception {
         StringBuilder sb = new StringBuilder();
 
         // Part 1
@@ -269,6 +281,7 @@ public class API implements Backend {
                 .bodyPart(bodyPart2);
     }
 
+    @Override
     public byte[] downloadAsset(String assetKey, String assetToken) throws HttpException {
         Invocation.Builder req = assets
                 .path(assetKey)
@@ -298,6 +311,66 @@ public class API implements Backend {
         }
 
         return response.readEntity(byte[].class);
+    }
+
+    @Override
+    public boolean deleteConversation(UUID teamId) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public User addService(UUID serviceId, UUID providerId) throws HttpException {
+        return null;
+    }
+
+    @Override
+    public User addParticipants(UUID... userIds) throws HttpException {
+        return null;
+    }
+
+    @Override
+    public Conversation createConversation(String name, UUID teamId, List<UUID> users) throws HttpException {
+        return null;
+    }
+
+    @Override
+    public Conversation createOne2One(UUID teamId, UUID userId) throws HttpException {
+        return null;
+    }
+
+    @Override
+    public void leaveConversation(UUID user) throws HttpException {
+
+    }
+
+    @Override
+    public User getUser(UUID userId) throws HttpException {
+        return null;
+    }
+
+    @Override
+    public UUID getUserId(String handle) throws HttpException {
+        return null;
+    }
+
+    @Override
+    public boolean hasDevice(UUID userId, String clientId) {
+        return false;
+    }
+
+    @Override
+    public UUID getTeam() throws HttpException {
+        return null;
+    }
+
+    @Override
+    public Collection<UUID> getTeamMembers(UUID teamId) {
+        return null;
+    }
+
+    @Override
+    public void acceptConnection(UUID user) throws Exception {
+
     }
 
     private String bearer() {

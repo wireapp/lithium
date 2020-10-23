@@ -1,9 +1,9 @@
 package com.wire.bots.sdk.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wire.bots.sdk.tools.Logger;
-import com.wire.bots.sdk.tools.Util;
-import com.wire.bots.sdk.user.model.Event;
+import com.wire.xenon.tools.Logger;
+import com.wire.xenon.tools.Util;
+import com.wire.xenon.user.model.Event;
 
 import javax.websocket.Decoder;
 import javax.websocket.EndpointConfig;

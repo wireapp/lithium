@@ -21,18 +21,18 @@ package com.wire.bots.sdk.user;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wire.bots.sdk.Backend;
-import com.wire.bots.sdk.assets.IAsset;
-import com.wire.bots.sdk.exceptions.HttpException;
-import com.wire.bots.sdk.models.AssetKey;
-import com.wire.bots.sdk.models.otr.*;
-import com.wire.bots.sdk.server.model.Conversation;
-import com.wire.bots.sdk.server.model.Member;
-import com.wire.bots.sdk.server.model.Service;
-import com.wire.bots.sdk.server.model.User;
-import com.wire.bots.sdk.tools.Logger;
-import com.wire.bots.sdk.tools.Util;
-import com.wire.bots.sdk.user.model.Connection;
+import com.wire.xenon.WireAPI;
+import com.wire.xenon.assets.IAsset;
+import com.wire.xenon.backend.models.Conversation;
+import com.wire.xenon.backend.models.Member;
+import com.wire.xenon.backend.models.Service;
+import com.wire.xenon.backend.models.User;
+import com.wire.xenon.exceptions.HttpException;
+import com.wire.xenon.models.AssetKey;
+import com.wire.xenon.models.otr.*;
+import com.wire.xenon.tools.Logger;
+import com.wire.xenon.tools.Util;
+import com.wire.xenon.user.model.Connection;
 import org.glassfish.jersey.logging.LoggingFeature;
 
 import javax.ws.rs.client.Client;
@@ -41,13 +41,12 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.*;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class API extends LoginClient implements Backend {
+public class API extends LoginClient implements WireAPI {
     private final WebTarget conversationsPath;
     private final WebTarget usersPath;
     private final WebTarget assetsPath;
@@ -137,6 +136,7 @@ public class API extends LoginClient implements Backend {
                 post(Entity.entity(missing, MediaType.APPLICATION_JSON), PreKeys.class);
     }
 
+    @Override
     public byte[] downloadAsset(String assetKey, String assetToken) throws HttpException {
         Invocation.Builder req = assetsPath
                 .path(assetKey)
@@ -156,7 +156,8 @@ public class API extends LoginClient implements Backend {
         return response.readEntity(byte[].class);
     }
 
-    void acceptConnection(UUID user) throws HttpException {
+    @Override
+    public void acceptConnection(UUID user) throws HttpException {
         Connection connection = new Connection();
         connection.setStatus("accepted");
 
@@ -172,6 +173,7 @@ public class API extends LoginClient implements Backend {
         response.close();
     }
 
+    @Override
     public AssetKey uploadAsset(IAsset asset) throws Exception {
         StringBuilder sb = new StringBuilder();
 
@@ -221,19 +223,13 @@ public class API extends LoginClient implements Backend {
         return mapper.readValue(entity, AssetKey.class);
     }
 
-    Conversation getConversation() throws IOException {
-        Response response = conversationsPath.
+    @Override
+    public Conversation getConversation() {
+        _Conv conv = conversationsPath.
                 path(convId).
                 request().
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
-                get();
-
-        if (response.getStatus() >= 300) {
-            Logger.warning(response.readEntity(String.class));
-            throw new IOException(response.getStatusInfo().getReasonPhrase());
-        }
-
-        _Conv conv = response.readEntity(_Conv.class);
+                get(_Conv.class);
 
         Conversation ret = new Conversation();
         ret.name = conv.name;
@@ -242,6 +238,7 @@ public class API extends LoginClient implements Backend {
         return ret;
     }
 
+    @Override
     public boolean deleteConversation(UUID teamId) throws HttpException {
         Response response = teamsPath.
                 path(teamId.toString()).
@@ -258,6 +255,7 @@ public class API extends LoginClient implements Backend {
         return response.getStatus() == 200;
     }
 
+    @Override
     public User addService(UUID serviceId, UUID providerId) throws HttpException {
         _Service service = new _Service();
         service.service = serviceId;
@@ -282,6 +280,7 @@ public class API extends LoginClient implements Backend {
         return user;
     }
 
+    @Override
     public User addParticipants(UUID... userIds) throws HttpException {
         _NewConv newConv = new _NewConv();
         newConv.users = Arrays.asList(userIds);
@@ -301,6 +300,7 @@ public class API extends LoginClient implements Backend {
         return response.readEntity(User.class);
     }
 
+    @Override
     public Conversation createConversation(String name, UUID teamId, List<UUID> users) throws HttpException {
         _NewConv newConv = new _NewConv();
         newConv.name = name;
@@ -328,6 +328,7 @@ public class API extends LoginClient implements Backend {
         return ret;
     }
 
+    @Override
     public Conversation createOne2One(UUID teamId, UUID userId) throws HttpException {
 
         _NewConv newConv = new _NewConv();
@@ -357,6 +358,7 @@ public class API extends LoginClient implements Backend {
         return ret;
     }
 
+    @Override
     public void leaveConversation(UUID user) throws HttpException {
         Response response = conversationsPath
                 .path(convId)
@@ -371,7 +373,8 @@ public class API extends LoginClient implements Backend {
         }
     }
 
-    void uploadPreKeys(ArrayList<PreKey> preKeys) {
+    @Override
+    public void uploadPreKeys(ArrayList<PreKey> preKeys) {
         usersPath.path("prekeys").
                 request(MediaType.APPLICATION_JSON).
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
@@ -379,7 +382,8 @@ public class API extends LoginClient implements Backend {
                 post(Entity.entity(preKeys, MediaType.APPLICATION_JSON));
     }
 
-    ArrayList<Integer> getAvailablePrekeys(String clientId) {
+    @Override
+    public ArrayList<Integer> getAvailablePrekeys(String clientId) {
         return clientsPath.
                 path(clientId).
                 path("prekeys").
@@ -390,19 +394,14 @@ public class API extends LoginClient implements Backend {
                 });
     }
 
-    public Collection<User> getUsers(Collection<UUID> ids) throws HttpException {
-        Response response = usersPath.
+    @Override
+    public Collection<User> getUsers(Collection<UUID> ids) {
+        return usersPath.
                 queryParam("ids", ids.toArray()).
                 request(MediaType.APPLICATION_JSON).
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
-                get();
-
-        if (response.getStatus() != 200) {
-            throw new HttpException(response.readEntity(String.class), response.getStatus());
-        }
-
-        return response.readEntity(new GenericType<Collection<User>>() {
-        });
+                get(new GenericType<Collection<User>>() {
+                });
     }
 
     public User getUser(UUID userId) throws HttpException {
@@ -448,17 +447,12 @@ public class API extends LoginClient implements Backend {
         return response.getStatus() == 200;
     }
 
-    public User getSelf() throws HttpException {
-        Response response = selfPath.
+    @Override
+    public User getSelf() {
+        return selfPath.
                 request(MediaType.APPLICATION_JSON).
                 header(HttpHeaders.AUTHORIZATION, bearer(token)).
-                get();
-
-        if (response.getStatus() != 200) {
-            throw new HttpException(response.readEntity(String.class), response.getStatus());
-        }
-
-        return response.readEntity(User.class);
+                get(User.class);
     }
 
     public UUID getTeam() throws HttpException {

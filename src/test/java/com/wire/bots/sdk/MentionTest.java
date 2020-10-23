@@ -2,8 +2,8 @@ package com.wire.bots.sdk;
 
 import org.junit.Test;
 
-import static com.wire.bots.sdk.tools.Util.mentionLen;
-import static com.wire.bots.sdk.tools.Util.mentionStart;
+import static com.wire.xenon.tools.Util.mentionLen;
+import static com.wire.xenon.tools.Util.mentionStart;
 
 public class MentionTest {
     @Test

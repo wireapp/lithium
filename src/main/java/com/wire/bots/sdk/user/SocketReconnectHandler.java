@@ -1,6 +1,6 @@
 package com.wire.bots.sdk.user;
 
-import com.wire.bots.sdk.tools.Logger;
+import com.wire.xenon.tools.Logger;
 import org.glassfish.tyrus.client.ClientManager;
 
 import javax.websocket.CloseReason;
