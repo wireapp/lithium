@@ -33,7 +33,7 @@ import com.wire.bots.sdk.server.resources.MessageResource;
 import com.wire.bots.sdk.server.resources.VersionResource;
 import com.wire.bots.sdk.server.tasks.AvailablePrekeysTask;
 import com.wire.bots.sdk.server.tasks.ConversationTask;
-import com.wire.bots.sdk.user.UserApplication;
+import com.wire.xenon.Const;
 import com.wire.xenon.MessageHandlerBase;
 import com.wire.xenon.crypto.CryptoDatabase;
 import com.wire.xenon.crypto.CryptoFile;
@@ -128,9 +128,8 @@ public abstract class Server<Config extends Configuration> extends Application<C
         this.config = config;
         this.environment = env;
 
-        System.setProperty(Configuration.WIRE_BOTS_SDK_TOKEN, config.token);
-        System.setProperty(Configuration.WIRE_BOTS_SDK_API, config.apiHost);
-        System.setProperty(Configuration.WIRE_BOTS_SDK_WS, config.wsHost);
+        System.setProperty(Const.WIRE_BOTS_SDK_TOKEN, config.token);
+        System.setProperty(Const.WIRE_BOTS_SDK_API, config.apiHost);
 
         migrateDBifNeeded(config.database);
 
@@ -143,10 +142,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
         initialize(config, env);
 
         messageHandler = createHandler(config, env);
-
-        if (config.isUserMode()) {
-            runInUserMode();
-        }
 
         runInBotMode();
 
@@ -214,19 +209,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
         addTask(new ConversationTask(getRepo()));
         addTask(new AvailablePrekeysTask(getRepo()));
-    }
-
-    private void runInUserMode() {
-        Logger.info("Starting in User Mode");
-
-        UserApplication app = new UserApplication(environment)
-                .addClient(getClient())
-                .addConfig(config)
-                .addCryptoFactory(getCryptoFactory())
-                .addStorageFactory(getStorageFactory())
-                .addHandler(messageHandler);
-
-        environment.lifecycle().manage(app);
     }
 
     protected void messageResource() {

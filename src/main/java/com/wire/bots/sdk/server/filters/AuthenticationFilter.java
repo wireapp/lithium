@@ -1,6 +1,6 @@
 package com.wire.bots.sdk.server.filters;
 
-import com.wire.bots.sdk.Configuration;
+import com.wire.xenon.Const;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -35,7 +35,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             throw new WebApplicationException(cause, Response.Status.BAD_REQUEST);
         }
 
-        String serviceToken = System.getProperty(Configuration.WIRE_BOTS_SDK_TOKEN, System.getenv("SERVICE_TOKEN"));
+        String serviceToken = System.getProperty(Const.WIRE_BOTS_SDK_TOKEN, System.getenv("SERVICE_TOKEN"));
 
         if (!Objects.equals(token, serviceToken)) {
             Exception cause = new IllegalArgumentException("Wrong service token");

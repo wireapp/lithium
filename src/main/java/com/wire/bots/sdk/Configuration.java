@@ -18,12 +18,10 @@
 
 package com.wire.bots.sdk;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.client.JerseyClientConfiguration;
 import io.dropwizard.db.DataSourceFactory;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -32,10 +30,6 @@ import javax.validation.constraints.NotNull;
  * Application configuration class. Extend this class to add your custom configuration
  */
 public class Configuration extends io.dropwizard.Configuration {
-    public static final String WIRE_BOTS_SDK_TOKEN = "wire.bots.sdk.token";
-    public static final String WIRE_BOTS_SDK_API = "wire.bots.sdk.api";
-    public static final String WIRE_BOTS_SDK_WS = "wire.bots.sdk.ws";
-
     @JsonProperty
     @Valid
     public Database database = new Database();
@@ -51,14 +45,7 @@ public class Configuration extends io.dropwizard.Configuration {
     public SwaggerBundleConfiguration swagger = new _SwaggerBundleConfiguration();
 
     @JsonProperty
-    @Valid
-    public UserMode userMode;
-
-    @JsonProperty
     public String apiHost = "https://prod-nginz-https.wire.com";
-
-    @JsonProperty
-    public String wsHost = "wss://prod-nginz-ssl.wire.com/await";
 
     @JsonProperty("jerseyClient")
     public JerseyClientConfiguration getJerseyClient() {
@@ -68,17 +55,6 @@ public class Configuration extends io.dropwizard.Configuration {
     @JsonProperty("jerseyClient")
     public void setJerseyClient(_JerseyClientConfiguration jerseyClient) {
         this.jerseyClient = jerseyClient;
-    }
-
-    public static class UserMode {
-        @NotNull
-        @NotEmpty
-        public String email;
-        @NotNull
-        @NotEmpty
-        public String password;
-        @JsonProperty
-        public boolean sync = true;
     }
 
     public static class Database extends DataSourceFactory {
@@ -98,10 +74,5 @@ public class Configuration extends io.dropwizard.Configuration {
         _SwaggerBundleConfiguration() {
             setResourcePackage("com.wire.bots.sdk.server.resources");
         }
-    }
-
-    @JsonIgnore
-    public boolean isUserMode() {
-        return userMode != null && userMode.email != null && userMode.password != null;
     }
 }

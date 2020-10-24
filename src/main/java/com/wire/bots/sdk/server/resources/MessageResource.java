@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.sdk.ClientRepo;
 import com.wire.xenon.MessageHandlerBase;
+import com.wire.xenon.MessageResourceBase;
 import com.wire.xenon.WireClient;
 import com.wire.xenon.backend.models.ErrorMessage;
 import com.wire.xenon.backend.models.Payload;
@@ -45,9 +46,11 @@ import java.util.logging.Level;
 @Path("/bots/{bot}/messages")
 public class MessageResource extends MessageResourceBase {
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ClientRepo repo;
 
     public MessageResource(MessageHandlerBase handler, ClientRepo repo) {
-        super(handler, repo);
+        super(handler);
+        this.repo = repo;
     }
 
     @POST
@@ -107,5 +110,9 @@ public class MessageResource extends MessageResourceBase {
         } catch (Exception e1) {
             Logger.error("respondWithError: bot: %s %s", botId, e1);
         }
+    }
+
+    protected WireClient getWireClient(UUID botId, Payload payload) throws IOException, CryptoException {
+        return repo.getClient(botId);
     }
 }
