@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.wire.bots</groupId>
+    <groupId>com.wire</groupId>
     <artifactId>lithium</artifactId>
     <version>3.0.0</version>
     <packaging>jar</packaging>
@@ -17,8 +17,8 @@
 
     <repositories>
         <repository>
-            <id>cryptobox4j</id>
-            <url>https://packagecloud.io/dkovacevic/cryptobox4j/maven2</url>
+            <id>xenon</id>
+            <url>https://packagecloud.io/dkovacevic/xenon/maven2</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
