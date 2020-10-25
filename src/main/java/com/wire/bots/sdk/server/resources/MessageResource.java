@@ -25,6 +25,7 @@ import com.wire.bots.sdk.ClientRepo;
 import com.wire.xenon.MessageHandlerBase;
 import com.wire.xenon.MessageResourceBase;
 import com.wire.xenon.WireClient;
+import com.wire.xenon.assets.Reaction;
 import com.wire.xenon.backend.models.ErrorMessage;
 import com.wire.xenon.backend.models.Payload;
 import com.wire.xenon.exceptions.MissingStateException;
@@ -106,7 +107,7 @@ public class MessageResource extends MessageResourceBase {
 
     private void respondWithError(UUID botId, Payload payload) {
         try (WireClient client = getWireClient(botId, payload)) {
-            client.sendReaction(UUID.randomUUID(), "");
+            client.send(new Reaction(UUID.randomUUID(), ""));
         } catch (Exception e1) {
             Logger.error("respondWithError: bot: %s %s", botId, e1);
         }

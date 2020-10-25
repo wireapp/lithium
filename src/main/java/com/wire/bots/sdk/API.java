@@ -36,6 +36,7 @@ import org.glassfish.jersey.media.multipart.BodyPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 
 import javax.annotation.Nullable;
+import javax.ws.rs.NotSupportedException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
@@ -45,10 +46,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 public class API implements WireAPI {
@@ -314,62 +312,65 @@ public class API implements WireAPI {
 
     @Override
     public boolean deleteConversation(UUID teamId) {
-        return false;
+        throw new NotSupportedException();
     }
 
     @Override
-    public User addService(UUID serviceId, UUID providerId) throws HttpException {
-        return null;
+    public User addService(UUID serviceId, UUID providerId) {
+        throw new NotSupportedException();
     }
 
     @Override
-    public User addParticipants(UUID... userIds) throws HttpException {
-        return null;
+    public User addParticipants(UUID... userIds) {
+        throw new NotSupportedException();
     }
 
     @Override
-    public Conversation createConversation(String name, UUID teamId, List<UUID> users) throws HttpException {
-        return null;
+    public Conversation createConversation(String name, UUID teamId, List<UUID> users) {
+        throw new NotSupportedException();
     }
 
     @Override
-    public Conversation createOne2One(UUID teamId, UUID userId) throws HttpException {
-        return null;
+    public Conversation createOne2One(UUID teamId, UUID userId) {
+        throw new NotSupportedException();
     }
 
     @Override
-    public void leaveConversation(UUID user) throws HttpException {
-
+    public void leaveConversation(UUID user) {
+        throw new NotSupportedException();
     }
 
     @Override
-    public User getUser(UUID userId) throws HttpException {
-        return null;
+    public User getUser(UUID userId) {
+        return getUsers(Collections.singletonList(userId))
+                .stream()
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
-    public UUID getUserId(String handle) throws HttpException {
-        return null;
+    public UUID getUserId(String handle) {
+        throw new NotSupportedException();
     }
 
     @Override
     public boolean hasDevice(UUID userId, String clientId) {
-        return false;
+        throw new NotSupportedException();
     }
 
     @Override
-    public UUID getTeam() throws HttpException {
-        return null;
+    public UUID getTeam() {
+        throw new NotSupportedException();
     }
 
     @Override
     public Collection<UUID> getTeamMembers(UUID teamId) {
-        return null;
+        throw new NotSupportedException();
     }
 
     @Override
-    public void acceptConnection(UUID user) throws Exception {
-
+    public void acceptConnection(UUID user) {
+        throw new NotSupportedException();
     }
 
     private String bearer() {

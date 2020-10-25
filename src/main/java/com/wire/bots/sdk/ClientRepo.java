@@ -29,7 +29,7 @@ public class ClientRepo {
         NewBot state = sf.create(botId).getState();
         Crypto crypto = cf.create(botId);
         WireAPI api = new API(httpClient, state.token);
-        return new BotClient(state, crypto, api);
+        return new BotClient(api, crypto, state);
     }
 
     public void purgeBot(UUID botId) throws IOException {
