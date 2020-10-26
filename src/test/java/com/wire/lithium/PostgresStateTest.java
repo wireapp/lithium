@@ -7,8 +7,9 @@ import com.wire.xenon.state.JdbiState;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.db.ManagedDataSource;
 import org.flywaydb.core.Flyway;
+import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.junit.Test;
-import org.skife.jdbi.v2.DBI;
 
 import java.util.UUID;
 
@@ -30,7 +31,8 @@ public class PostgresStateTest {
 
         ManagedDataSource dataSource = dataSourceFactory.build(new MetricRegistry(), "PostgresStateTest");
 
-        DBI jdbi = new DBI(dataSource);
+        Jdbi jdbi = Jdbi.create(dataSource)
+                .installPlugin(new SqlObjectPlugin());
 
         UUID botId = UUID.randomUUID();
 

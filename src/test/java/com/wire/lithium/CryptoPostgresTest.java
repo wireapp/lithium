@@ -10,10 +10,11 @@ import com.wire.xenon.crypto.storage.JdbiStorage;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.db.ManagedDataSource;
 import org.flywaydb.core.Flyway;
+import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.skife.jdbi.v2.DBI;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,7 +51,8 @@ public class CryptoPostgresTest {
 
         ManagedDataSource dataSource = dataSourceFactory.build(new MetricRegistry(), "CryptoPostgresTest");
 
-        DBI jdbi = new DBI(dataSource);
+        Jdbi jdbi = Jdbi.create(dataSource)
+                .installPlugin(new SqlObjectPlugin());
 
         storage = new JdbiStorage(jdbi);
 

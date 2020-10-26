@@ -49,7 +49,6 @@ import io.dropwizard.bundles.redirect.RedirectBundle;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
-import io.dropwizard.jdbi.DBIFactory;
 import io.dropwizard.servlets.tasks.Task;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -57,7 +56,8 @@ import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import org.flywaydb.core.Flyway;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.skife.jdbi.v2.DBI;
+import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.client.Client;
@@ -74,7 +74,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
     protected Environment environment;
     protected Client client;
     protected MessageHandlerBase messageHandler;
-    protected DBI jdbi;
+    protected Jdbi jdbi;
 
     /**
      * This method is called once by the sdk in order to create the main message handler
@@ -165,10 +165,13 @@ public abstract class Server<Config extends Configuration> extends Application<C
     }
 
     @Nullable
-    protected DBI buildJdbi(Configuration.Database database, Environment env) {
+    protected Jdbi buildJdbi(Configuration.Database database, Environment env) {
         if (database.getDriverClass().equalsIgnoreCase("fs"))
             return null;
-        return new DBIFactory().build(env, database, "lithium");
+
+        return Jdbi
+                .create(database.build(env.metrics(), getName()))
+                .installPlugin(new SqlObjectPlugin());
     }
 
     protected void migrateDBifNeeded(Configuration.Database database) {
@@ -273,7 +276,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
         return client;
     }
 
-    public DBI getJdbi() {
+    public Jdbi getJdbi() {
         return jdbi;
     }
 }

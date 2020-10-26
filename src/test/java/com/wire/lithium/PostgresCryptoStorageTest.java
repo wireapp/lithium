@@ -7,16 +7,17 @@ import com.wire.xenon.crypto.storage.JdbiStorage;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.db.ManagedDataSource;
 import org.flywaydb.core.Flyway;
+import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.junit.Before;
 import org.junit.Test;
-import org.skife.jdbi.v2.DBI;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
 public class PostgresCryptoStorageTest {
-    private DBI jdbi;
+    private Jdbi jdbi;
 
     @Before
     public void init() {
@@ -34,7 +35,9 @@ public class PostgresCryptoStorageTest {
 
         ManagedDataSource dataSource = dataSourceFactory.build(new MetricRegistry(), "PostgresCryptoStorageTest");
 
-        jdbi = new DBI(dataSource);
+        jdbi = Jdbi.create(dataSource)
+                .installPlugin(new SqlObjectPlugin());
+
     }
 
     @Test
