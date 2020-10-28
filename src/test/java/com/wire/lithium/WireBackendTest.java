@@ -34,11 +34,11 @@ public class WireBackendTest {
     private static final String BOT_CLIENT_DUMMY = "bot_client_dummy";
     private static final String USER_CLIENT_DUMMY = "user_client_dummy";
     private static final DropwizardTestSupport<Configuration> SUPPORT = new DropwizardTestSupport<>(
-            _Server.class,
+            TestServer.class,
             null,
             ConfigOverride.config("token", serviceAuth),
-            ConfigOverride.config("database.driverClass", "fs"),
-            ConfigOverride.config("database.url", "data"));
+            ConfigOverride.config("database.driverClass", "org.postgresql.Driver"),
+            ConfigOverride.config("database.url", "jdbc:postgresql://localhost/lithium"));
     private WebTarget target;
     private CryptoFactory cryptoFactory;
 
@@ -46,7 +46,7 @@ public class WireBackendTest {
     public void beforeClass() throws Exception {
         SUPPORT.before();
 
-        final _Server server = SUPPORT.getApplication();
+        final TestServer server = SUPPORT.getApplication();
 
         cryptoFactory = server.getCryptoFactory();
 
@@ -144,7 +144,7 @@ public class WireBackendTest {
                 .toByteArray();
     }
 
-    public static class _Server extends Server<Configuration> {
+    public static class TestServer extends Server<Configuration> {
         @Override
         protected MessageHandlerBase createHandler(Configuration configuration, Environment env) {
             return new MessageHandlerBase() {

@@ -19,6 +19,7 @@
 package com.wire.lithium;
 
 import com.codahale.metrics.Gauge;
+import com.codahale.metrics.health.HealthCheck;
 import com.codahale.metrics.jmx.JmxReporter;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.wire.lithium.healthchecks.Alice2Bob;
@@ -61,6 +62,7 @@ import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.client.Client;
+import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -131,7 +133,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
         System.setProperty(Const.WIRE_BOTS_SDK_TOKEN, config.token);
         System.setProperty(Const.WIRE_BOTS_SDK_API, config.apiHost);
 
-        migrateDBifNeeded(config.database);
+        setupDatabase(config.database);
 
         jdbi = buildJdbi(config.database, env);
 
@@ -143,9 +145,11 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
         messageHandler = createHandler(config, env);
 
-        runInBotMode();
+        addResources();
 
         initTelemetry();
+
+        runHealthChecks();
 
         onRun(config, env);
     }
@@ -174,7 +178,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
                 .installPlugin(new SqlObjectPlugin());
     }
 
-    protected void migrateDBifNeeded(Configuration.Database database) {
+    protected void setupDatabase(Configuration.Database database) {
         if (!database.getDriverClass().equalsIgnoreCase("fs")) {
             Flyway flyway = Flyway
                     .configure()
@@ -201,7 +205,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
         return (botId) -> new CryptoDatabase(botId, new JdbiStorage(getJdbi()));
     }
 
-    private void runInBotMode() {
+    private void addResources() {
         // add status endpoint
         addResource(new EmptyStatusResource());
         // add version endpoint
@@ -254,6 +258,18 @@ public abstract class Server<Config extends Configuration> extends Application<C
                 .convertDurationsTo(TimeUnit.MILLISECONDS)
                 .build();
         jmxReporter.start();
+    }
+
+    private void runHealthChecks() {
+        Logger.info("Running health checks...");
+        final SortedMap<String, HealthCheck.Result> results = environment.healthChecks().runHealthChecks();
+        for (String name : results.keySet()) {
+            final HealthCheck.Result result = results.get(name);
+            if (!result.isHealthy()) {
+                Logger.error("% failed with: %s", name, result.getMessage());
+                throw new RuntimeException(result.getError());
+            }
+        }
     }
 
     protected void registerFeatures() {
