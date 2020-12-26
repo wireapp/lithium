@@ -266,7 +266,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
         for (String name : results.keySet()) {
             final HealthCheck.Result result = results.get(name);
             if (!result.isHealthy()) {
-                Logger.error("% failed with: %s", name, result.getMessage());
+                Logger.error("%s failed with: %s", name, result.getMessage());
                 throw new RuntimeException(result.getError());
             }
         }
