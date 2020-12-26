@@ -4,13 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.wire.bots</groupId>
+    <groupId>com.wire</groupId>
     <artifactId>lithium</artifactId>
-    <version>2.37.2</version>
+    <version>3.0.0</version>
     <packaging>jar</packaging>
 
     <properties>
-        <cryptobox.version>0.3.0</cryptobox.version>
         <dropwizard.version>2.0.11</dropwizard.version>
         <jersey.version>2.25.1</jersey.version>
         <maven.test.skip>true</maven.test.skip>
@@ -18,8 +17,8 @@
 
     <repositories>
         <repository>
-            <id>cryptobox4j</id>
-            <url>https://packagecloud.io/dkovacevic/cryptobox4j/maven2</url>
+            <id>xenon</id>
+            <url>https://packagecloud.io/dkovacevic/xenon/maven2</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -29,23 +28,21 @@
         </repository>
     </repositories>
 
-    <profiles>
-        <profile>
-            <id>java8-doclint-disabled</id>
-            <activation>
-                <jdk>[1.8,)</jdk>
-            </activation>
-            <properties>
-                <javadoc.opts>-Xdoclint:none</javadoc.opts>
-            </properties>
-        </profile>
-    </profiles>
-
     <dependencies>
         <dependency>
-            <groupId>com.wire.bots</groupId>
-            <artifactId>cryptobox</artifactId>
-            <version>${cryptobox.version}</version>
+            <groupId>com.wire</groupId>
+            <artifactId>xenon</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.dropwizard</groupId>
@@ -82,34 +79,12 @@
         <dependency>
             <groupId>com.smoketurner</groupId>
             <artifactId>dropwizard-swagger</artifactId>
-            <version>1.1.0-1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.validation</groupId>
-                    <artifactId>validation-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <artifactId>protobuf-java</artifactId>
-            <groupId>com.google.protobuf</groupId>
-            <version>3.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.tyrus.bundles</groupId>
-            <artifactId>tyrus-standalone-client</artifactId>
-            <version>1.13.1</version>
+            <version>2.0.12-1</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-            <version>2.9.0</version>
-            <type>jar</type>
+            <version>42.2.18</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -122,14 +97,13 @@
             <artifactId>flyway-core</artifactId>
             <version>6.1.0</version>
         </dependency>
-
     </dependencies>
     <build>
         <extensions>
             <extension>
                 <groupId>io.packagecloud.maven.wagon</groupId>
                 <artifactId>maven-packagecloud-wagon</artifactId>
-                <version>0.0.4</version>
+                <version>0.0.6</version>
             </extension>
         </extensions>
         <plugins>
@@ -144,10 +118,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.0</version>
+                <version>3.8.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <release>14</release>
                 </configuration>
             </plugin>
             <plugin>
@@ -163,46 +136,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>com.github.os72</groupId>
-                <artifactId>protoc-jar-maven-plugin</artifactId>
-                <version>3.1.0.1</version>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <protocVersion>3.1.0</protocVersion>
-                            <inputDirectories>
-                                <include>proto</include>
-                            </inputDirectories>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--<plugin>-->
-            <!--<groupId>org.apache.maven.plugins</groupId>-->
-            <!--<artifactId>maven-javadoc-plugin</artifactId>-->
-            <!--<version>2.10.4</version>-->
-            <!--<configuration>-->
-            <!--<show>private</show>-->
-            <!--<nohelp>true</nohelp>-->
-            <!--<excludePackageNames>com.waz.model</excludePackageNames>-->
-            <!--</configuration>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<id>attach-javadocs</id>-->
-            <!--<goals>-->
-            <!--<goal>jar</goal>-->
-            <!--</goals>-->
-            <!--<configuration>-->
-            <!--<additionalparam>-Xdoclint:none</additionalparam>-->
-            <!--</configuration>-->
-            <!--</execution>-->
-            <!--</executions>-->
-            <!--</plugin>-->
+
         </plugins>
     </build>
     <distributionManagement>
@@ -219,19 +153,5 @@
             </url>
         </snapshotRepository>
     </distributionManagement>
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.4</version>
-                <configuration>
-                    <show>private</show>
-                    <nohelp>true</nohelp>
-                    <excludePackageNames>com.waz.model</excludePackageNames>
-                    <additionalparam>-Xdoclint:none</additionalparam>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
+
 </project>
