@@ -22,9 +22,9 @@
 </repositories>
 <dependencies>
     <dependency>
-        <groupId>com.wire.bots</groupId>
+        <groupId>com.wire</groupId>
         <artifactId>lithium</artifactId>
-        <version>2.35.0</version>
+        <version>3.0.3</version>
     </dependency>
 <dependencies>
 ```
