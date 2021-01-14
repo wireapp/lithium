@@ -54,7 +54,7 @@ check_tools() {
 
 check_auth() {
     if [ ! -f "./.cookie" ]; then
-        echo "Not authenticated. Use the 'auth' command."
+        echo "Not authenticated. Use the 'auth-provider' command."
         exit 1
     fi
 }
