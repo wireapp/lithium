@@ -6,13 +6,15 @@
 
     <groupId>com.wire</groupId>
     <artifactId>lithium</artifactId>
-    <version>3.0.3</version>
+    <version>3.0.4</version>
     <packaging>jar</packaging>
 
     <properties>
-        <dropwizard.version>2.0.17</dropwizard.version>
-        <jersey.version>2.25.1</jersey.version>
+        <dropwizard.version>2.0.12</dropwizard.version>
+        <smoketurner.version>2.0.0-1</smoketurner.version>
         <maven.test.skip>true</maven.test.skip>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <repositories>
@@ -60,9 +62,20 @@
             <version>${dropwizard.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.dropwizard-bundles</groupId>
-            <artifactId>dropwizard-redirect-bundle</artifactId>
-            <version>1.0.5</version>
+            <groupId>com.smoketurner</groupId>
+            <artifactId>dropwizard-swagger</artifactId>
+            <version>${smoketurner.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.18</version>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>6.1.0</version>
         </dependency>
         <dependency>
             <groupId>io.dropwizard</groupId>
@@ -77,25 +90,10 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.smoketurner</groupId>
-            <artifactId>dropwizard-swagger</artifactId>
-            <version>2.0.12-1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.2.18</version>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13.1</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-            <version>6.1.0</version>
         </dependency>
     </dependencies>
     <build>

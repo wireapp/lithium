@@ -45,8 +45,6 @@ import com.wire.xenon.state.FileState;
 import com.wire.xenon.state.JdbiState;
 import com.wire.xenon.tools.Logger;
 import io.dropwizard.Application;
-import io.dropwizard.bundles.redirect.PathRedirect;
-import io.dropwizard.bundles.redirect.RedirectBundle;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
@@ -120,9 +118,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
                 return configuration.swagger;
             }
         });
-        bootstrap.addBundle(new RedirectBundle(
-                new PathRedirect("/", "/status"),
-                new PathRedirect("/bots/status", "/status")));
     }
 
     @Override

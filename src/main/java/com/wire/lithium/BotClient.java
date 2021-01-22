@@ -48,12 +48,6 @@ public class BotClient extends WireClientBase {
         return generic.getMessageId();
     }
 
-    public UUID sendLinkPreview(String url, String title, IGeneric image) throws Exception {
-        LinkPreview generic = new LinkPreview(url, title, image.createGenericMsg().getAsset());
-        postGenericMessage(generic);
-        return generic.getMessageId();
-    }
-
     public UUID sendPicture(byte[] bytes, String mimeType) throws Exception {
         Picture image = new Picture(bytes, mimeType);
 
