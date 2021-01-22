@@ -72,7 +72,7 @@ public class Configuration extends io.dropwizard.Configuration {
 
     private static class _SwaggerBundleConfiguration extends SwaggerBundleConfiguration {
         _SwaggerBundleConfiguration() {
-            setResourcePackage("com.wire.bots.sdk.server.resources");
+            setResourcePackage("com.wire.lithium.server.resources");
         }
     }
 }
