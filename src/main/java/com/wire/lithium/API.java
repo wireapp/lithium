@@ -66,8 +66,10 @@ public class API implements WireAPI {
         this.httpClient = httpClient;
         this.token = token;
 
+        final String host = host();
+
         bot = httpClient
-                .target(host())
+                .target(host)
                 .path("bot");
         messages = bot
                 .path("messages");
@@ -96,7 +98,7 @@ public class API implements WireAPI {
                 .options();
     }
 
-    private String host() {
+    public static String host() {
         String host = System.getProperty(Const.WIRE_BOTS_SDK_API, System.getenv("WIRE_API_HOST"));
         return host != null ? host : "https://prod-nginz-https.wire.com";
     }

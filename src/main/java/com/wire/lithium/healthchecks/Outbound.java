@@ -24,7 +24,8 @@ public class Outbound extends HealthCheck {
             int status = options.getStatus();
             return status == 401 ? Result.healthy() : Result.unhealthy(String.format("%s. status: %d", s, status));
         } catch (Exception e) {
-            return Result.unhealthy(e.getMessage());
+            final String message = String.format("Unable to reach: %s, error: %s", API.host(), e.getMessage());
+            return Result.unhealthy(message);
         } finally {
             Logger.debug("Finished Outbound healthcheck");
         }
