@@ -19,10 +19,10 @@
 package com.wire.lithium.server.resources;
 
 import com.codahale.metrics.annotation.Metered;
+import com.wire.lithium.models.NewBotResponseModel;
 import com.wire.xenon.MessageHandlerBase;
 import com.wire.xenon.backend.models.ErrorMessage;
 import com.wire.xenon.backend.models.NewBot;
-import com.wire.xenon.backend.models.NewBotResponseModel;
 import com.wire.xenon.crypto.Crypto;
 import com.wire.xenon.factories.CryptoFactory;
 import com.wire.xenon.factories.StorageFactory;

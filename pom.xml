@@ -6,12 +6,12 @@
 
     <groupId>com.wire</groupId>
     <artifactId>lithium</artifactId>
-    <version>3.0.4</version>
+    <version>3.0.5</version>
     <packaging>jar</packaging>
 
     <properties>
         <dropwizard.version>2.0.12</dropwizard.version>
-        <smoketurner.version>2.0.0-1</smoketurner.version>
+        <smoketurner.version>2.0.12-1</smoketurner.version>
         <maven.test.skip>true</maven.test.skip>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
