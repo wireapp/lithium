@@ -6,12 +6,11 @@
 
     <groupId>com.wire</groupId>
     <artifactId>lithium</artifactId>
-    <version>3.0.5</version>
+    <version>3.0.6</version>
     <packaging>jar</packaging>
 
     <properties>
-        <dropwizard.version>2.0.12</dropwizard.version>
-        <smoketurner.version>2.0.12-1</smoketurner.version>
+        <dropwizard.version>2.0.15</dropwizard.version>
         <maven.test.skip>true</maven.test.skip>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -27,6 +26,10 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
@@ -62,11 +65,11 @@
             <version>${dropwizard.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.smoketurner</groupId>
+            <groupId>com.github.smoketurner</groupId>
             <artifactId>dropwizard-swagger</artifactId>
-            <version>${smoketurner.version}</version>
+            <!-- this specific commit works, the latest release does not -->
+            <version>1532b0c531</version>
         </dependency>
-
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>

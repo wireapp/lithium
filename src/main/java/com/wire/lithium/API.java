@@ -19,11 +19,11 @@
 package com.wire.lithium;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wire.lithium.models.NewBotResponseModel;
 import com.wire.xenon.Const;
 import com.wire.xenon.WireAPI;
 import com.wire.xenon.assets.IAsset;
 import com.wire.xenon.backend.models.Conversation;
-import com.wire.xenon.backend.models.NewBotResponseModel;
 import com.wire.xenon.backend.models.User;
 import com.wire.xenon.exceptions.HttpException;
 import com.wire.xenon.models.AssetKey;
