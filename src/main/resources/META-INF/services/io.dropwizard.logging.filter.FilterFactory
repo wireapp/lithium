@@ -1,1 +1,1 @@
-com.wire.lithium.server.filters.StatusCheckFilter
+com.wire.lithium.server.monitoring.StatusCheckFilter

@@ -1,11 +1,12 @@
-package com.wire.lithium.server.resources;
+package com.wire.lithium.server.monitoring;
 
-import com.wire.xenon.backend.models.Version;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -30,18 +31,28 @@ public class VersionResource {
 
     private Version getVersion() {
         final String path = System.getenv("RELEASE_FILE_PATH");
-        final Version version = new Version();
 
+        String version = null;
         if (path != null) {
-            try (RandomAccessFile file = new RandomAccessFile(path, "r")) {
-                version.version = file.readLine();
+            try (final RandomAccessFile file = new RandomAccessFile(path, "r")) {
+                version = file.readLine();
             } catch (Exception ignored) {
             }
         }
 
-        if (version.version == null) {
-            version.version = "development";
+        if (version == null) {
+            version = "development";
         }
-        return version;
+        return new Version(version);
+    }
+
+    static class Version {
+        @NotNull
+        @NotEmpty
+        public final String version;
+
+        public Version(String version) {
+            this.version = version;
+        }
     }
 }
