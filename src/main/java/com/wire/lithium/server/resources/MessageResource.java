@@ -22,6 +22,7 @@ import com.codahale.metrics.annotation.Metered;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wire.bots.cryptobox.CryptoException;
 import com.wire.lithium.ClientRepo;
+import com.wire.lithium.server.monitoring.MDCUtils;
 import com.wire.xenon.MessageHandlerBase;
 import com.wire.xenon.MessageResourceBase;
 import com.wire.xenon.WireClient;
@@ -75,24 +76,28 @@ public class MessageResource extends MessageResourceBase {
             messageID = UUID.randomUUID(); //todo fix this once Wire BE adds messageId into payload
         }
 
+        // put tracing information to logs
+        MDCUtils.put("botId", botId);
+        MDCUtils.put("messageId", messageID);
+        MDCUtils.put("conversationId", payload.convId);
+
         try (WireClient client = getWireClient(botId, payload)) {
             handleMessage(messageID, payload, client);
         } catch (CryptoException e) {
-            Logger.error("newMessage: %s %s", botId, e);
+            Logger.exception("newMessage: %s %s", e, botId, e.getMessage());
             respondWithError(botId, payload);
             return Response.
                     status(503).
                     entity(new ErrorMessage(e.getMessage())).
                     build();
         } catch (MissingStateException e) {
-            Logger.error("newMessage: %s %s", botId, e);
+            Logger.exception("newMessage: %s %s", e, botId, e.getMessage());
             return Response.
                     status(410).
                     entity(new ErrorMessage(e.getMessage())).
                     build();
         } catch (Exception e) {
-            e.printStackTrace();
-            Logger.error("newMessage: %s %s", botId, e);
+            Logger.exception("newMessage: %s %s", e, botId, e.getMessage());
             return Response.
                     status(400).
                     entity(new ErrorMessage(e.getMessage())).
@@ -108,8 +113,8 @@ public class MessageResource extends MessageResourceBase {
     private void respondWithError(UUID botId, Payload payload) {
         try (WireClient client = getWireClient(botId, payload)) {
             client.send(new Reaction(UUID.randomUUID(), ""));
-        } catch (Exception e1) {
-            Logger.error("respondWithError: bot: %s %s", botId, e1);
+        } catch (Exception e) {
+            Logger.exception("respondWithError: bot: %s %s", e, botId, e.getMessage());
         }
     }
 

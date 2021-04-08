@@ -16,7 +16,7 @@
 // along with this program. If not, see http://www.gnu.org/licenses/.
 //
 
-package com.wire.lithium.server.resources;
+package com.wire.lithium.server.monitoring;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,7 +30,7 @@ import javax.ws.rs.core.Response;
 @Api
 @Path("/status")
 @Produces(MediaType.TEXT_PLAIN)
-public class EmptyStatusResource {
+public class StatusResource {
     @GET
     @ApiOperation(value = "Status")
     public Response statusEmpty() {

@@ -6,7 +6,7 @@
 
     <groupId>com.wire</groupId>
     <artifactId>lithium</artifactId>
-    <version>3.0.6</version>
+    <version>3.0.8</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -37,7 +37,7 @@
         <dependency>
             <groupId>com.wire</groupId>
             <artifactId>xenon</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>

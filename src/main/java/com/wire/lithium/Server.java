@@ -27,11 +27,11 @@ import com.wire.lithium.healthchecks.CryptoHealthCheck;
 import com.wire.lithium.healthchecks.Outbound;
 import com.wire.lithium.healthchecks.StorageHealthCheck;
 import com.wire.lithium.server.filters.AuthenticationFeature;
-import com.wire.lithium.server.filters.RequestMdcFactoryFilter;
+import com.wire.lithium.server.monitoring.RequestMdcFactoryFilter;
+import com.wire.lithium.server.monitoring.StatusResource;
+import com.wire.lithium.server.monitoring.VersionResource;
 import com.wire.lithium.server.resources.BotsResource;
-import com.wire.lithium.server.resources.EmptyStatusResource;
 import com.wire.lithium.server.resources.MessageResource;
-import com.wire.lithium.server.resources.VersionResource;
 import com.wire.lithium.server.tasks.AvailablePrekeysTask;
 import com.wire.lithium.server.tasks.ConversationTask;
 import com.wire.xenon.Const;
@@ -92,6 +92,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
      * @param config Configuration object (yaml)
      * @param env    Environment object
      */
+    @SuppressWarnings("RedundantThrows") // this method can be overridden
     protected void initialize(Config config, Environment env) throws Exception {
 
     }
@@ -104,6 +105,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
      * @param config Configuration object (yaml)
      * @param env    Environment object
      */
+    @SuppressWarnings("RedundantThrows") // this method can be overridden
     protected void onRun(Config config, Environment env) throws Exception {
 
     }
@@ -201,10 +203,11 @@ public abstract class Server<Config extends Configuration> extends Application<C
     }
 
     private void addResources() {
-        // add status endpoint
-        addResource(new EmptyStatusResource());
-        // add version endpoint
-        addResource(new VersionResource());
+        /* --- Wire Common --- */
+        addResource(new VersionResource()); // add version endpoint
+        addResource(new StatusResource()); // empty status for k8s
+        addResource(new RequestMdcFactoryFilter()); // MDC data
+        /* //- Wire Common --- */
 
         botResource();
         messageResource();
@@ -233,6 +236,10 @@ public abstract class Server<Config extends Configuration> extends Application<C
     }
 
     private void initTelemetry() {
+        /* --- Wire Common --- */
+        environment.jersey().register(new RequestMdcFactoryFilter());
+        /* //- Wire Common --- */
+
         final CryptoFactory cryptoFactory = getCryptoFactory();
         final StorageFactory storageFactory = getStorageFactory();
 
@@ -245,8 +252,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
         environment.metrics().register("logger.errors", (Gauge<Integer>) Logger::getErrorCount);
         environment.metrics().register("logger.warnings", (Gauge<Integer>) Logger::getWarningCount);
-
-        environment.jersey().register(new RequestMdcFactoryFilter());
 
         JmxReporter jmxReporter = JmxReporter.forRegistry(environment.metrics())
                 .convertRatesTo(TimeUnit.SECONDS)

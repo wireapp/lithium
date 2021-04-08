@@ -1,6 +1,7 @@
 package com.wire.lithium.healthchecks;
 
 import com.codahale.metrics.health.HealthCheck;
+import com.wire.lithium.server.monitoring.MDCUtils;
 import com.wire.xenon.backend.models.NewBot;
 import com.wire.xenon.factories.StorageFactory;
 import com.wire.xenon.state.State;
@@ -18,6 +19,8 @@ public class StorageHealthCheck extends HealthCheck {
     @Override
     protected HealthCheck.Result check() {
         try {
+            MDCUtils.put("healthCheck", "StorageHealthCheck"); // tag the logs with health check
+
             Logger.debug("Starting StorageHealthCheck healthcheck");
             NewBot newBot = new NewBot();
             newBot.id = UUID.randomUUID();
@@ -26,6 +29,7 @@ public class StorageHealthCheck extends HealthCheck {
                     ? HealthCheck.Result.healthy()
                     : HealthCheck.Result.unhealthy("Failed to save the state");
         } catch (Exception e) {
+            Logger.exception("Exception during StorageHealthCheck.", e);
             return Result.unhealthy(e.getMessage());
         } finally {
             Logger.debug("Finished StorageHealthCheck healthcheck");
