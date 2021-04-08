@@ -1,6 +1,7 @@
 package com.wire.lithium.healthchecks;
 
 import com.codahale.metrics.health.HealthCheck;
+import com.wire.lithium.server.monitoring.MDCUtils;
 import com.wire.xenon.crypto.Crypto;
 import com.wire.xenon.factories.CryptoFactory;
 import com.wire.xenon.models.otr.PreKeys;
@@ -21,6 +22,7 @@ public class Alice2Bob extends HealthCheck {
     @Override
     protected Result check() {
         try {
+            MDCUtils.put("healthCheck", "Alice2Bob"); // tag the logs with health check
             Logger.debug("Starting Alice2Bob healthcheck");
 
             UUID aliceId = UUID.randomUUID();
@@ -53,6 +55,7 @@ public class Alice2Bob extends HealthCheck {
 
             return Result.healthy();
         } catch (Exception e) {
+            Logger.exception("Exception during Alice2Bob health check.", e);
             return Result.unhealthy(e.getMessage());
         } finally {
             Logger.debug("Finished Alice2Bob healthcheck");

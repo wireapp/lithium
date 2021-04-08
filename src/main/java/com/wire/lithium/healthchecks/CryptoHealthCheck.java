@@ -1,6 +1,7 @@
 package com.wire.lithium.healthchecks;
 
 import com.codahale.metrics.health.HealthCheck;
+import com.wire.lithium.server.monitoring.MDCUtils;
 import com.wire.xenon.crypto.Crypto;
 import com.wire.xenon.factories.CryptoFactory;
 import com.wire.xenon.tools.Logger;
@@ -17,6 +18,7 @@ public class CryptoHealthCheck extends HealthCheck {
     @Override
     protected Result check() {
         try {
+            MDCUtils.put("healthCheck", "CryptoHealthCheck"); // tag the logs with health check
             Logger.debug("Starting CryptoHealthCheck healthcheck");
 
             try (Crypto crypto = cryptoFactory.create(UUID.randomUUID())) {
@@ -25,6 +27,7 @@ public class CryptoHealthCheck extends HealthCheck {
                 return Result.healthy();
             }
         } catch (Exception e) {
+            Logger.exception("Exception during CryptoHealthCheck.", e);
             return Result.unhealthy(e.getMessage());
         } finally {
             Logger.debug("Finished CryptoHealthCheck healthcheck");

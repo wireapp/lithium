@@ -21,7 +21,7 @@ public class ConversationTask extends TaskBase {
     }
 
     @Override
-    public void execute(Map<String, List<String>> parameters, PrintWriter output) throws Exception {
+    public void execute(Map<String, List<String>> parameters, PrintWriter output) {
         UUID botId = UUID.fromString(extractString(parameters, "bot"));
 
         try {
@@ -32,7 +32,7 @@ public class ConversationTask extends TaskBase {
 
             output.println(mapper.writeValueAsString(conversation));
         } catch (Exception e) {
-            Logger.error(e.getMessage());
+            Logger.exception("Exception during ConversationTask.", e);
             output.println(e.getMessage());
         }
     }

@@ -236,6 +236,10 @@ public abstract class Server<Config extends Configuration> extends Application<C
     }
 
     private void initTelemetry() {
+        /* --- Wire Common --- */
+        environment.jersey().register(new RequestMdcFactoryFilter());
+        /* //- Wire Common --- */
+
         final CryptoFactory cryptoFactory = getCryptoFactory();
         final StorageFactory storageFactory = getStorageFactory();
 
@@ -248,8 +252,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
         environment.metrics().register("logger.errors", (Gauge<Integer>) Logger::getErrorCount);
         environment.metrics().register("logger.warnings", (Gauge<Integer>) Logger::getWarningCount);
-
-        environment.jersey().register(new RequestMdcFactoryFilter());
 
         JmxReporter jmxReporter = JmxReporter.forRegistry(environment.metrics())
                 .convertRatesTo(TimeUnit.SECONDS)

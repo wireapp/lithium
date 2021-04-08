@@ -20,6 +20,7 @@ package com.wire.lithium.server.resources;
 
 import com.codahale.metrics.annotation.Metered;
 import com.wire.lithium.models.NewBotResponseModel;
+import com.wire.lithium.server.monitoring.MDCUtils;
 import com.wire.xenon.MessageHandlerBase;
 import com.wire.xenon.backend.models.ErrorMessage;
 import com.wire.xenon.backend.models.NewBot;
@@ -68,13 +69,18 @@ public class BotsResource {
 
         String token = (String) context.getProperty("wire-auth");
 
-        if (!onNewBot(newBot, token))
+        if (!onNewBot(newBot, token)) {
             return Response
                     .status(409)
                     .entity(new ErrorMessage("User not whitelisted or service does not accept new instances atm"))
                     .build();
+        }
 
         UUID botId = newBot.id;
+        // put information to every log for more information
+        MDCUtils.put("botId", botId);
+        MDCUtils.put("conversationId", newBot.conversation.id);
+
         boolean saveState = storageF.create(botId).saveState(newBot);
         if (!saveState) {
             Logger.warning("Failed to save the state. Bot: %s", botId);

@@ -32,7 +32,7 @@ public class AvailablePrekeysTask extends TaskBase {
 
             output.println(mapper.writeValueAsString(availablePrekeys));
         } catch (Exception e) {
-            Logger.error(e.getMessage());
+            Logger.exception("Exception during AvailablePrekeysTask", e);
             output.println(e.getMessage());
         }
     }
