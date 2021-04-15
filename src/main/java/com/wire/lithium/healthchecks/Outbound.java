@@ -22,10 +22,10 @@ public class Outbound extends HealthCheck {
 
             Logger.debug("Starting Outbound healthcheck");
             API api = new API(client, null);
-            Response options = api.options();
-            String s = options.readEntity(String.class);
-            int status = options.getStatus();
-            return status == 401 ? Result.healthy() : Result.unhealthy(String.format("%s. status: %d", s, status));
+            Response response = api.status();
+            String s = response.readEntity(String.class);
+            int status = response.getStatus();
+            return status == 200 ? Result.healthy() : Result.unhealthy(String.format("%s. status: %d", s, status));
         } catch (Exception e) {
             final String message = String.format("Unable to reach: %s, error: %s", API.host(), e.getMessage());
             Logger.exception(message, e);

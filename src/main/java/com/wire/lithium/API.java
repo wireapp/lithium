@@ -92,10 +92,11 @@ public class API implements WireAPI {
         }
     }
 
-    public Response options() {
-        return bot
+    public Response status() {
+        return httpClient.target(host())
+                .path("status")
                 .request()
-                .options();
+                .get();
     }
 
     public static String host() {
