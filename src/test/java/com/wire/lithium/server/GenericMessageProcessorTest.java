@@ -5,9 +5,11 @@ import com.waz.model.Messages;
 import com.wire.xenon.MessageHandlerBase;
 import com.wire.xenon.WireClient;
 import com.wire.xenon.backend.GenericMessageProcessor;
+import com.wire.xenon.models.AudioMessage;
 import com.wire.xenon.models.LinkPreviewMessage;
 import org.junit.Test;
 
+import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
 public class GenericMessageProcessorTest {
@@ -23,6 +25,9 @@ public class GenericMessageProcessorTest {
     private static final int WIDTH = 84;
     private static final int SIZE = 123;
     private static final String MIME_TYPE = "image/png";
+    public static final String AUDIO_MIME_TYPE = "audio/x-m4a";
+    public static final String NAME = "audio.m4a";
+    public static final int DURATION = 27000;
 
     @Test
     public void testLinkPreview() {
@@ -72,6 +77,44 @@ public class GenericMessageProcessorTest {
         processor.process(from, sender, convId, time, builder.build());
     }
 
+    @Test
+    public void testAudio() throws UnsupportedEncodingException {
+        MessageHandler handler = new MessageHandler();
+        GenericMessageProcessor processor = new GenericMessageProcessor(null, handler);
+
+        UUID from = UUID.randomUUID();
+        UUID convId = UUID.randomUUID();
+        String sender = "sender";
+        String time = "some time";
+        UUID messageId = UUID.randomUUID();
+
+        Messages.Asset.AudioMetaData.Builder audioMeta = Messages.Asset.AudioMetaData.newBuilder()
+                .setDurationInMillis(DURATION)
+                .setNormalizedLoudness(ByteString.copyFrom("231241534534sdSCCKENHWUXNasdaeqdAnkjBckjwenfjwef", "UTF-8"));
+
+        Messages.Asset.Original.Builder original = Messages.Asset.Original.newBuilder()
+                .setSize(SIZE)
+                .setName(NAME)
+                .setMimeType(AUDIO_MIME_TYPE)
+                .setAudio(audioMeta);
+
+        Messages.Asset.RemoteData.Builder uploaded = Messages.Asset.RemoteData.newBuilder()
+                .setAssetId(ASSET_KEY)
+                .setAssetToken(ASSET_TOKEN)
+                .setOtrKey(ByteString.EMPTY)
+                .setSha256(ByteString.EMPTY);
+
+        Messages.Asset.Builder asset = Messages.Asset.newBuilder()
+                .setOriginal(original)
+                .setUploaded(uploaded);
+
+        Messages.GenericMessage.Builder builder = Messages.GenericMessage.newBuilder()
+                .setMessageId(messageId.toString())
+                .setAsset(asset);
+
+        processor.process(from, sender, convId, time, builder.build());
+    }
+
     private static class MessageHandler extends MessageHandlerBase {
         @Override
         public void onLinkPreview(WireClient client, LinkPreviewMessage msg) {
@@ -87,6 +130,11 @@ public class GenericMessageProcessorTest {
             assert msg.getSize() == SIZE;
             assert msg.getMimeType().equals(MIME_TYPE);
             assert msg.getAssetToken().equals(ASSET_TOKEN);
+        }
+
+        @Override
+        public void onAudio(WireClient client, AudioMessage msg) {
+            assert msg.getMimeType().equals(AUDIO_MIME_TYPE);
         }
     }
 }

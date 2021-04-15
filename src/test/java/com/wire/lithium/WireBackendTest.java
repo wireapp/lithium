@@ -2,9 +2,13 @@ package com.wire.lithium;
 
 import com.waz.model.Messages;
 import com.wire.bots.cryptobox.CryptoException;
+import com.wire.lithium.models.NewBotResponseModel;
 import com.wire.xenon.MessageHandlerBase;
 import com.wire.xenon.WireClient;
-import com.wire.xenon.backend.models.*;
+import com.wire.xenon.backend.models.Conversation;
+import com.wire.xenon.backend.models.NewBot;
+import com.wire.xenon.backend.models.Payload;
+import com.wire.xenon.backend.models.User;
 import com.wire.xenon.crypto.Crypto;
 import com.wire.xenon.factories.CryptoFactory;
 import com.wire.xenon.models.PingMessage;
