@@ -60,7 +60,7 @@ public class BotClient extends WireClientBase {
     }
 
     public UUID sendAudio(byte[] bytes, String name, String mimeType, long duration) throws Exception {
-        AudioPreview preview = new AudioPreview(bytes, name, mimeType, duration);
+        AudioPreview preview = new AudioPreview(name, mimeType, duration, bytes.length);
         AudioAsset audioAsset = new AudioAsset(bytes, preview);
 
         postGenericMessage(preview);
