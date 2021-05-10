@@ -64,25 +64,27 @@ public class MessageResource extends MessageResourceBase {
     @Authorization("Bearer")
     @Metered
     public Response newMessage(@ApiParam("UUID Bot instance id") @PathParam("bot") UUID botId,
-                               @ApiParam("UUID Unique message id") @QueryParam("id") UUID messageID,
+                               @ApiParam("UUID Unique event id") @QueryParam("id") UUID eventId,
                                @ApiParam @Valid @NotNull Payload payload) throws IOException {
 
-        if (Logger.getLevel() == Level.FINE) {
-            String strPayload = objectMapper.writeValueAsString(payload);
-            Logger.debug("MessageResource: bot: %s, id: %s, %s", botId, messageID, strPayload);
+        if (eventId == null) {
+            eventId = UUID.randomUUID(); //todo fix this once Wire BE adds eventId into payload
         }
 
-        if (messageID == null) {
-            messageID = UUID.randomUUID(); //todo fix this once Wire BE adds messageId into payload
+        if (Logger.getLevel() == Level.FINE) {
+            Logger.debug("eventId: %s, botId: %s, %s",
+                    eventId,
+                    botId,
+                    objectMapper.writeValueAsString(payload));
         }
 
         // put tracing information to logs
         MDCUtils.put("botId", botId);
-        MDCUtils.put("messageId", messageID);
+        MDCUtils.put("eventId", eventId);
         MDCUtils.put("conversationId", payload.convId);
 
         try (WireClient client = getWireClient(botId, payload)) {
-            handleMessage(messageID, payload, client);
+            handleMessage(eventId, payload, client);
         } catch (CryptoException e) {
             Logger.exception("newMessage: %s %s", e, botId, e.getMessage());
             respondWithError(botId, payload);
