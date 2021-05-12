@@ -1,55 +1,39 @@
 package com.wire.lithium;
 
-import com.codahale.metrics.MetricRegistry;
 import com.wire.bots.cryptobox.IRecord;
 import com.wire.bots.cryptobox.PreKey;
 import com.wire.xenon.crypto.storage.JdbiStorage;
-import io.dropwizard.db.DataSourceFactory;
-import io.dropwizard.db.ManagedDataSource;
-import org.flywaydb.core.Flyway;
-import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.sqlobject.SqlObjectPlugin;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
-public class PostgresCryptoStorageTest {
-    private Jdbi jdbi;
+public class PostgresCryptoStorageTest extends DatabaseTestBase {
 
-    @Before
-    public void init() {
-        DataSourceFactory dataSourceFactory = new DataSourceFactory();
-        dataSourceFactory.setDriverClass("org.postgresql.Driver");
-        dataSourceFactory.setUrl("jdbc:postgresql://localhost/lithium");
+    private JdbiStorage storage;
 
-        // Migrate DB if needed
-        Flyway flyway = Flyway
-                .configure()
-                .dataSource(dataSourceFactory.getUrl(), dataSourceFactory.getUser(), dataSourceFactory.getPassword())
-                .baselineOnMigrate(true)
-                .load();
+    @BeforeEach
+    public void setUp() {
         flyway.migrate();
+        storage = new JdbiStorage(jdbi);
+    }
 
-        ManagedDataSource dataSource = dataSourceFactory.build(new MetricRegistry(), "PostgresCryptoStorageTest");
-
-        jdbi = Jdbi.create(dataSource)
-                .installPlugin(new SqlObjectPlugin());
-
+    @AfterEach
+    public void clean() {
+        flyway.clean();
     }
 
     @Test
     public void testFetchSession() {
-        JdbiStorage storage = new JdbiStorage(jdbi);
-
         Random random = new Random();
         String id = "" + random.nextInt();
         String sid = "" + random.nextInt();
 
         IRecord record = storage.fetchSession(id, sid);
-        assert record.getData() == null;
+        Assertions.assertNull(record.getData());
 
         byte[] data = new byte[1024];
         random.nextBytes(data);
@@ -57,21 +41,19 @@ public class PostgresCryptoStorageTest {
         record.persist(data);
 
         record = storage.fetchSession(id, sid);
-        assert record.getData() != null;
-        assert Arrays.equals(data, record.getData());
+        Assertions.assertNotNull(record.getData());
+        Assertions.assertArrayEquals(data, record.getData());
 
         record.persist(data);
     }
 
     @Test
     public void testFetchIdentity() {
-        JdbiStorage storage = new JdbiStorage(jdbi);
-
         Random random = new Random();
         String id = "" + random.nextInt();
 
         byte[] identity = storage.fetchIdentity(id);
-        assert identity == null;
+        Assertions.assertNull(identity);
 
         identity = new byte[1024];
         random.nextBytes(identity);
@@ -79,19 +61,17 @@ public class PostgresCryptoStorageTest {
         storage.insertIdentity(id, identity);
 
         byte[] control = storage.fetchIdentity(id);
-        assert control != null;
-        assert Arrays.equals(identity, control);
+        Assertions.assertNotNull(control);
+        Assertions.assertArrayEquals(identity, control);
     }
 
     @Test
     public void testFetchLastPrekey() {
-        JdbiStorage storage = new JdbiStorage(jdbi);
-
         Random random = new Random();
         String id = "" + random.nextInt();
 
         PreKey[] preKeys = storage.fetchPrekeys(id);
-        assert preKeys == null;
+        Assertions.assertNull(preKeys);
 
         byte[] data = new byte[1024];
         random.nextBytes(data);
@@ -101,25 +81,23 @@ public class PostgresCryptoStorageTest {
 
         PreKey[] control = storage.fetchPrekeys(id);
 
-        assert control != null;
-        assert control.length == 1;
+        Assertions.assertNotNull(control);
+        Assertions.assertEquals(1, control.length);
 
         PreKey controlKey = control[0];
 
-        assert preKey.id == controlKey.id;
-        assert Arrays.equals(preKey.data, controlKey.data);
+        Assertions.assertEquals(preKey.id, controlKey.id);
+        Assertions.assertArrayEquals(preKey.data, controlKey.data);
     }
 
     @Test
     public void testFetchPrekeys() {
         int SIZE = 10;
-        JdbiStorage storage = new JdbiStorage(jdbi);
-
         Random random = new Random();
         String id = "" + random.nextInt();
 
         PreKey[] preKeys = storage.fetchPrekeys(id);
-        assert preKeys == null;
+        Assertions.assertNull(preKeys);
 
         ArrayList<PreKey> prekeys = new ArrayList<>();
         for (int i = 0; i < SIZE; i++) {
@@ -133,21 +111,19 @@ public class PostgresCryptoStorageTest {
 
         PreKey[] control = storage.fetchPrekeys(id);
 
-        assert control != null;
-        assert control.length == SIZE;
+        Assertions.assertNotNull(control);
+        Assertions.assertEquals(SIZE, control.length);
         for (int i = 0; i < SIZE; i++) {
             PreKey preKey = prekeys.get(i);
             PreKey controlKey = control[i];
 
-            assert preKey.id == controlKey.id;
-            assert Arrays.equals(preKey.data, controlKey.data);
+            Assertions.assertEquals(preKey.id, controlKey.id);
+            Assertions.assertArrayEquals(preKey.data, controlKey.data);
         }
     }
 
     @Test
     public void testPurge() {
-        JdbiStorage storage = new JdbiStorage(jdbi);
-
         Random random = new Random();
         String id = "" + random.nextInt();
 
@@ -170,12 +146,12 @@ public class PostgresCryptoStorageTest {
         storage.purge(id);
 
         byte[] identity = storage.fetchIdentity(id);
-        assert identity == null;
+        Assertions.assertNull(identity);
 
         PreKey[] preKeys = storage.fetchPrekeys(id);
-        assert preKeys == null;
+        Assertions.assertNull(preKeys);
 
         record = storage.fetchSession(id, sid);
-        assert record.getData() == null;
+        Assertions.assertNull(record.getData());
     }
 }

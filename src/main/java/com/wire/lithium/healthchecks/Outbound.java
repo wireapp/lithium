@@ -17,17 +17,17 @@ public class Outbound extends HealthCheck {
 
     @Override
     protected Result check() {
-        try {
-            MDCUtils.put("healthCheck", "Outbound"); // tag the logs with health check
+        MDCUtils.put("healthCheck", "Outbound"); // tag the logs with health check
+        Logger.debug("Starting Outbound healthcheck");
+        API api = new API(client, null);
 
-            Logger.debug("Starting Outbound healthcheck");
-            API api = new API(client, null);
+        try {
             Response response = api.status();
             String s = response.readEntity(String.class);
             int status = response.getStatus();
             return status == 200 ? Result.healthy() : Result.unhealthy(String.format("%s. status: %d", s, status));
         } catch (Exception e) {
-            final String message = String.format("Unable to reach: %s, error: %s", API.host(), e.getMessage());
+            final String message = String.format("Unable to reach: %s, error: %s", api.getWireHost(), e.getMessage());
             Logger.exception(message, e);
             return Result.unhealthy(message);
         } finally {

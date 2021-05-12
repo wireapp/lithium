@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Layout used on Wire production services in the ELK stack - for access events -> HTTP log.
+ * Layout used on Wire production services in the ELK stack - for access events - HTTP log.
  */
 public class AccessEventJsonLayout extends AbstractJsonLayout<IAccessEvent> {
 

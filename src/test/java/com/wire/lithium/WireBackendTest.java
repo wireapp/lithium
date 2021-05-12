@@ -18,9 +18,9 @@ import com.wire.xenon.tools.Logger;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.testing.ConfigOverride;
 import io.dropwizard.testing.DropwizardTestSupport;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -29,38 +29,73 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class WireBackendTest {
-    private static final String serviceAuth = "secret";
-    private static final String BOT_CLIENT_DUMMY = "bot_client_dummy";
-    private static final String USER_CLIENT_DUMMY = "user_client_dummy";
-    private static final DropwizardTestSupport<Configuration> SUPPORT = new DropwizardTestSupport<>(
-            TestServer.class,
-            null,
-            ConfigOverride.config("token", serviceAuth),
-            ConfigOverride.config("database.driverClass", "org.postgresql.Driver"),
-            ConfigOverride.config("database.url", "jdbc:postgresql://localhost/lithium"));
+public class WireBackendTest extends DatabaseTestBase {
+    private String serviceAuth;
+    private String BOT_CLIENT_DUMMY;
+    private String USER_CLIENT_DUMMY;
+    private DropwizardTestSupport<Configuration> support;
+
     private WebTarget target;
     private CryptoFactory cryptoFactory;
 
-    @Before
-    public void beforeClass() throws Exception {
-        SUPPORT.before();
+    @BeforeEach
+    public void setup() throws Exception {
+        serviceAuth = UUID.randomUUID().toString();
+        BOT_CLIENT_DUMMY = UUID.randomUUID().toString();
+        USER_CLIENT_DUMMY = UUID.randomUUID().toString();
 
-        final TestServer server = SUPPORT.getApplication();
+        String envUrl = System.getenv("POSTGRES_URL");
+        var databaseUrl = "jdbc:postgresql://" + (envUrl != null ? envUrl : "localhost/lithium");
+        var envUser = System.getenv("POSTGRES_USER");
+        var envPassword = System.getenv("POSTGRES_PASSWORD");
+        var overrides = new LinkedList<ConfigOverride>();
+        overrides.push(ConfigOverride.config("token", serviceAuth));
+        overrides.push(ConfigOverride.config("database.driverClass", "org.postgresql.Driver"));
+        overrides.push(ConfigOverride.config("database.url", databaseUrl));
+
+        overrides.push(ConfigOverride.config("jerseyClient.timeout", "40s"));
+        overrides.push(ConfigOverride.config("jerseyClient.connectionTimeout", "40s"));
+        overrides.push(ConfigOverride.config("jerseyClient.connectionRequestTimeout", "40s"));
+        overrides.push(ConfigOverride.config("jerseyClient.retries", "3"));
+
+        if (envUser != null) {
+            overrides.push(ConfigOverride.config("database.user", envUser));
+        }
+        if (envPassword != null) {
+            overrides.push(ConfigOverride.config("database.password", envPassword));
+        }
+
+        // sad java noises..
+        ConfigOverride[] arrs = new ConfigOverride[overrides.size()];
+        for (int i = 0; i < overrides.size(); i++) {
+            arrs[i] = overrides.get(i);
+        }
+
+        flyway.migrate();
+
+        support = new DropwizardTestSupport<>(
+                TestServer.class,
+                null,
+                arrs
+        );
+
+        support.before();
+
+        final TestServer server = support.getApplication();
 
         cryptoFactory = server.getCryptoFactory();
-
-        target = server.getClient().target("http://localhost:" + SUPPORT.getLocalPort());
+        target = server.getClient().target("http://localhost:" + support.getLocalPort());
     }
 
-    @After
-    public void afterClass() {
-
-        SUPPORT.after();
+    @AfterEach
+    public void cleanup() {
+        support.after();
+        flyway.clean();
     }
 
     @Test

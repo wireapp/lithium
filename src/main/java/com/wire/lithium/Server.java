@@ -66,7 +66,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Entry point for your Application
  *
- * @param <Config>
+ * @param <Config> Dropwizard configuration
  */
 public abstract class Server<Config extends Configuration> extends Application<Config> {
     protected ClientRepo repo;
@@ -81,7 +81,8 @@ public abstract class Server<Config extends Configuration> extends Application<C
      *
      * @param config Configuration object (yaml)
      * @param env    Environment object
-     * @return Instance of your class that implements {@see @MessageHandlerBase}
+     * @return Instance of your class that implements {@link MessageHandlerBase}
+     * @throws Exception allowed to throw exception
      */
     protected abstract MessageHandlerBase createHandler(Config config, Environment env) throws Exception;
 
@@ -91,6 +92,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
      *
      * @param config Configuration object (yaml)
      * @param env    Environment object
+     * @throws Exception allowed to throw exception
      */
     @SuppressWarnings("RedundantThrows") // this method can be overridden
     protected void initialize(Config config, Environment env) throws Exception {
@@ -104,6 +106,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
      *
      * @param config Configuration object (yaml)
      * @param env    Environment object
+     * @throws Exception allowed to throw exception
      */
     @SuppressWarnings("RedundantThrows") // this method can be overridden
     protected void onRun(Config config, Environment env) throws Exception {
@@ -114,7 +117,7 @@ public abstract class Server<Config extends Configuration> extends Application<C
     public void initialize(Bootstrap<Config> bootstrap) {
         bootstrap.setConfigurationSourceProvider(new SubstitutingSourceProvider(
                 bootstrap.getConfigurationSourceProvider(), new EnvironmentVariableSubstitutor(false)));
-        bootstrap.addBundle(new SwaggerBundle<Config>() {
+        bootstrap.addBundle(new SwaggerBundle<>() {
             @Override
             protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(Config configuration) {
                 return configuration.swagger;

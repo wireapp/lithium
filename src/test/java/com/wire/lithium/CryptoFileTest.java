@@ -1,4 +1,5 @@
-package com.wire.lithium;//
+package com.wire.lithium;
+//
 // Wire
 // Copyright (C) 2016 Wire Swiss GmbH
 //
@@ -16,59 +17,59 @@ package com.wire.lithium;//
 // along with this program. If not, see http://www.gnu.org/licenses/.
 //
 
+import com.wire.lithium.helpers.Util;
 import com.wire.xenon.crypto.CryptoFile;
 import com.wire.xenon.models.otr.Missing;
 import com.wire.xenon.models.otr.PreKey;
 import com.wire.xenon.models.otr.PreKeys;
 import com.wire.xenon.models.otr.Recipients;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileVisitOption;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.UUID;
 
 public class CryptoFileTest {
 
-    private final static UUID bobId;
-    private final static UUID aliceId;
-    private final static String DATA = "data";
-    private static CryptoFile alice;
-    private static CryptoFile bob;
-    private static PreKeys bobKeys;
-    private static PreKeys aliceKeys;
+    private UUID bobId;
+    private String bobClientId;
+    private UUID aliceId;
+    private String aliceClientId;
 
-    static {
+    private String rootFolder;
+    private CryptoFile alice;
+    private CryptoFile bob;
+    private PreKeys bobKeys;
+    private PreKeys aliceKeys;
+
+    @BeforeEach
+    public void setUp() throws Exception {
+        rootFolder = "lithium-test-data-" + UUID.randomUUID();
+
         aliceId = UUID.randomUUID();
+        aliceClientId = aliceClientId + "-client";
         bobId = UUID.randomUUID();
-    }
-    
-    @BeforeClass
-    public static void setUp() throws Exception {
-        alice = new CryptoFile(DATA, aliceId);
-        bob = new CryptoFile(DATA, bobId);
+        bobClientId = bobId + "-client";
+
+        alice = new CryptoFile(rootFolder, aliceId);
+        bob = new CryptoFile(rootFolder, bobId);
 
         ArrayList<PreKey> preKeys = bob.newPreKeys(0, 1);
-        bobKeys = new PreKeys(preKeys, "bob", bobId);
+        bobKeys = new PreKeys(preKeys, bobClientId, bobId);
 
         preKeys = alice.newPreKeys(0, 1);
-        aliceKeys = new PreKeys(preKeys, "alice", aliceId);
+        aliceKeys = new PreKeys(preKeys, aliceClientId, aliceId);
     }
 
-    @AfterClass
-    public static void clean() throws IOException {
+    @AfterEach
+    public void clean() throws IOException {
         alice.close();
         bob.close();
-        Path rootPath = Paths.get(DATA);
-        Files.walk(rootPath, FileVisitOption.FOLLOW_LINKS)
-                .sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(File::delete);
+        Util.deleteDir(rootFolder);
     }
 
     @Test
@@ -79,14 +80,14 @@ public class CryptoFileTest {
         // Encrypt using prekeys
         Recipients encrypt = alice.encrypt(bobKeys, textBytes);
 
-        String base64Encoded = encrypt.get(bobId, "bob");
+        String base64Encoded = encrypt.get(bobId, bobClientId);
 
         // Decrypt using initSessionFromMessage
-        String decrypt = bob.decrypt(aliceId, "alice", base64Encoded);
+        String decrypt = bob.decrypt(aliceId, aliceClientId, base64Encoded);
         byte[] decode = Base64.getDecoder().decode(decrypt);
 
-        assert Arrays.equals(decode, textBytes);
-        assert text.equals(new String(decode));
+        Assertions.assertArrayEquals(decode, textBytes);
+        Assertions.assertEquals(text, new String(decode));
     }
 
     @Test
@@ -96,14 +97,14 @@ public class CryptoFileTest {
 
         Recipients encrypt = bob.encrypt(aliceKeys, textBytes);
 
-        String base64Encoded = encrypt.get(aliceId, "alice");
+        String base64Encoded = encrypt.get(aliceId, aliceClientId);
 
         // Decrypt using initSessionFromMessage
-        String decrypt = alice.decrypt(bobId, "bob", base64Encoded);
+        String decrypt = alice.decrypt(bobId, bobClientId, base64Encoded);
         byte[] decode = Base64.getDecoder().decode(decrypt);
 
-        assert Arrays.equals(decode, textBytes);
-        assert text.equals(new String(decode));
+        Assertions.assertArrayEquals(decode, textBytes);
+        Assertions.assertEquals(text, new String(decode));
     }
 
     @Test
@@ -112,16 +113,32 @@ public class CryptoFileTest {
         byte[] textBytes = text.getBytes();
 
         Missing devices = new Missing();
-        devices.add(aliceId, "alice");
-        Recipients encrypt = bob.encrypt(devices, textBytes);
+        devices.add(aliceId, aliceClientId);
 
-        String base64Encoded = encrypt.get(aliceId, "alice");
+        // use keys first
+        Recipients encrypt = bob.encrypt(aliceKeys, textBytes);
 
-        // Decrypt using session
-        String decrypt = alice.decrypt(bobId, "bob", base64Encoded);
+        String base64Encoded = encrypt.get(aliceId, aliceClientId);
+
+        // Decrypt using initSessionFromMessage
+        String decrypt = alice.decrypt(bobId, bobClientId, base64Encoded);
         byte[] decode = Base64.getDecoder().decode(decrypt);
 
-        assert Arrays.equals(decode, textBytes);
-        assert text.equals(new String(decode));
+        Assertions.assertArrayEquals(decode, textBytes);
+        Assertions.assertEquals(text, new String(decode));
+
+        // and then session
+        text += " from session this time!";
+        textBytes = text.getBytes();
+        encrypt = bob.encrypt(devices, textBytes);
+
+        base64Encoded = encrypt.get(aliceId, aliceClientId);
+
+        // Decrypt using session
+        decrypt = alice.decrypt(bobId, bobClientId, base64Encoded);
+        decode = Base64.getDecoder().decode(decrypt);
+
+        Assertions.assertArrayEquals(decode, textBytes);
+        Assertions.assertEquals(text, new String(decode));
     }
 }
