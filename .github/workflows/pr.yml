@@ -1,0 +1,33 @@
+name: Code Check
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-20.04
+    container: wirebot/cryptobox:latest
+    # enable postgres
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_PASSWORD: postgres
+    steps:
+      - uses: actions/checkout@v2
+
+      # override template environment variables
+      - name: Setup Environment Variables
+        run: |
+          echo "POSTGRES_USER=postgres" >> $GITHUB_ENV
+          echo "POSTGRES_PASSWORD=postgres" >> $GITHUB_ENV
+          echo "POSTGRES_URL=postgres:5432/postgres" >> $GITHUB_ENV
+
+      - name: Execute Tests
+        run: |
+          mvn test -DargLine="-Djava.library.path=$LD_LIBRARY_PATH"
+
+      - name: Try to create package
+        run: |
+          mvn package -DskipTests
