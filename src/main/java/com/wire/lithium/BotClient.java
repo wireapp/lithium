@@ -52,7 +52,7 @@ public class BotClient extends WireClientBase {
         Picture image = new Picture(bytes, mimeType);
 
         AssetKey assetKey = uploadAsset(image);
-        image.setAssetKey(assetKey.key);
+        image.setAssetKey(assetKey.id);
         image.setAssetToken(assetKey.token);
 
         postGenericMessage(image);
@@ -66,7 +66,7 @@ public class BotClient extends WireClientBase {
         postGenericMessage(preview);
 
         AssetKey assetKey = uploadAsset(audioAsset);
-        audioAsset.setAssetKey(assetKey.key);
+        audioAsset.setAssetKey(assetKey.id);
         audioAsset.setAssetToken(assetKey.token);
 
         // post original + remote asset message
@@ -82,7 +82,7 @@ public class BotClient extends WireClientBase {
         postGenericMessage(preview);
 
         AssetKey assetKey = uploadAsset(asset);
-        asset.setAssetKey(assetKey.key);
+        asset.setAssetKey(assetKey.id);
         asset.setAssetToken(assetKey.token);
 
         // post original + remote asset message
@@ -100,7 +100,7 @@ public class BotClient extends WireClientBase {
 
         // upload asset to backend
         AssetKey assetKey = uploadAsset(asset);
-        asset.setAssetKey(assetKey.key);
+        asset.setAssetKey(assetKey.id);
         asset.setAssetToken(assetKey.token);
 
         // post remote asset message

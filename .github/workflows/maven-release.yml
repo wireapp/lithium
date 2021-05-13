@@ -1,0 +1,85 @@
+name: Release to Maven Central
+
+on:
+  workflow_dispatch:
+  release:
+    types: [ published ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-20.04
+    container: wirebot/cryptobox:latest
+    # enable postgres
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_PASSWORD: postgres
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Environment Variables
+        run: |
+          echo "POSTGRES_USER=postgres" >> $GITHUB_ENV
+          echo "POSTGRES_PASSWORD=postgres" >> $GITHUB_ENV
+          echo "POSTGRES_URL=postgres:5432/postgres" >> $GITHUB_ENV
+
+      - name: Execute Tests
+        run: |
+          mvn test -DargLine="-Djava.library.path=$LD_LIBRARY_PATH"
+
+      - name: Try to create package
+        run: |
+          mvn package -DskipTests
+
+      - name: Webhook to Wire
+        uses: 8398a7/action-slack@v2
+        with:
+          status: ${{ job.status }}
+          author_name: Lithium - Test execution before release
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.WEBHOOK_CI }}
+        if: failure()
+
+  release:
+    needs: [ tests ]
+    name: Release on Sonatype OSS
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Build with Maven
+        run: mvn -DskipTests package
+
+      - name: Set up Apache Maven Central
+        uses: actions/setup-java@v1
+        with: # running setup-java again overwrites the settings.xml
+          java-version: 11
+          server-id: ossrh
+          server-username: OSSRH_USERNAME
+          server-password: OSSRH_PASSWORD
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Publish to Apache Maven Central
+        run: mvn -DskipTests deploy
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+
+      # Send webhook to Wire using Slack Bot
+      - name: Webhook to Wire
+        uses: 8398a7/action-slack@v2
+        with:
+          status: ${{ job.status }}
+          author_name: Lithium - Release to Maven Central
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.WEBHOOK_CI }}
+        # Send message only if previous step failed
+        if: always()

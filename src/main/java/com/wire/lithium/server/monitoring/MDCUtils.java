@@ -9,6 +9,9 @@ public class MDCUtils {
 
     /**
      * Put value to MDC under given key.
+     *
+     * @param key   MDC key
+     * @param value value to the key
      */
     public static void put(@NotNull final String key, @Nullable Object value) {
         if (value != null) {
@@ -21,6 +24,8 @@ public class MDCUtils {
 
     /**
      * Remove key from the MDC.
+     *
+     * @param key key to be removed
      */
     public static void removeKey(@NotNull final String key) {
         MDC.remove(key);

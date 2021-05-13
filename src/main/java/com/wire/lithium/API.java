@@ -50,6 +50,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class API implements WireAPI {
+    private final String wireHost;
 
     private final WebTarget messages;
     private final WebTarget assets;
@@ -63,13 +64,17 @@ public class API implements WireAPI {
     private final String token;
 
     public API(Client httpClient, String token) {
+        this(httpClient, token, deriveHost());
+    }
+
+    public API(Client httpClient, String token, String wireHost) {
         this.httpClient = httpClient;
         this.token = token;
 
-        final String host = host();
+        this.wireHost = wireHost;
 
         bot = httpClient
-                .target(host)
+                .target(wireHost)
                 .path("bot");
         messages = bot
                 .path("messages");
@@ -92,16 +97,20 @@ public class API implements WireAPI {
         }
     }
 
+    private static String deriveHost() {
+        String host = System.getProperty(Const.WIRE_BOTS_SDK_API, System.getenv("WIRE_API_HOST"));
+        return host != null ? host : "https://prod-nginz-https.wire.com";
+    }
+
     public Response status() {
-        return httpClient.target(host())
+        return httpClient.target(wireHost)
                 .path("status")
                 .request()
                 .get();
     }
 
-    public static String host() {
-        String host = System.getProperty(Const.WIRE_BOTS_SDK_API, System.getenv("WIRE_API_HOST"));
-        return host != null ? host : "https://prod-nginz-https.wire.com";
+    public String getWireHost() {
+        return this.wireHost;
     }
 
     /**
@@ -110,7 +119,7 @@ public class API implements WireAPI {
      * @param msg           OtrMessage object containing ciphers for all clients
      * @param ignoreMissing If TRUE ignore missing clients and deliver the message to available clients
      * @return List of missing devices in case of fail or an empty list.
-     * @throws HttpException Http Exception is thrown when status >= 400
+     * @throws HttpException Http Exception is thrown when status {@literal >}= 400
      */
     @Override
     public Devices sendMessage(OtrMessage msg, Object... ignoreMissing) throws HttpException {
@@ -197,7 +206,7 @@ public class API implements WireAPI {
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, bearer())
                 .accept(MediaType.APPLICATION_JSON)
-                .get(new GenericType<ArrayList<Integer>>() {
+                .get(new GenericType<>() {
                 });
     }
 

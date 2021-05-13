@@ -61,7 +61,11 @@ abstract public class AbstractJsonLayout<T extends DeferredProcessingAware> exte
     /**
      * Puts MDC to log and uses Object Mapper to create final log string.
      * <p>
-     * Catches [JsonProcessingException] during processing, returns formatted string anyway.
+     * Catches {@link JsonProcessingException} during processing, returns formatted string anyway.
+     *
+     * @param jsonMap    key value map of properties that will go to final log.
+     * @param logMessage message to log
+     * @return final log message
      */
     protected String finalizeLog(Map<String, Object> jsonMap, @Nullable final String logMessage) {
         // put all MDC values to the final map

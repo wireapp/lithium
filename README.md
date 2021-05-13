@@ -11,20 +11,11 @@
 ## How to use it to build your bots?
 - In your `pom.xml`:
 ```
-<repositories>
-    <repository>
-        <id>lithium</id>
-        <url>https://packagecloud.io/dkovacevic/lithium/maven2</url>
-        <releases>
-            <enabled>true</enabled>
-        </releases>
-    </repository>
-</repositories>
 <dependencies>
     <dependency>
         <groupId>com.wire</groupId>
         <artifactId>lithium</artifactId>
-        <version>3.0.3</version>
+        <version>3.3.0</version>
     </dependency>
 <dependencies>
 ```
@@ -51,14 +42,14 @@ And than add build argument ie. in the build pipeline
 
 Requirements:
 
-- [Java >1.8](http://www.oracle.com)
+- [Java >= 11](http://www.oracle.com)
 - [Maven](https://maven.apache.org)
 - [Cryptobox4j](https://github.com/wireapp/cryptobox4j)
 
 To build the library, run:
 
 ```bash
-mvn install
+mvn install -DskipTests
 ```
 
 ## How to register your service with Wire
