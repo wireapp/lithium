@@ -15,7 +15,7 @@
     <dependency>
         <groupId>com.wire</groupId>
         <artifactId>lithium</artifactId>
-        <version>3.3.0</version>
+        <version>3.3.1</version>
     </dependency>
 <dependencies>
 ```
