@@ -38,7 +38,7 @@ jobs:
           status: ${{ job.status }}
           author_name: Lithium - Test execution before release
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.WEBHOOK_CI }}
+          SLACK_WEBHOOK_URL: ${{ secrets.WEBHOOK_RELEASE }}
         if: failure()
 
   release:
@@ -80,6 +80,6 @@ jobs:
           status: ${{ job.status }}
           author_name: Lithium - Release to Maven Central
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.WEBHOOK_CI }}
+          SLACK_WEBHOOK_URL: ${{ secrets.WEBHOOK_RELEASE }}
         # Send message only if previous step failed
         if: always()
