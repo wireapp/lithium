@@ -291,9 +291,9 @@ public class API implements WireAPI {
     }
 
     @Override
-    public byte[] downloadAsset(String assetKey, String assetToken) throws HttpException {
+    public byte[] downloadAsset(String assetId, String assetToken) throws HttpException {
         Invocation.Builder req = assets
-                .path(assetKey)
+                .path(assetId)
                 .request()
                 .property(ClientProperties.FOLLOW_REDIRECTS, Boolean.FALSE)
                 .header(HttpHeaders.AUTHORIZATION, bearer());
