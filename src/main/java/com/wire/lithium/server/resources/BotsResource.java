@@ -32,7 +32,10 @@ import io.swagger.annotations.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -58,50 +61,59 @@ public class BotsResource {
     @POST
     @ApiOperation(value = "New Bot instance", response = NewBotResponseModel.class, code = 201)
     @ApiResponses(value = {
-            @ApiResponse(code = 403, message = "Invalid Authorization", response = ErrorMessage.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = ErrorMessage.class),
             @ApiResponse(code = 409, message = "Bot not accepted (whitelist?)", response = ErrorMessage.class),
             @ApiResponse(code = 201, message = "Alles gute")})
     @Authorization("Bearer")
     @Metered
     public Response newBot(@Context ContainerRequestContext context,
-                           @ApiParam("Service token as Bearer") @NotNull @HeaderParam("Authorization") String auth,
-                           @ApiParam @Valid @NotNull NewBot newBot) throws Exception {
-
-        String token = (String) context.getProperty("wire-auth");
-
-        if (!onNewBot(newBot, token)) {
-            return Response
-                    .status(409)
-                    .entity(new ErrorMessage("User not whitelisted or service does not accept new instances atm"))
-                    .build();
-        }
-
-        UUID botId = newBot.id;
-        // put information to every log for more information
-        MDCUtils.put("botId", botId);
-        MDCUtils.put("conversationId", newBot.conversation.id);
-
-        boolean saveState = storageF.create(botId).saveState(newBot);
-        if (!saveState) {
-            Logger.warning("Failed to save the state. Bot: %s", botId);
-        }
+                           @ApiParam @Valid @NotNull NewBot newBot) {
 
         NewBotResponseModel ret = new NewBotResponseModel();
-        ret.name = handler.getName(newBot);
-        ret.accentId = handler.getAccentColour();
-        String profilePreview = handler.getSmallProfilePicture();
-        if (profilePreview != null) {
-            ret.addAsset(profilePreview, "preview");
-        }
 
-        String profileBig = handler.getBigProfilePicture();
-        if (profileBig != null) {
-            ret.addAsset(profileBig, "complete");
-        }
+        try {
+            UUID botId = newBot.id;
+            // put information to every log for more information
+            MDCUtils.put("botId", botId);
+            MDCUtils.put("conversationId", newBot.conversation.id);
+            MDCUtils.put("userId", newBot.origin.id);
 
-        try (Crypto crypto = cryptoF.create(botId)) {
-            ret.lastPreKey = crypto.newLastPreKey();
-            ret.preKeys = crypto.newPreKeys(0, 50);
+            String token = (String) context.getProperty("wire-auth");
+            if (!onNewBot(newBot, token)) {
+                return Response
+                        .status(409)
+                        .entity(new ErrorMessage("User not whitelisted or service does not accept new instances atm"))
+                        .build();
+            }
+
+            boolean saveState = storageF.create(botId).saveState(newBot);
+            if (!saveState) {
+                Logger.warning("Failed to save the state. Bot: %s", botId);
+            }
+
+            ret.name = handler.getName(newBot);
+            ret.accentId = handler.getAccentColour();
+            String profilePreview = handler.getSmallProfilePicture();
+            if (profilePreview != null) {
+                ret.addAsset(profilePreview, "preview");
+            }
+
+            String profileBig = handler.getBigProfilePicture();
+            if (profileBig != null) {
+                ret.addAsset(profileBig, "complete");
+            }
+
+            try (Crypto crypto = cryptoF.create(botId)) {
+                ret.lastPreKey = crypto.newLastPreKey();
+                ret.preKeys = crypto.newPreKeys(0, 50);
+            }
+
+        } catch (Exception e) {
+            Logger.exception("newBot: %s", e, e.getMessage());
+            return Response.
+                    status(500).
+                    entity(new ErrorMessage(e.getMessage())).
+                    build();
         }
 
         return Response.
