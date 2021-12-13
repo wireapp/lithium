@@ -6,7 +6,7 @@
 
     <groupId>com.wire</groupId>
     <artifactId>lithium</artifactId>
-    <version>3.3.2</version>
+    <version>3.3.3</version>
 
     <name>Lithium</name>
     <description>Wire Bots SDK written in Java</description>
