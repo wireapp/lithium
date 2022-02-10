@@ -6,7 +6,7 @@
 
     <groupId>com.wire</groupId>
     <artifactId>lithium</artifactId>
-    <version>3.3.2</version>
+    <version>3.3.3</version>
 
     <name>Lithium</name>
     <description>Wire Bots SDK written in Java</description>
@@ -74,7 +74,7 @@
         <dependency>
             <groupId>com.wire</groupId>
             <artifactId>xenon</artifactId>
-            <version>1.3.2</version>
+            <version>1.3.4</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
