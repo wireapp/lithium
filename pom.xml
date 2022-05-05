@@ -6,8 +6,7 @@
 
     <groupId>com.wire</groupId>
     <artifactId>lithium</artifactId>
-    <version>3.3.5</version>
-
+    <version>3.3.6</version>
     <name>Lithium</name>
     <description>Wire Bots SDK written in Java</description>
     <url>https://wire.com/</url>
@@ -58,7 +57,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <dropwizard.version>2.0.26</dropwizard.version>
+        <dropwizard.version>2.0.29</dropwizard.version>
         <junit.version>5.8.2</junit.version>
     </properties>
 
@@ -115,7 +114,7 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <version>8.1.0</version>
+            <version>7.8.2</version>
         </dependency>
 
         <dependency>
@@ -127,7 +126,7 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.21.0</version>
+            <version>3.22.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
