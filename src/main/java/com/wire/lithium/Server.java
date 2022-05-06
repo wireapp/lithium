@@ -149,7 +149,9 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
         initTelemetry();
 
-        runHealthChecks();
+        if (config.healthchecks) {
+            runHealthChecks();
+        }
 
         onRun(config, env);
     }

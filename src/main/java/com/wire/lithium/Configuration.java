@@ -38,6 +38,9 @@ public class Configuration extends io.dropwizard.Configuration {
     @NotNull
     public String token;   // Service token. Obtained when the Service is registered with Wire
 
+    @JsonProperty
+    public boolean healthchecks = true;
+
     @Valid
     private _JerseyClientConfiguration jerseyClient = new _JerseyClientConfiguration();
 
