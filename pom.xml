@@ -6,7 +6,7 @@
 
     <groupId>com.wire</groupId>
     <artifactId>lithium</artifactId>
-    <version>3.4.0</version>
+    <version>3.4.1</version>
     <name>Lithium</name>
     <description>Wire Bots SDK written in Java</description>
     <url>https://wire.com/</url>
@@ -57,17 +57,17 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <dropwizard.version>2.1.1</dropwizard.version>
-        <junit.version>5.8.2</junit.version>
+        <dropwizard.version>2.1.2</dropwizard.version>
+        <junit.version>5.9.0</junit.version>
         <maven.test.skip>true</maven.test.skip>
     </properties>
 
     <repositories>
         <!-- to fetch specific version of dropwizard-swagger dependency -->
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
+<!--        <repository>-->
+<!--            <id>jitpack.io</id>-->
+<!--            <url>https://jitpack.io</url>-->
+<!--        </repository>-->
     </repositories>
 
     <dependencies>
@@ -102,11 +102,17 @@
             <version>${dropwizard.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.smoketurner</groupId>
+            <groupId>com.smoketurner</groupId>
             <artifactId>dropwizard-swagger</artifactId>
-            <!-- this specific commit works, the latest release does not -->
-            <version>1532b0c531</version>
+            <version>2.0.12-1</version>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.smoketurner</groupId>-->
+<!--            <artifactId>dropwizard-swagger</artifactId>-->
+<!--            <version>${dropwizard.version}</version>-->
+<!--            <version>1532b0c531</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>

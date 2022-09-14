@@ -173,7 +173,6 @@ new_service() {
     read -p "Service RSA public key file: " service_pubkey_file
 
     service_pubkey=$(< "$service_pubkey_file")
-    service_tags=$(echo "$service_tags_str" | sed 's/,/","/g')
 
     echo "Registering service $service_name ..."
     curl -s -XPOST "$zapi/provider/services" \
