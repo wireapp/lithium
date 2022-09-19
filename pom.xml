@@ -65,10 +65,10 @@
 
     <repositories>
         <!-- to fetch specific version of dropwizard-swagger dependency -->
-<!--        <repository>-->
-<!--            <id>jitpack.io</id>-->
-<!--            <url>https://jitpack.io</url>-->
-<!--        </repository>-->
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -103,17 +103,10 @@
             <version>${dropwizard.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.smoketurner</groupId>
+            <groupId>com.github.smoketurner</groupId>
             <artifactId>dropwizard-swagger</artifactId>
-            <version>2.0.12-1</version>
+            <version>1532b0c531</version>
         </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>com.smoketurner</groupId>-->
-<!--            <artifactId>dropwizard-swagger</artifactId>-->
-<!--            <version>${dropwizard.version}</version>-->
-<!--            <version>1532b0c531</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
