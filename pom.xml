@@ -58,6 +58,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <dropwizard.version>2.1.2</dropwizard.version>
+        <xenon.version>1.4.1</xenon.version>
         <junit.version>5.9.0</junit.version>
         <maven.test.skip>true</maven.test.skip>
     </properties>
@@ -74,7 +75,7 @@
         <dependency>
             <groupId>com.wire</groupId>
             <artifactId>xenon</artifactId>
-            <version>1.4.0</version>
+            <version>${xenon.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
