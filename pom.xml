@@ -105,16 +105,17 @@
         <dependency>
             <groupId>com.github.smoketurner</groupId>
             <artifactId>dropwizard-swagger</artifactId>
-            <version>1532b0c531</version>
+            <version>72e8441e4a</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.3.6</version>
+            <version>42.5.0</version>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
+            <!-- we need stick here so far as prod is running on older version of Postgres -->
             <version>7.8.2</version>
         </dependency>
 
