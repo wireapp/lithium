@@ -298,7 +298,7 @@ public class API implements WireAPI {
                 .property(ClientProperties.FOLLOW_REDIRECTS, Boolean.FALSE)
                 .header(HttpHeaders.AUTHORIZATION, bearer());
 
-        if (assetToken != null)
+        if (assetToken != null && !assetToken.isBlank())
             req.header("Asset-Token", assetToken);
 
         Response response = req.get();
