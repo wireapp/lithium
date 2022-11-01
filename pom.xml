@@ -6,7 +6,7 @@
 
     <groupId>com.wire</groupId>
     <artifactId>lithium</artifactId>
-    <version>3.4.4</version>
+    <version>3.4.5</version>
     <name>Lithium</name>
     <description>Wire Bots SDK written in Java</description>
     <url>https://wire.com/</url>
@@ -58,7 +58,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <dropwizard.version>2.1.4</dropwizard.version>
-        <xenon.version>1.4.2</xenon.version>
+        <xenon.version>1.4.3</xenon.version>
         <junit.version>5.9.0</junit.version>
         <maven.test.skip>true</maven.test.skip>
     </properties>
