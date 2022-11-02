@@ -6,16 +6,16 @@ on:
 
 jobs:
   tests:
-    runs-on: ubuntu-20.04
-    container: wirebot/cryptobox:latest
+    runs-on: ubuntu-latest
+    container: wirebot/cryptobox:1.2.0
     # enable postgres
     services:
       postgres:
-        image: postgres:13
+        image: postgres:15
         env:
           POSTGRES_PASSWORD: postgres
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       # override template environment variables
       - name: Setup Environment Variables
