@@ -11,13 +11,16 @@ import io.dropwizard.logging.filter.FilterFactory;
 public class StatusCheckFilter implements FilterFactory<IAccessEvent> {
     @Override
     public Filter<IAccessEvent> build() {
-        return new Filter<IAccessEvent>() {
+        return new Filter<>() {
             @Override
             public FilterReply decide(IAccessEvent event) {
                 if (event.getRequestURI().contains("/status")) {
                     return FilterReply.DENY;
                 }
                 if (event.getRequestURI().contains("/swagger")) {
+                    return FilterReply.DENY;
+                }
+                if (event.getRequestURI().contains("/metrics")) {
                     return FilterReply.DENY;
                 }
                 return FilterReply.NEUTRAL;
