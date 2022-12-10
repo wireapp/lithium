@@ -81,7 +81,7 @@ public class MessageResource extends MessageResourceBase {
         // put tracing information to logs
         MDCUtils.put("botId", botId);
         MDCUtils.put("eventId", eventId);
-        MDCUtils.put("conversationId", payload.convId);
+        MDCUtils.put("conversationId", payload.conversation.id);
 
         try (WireClient client = getWireClient(botId, payload)) {
             handleMessage(eventId, payload, client);

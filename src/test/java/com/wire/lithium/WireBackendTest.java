@@ -123,7 +123,7 @@ public class WireBackendTest extends DatabaseTestBase {
         // Test Ping message is sent to Echo by the BE. BE calls POST /bots/{botId}/messages with Payload obj
         Recipients encrypt = crypto.encrypt(preKeys, generatePingMessage());
         String cypher = encrypt.get(userId, USER_CLIENT_DUMMY);
-        Response res = newOtrMessageFromBackend(botId, userId, cypher);
+        Response res = newOtrMessageFromBackend(botId, userId, convId, cypher);
         assertThat(res.getStatus()).isEqualTo(200);
 
         crypto.close();
@@ -156,10 +156,11 @@ public class WireBackendTest extends DatabaseTestBase {
         return res.readEntity(NewBotResponseModel.class);
     }
 
-    private Response newOtrMessageFromBackend(UUID botId, UUID userId, String cypher) {
+    private Response newOtrMessageFromBackend(UUID botId, UUID userId, UUID convId, String cypher) {
         Payload payload = new Payload();
         payload.type = "conversation.otr-message-add";
-        payload.from = userId;
+        payload.from = new Payload.Qualified(userId, "");
+        payload.conversation = new Payload.Qualified(convId, "");
         payload.time = new Date().toString();
         payload.data = new Payload.Data();
         payload.data.sender = USER_CLIENT_DUMMY;
