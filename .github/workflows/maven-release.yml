@@ -46,7 +46,7 @@ jobs:
     name: Release on Sonatype OSS
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up JDK
         uses: actions/setup-java@v3
