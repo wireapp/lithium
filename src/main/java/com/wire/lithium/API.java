@@ -44,6 +44,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -103,8 +104,12 @@ public class API implements WireAPI {
     }
 
     public Response status() {
-        return httpClient.target(wireHost)
-                .path("status")
+        URI uri = URI.create(wireHost);
+        String scheme = uri.getScheme();
+        String host = uri.getHost();
+        String target = String.format("%s://%s", scheme, host);
+        return httpClient.target(target)
+                .path("api-version")
                 .request()
                 .get();
     }
