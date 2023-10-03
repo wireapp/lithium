@@ -1,9 +1,9 @@
 name: Release to Maven Central
 
 on:
-  workflow_dispatch:
-  release:
-    types: [ published ]
+  push:
+    tags:
+      - '*'
 
 jobs:
   tests:
