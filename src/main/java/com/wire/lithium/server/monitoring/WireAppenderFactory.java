@@ -9,10 +9,10 @@ import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.DeferredProcessingAware;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import io.dropwizard.logging.AbstractAppenderFactory;
-import io.dropwizard.logging.async.AsyncAppenderFactory;
-import io.dropwizard.logging.filter.LevelFilterFactory;
-import io.dropwizard.logging.layout.LayoutFactory;
+import io.dropwizard.logging.common.AbstractAppenderFactory;
+import io.dropwizard.logging.common.async.AsyncAppenderFactory;
+import io.dropwizard.logging.common.filter.LevelFilterFactory;
+import io.dropwizard.logging.common.layout.LayoutFactory;
 import io.dropwizard.request.logging.layout.LogbackAccessRequestLayoutFactory;
 
 import java.util.List;

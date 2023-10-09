@@ -4,9 +4,8 @@ import com.codahale.metrics.health.HealthCheck;
 import com.wire.lithium.API;
 import com.wire.lithium.server.monitoring.MDCUtils;
 import com.wire.xenon.tools.Logger;
-
-import javax.ws.rs.client.Client;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.core.Response;
 
 public class Outbound extends HealthCheck {
     private final Client client;
@@ -21,14 +20,13 @@ public class Outbound extends HealthCheck {
         Logger.debug("Starting Outbound healthcheck");
         API api = new API(client, null);
 
-        try {
-            Response response = api.status();
+        try (Response response = api.status()) {
             String s = response.readEntity(String.class);
             int status = response.getStatus();
             return status == 200 ? Result.healthy() : Result.unhealthy(String.format("%s. status: %d", s, status));
         } catch (Exception e) {
             final String message = String.format("Unable to reach: %s, error: %s", api.getWireHost(), e.getMessage());
-            Logger.exception(message, e);
+            Logger.exception(e, message);
             return Result.unhealthy(message);
         } finally {
             Logger.debug("Finished Outbound healthcheck");

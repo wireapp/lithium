@@ -29,7 +29,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Application configuration class. Extend this class to add your custom configuration
  */
-public class Configuration extends io.dropwizard.Configuration {
+public class Configuration extends io.dropwizard.core.Configuration {
     @JsonProperty
     @Valid
     public Database database = new Database();

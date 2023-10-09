@@ -6,7 +6,7 @@
 
     <groupId>com.wire</groupId>
     <artifactId>lithium</artifactId>
-    <version>3.5.5</version>
+    <version>3.6.0</version>
     <name>Lithium</name>
     <description>Wire Bots SDK written in Java</description>
     <url>https://wire.com/</url>
@@ -86,17 +86,17 @@
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-core</artifactId>
-            <version>2.1.5</version>
+            <version>4.0.0</version>
         </dependency>
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-jdbi3</artifactId>
-            <version>2.1.5</version>
+            <version>4.0.0</version>
         </dependency>
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-client</artifactId>
-            <version>2.1.5</version>
+            <version>4.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.smoketurner</groupId>
@@ -106,7 +106,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.5.3</version>
+            <version>42.5.4</version>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
@@ -119,7 +119,7 @@
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-testing</artifactId>
-            <version>2.1.5</version>
+            <version>4.0.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
