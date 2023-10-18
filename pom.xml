@@ -117,7 +117,7 @@
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-testing</artifactId>
-            <version>4.0.0</version>
+            <version>4.0.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
