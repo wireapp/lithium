@@ -15,17 +15,17 @@ import com.wire.xenon.models.PingMessage;
 import com.wire.xenon.models.otr.PreKeys;
 import com.wire.xenon.models.otr.Recipients;
 import com.wire.xenon.tools.Logger;
-import io.dropwizard.setup.Environment;
+import io.dropwizard.core.setup.Environment;
 import io.dropwizard.testing.ConfigOverride;
 import io.dropwizard.testing.DropwizardTestSupport;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -145,15 +145,16 @@ public class WireBackendTest extends DatabaseTestBase {
         newBot.conversation.creator = userId;
         newBot.conversation.members = new ArrayList<>();
 
-        Response res = target
+        try (Response res = target
                 .path("bots")
                 .request()
                 .header("Authorization", "Bearer " + serviceAuth)
-                .post(Entity.entity(newBot, MediaType.APPLICATION_JSON_TYPE));
+                .post(Entity.entity(newBot, MediaType.APPLICATION_JSON_TYPE))) {
 
-        assertThat(res.getStatus()).isEqualTo(201);
+            assertThat(res.getStatus()).isEqualTo(201);
 
-        return res.readEntity(NewBotResponseModel.class);
+            return res.readEntity(NewBotResponseModel.class);
+        }
     }
 
     private Response newOtrMessageFromBackend(UUID botId, UUID userId, UUID convId, String cypher) {

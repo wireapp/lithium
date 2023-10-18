@@ -28,6 +28,7 @@ abstract public class DatabaseTestBase {
         // Migrate DB if needed
         flyway = Flyway
                 .configure()
+                .cleanDisabled(false)
                 .dataSource(dataSourceFactory.getUrl(), dataSourceFactory.getUser(), dataSourceFactory.getPassword())
                 .baselineOnMigrate(true)
                 .load();

@@ -21,7 +21,7 @@ package com.wire.lithium;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.health.HealthCheck;
 import com.codahale.metrics.jmx.JmxReporter;
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.fasterxml.jackson.jakarta.rs.json.JacksonJsonProvider;
 import com.wire.lithium.healthchecks.Alice2Bob;
 import com.wire.lithium.healthchecks.CryptoHealthCheck;
 import com.wire.lithium.healthchecks.Outbound;
@@ -37,29 +37,24 @@ import com.wire.lithium.server.tasks.ConversationTask;
 import com.wire.xenon.Const;
 import com.wire.xenon.MessageHandlerBase;
 import com.wire.xenon.crypto.CryptoDatabase;
-import com.wire.xenon.crypto.CryptoFile;
 import com.wire.xenon.crypto.storage.JdbiStorage;
 import com.wire.xenon.factories.CryptoFactory;
 import com.wire.xenon.factories.StorageFactory;
-import com.wire.xenon.state.FileState;
 import com.wire.xenon.state.JdbiState;
 import com.wire.xenon.tools.Logger;
-import io.dropwizard.Application;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
+import io.dropwizard.core.Application;
+import io.dropwizard.core.setup.Bootstrap;
+import io.dropwizard.core.setup.Environment;
 import io.dropwizard.servlets.tasks.Task;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
-import io.federecio.dropwizard.swagger.SwaggerBundle;
-import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
+import jakarta.ws.rs.client.Client;
 import org.flywaydb.core.Flyway;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 
 import javax.annotation.Nullable;
-import javax.ws.rs.client.Client;
 import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
 
@@ -117,12 +112,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
     public void initialize(Bootstrap<Config> bootstrap) {
         bootstrap.setConfigurationSourceProvider(new SubstitutingSourceProvider(
                 bootstrap.getConfigurationSourceProvider(), new EnvironmentVariableSubstitutor(false)));
-        bootstrap.addBundle(new SwaggerBundle<>() {
-            @Override
-            protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(Config configuration) {
-                return configuration.swagger;
-            }
-        });
     }
 
     @Override
@@ -159,7 +148,6 @@ public abstract class Server<Config extends Configuration> extends Application<C
     private Client createHttpClient(Config config, Environment env) {
         return new JerseyClientBuilder(env)
                 .using(config.getJerseyClient())
-                .withProvider(MultiPartFeature.class)
                 .withProvider(JacksonJsonProvider.class)
                 .build(getName());
     }
@@ -172,38 +160,25 @@ public abstract class Server<Config extends Configuration> extends Application<C
 
     @Nullable
     protected Jdbi buildJdbi(Configuration.Database database, Environment env) {
-        if (database.getDriverClass().equalsIgnoreCase("fs"))
-            return null;
-
         return Jdbi
                 .create(database.build(env.metrics(), getName()))
                 .installPlugin(new SqlObjectPlugin());
     }
 
     protected void setupDatabase(Configuration.Database database) {
-        if (!database.getDriverClass().equalsIgnoreCase("fs")) {
-            Flyway flyway = Flyway
-                    .configure()
-                    .dataSource(database.getUrl(), database.getUser(), database.getPassword())
-                    .baselineOnMigrate(database.baseline)
-                    .load();
-            flyway.migrate();
-        }
+        Flyway flyway = Flyway
+                .configure()
+                .dataSource(database.getUrl(), database.getUser(), database.getPassword())
+                .baselineOnMigrate(database.baseline)
+                .load();
+        flyway.migrate();
     }
 
     public StorageFactory getStorageFactory() {
-        if (config.database.getDriverClass().equalsIgnoreCase("fs")) {
-            return botId -> new FileState(config.database.getUrl(), botId);
-        }
-
         return botId -> new JdbiState(botId, getJdbi());
     }
 
     public CryptoFactory getCryptoFactory() {
-        if (config.database.getDriverClass().equalsIgnoreCase("fs")) {
-            return (botId) -> new CryptoFile(config.database.getUrl(), botId);
-        }
-
         return (botId) -> new CryptoDatabase(botId, new JdbiStorage(getJdbi()));
     }
 

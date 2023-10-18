@@ -30,22 +30,20 @@ import com.wire.xenon.models.AssetKey;
 import com.wire.xenon.models.otr.*;
 import com.wire.xenon.tools.Logger;
 import com.wire.xenon.tools.Util;
+import jakarta.ws.rs.NotSupportedException;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.*;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.logging.LoggingFeature;
-import org.glassfish.jersey.media.multipart.BodyPart;
-import org.glassfish.jersey.media.multipart.MultiPart;
 
 import javax.annotation.Nullable;
-import javax.ws.rs.NotSupportedException;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -103,8 +101,12 @@ public class API implements WireAPI {
     }
 
     public Response status() {
-        return httpClient.target(wireHost)
-                .path("status")
+        URI uri = URI.create(wireHost);
+        String scheme = uri.getScheme();
+        String host = uri.getHost();
+        String target = String.format("%s://%s", scheme, host);
+        return httpClient.target(target)
+                .path("api-version")
                 .request()
                 .get();
     }
@@ -123,44 +125,46 @@ public class API implements WireAPI {
      */
     @Override
     public Devices sendMessage(OtrMessage msg, Object... ignoreMissing) throws HttpException {
-        Response response = messages
+        try (Response response = messages
                 .queryParam("ignore_missing", ignoreMissing)
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, bearer())
-                .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
+                .post(Entity.entity(msg, MediaType.APPLICATION_JSON))) {
 
-        int statusCode = response.getStatus();
-        if (statusCode == 412) {
-            // This message was not sent due to missing clients. Parse those missing clients so the caller can add them
+            int statusCode = response.getStatus();
+            if (statusCode == 412) {
+                // This message was not sent due to missing clients. Parse those missing clients so the caller can add them
+                return response.readEntity(Devices.class);
+            }
+
+            if (statusCode >= 400) {
+                throw new HttpException(response.readEntity(String.class), statusCode);
+            }
+
             return response.readEntity(Devices.class);
         }
-
-        if (statusCode >= 400) {
-            throw new HttpException(response.readEntity(String.class), statusCode);
-        }
-
-        return response.readEntity(Devices.class);
     }
 
     @Override
     public Devices sendPartialMessage(OtrMessage msg, UUID userId) throws HttpException {
-        Response response = messages
+        try (Response response = messages
                 .queryParam("report_missing", userId)
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, bearer())
-                .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
+                .post(Entity.entity(msg, MediaType.APPLICATION_JSON))) {
 
-        int statusCode = response.getStatus();
-        if (statusCode == 412) {
-            // This message was not sent due to missing clients. Parse those missing clients so the caller can add them
+            int statusCode = response.getStatus();
+            if (statusCode == 412) {
+                // This message was not sent due to missing clients. Parse those missing clients so the caller can add them
+                return response.readEntity(Devices.class);
+            }
+
+            if (statusCode >= 400) {
+                throw new HttpException(response.readEntity(String.class), statusCode);
+            }
+
             return response.readEntity(Devices.class);
         }
-
-        if (statusCode >= 400) {
-            throw new HttpException(response.readEntity(String.class), statusCode);
-        }
-
-        return response.readEntity(Devices.class);
     }
 
     @Override
@@ -215,15 +219,16 @@ public class API implements WireAPI {
         NewBotResponseModel model = new NewBotResponseModel();
         model.preKeys = preKeys;
 
-        Response res = client
+        try (Response res = client
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, bearer())
                 .accept(MediaType.APPLICATION_JSON)
-                .post(Entity.entity(model, MediaType.APPLICATION_JSON));
+                .post(Entity.entity(model, MediaType.APPLICATION_JSON))) {
 
-        int statusCode = res.getStatus();
-        if (statusCode >= 400) {
-            throw new IOException(res.readEntity(String.class));
+            int statusCode = res.getStatus();
+            if (statusCode >= 400) {
+                throw new IOException(res.readEntity(String.class));
+            }
         }
     }
 
@@ -261,33 +266,17 @@ public class API implements WireAPI {
         os.write(asset.getEncryptedData());
         os.write("\r\n--frontier--\r\n".getBytes(StandardCharsets.UTF_8));
 
-        Response response = assets
+        try (Response response = assets
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .header(HttpHeaders.AUTHORIZATION, bearer())
-                .post(Entity.entity(os.toByteArray(), "multipart/mixed; boundary=frontier"));
+                .post(Entity.entity(os.toByteArray(), "multipart/mixed; boundary=frontier"))) {
 
-        if (response.getStatus() >= 400) {
-            throw new HttpException(response.readEntity(String.class), response.getStatus());
+            if (response.getStatus() >= 400) {
+                throw new HttpException(response.readEntity(String.class), response.getStatus());
+            }
+
+            return response.readEntity(AssetKey.class);
         }
-
-        return response.readEntity(AssetKey.class);
-    }
-
-    private MultiPart getMultiPart(IAsset asset) throws NoSuchAlgorithmException {
-        MetaData metaData = new MetaData();
-        metaData.retention = asset.getRetention();
-        metaData.scope = asset.isPublic();
-
-        BodyPart bodyPart1 = new BodyPart(metaData, MediaType.APPLICATION_JSON_TYPE);
-        BodyPart bodyPart2 = new BodyPart().entity(asset.getEncryptedData());
-
-        MultivaluedMap<String, String> headers = bodyPart2.getHeaders();
-        headers.add("Content-Type", asset.getMimeType());
-        headers.add("Content-MD5", Util.calcMd5(asset.getEncryptedData()));
-
-        return new MultiPart()
-                .bodyPart(bodyPart1)
-                .bodyPart(bodyPart2);
     }
 
     @Override

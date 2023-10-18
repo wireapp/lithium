@@ -15,7 +15,7 @@ jobs:
         env:
           POSTGRES_PASSWORD: postgres
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # override template environment variables
       - name: Setup Environment Variables

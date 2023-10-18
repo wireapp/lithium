@@ -32,12 +32,12 @@ import com.wire.xenon.backend.models.Payload;
 import com.wire.xenon.exceptions.MissingStateException;
 import com.wire.xenon.tools.Logger;
 import io.swagger.annotations.*;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -86,20 +86,20 @@ public class MessageResource extends MessageResourceBase {
         try (WireClient client = getWireClient(botId, payload)) {
             handleMessage(eventId, payload, client);
         } catch (CryptoException e) {
-            Logger.exception("newMessage: %s %s", e, botId, e.getMessage());
+            Logger.exception(e,"newMessage: %s", botId, e.getMessage());
             respondWithError(botId, payload);
             return Response.
                     status(503).
                     entity(new ErrorMessage(e.getMessage())).
                     build();
         } catch (MissingStateException e) {
-            Logger.exception("newMessage: %s %s", e, botId, e.getMessage());
+            Logger.exception(e,"newMessage: %s", botId, e.getMessage());
             return Response.
                     status(410).
                     entity(new ErrorMessage(e.getMessage())).
                     build();
         } catch (Exception e) {
-            Logger.exception("newMessage: %s %s", e, botId, e.getMessage());
+            Logger.exception(e,"newMessage: %s", botId, e.getMessage());
             return Response.
                     status(400).
                     entity(new ErrorMessage(e.getMessage())).
@@ -116,7 +116,7 @@ public class MessageResource extends MessageResourceBase {
         try (WireClient client = getWireClient(botId, payload)) {
             client.send(new Reaction(UUID.randomUUID(), ""));
         } catch (Exception e) {
-            Logger.exception("respondWithError: bot: %s %s", e, botId, e.getMessage());
+            Logger.exception(e,"respondWithError: bot: %s", botId, e.getMessage());
         }
     }
 

@@ -1,12 +1,11 @@
 package com.wire.lithium.server.monitoring;
 
-import io.dropwizard.util.Strings;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.ext.Provider;
 import org.slf4j.MDC;
 
 import javax.annotation.Nullable;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.ext.Provider;
 import java.util.UUID;
 
 /**
@@ -26,7 +25,7 @@ public class RequestMdcFactoryFilter implements ContainerRequestFilter {
     }
 
     private void addIfNotNull(final String key, @Nullable String value) {
-        if (!Strings.isNullOrEmpty(value)) {
+        if (value != null && !value.isEmpty()){
             MDC.put(key, value);
         }
     }

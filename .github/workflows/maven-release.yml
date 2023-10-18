@@ -1,9 +1,9 @@
 name: Release to Maven Central
 
 on:
-  workflow_dispatch:
-  release:
-    types: [ published ]
+  push:
+    tags:
+      - '*'
 
 jobs:
   tests:
@@ -16,7 +16,7 @@ jobs:
         env:
           POSTGRES_PASSWORD: postgres
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Environment Variables
         run: |
@@ -46,7 +46,7 @@ jobs:
     name: Release on Sonatype OSS
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up JDK
         uses: actions/setup-java@v3
