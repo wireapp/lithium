@@ -96,7 +96,7 @@
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-client</artifactId>
-            <version>4.0.0</version>
+            <version>4.0.2</version>
         </dependency>
         <dependency>
             <groupId>com.github.smoketurner</groupId>
