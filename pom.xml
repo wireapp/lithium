@@ -57,6 +57,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.test.skip>true</maven.test.skip>
+        <!-- BEFORE UPGRADING! VERIFY RUNTIME PG VERSION COMPATIBILITY -->
+        <flyway.version>7.15.0</flyway.version>
+
     </properties>
 
     <repositories>
@@ -111,7 +114,7 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <version>9.22.2</version>
+            <version>${flyway.version}</version>
         </dependency>
 
         <dependency>
