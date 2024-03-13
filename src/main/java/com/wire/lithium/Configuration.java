@@ -22,9 +22,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.client.JerseyClientConfiguration;
 import io.dropwizard.db.DataSourceFactory;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 /**
  * Application configuration class. Extend this class to add your custom configuration
