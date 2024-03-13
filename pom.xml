@@ -6,7 +6,7 @@
 
     <groupId>com.wire</groupId>
     <artifactId>lithium</artifactId>
-    <version>3.6.3</version>
+    <version>3.6.4</version>
     <name>Lithium</name>
     <description>Wire Bots SDK written in Java</description>
     <url>https://wire.com/</url>
@@ -125,13 +125,11 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.6.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
             <version>${flyway.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>jakarta.annotation</groupId>
@@ -142,13 +140,11 @@
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
             <version>3.0.2</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.smoketurner</groupId>
             <artifactId>dropwizard-swagger</artifactId>
             <version>4.0.0-1</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.swagger</groupId>
