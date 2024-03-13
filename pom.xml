@@ -34,6 +34,13 @@
             <organizationUrl>https://wire.com</organizationUrl>
             <timezone>UTC+01:00</timezone>
         </developer>
+        <developer>
+            <name>Yamil Medina</name>
+            <email>yamil@wire.com</email>
+            <organization>Wire Swiss GmbH</organization>
+            <organizationUrl>https://wire.com</organizationUrl>
+            <timezone>UTC+01:00</timezone>
+        </developer>
     </developers>
 
     <scm>
