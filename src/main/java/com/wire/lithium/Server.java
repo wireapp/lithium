@@ -49,12 +49,12 @@ import io.dropwizard.core.Application;
 import io.dropwizard.core.setup.Bootstrap;
 import io.dropwizard.core.setup.Environment;
 import io.dropwizard.servlets.tasks.Task;
+import jakarta.annotation.Nullable;
 import jakarta.ws.rs.client.Client;
 import org.flywaydb.core.Flyway;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 
-import javax.annotation.Nullable;
 import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
 

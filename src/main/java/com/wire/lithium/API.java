@@ -30,6 +30,7 @@ import com.wire.xenon.models.AssetKey;
 import com.wire.xenon.models.otr.*;
 import com.wire.xenon.tools.Logger;
 import com.wire.xenon.tools.Util;
+import jakarta.annotation.Nullable;
 import jakarta.ws.rs.NotSupportedException;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.Entity;
@@ -39,7 +40,6 @@ import jakarta.ws.rs.core.*;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.logging.LoggingFeature;
 
-import javax.annotation.Nullable;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;

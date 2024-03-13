@@ -1,9 +1,9 @@
 package com.wire.lithium.server.monitoring;
 
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 import org.slf4j.MDC;
 
-import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
 
 public class MDCUtils {
 

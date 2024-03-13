@@ -6,7 +6,7 @@
 
     <groupId>com.wire</groupId>
     <artifactId>lithium</artifactId>
-    <version>3.6.2</version>
+    <version>3.6.3</version>
     <name>Lithium</name>
     <description>Wire Bots SDK written in Java</description>
     <url>https://wire.com/</url>
@@ -59,7 +59,8 @@
         <maven.test.skip>true</maven.test.skip>
         <!-- BEFORE UPGRADING! VERIFY RUNTIME PG VERSION COMPATIBILITY -->
         <flyway.version>7.15.0</flyway.version>
-
+        <dropwizard.version>4.0.0</dropwizard.version>
+        <jakarta.version>2.1.1</jakarta.version>
     </properties>
 
     <repositories>
@@ -69,6 +70,18 @@
             <url>https://jitpack.io</url>
         </repository>
     </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.dropwizard</groupId>
+                <artifactId>dropwizard-bom</artifactId>
+                <version>${dropwizard.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -89,22 +102,15 @@
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-core</artifactId>
-            <version>4.0.0</version>
         </dependency>
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-jdbi3</artifactId>
-            <version>4.0.0</version>
         </dependency>
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-client</artifactId>
             <version>4.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.smoketurner</groupId>
-            <artifactId>dropwizard-swagger</artifactId>
-            <version>72e8441e4a</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -116,11 +122,26 @@
             <artifactId>flyway-core</artifactId>
             <version>${flyway.version}</version>
         </dependency>
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>${jakarta.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.smoketurner</groupId>
+            <artifactId>dropwizard-swagger</artifactId>
+            <version>4.0.0-1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>1.6.13</version>
+        </dependency>
+
 
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-testing</artifactId>
-            <version>4.0.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -140,6 +161,12 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.9.2</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
