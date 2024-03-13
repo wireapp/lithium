@@ -1,11 +1,11 @@
 package com.wire.lithium.server.monitoring;
 
+import jakarta.annotation.Nullable;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.ext.Provider;
 import org.slf4j.MDC;
 
-import javax.annotation.Nullable;
 import java.util.UUID;
 
 /**
